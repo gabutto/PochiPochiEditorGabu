@@ -52,6 +52,8 @@
     <Compile Include="Constants\GbaConstants.cs" />
     <Compile Include="FileReaders\IniFileReader.cs" />
     <Compile Include="FileReaders\TblFileReader.cs" />
+    <Compile Include="Helpers\ControlHelper.cs" />
+    <Compile Include="Helpers\DataBindingHelper.cs" />
     <Compile Include="Helpers\IoHelper.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -59,6 +61,8 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Manager\EntryManager.cs" />
+    <Compile Include="Manager\ImageManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">

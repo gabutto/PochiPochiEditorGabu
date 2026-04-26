@@ -1,4 +1,11 @@
-﻿using PochiPochiEditorGabu.Constants;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+using PochiPochiEditorGabu.Constants;
+using PochiPochiEditorGabu.FileReaders;
 
 namespace PochiPochiEditorGabu.Helpers
 {
@@ -25,6 +32,135 @@ namespace PochiPochiEditorGabu.Helpers
 
             actualAddr = rawPtr - GbaConstants.BaseAddr;
             return true;
+        }
+
+        public static List<T> ReadStructures<T>(
+            byte[] data,
+            uint? addr,
+            int count,TblFileReader tblReader,
+            Dictionary<string, int> dynamicLengths = null) where T : new()
+        {
+            var list = new List<T>();
+
+            if (addr == null) return list;
+            int currentOffset = (int)addr.Value;
+
+            GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+
+            try
+            {
+                IntPtr basePtr = handle.AddrOfPinnedObject();
+
+                var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
+                                      .OrderBy(f => f.MetadataToken)
+                                      .ToArray();
+
+                for (int i = 0; i < count; i++)
+                {
+                    T item = new T();
+                    foreach (var field in fields)
+                    {
+                        if (field.FieldType == typeof(string))
+                        {
+                            var attr = field.GetCustomAttribute<DynamicStringAttribute>();
+                            int length = (attr != null && dynamicLengths != null && dynamicLengths.ContainsKey(attr.Key))
+                                ? dynamicLengths[attr.Key] : 0;
+
+                            if (length > 0)
+                            {
+                                string strVal = tblReader.BytesToString(data, currentOffset, length);
+                                field.SetValue(item, strVal);
+                                currentOffset += length;
+                            }
+                        }
+                        else if (field.FieldType.IsValueType)
+                        {
+                            int typeSize = Marshal.SizeOf(field.FieldType);
+                            object val = Marshal.PtrToStructure(basePtr + currentOffset, field.FieldType);
+                            field.SetValue(item, val);
+                            currentOffset += typeSize;
+                        }
+                    }
+                    list.Add(item);
+                }
+            }
+            finally
+            {
+                handle.Free();
+            }
+
+            return list;
+        }
+
+        public static void WriteStructures<T>(
+            byte[] data,
+            int address,
+            IEnumerable<T> items,
+            TblFileReader tblReader,
+            Dictionary<string, int> dynamicLengths = null,
+            bool appendTerminator = true,
+            byte paddingByte = GbaConstants.PaddingByte)
+        {
+            GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+
+            try
+            {
+                IntPtr basePtr = handle.AddrOfPinnedObject();
+                int currentOffset = address;
+
+                var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
+                                      .OrderBy(f => f.MetadataToken)
+                                      .ToArray();
+
+                foreach (var item in items)
+                {
+                    if (item == null) continue;
+
+                    foreach (var field in fields)
+                    {
+                        if (field.FieldType == typeof(string))
+                        {
+                            var attr = field.GetCustomAttribute<DynamicStringAttribute>();
+                            int length = (attr != null && dynamicLengths != null && dynamicLengths.ContainsKey(attr.Key))
+                                ? dynamicLengths[attr.Key] : 0;
+
+                            if (length > 0)
+                            {
+                                string strVal = (field.GetValue(item) as string) ?? string.Empty;
+                                byte[] result = tblReader.StringToBytes(strVal, appendTerminator, length, paddingByte);
+                                Array.Copy(result, 0, data, currentOffset, length);
+
+                                currentOffset += length;
+                            }
+                        }
+                        else if (field.FieldType.IsValueType)
+                        {
+                            int typeSize = Marshal.SizeOf(field.FieldType);
+                            object value = field.GetValue(item);
+                            if (value != null)
+                            {
+                                Marshal.StructureToPtr(value, basePtr + currentOffset, false);
+                            }
+                            currentOffset += typeSize;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                handle.Free();
+            }
+        }
+    }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public class DynamicStringAttribute : Attribute
+    {
+        public string Key { get; }
+
+        public DynamicStringAttribute(string key)
+        {
+            Key = key;
         }
     }
 }
