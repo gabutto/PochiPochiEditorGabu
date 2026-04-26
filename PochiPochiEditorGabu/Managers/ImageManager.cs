@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 using PochiPochiEditorGabu.Constants;
 
-namespace PochiPochiEditorGabu.Manager
+namespace PochiPochiEditorGabu.Managers
 {
     public static class ImageManager
     {

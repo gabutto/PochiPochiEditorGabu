@@ -6,7 +6,7 @@ using PochiPochiEditorGabu.Constants;
 using PochiPochiEditorGabu.FileReaders;
 using PochiPochiEditorGabu.Helpers;
 
-namespace PochiPochiEditorGabu.Manager
+namespace PochiPochiEditorGabu.Managers
 {
     public class EntryManager<T> where T : class, new()
     {
