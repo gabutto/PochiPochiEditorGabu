@@ -4,4 +4,4 @@ C#7.3
 Supporting only BPRJ
 
 ##スクリーンショット
-![altTag](./img/screenshot1.png)
+![altTag](./PochiPochiEditorGabu/img/screenshot1.png)
