@@ -1,7 +1,7 @@
-# PochiPochiEditorGabu
+# PochiPochiEditorGabu  
 Visual Studio 2019  
 C#7.3  
-Supporting only BPRJ
+Supporting only BPRJ  
 
-##スクリーンショット
-![altTag](./PochiPochiEditorGabu/img/screenshot1.png)
+##スクリーンショット  
+![altTag](./PochiPochiEditorGabu/img/screenshot1.png)  
