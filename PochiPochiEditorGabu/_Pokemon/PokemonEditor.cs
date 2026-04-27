@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 using PochiPochiEditorGabu.Constants;
@@ -27,13 +28,17 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonIconImageEntry> _iconImgManager;
         private EntryManager<PokemonIconPaletteIndexEntry> _iconPalIdxManager;
         private EntryManager<PokemonIconPaletteAddressEntry> _iconPalAddrManager;
+        private EntryManager<PokemonFootPrintImageEntry> _footprintImgManager;
 
-        private bool _isUpdatingUI;
+        private bool _isUpdatingUI = false;
         private int _currentPokemonIdx = 0;
 
         private Bitmap _battleAllyImage = null;
         private Bitmap _battleEnemyImage = null;
-        private ImageManager.PokemonIconAnimator iconAnimator;
+        private ImageManager.PokemonIconAnimator _iconAnimator = null;
+        private byte[] _currentFootprintData = null;
+        private bool _isDrawingFootprint = false;
+        private bool _drawingColorIsBlack = false;
 
         public PokemonEditor(
             byte[] romData, 
@@ -89,6 +94,11 @@ namespace PochiPochiEditorGabu._Pokemon
             _iconPalIdxManager.Load(iconPalIdxTableAddr, iconCount);
             _iconPalAddrManager = new EntryManager<PokemonIconPaletteAddressEntry>(_romData, _tblReader);
             _iconPalAddrManager.Load(iconPalAddrTableAddr, iconPalAddrCount);
+
+            uint? footprintTableAddr = _config.GetAddr("PokemonFootprintTableAddress");
+            int footprintCount = _config.GetInt("PokemonFootprintCount");
+            _footprintImgManager = new EntryManager<PokemonFootPrintImageEntry>(_romData, _tblReader);
+            _footprintImgManager.Load(footprintTableAddr, footprintCount);
         }
 
         private void InitializeEventHandlers()
@@ -113,6 +123,14 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbIconPalIdx.SelectedIndexChanged += cmbIconPalIdx_SelectedIndexChanged;
             btnIconImport.Click += btnIconImport_Click;
             btnIconExport.Click += btnIconExport_Click;
+
+            txtFootprintImgAddr.TextChanged += txtFootprintImgAddr_TextChanged;
+            pnlFootprintCanvas.Paint += pnlFootprintCanvas_Paint;
+            pnlFootprintCanvas.MouseDown += pnlFootprintCanvas_MouseDown;
+            pnlFootprintCanvas.MouseMove += pnlFootprintCanvas_MouseMove;
+            pnlFootprintCanvas.MouseUp += pnlFootprintCanvas_MouseUp;
+            btnFootprintImport.Click += btnFootprintImport_Click;
+            btnFootprintExport.Click += btnFootprintExport_Click;
         }
 
         private void InitializeControls()
@@ -138,12 +156,20 @@ namespace PochiPochiEditorGabu._Pokemon
             }
             cmbIconPalIdx.SelectedIndex = 0;
 
+            // pnlFootprintCanvas
+            typeof(Panel).GetProperty(
+                "DoubleBuffered",
+                BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(pnlFootprintCanvas, true);
+
             ControlHelper.AttachAddressAutoFormat(
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
-                txtIconImgAddr);
+                txtIconImgAddr,
+                txtFootprintImgAddr);
             ControlHelper.AttachExternalBorder(
                 picSpriteFrontNormal, picSpriteBackNormal, picSpriteFrontShiny, picSpriteBackShiny,
-                picIconPal, picIcon, picIconAnimated);
+                picIconPal, picIcon, picIconAnimated,
+                picFootprint, pnlFootprintCanvas);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
@@ -157,7 +183,10 @@ namespace PochiPochiEditorGabu._Pokemon
             _uiStateManager.AddControls(
                 txtPokemonRename,
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
-                txtIconImgAddr, cmbIconPalIdx);
+                txtIconImgAddr, cmbIconPalIdx,
+                txtFootprintImgAddr);
+            _uiStateManager.AddBinaries(
+                (pnlFootprintCanvas, null));
         }
 
         private void LoadAllDataToUI(int idx)
@@ -168,7 +197,8 @@ namespace PochiPochiEditorGabu._Pokemon
             _currentPokemonIdx = idx;
             LoadPokemonNameToUI(idx);
             LoadSpritesToUI(idx);
-            LoadIconDataToUI(idx);
+            LoadIconToUI(idx);
+            LoadFootprintToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -497,7 +527,7 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
-        private void LoadIconDataToUI(int idx)
+        private void LoadIconToUI(int idx)
         {
             DataBindingHelper.BindObjectToControls(this, _iconImgManager.Working[idx]);
             DataBindingHelper.BindObjectToControls(this, _iconPalIdxManager.Working[idx]);
@@ -555,7 +585,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void DisplayIcon()
         {
-            iconAnimator?.StopAnimation();
+            _iconAnimator?.StopAnimation();
             picIcon.Image?.Dispose();
             picIcon.Image = null;
 
@@ -579,9 +609,9 @@ namespace PochiPochiEditorGabu._Pokemon
                 scaledFrames[0] = ImageManager.ScalePixelArt(frames[0]);
                 scaledFrames[1] = ImageManager.ScalePixelArt(frames[1]);
 
-                iconAnimator = new ImageManager.PokemonIconAnimator(picIconAnimated);
-                iconAnimator.SetFrames(scaledFrames);
-                iconAnimator.StartAnimation();
+                _iconAnimator = new ImageManager.PokemonIconAnimator(picIconAnimated);
+                _iconAnimator.SetFrames(scaledFrames);
+                _iconAnimator.StartAnimation();
             }
         }
 
@@ -649,7 +679,6 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
-
         private void btnIconExport_Click(object sender, EventArgs e)
         {
             if (!GetCurrentIconData(out byte[] imageData, out Color[] colors)) return;
@@ -674,15 +703,195 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
+        private void LoadFootprintToUI(int idx)
+        {
+            DataBindingHelper.BindObjectToControls(this, _footprintImgManager.Working[idx]);
 
+            DisplayFootprint();
+        }
 
+        private void txtFootprintImgAddr_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            DisplayFootprint();
+        }
 
+        private void DisplayFootprint()
+        {
+            picFootprint.Image?.Dispose();
+            picFootprint.Image = null;
 
+            if (!ControlHelper.TryParseAddress(txtFootprintImgAddr.Text, out uint imageAddress)) return;
 
+            var res = _reservationManager.GetReservation(txtFootprintImgAddr);
+            if (res != null)
+            {
+                _currentFootprintData = (byte[])res.Data.Clone();
+            }
+            else
+            {
+                _currentFootprintData = new byte[GbaConstants.FootprintDataSize];
+                Array.Copy(_romData, (int)imageAddress, _currentFootprintData, 0, GbaConstants.FootprintDataSize);
+            }
 
+            Color[] palette = { Color.White, Color.Black };
+            using (var bmp = ImageManager.DecodeFootprint(_currentFootprintData, palette))
+            {
+                picFootprint.Image = ImageManager.ScalePixelArt(bmp, GbaConstants.DefaultScale);
+            }
 
+            pnlFootprintCanvas.Invalidate();
+            _uiStateManager.UpdateBinary(pnlFootprintCanvas, _currentFootprintData);
+        }
 
+        private void pnlFootprintCanvas_Paint(object sender, PaintEventArgs e)
+        {
+            if (_currentFootprintData == null) return;
 
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+
+            Color[] palette = { Color.White, Color.Black };
+            using (var bmp = ImageManager.DecodeFootprint(_currentFootprintData, palette))
+            {
+                e.Graphics.DrawImage(bmp, 0, 0, pnlFootprintCanvas.Width, pnlFootprintCanvas.Height);
+            }
+
+            // 16x16 grid
+            int cellSize = GbaConstants.FootprintCanvasScale;
+            for (int i = 0; i <= GbaConstants.FootprintSize; i++)
+            {
+                Color penColor = (i == GbaConstants.FootprintSize / 2) ? Color.Red : Color.Gray;
+                using (var p = new Pen(penColor))
+                {
+                    e.Graphics.DrawLine(p, i * cellSize, 0, i * cellSize, pnlFootprintCanvas.Height);
+                    e.Graphics.DrawLine(p, 0, i * cellSize, pnlFootprintCanvas.Width, i * cellSize);
+                }
+            }
+        }
+
+        private void pnlFootprintCanvas_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (_currentFootprintData == null) return;
+
+            if (e.Button == MouseButtons.Left)
+            {
+                _drawingColorIsBlack = true;
+                _isDrawingFootprint = true;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                _drawingColorIsBlack = false;
+                _isDrawingFootprint = true;
+            }
+            else
+            {
+                return;
+            }
+
+            ApplyFootprintDraw(e.X, e.Y);
+        }
+
+        private void pnlFootprintCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!_isDrawingFootprint)
+                return;
+
+            ApplyFootprintDraw(e.X, e.Y);
+        }
+
+        private void pnlFootprintCanvas_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (_isDrawingFootprint)
+            {
+                _isDrawingFootprint = false;
+            }
+          
+        }
+
+        private void ApplyFootprintDraw(int mouseX, int mouseY)
+        {
+            int x = mouseX / GbaConstants.FootprintCanvasScale;
+            int y = mouseY / GbaConstants.FootprintCanvasScale;
+
+            if (x < 0 || x >= GbaConstants.FootprintSize || y < 0 || y >= GbaConstants.FootprintSize) return;
+
+            UpdateFootprintPixel(x, y,_drawingColorIsBlack);
+            pnlFootprintCanvas.Invalidate();
+
+            Color[] palette = { Color.White, Color.Black };
+            using (var bmp = ImageManager.DecodeFootprint(_currentFootprintData, palette))
+            {
+                var oldImage = picFootprint.Image;
+                picFootprint.Image = ImageManager.ScalePixelArt(bmp, GbaConstants.DefaultScale);
+                oldImage?.Dispose();
+            }
+
+            _uiStateManager.UpdateBinary(pnlFootprintCanvas, _currentFootprintData);
+        }
+
+        private void UpdateFootprintPixel(int x, int y, bool isBlack)
+        {
+            int blockX = x / GbaConstants.FootprintTileSize;
+            int blockY = y / GbaConstants.FootprintTileSize;
+            int blockIndex = blockY * GbaConstants.FootprintBlockDim + blockX;
+
+            int localX = x % GbaConstants.FootprintTileSize;
+            int localY = y % GbaConstants.FootprintTileSize;
+
+            int byteIndex = blockIndex * GbaConstants.FootprintTileSize + localY;
+
+            if (isBlack)
+            {
+                _currentFootprintData[byteIndex] = (byte)(_currentFootprintData[byteIndex] | (1 << localX));
+            }
+            else
+            {
+                _currentFootprintData[byteIndex] = (byte)(_currentFootprintData[byteIndex] & ~(1 << localX));
+            }
+        }
+
+        private void btnFootprintImport_Click(object sender, EventArgs e)
+        {
+            if (!ControlHelper.ValidateAndFormatInputTextBox(txtFootprintImportAddr, out uint? targetAddress)) return;
+
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Filter = GbaConstants.ImageImportFilter;
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    using (var bmp = new Bitmap(ofd.FileName))
+                    {
+                        if (!ImageManager.ExtractFootprint(bmp, out byte[] footprintData)) return;
+
+                        _reservationManager.SetReservation(txtFootprintImgAddr, (uint)targetAddress, footprintData);
+                        DisplayFootprint();
+                    }
+                }
+            }
+        }
+
+        private void btnFootprintExport_Click(object sender, EventArgs e)
+        {
+            if (_currentFootprintData == null) return;
+
+            using (var bmp = ImageManager.ConvertFootprintToBitmap(_currentFootprintData))
+            {
+                if (bmp == null) return;
+
+                using (var sfd = new SaveFileDialog())
+                {
+                    sfd.Filter = GbaConstants.ImageExportFilter;
+                    sfd.FileName = $"pokemon_footprint_{(int)nudSpecies.Value:D4}";
+
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        ImageManager.ExportIndexedImage(bmp, sfd.FileName);
+                    }
+                }
+            }
+        }
 
 
 
@@ -703,6 +912,7 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveCurrentPokemonName(idx);
             SaveCurrentSprites(idx);
             SaveCurrentIcon(idx);
+            SaveCurrentFootprint(idx);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -784,6 +994,26 @@ namespace PochiPochiEditorGabu._Pokemon
             DataBindingHelper.BindControlsToObject(this, _iconPalIdxManager.Working[idx]);
             _iconImgManager.Save(idx);
             _iconPalIdxManager.Save(idx);
+        }
+
+        private void SaveCurrentFootprint(int idx)
+        {
+            if (!ControlHelper.TryParseAddress(txtFootprintImgAddr.Text, out uint imageAddress)) return;
+
+            var res = _reservationManager.GetReservation(txtFootprintImgAddr);
+            if (res != null && res.Data != null)
+            {
+                Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                _reservationManager.ClearReservation(txtFootprintImgAddr);
+            }
+
+            if (_uiStateManager.HasBinaryChanges(pnlFootprintCanvas) && _currentFootprintData != null)
+            {
+                Array.Copy(_currentFootprintData, 0, _romData, (int)imageAddress, GbaConstants.FootprintDataSize);
+            }
+
+            DataBindingHelper.BindControlsToObject(this, _footprintImgManager.Working[idx]);
+            _footprintImgManager.Save(idx);
         }
     }
 }

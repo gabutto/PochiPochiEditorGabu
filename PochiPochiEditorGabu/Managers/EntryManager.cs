@@ -139,6 +139,26 @@ namespace PochiPochiEditorGabu.Managers
         public byte _Padding2;
     }
 
+    public class PokemonFootPrintImageEntry
+    {
+        public uint pFootprintImgAddr;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -35,7 +35,7 @@ namespace PochiPochiEditorGabu.Managers
             {
                 if (_initialBinaryValues.ContainsKey(key)) continue;
 
-                byte[] dataCopy = data.ToArray();
+                byte[] dataCopy = data?.ToArray();
                 _initialBinaryValues.Add(key, dataCopy);
                 _currentBinaryValues.Add(key, dataCopy);
             }

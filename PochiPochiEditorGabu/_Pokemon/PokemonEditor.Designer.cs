@@ -41,6 +41,8 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpPokemonRename = new System.Windows.Forms.GroupBox();
             this.txtPokemonRename = new System.Windows.Forms.TextBox();
             this.grpBattleMusic = new System.Windows.Forms.GroupBox();
+            this.txtBattleMusicHex = new System.Windows.Forms.TextBox();
+            this.lblBattleMusicHex = new System.Windows.Forms.Label();
             this.nudBattleMusic = new System.Windows.Forms.NumericUpDown();
             this.lblBattleMusic = new System.Windows.Forms.Label();
             this.tabControlMain = new System.Windows.Forms.TabControl();
@@ -50,7 +52,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.btnFootprintImport = new System.Windows.Forms.Button();
             this.txtFootprintImportAddr = new System.Windows.Forms.TextBox();
             this.picFootprint = new System.Windows.Forms.PictureBox();
-            this.picFootprintCanvas = new System.Windows.Forms.PictureBox();
             this.txtFootprintImgAddr = new System.Windows.Forms.TextBox();
             this.lblFootprintImgAddr = new System.Windows.Forms.Label();
             this.grpIcon = new System.Windows.Forms.GroupBox();
@@ -87,9 +88,8 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageLearnsets = new System.Windows.Forms.TabPage();
             this.tabPagePokedex = new System.Windows.Forms.TabPage();
             this.tabPageCries = new System.Windows.Forms.TabPage();
-            this.txtBattleMusicHex = new System.Windows.Forms.TextBox();
-            this.lblBattleMusicHex = new System.Windows.Forms.Label();
             this.tabPageMusic = new System.Windows.Forms.TabPage();
+            this.pnlFootprintCanvas = new System.Windows.Forms.Panel();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -100,7 +100,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageSprites.SuspendLayout();
             this.grpFootprint.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picFootprint)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picFootprintCanvas)).BeginInit();
             this.grpIcon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picIconAnimated)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picIcon)).BeginInit();
@@ -251,6 +250,25 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpBattleMusic.TabStop = false;
             this.grpBattleMusic.Text = "野生戦BGMを変更";
             // 
+            // txtBattleMusicHex
+            // 
+            this.txtBattleMusicHex.Location = new System.Drawing.Point(100, 48);
+            this.txtBattleMusicHex.Margin = new System.Windows.Forms.Padding(0);
+            this.txtBattleMusicHex.Name = "txtBattleMusicHex";
+            this.txtBattleMusicHex.ReadOnly = true;
+            this.txtBattleMusicHex.Size = new System.Drawing.Size(56, 19);
+            this.txtBattleMusicHex.TabIndex = 6;
+            // 
+            // lblBattleMusicHex
+            // 
+            this.lblBattleMusicHex.AutoSize = true;
+            this.lblBattleMusicHex.Location = new System.Drawing.Point(20, 52);
+            this.lblBattleMusicHex.Margin = new System.Windows.Forms.Padding(0);
+            this.lblBattleMusicHex.Name = "lblBattleMusicHex";
+            this.lblBattleMusicHex.Size = new System.Drawing.Size(55, 12);
+            this.lblBattleMusicHex.TabIndex = 5;
+            this.lblBattleMusicHex.Text = "（16進数）:";
+            // 
             // nudBattleMusic
             // 
             this.nudBattleMusic.Location = new System.Drawing.Point(100, 24);
@@ -306,11 +324,11 @@ namespace PochiPochiEditorGabu._Pokemon
             // 
             // grpFootprint
             // 
+            this.grpFootprint.Controls.Add(this.pnlFootprintCanvas);
             this.grpFootprint.Controls.Add(this.btnFootprintExport);
             this.grpFootprint.Controls.Add(this.btnFootprintImport);
             this.grpFootprint.Controls.Add(this.txtFootprintImportAddr);
             this.grpFootprint.Controls.Add(this.picFootprint);
-            this.grpFootprint.Controls.Add(this.picFootprintCanvas);
             this.grpFootprint.Controls.Add(this.txtFootprintImgAddr);
             this.grpFootprint.Controls.Add(this.lblFootprintImgAddr);
             this.grpFootprint.Location = new System.Drawing.Point(382, 16);
@@ -358,15 +376,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.picFootprint.Size = new System.Drawing.Size(32, 32);
             this.picFootprint.TabIndex = 5;
             this.picFootprint.TabStop = false;
-            // 
-            // picFootprintCanvas
-            // 
-            this.picFootprintCanvas.Location = new System.Drawing.Point(20, 60);
-            this.picFootprintCanvas.Margin = new System.Windows.Forms.Padding(0);
-            this.picFootprintCanvas.Name = "picFootprintCanvas";
-            this.picFootprintCanvas.Size = new System.Drawing.Size(256, 256);
-            this.picFootprintCanvas.TabIndex = 4;
-            this.picFootprintCanvas.TabStop = false;
             // 
             // txtFootprintImgAddr
             // 
@@ -739,25 +748,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageCries.Text = "鳴き声";
             this.tabPageCries.UseVisualStyleBackColor = true;
             // 
-            // txtBattleMusicHex
-            // 
-            this.txtBattleMusicHex.Location = new System.Drawing.Point(100, 48);
-            this.txtBattleMusicHex.Margin = new System.Windows.Forms.Padding(0);
-            this.txtBattleMusicHex.Name = "txtBattleMusicHex";
-            this.txtBattleMusicHex.ReadOnly = true;
-            this.txtBattleMusicHex.Size = new System.Drawing.Size(56, 19);
-            this.txtBattleMusicHex.TabIndex = 6;
-            // 
-            // lblBattleMusicHex
-            // 
-            this.lblBattleMusicHex.AutoSize = true;
-            this.lblBattleMusicHex.Location = new System.Drawing.Point(20, 52);
-            this.lblBattleMusicHex.Margin = new System.Windows.Forms.Padding(0);
-            this.lblBattleMusicHex.Name = "lblBattleMusicHex";
-            this.lblBattleMusicHex.Size = new System.Drawing.Size(55, 12);
-            this.lblBattleMusicHex.TabIndex = 5;
-            this.lblBattleMusicHex.Text = "（16進数）:";
-            // 
             // tabPageMusic
             // 
             this.tabPageMusic.Controls.Add(this.grpBattleMusic);
@@ -768,6 +758,14 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageMusic.TabIndex = 7;
             this.tabPageMusic.Text = "BGM";
             this.tabPageMusic.UseVisualStyleBackColor = true;
+            // 
+            // pnlFootprintCanvas
+            // 
+            this.pnlFootprintCanvas.Location = new System.Drawing.Point(20, 60);
+            this.pnlFootprintCanvas.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlFootprintCanvas.Name = "pnlFootprintCanvas";
+            this.pnlFootprintCanvas.Size = new System.Drawing.Size(256, 256);
+            this.pnlFootprintCanvas.TabIndex = 11;
             // 
             // PokemonEditor
             // 
@@ -795,7 +793,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpFootprint.ResumeLayout(false);
             this.grpFootprint.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picFootprint)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picFootprintCanvas)).EndInit();
             this.grpIcon.ResumeLayout(false);
             this.grpIcon.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picIconAnimated)).EndInit();
@@ -869,10 +866,10 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.Button btnFootprintImport;
         private System.Windows.Forms.TextBox txtFootprintImportAddr;
         private System.Windows.Forms.PictureBox picFootprint;
-        private System.Windows.Forms.PictureBox picFootprintCanvas;
         private System.Windows.Forms.TextBox txtBattleMusicHex;
         private System.Windows.Forms.Label lblBattleMusicHex;
         private System.Windows.Forms.TabPage tabPageMusic;
         private System.Windows.Forms.RadioButton rbSpriteBackImgAddr;
+        private System.Windows.Forms.Panel pnlFootprintCanvas;
     }
 }

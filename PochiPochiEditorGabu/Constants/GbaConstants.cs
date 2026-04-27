@@ -41,6 +41,7 @@
         public const int FootprintBlockCount = 4;
         public const int FootprintBlockDim = 2;
         public const int FootprintTileSize = 8;
+        public const int FootprintCanvasScale = 16;
 
         public const int BattleAllyX = 40;
         public const int BattleAllyY = 48;
