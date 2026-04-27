@@ -233,5 +233,20 @@ namespace PochiPochiEditorGabu.Helpers
         {
             txt.Enter += (sender, e) => rb.Checked = true;
         }
+
+        public static void SetupComboBoxItems(ComboBox cmb, int defaultIndex, params string[] items)
+        {
+            cmb.BeginUpdate();
+            try
+            {
+                cmb.Items.Clear();
+                cmb.Items.AddRange(items);
+                cmb.SelectedIndex = defaultIndex;
+            }
+            finally
+            {
+                cmb.EndUpdate();
+            }
+        }
     }
 }

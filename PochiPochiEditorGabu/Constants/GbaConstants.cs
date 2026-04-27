@@ -41,6 +41,23 @@
         public const int FootprintBlockDim = 2;
         public const int FootprintTileSize = 8;
 
+        public const int BattleAllyX = 40;
+        public const int BattleAllyY = 48;
+        public const int BattleEnemyX = 144;
+        public const int BattleEnemyY = 8;
+        public const int BattleEnemyShadowX = 160;
+        public const int BattleEnemyShadowY = 65;
+        public const int BattleAllyBubbleX = 56;
+        public const int BattleAllyBubbleY = 72;
+        public const int BattleEnemyBubbleX = 160;
+        public const int BattleEnemyBubbleY = 24;
+        public const int BattleBubbleMultiplier = 4;
+
+        public const int ItemUseAnimPokeX = 88;
+        public const int ItemUseAnimPokeY = 40;
+        public const int ItemUseAnimItemX = 76;
+        public const int ItemUseAnimItemY = 24;
+
         public const int DefaultScale = 2;
         public const string RomFileFilter = "Romファイル|*.gba";
         public const string RomFileTitle = "Romを選択";

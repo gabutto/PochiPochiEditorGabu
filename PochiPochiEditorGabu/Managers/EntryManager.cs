@@ -81,6 +81,46 @@ namespace PochiPochiEditorGabu.Managers
         }
     }
 
+    public class PokemonNameeEntry
+    {
+        [DynamicString("PokemonNameEntryLength")]
+        public string _PokemonName = string.Empty;
+    }
+
+    public class PokemonSpriteFrontImageEntry
+    {
+        public uint pSpriteFrontImgAddr;
+        public ushort _DecompressedSize;
+        public byte _Index;
+        public byte _Padding1;
+    }
+
+    public class PokemonSpriteBackImageEntry
+    {
+        public uint pSpriteBackImgAddr;
+        public ushort _DecompressedSize;
+        public byte _Index;
+        public byte _Padding1;
+    }
+
+    public class PokemonSpriteNormalPaletteEntry
+    {
+        public uint pSpriteNormalPalAddr;
+        public byte _Index;
+        public byte _Padding1;
+        public byte _Padding2;
+        public byte _Padding3;
+    }
+
+    public class PokemonSpriteShinyPaletteEntry
+    {
+        public uint pSpriteShinyPalAddr;
+        public byte _Index;
+        public byte _Padding1;
+        public byte _Padding2;
+        public byte _Padding3;
+    }
+
 
 
 
@@ -147,6 +187,6 @@ namespace PochiPochiEditorGabu.Managers
 
     public class TrainerSpriteAnimationPointerEntry
     {
-        public uint pAnimPointerAddr;
+        public uint pAnimPtrAddr;
     }
 }

@@ -202,32 +202,6 @@ namespace PochiPochiEditorGabu.FileReaders
             return result.ToArray();
         }
 
-        public static void WriteToRom(
-            byte[] romData, 
-            uint address, 
-            byte[] binaryData, 
-            bool align = false, 
-            byte alignPaddingByte = GbaConstants.PaddingByte)
-        {
-            Array.Copy(binaryData, 0, romData, address, binaryData.Length);
-
-            if (align)
-            {
-                uint endAddress = address + (uint)binaryData.Length;
-                uint remainder = endAddress % GbaConstants.PtrSize;
-
-                if (remainder != 0)
-                {
-                    uint paddingCount = GbaConstants.PtrSize - remainder;
-                    for (uint i = 0; i < paddingCount; i++)
-                    {
-                        uint padAddress = endAddress + i;
-                        romData[padAddress] = alignPaddingByte;
-                    }
-                }
-            }
-        }
-
         private class ByteTrieNode
         {
             public Dictionary<byte, ByteTrieNode> Children { get; } = new Dictionary<byte, ByteTrieNode>();
