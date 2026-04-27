@@ -420,19 +420,18 @@ namespace PochiPochiEditorGabu.Managers
             return scaledBmp;
         }
 
-        public static Bitmap[] CreatePokemonIconFrames(byte[] imageData, Color[] palette, bool extractTwoFrames, bool showBackColor)
+        public static Bitmap[] CreatePokemonIconFrames(byte[] imageData, Color[] palette, bool showBackColor)
         {
-            int framesCount = extractTwoFrames ? 2 : 1;
-            Bitmap[] result = new Bitmap[framesCount];
+            Bitmap[] frames = new Bitmap[GbaConstants.IconFrameCounts];
 
-            for (int i = 0; i < framesCount; i++)
+            for (int i = 0; i < GbaConstants.IconFrameCounts; i++)
             {
                 byte[] frameData = new byte[GbaConstants.IconBytesPerFrame];
                 Array.Copy(imageData, i * GbaConstants.IconBytesPerFrame, frameData, 0, GbaConstants.IconBytesPerFrame);
-                result[i] = CreateSprite(frameData, palette, GbaConstants.IconFrameSize, GbaConstants.IconFrameSize, showBackColor);
+                frames[i] = CreateSprite(frameData, palette, GbaConstants.IconFrameSize, GbaConstants.IconFrameSize, showBackColor);
             }
 
-            return result;
+            return frames;
         }
 
         public class PokemonIconAnimator

@@ -121,7 +121,23 @@ namespace PochiPochiEditorGabu.Managers
         public byte _Padding3;
     }
 
+    public class PokemonIconImageEntry
+    {
+        public uint pIconImgAddr;
+    }
 
+    public class PokemonIconPaletteIndexEntry
+    {
+        public byte IconPalIdx;
+    }
+
+    public class PokemonIconPaletteAddressEntry
+    {
+        public uint _IconPaletteAddr;
+        public ushort _Unknown1;
+        public byte _Padding1;
+        public byte _Padding2;
+    }
 
 
 

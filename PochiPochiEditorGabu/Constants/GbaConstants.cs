@@ -33,6 +33,7 @@
         public const int SpriteSize = 64;
 
         public const int IconFrameSize = 32;
+        public const int IconFrameCounts = 2;
         public const int IconBytesPerFrame = (IconFrameSize * IconFrameSize) / PixelsPerByte4Bpp;
 
         public const int FootprintSize = 16;

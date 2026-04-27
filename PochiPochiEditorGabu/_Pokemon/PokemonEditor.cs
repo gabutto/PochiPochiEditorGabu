@@ -24,12 +24,16 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonSpriteBackImageEntry> _spriteBackImgManager;
         private EntryManager<PokemonSpriteNormalPaletteEntry> _spriteNormalPalManager;
         private EntryManager<PokemonSpriteShinyPaletteEntry> _spriteShinyPalManager;
+        private EntryManager<PokemonIconImageEntry> _iconImgManager;
+        private EntryManager<PokemonIconPaletteIndexEntry> _iconPalIdxManager;
+        private EntryManager<PokemonIconPaletteAddressEntry> _iconPalAddrManager;
 
         private bool _isUpdatingUI;
         private int _currentPokemonIdx = 0;
 
         private Bitmap _battleAllyImage = null;
         private Bitmap _battleEnemyImage = null;
+        private ImageManager.PokemonIconAnimator iconAnimator;
 
         public PokemonEditor(
             byte[] romData, 
@@ -62,17 +66,29 @@ namespace PochiPochiEditorGabu._Pokemon
 
             uint? spriteFrontImgTableAddr = _config.GetAddr("PokemonSpriteFrontImageTableAddress");
             uint? spriteBackImgTableAddr = _config.GetAddr("PokemonSpriteBackImageTableAddress");
-            uint? SpriteNormalPalTableAddr = _config.GetAddr("PokemonSpriteNormalPaletteTableAddress");
-            uint? SpriteShinyPalTableAddr = _config.GetAddr("PokemonSpriteShinyPaletteTableAddress");
+            uint? spriteNormalPalTableAddr = _config.GetAddr("PokemonSpriteNormalPaletteTableAddress");
+            uint? spriteShinyPalTableAddr = _config.GetAddr("PokemonSpriteShinyPaletteTableAddress");
             int spriteCount = _config.GetInt("PokemonSpriteCount");
             _spriteFrontImgManager = new EntryManager<PokemonSpriteFrontImageEntry>(_romData, _tblReader);
             _spriteFrontImgManager.Load(spriteFrontImgTableAddr, spriteCount);
             _spriteBackImgManager = new EntryManager<PokemonSpriteBackImageEntry>(_romData, _tblReader);
             _spriteBackImgManager.Load(spriteBackImgTableAddr, spriteCount);
             _spriteNormalPalManager = new EntryManager<PokemonSpriteNormalPaletteEntry>(_romData, _tblReader);
-            _spriteNormalPalManager.Load(SpriteNormalPalTableAddr, spriteCount);
+            _spriteNormalPalManager.Load(spriteNormalPalTableAddr, spriteCount);
             _spriteShinyPalManager = new EntryManager<PokemonSpriteShinyPaletteEntry>(_romData, _tblReader);
-            _spriteShinyPalManager.Load(SpriteShinyPalTableAddr, spriteCount);
+            _spriteShinyPalManager.Load(spriteShinyPalTableAddr, spriteCount);
+
+            uint? iconImgTableAddr = _config.GetAddr("PokemonIconImageTableAddress");
+            uint? iconPalIdxTableAddr = _config.GetAddr("PokemonIconPaletteIndexTableAddress");
+            int iconCount = _config.GetInt("PokemonIconCount");
+            uint? iconPalAddrTableAddr = _config.GetAddr("PokemonIconPaletteAddressTableAddress");
+            int iconPalAddrCount = _config.GetInt("PokemonIconPaletteAddressCount");
+            _iconImgManager = new EntryManager<PokemonIconImageEntry>(_romData, _tblReader);
+            _iconImgManager.Load(iconImgTableAddr, iconCount);
+            _iconPalIdxManager = new EntryManager<PokemonIconPaletteIndexEntry>(_romData, _tblReader);
+            _iconPalIdxManager.Load(iconPalIdxTableAddr, iconCount);
+            _iconPalAddrManager = new EntryManager<PokemonIconPaletteAddressEntry>(_romData, _tblReader);
+            _iconPalAddrManager.Load(iconPalAddrTableAddr, iconPalAddrCount);
         }
 
         private void InitializeEventHandlers()
@@ -92,6 +108,11 @@ namespace PochiPochiEditorGabu._Pokemon
             }
             btnSpriteImport.Click += btnSpriteImport_Click;
             btnSpriteExport.Click += btnSpriteExport_Click;
+
+            txtIconImgAddr.TextChanged += txtIconImgAddr_TextChanged;
+            cmbIconPalIdx.SelectedIndexChanged += cmbIconPalIdx_SelectedIndexChanged;
+            btnIconImport.Click += btnIconImport_Click;
+            btnIconExport.Click += btnIconExport_Click;
         }
 
         private void InitializeControls()
@@ -108,12 +129,21 @@ namespace PochiPochiEditorGabu._Pokemon
                 0,
                 "正面・通常", "背面・通常", "正面・色違い", "背面・色違い");
 
+            // cmbIconPalIdx
+            int iconPaletteAddressCount = _config.GetInt("PokemonIconPaletteAddressCount");
+            cmbIconPalIdx.Items.Clear();
+            for (int i = 0; i < iconPaletteAddressCount; i++)
+            {
+                cmbIconPalIdx.Items.Add($"パレット {i}");
+            }
+            cmbIconPalIdx.SelectedIndex = 0;
+
             ControlHelper.AttachAddressAutoFormat(
-                txtSpriteFrontImgAddr, txtSpriteBackImgAddr,
-                txtSpriteNormalPalAddr, txtSpriteShinyPalAddr);
-            ControlHelper.AttachExternalBorder
-                (picSpriteFrontNormal, picSpriteBackNormal,
-                picSpriteFrontShiny, picSpriteBackShiny);
+                txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
+                txtIconImgAddr);
+            ControlHelper.AttachExternalBorder(
+                picSpriteFrontNormal, picSpriteBackNormal, picSpriteFrontShiny, picSpriteBackShiny,
+                picIconPal, picIcon, picIconAnimated);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
@@ -126,7 +156,8 @@ namespace PochiPochiEditorGabu._Pokemon
             btnSave.Enabled = false;
             _uiStateManager.AddControls(
                 txtPokemonRename,
-                txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr);
+                txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
+                txtIconImgAddr, cmbIconPalIdx);
         }
 
         private void LoadAllDataToUI(int idx)
@@ -137,6 +168,7 @@ namespace PochiPochiEditorGabu._Pokemon
             _currentPokemonIdx = idx;
             LoadPokemonNameToUI(idx);
             LoadSpritesToUI(idx);
+            LoadIconDataToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -465,6 +497,187 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
+        private void LoadIconDataToUI(int idx)
+        {
+            DataBindingHelper.BindObjectToControls(this, _iconImgManager.Working[idx]);
+            DataBindingHelper.BindObjectToControls(this, _iconPalIdxManager.Working[idx]);
+
+            DisplayIconPalette();
+            DisplayIcon();
+        }
+
+        private void txtIconImgAddr_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            DisplayIcon();
+        }
+
+        private void cmbIconPalIdx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            DisplayIconPalette();
+            DisplayIcon();
+        }
+
+        private void DisplayIconPalette()
+        {
+            int paletteIndex = cmbIconPalIdx.SelectedIndex;
+            var entry = _iconPalAddrManager.Working[paletteIndex];
+            uint palettePtr = entry._IconPaletteAddr;
+
+            if (palettePtr == 0) return;
+
+            uint paletteAddress = palettePtr - GbaConstants.BaseAddr;
+            Color[] colors = ImageManager.DecompressPalette(_romData, paletteAddress, false);
+
+            var bmp = new Bitmap(picIconPal.Width, picIconPal.Height);
+            int size = 10;
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                for (int i = 0; i < GbaConstants.PalColorCount; i++)
+                {
+                    if (i < colors.Length)
+                    {
+                        int x = (i % (GbaConstants.PalColorCount / 2)) * size;
+                        int y = (i / (GbaConstants.PalColorCount / 2)) * size;
+                        using (var b = new SolidBrush(colors[i]))
+                        {
+                            g.FillRectangle(b, x, y, size, size);
+                        }
+                    }
+                }
+            }
+
+            picIconPal.Image?.Dispose();
+            picIconPal.Image = bmp;
+            picIconPal.Refresh();
+        }
+
+        private void DisplayIcon()
+        {
+            iconAnimator?.StopAnimation();
+            picIcon.Image?.Dispose();
+            picIcon.Image = null;
+
+            if (!GetCurrentIconData(out byte[] imageData, out Color[] colors)) return;
+
+            Bitmap[] frames = ImageManager.CreatePokemonIconFrames(imageData, colors, true);
+
+            if (frames != null)
+            {
+                // preview
+                var fullIcon = new Bitmap(GbaConstants.IconFrameSize, GbaConstants.IconFrameSize * GbaConstants.IconFrameCounts);
+                using (Graphics g = Graphics.FromImage(fullIcon))
+                {
+                    g.DrawImage(frames[0], 0, 0);
+                    g.DrawImage(frames[1], 0, GbaConstants.IconFrameSize);
+                }
+                picIcon.Image = fullIcon;
+
+                // animation
+                Bitmap[] scaledFrames = new Bitmap[GbaConstants.IconFrameCounts];
+                scaledFrames[0] = ImageManager.ScalePixelArt(frames[0]);
+                scaledFrames[1] = ImageManager.ScalePixelArt(frames[1]);
+
+                iconAnimator = new ImageManager.PokemonIconAnimator(picIconAnimated);
+                iconAnimator.SetFrames(scaledFrames);
+                iconAnimator.StartAnimation();
+            }
+        }
+
+        private bool GetCurrentIconData(out byte[] imageData, out Color[] colors)
+        {
+            imageData = null;
+            colors = null;
+
+            if (!ControlHelper.TryParseAddress(txtIconImgAddr.Text, out uint imageAddress))
+            {
+                return false;
+            }
+
+            // image data
+            int dataSize = GbaConstants.IconBytesPerFrame * GbaConstants.IconFrameCounts;
+            var res = _reservationManager.GetReservation(txtIconImgAddr);
+
+            if (res != null)
+            {
+                imageData = res.Data;
+            }
+            else
+            {
+                imageData = new byte[dataSize];
+                Array.Copy(_romData, imageAddress, imageData, 0, dataSize);
+            }
+
+            // palette data
+            int paletteIndex = cmbIconPalIdx.SelectedIndex;
+            var entry = _iconPalAddrManager.Working[paletteIndex];
+            uint palettePtr = entry._IconPaletteAddr;
+
+            if (palettePtr != 0)
+            {
+                uint paletteAddress = palettePtr - GbaConstants.BaseAddr;
+                colors = ImageManager.DecompressPalette(_romData, paletteAddress, false);
+            }
+
+            return imageData != null && colors != null;
+        }
+
+        private void btnIconImport_Click(object sender, EventArgs e)
+        {
+            if (!ControlHelper.ValidateAndFormatInputTextBox(txtIconImportAddr, out uint? targetAddress)) return;
+
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Filter = GbaConstants.ImageImportFilter;
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    using (var bmp = new Bitmap(ofd.FileName))
+                    {
+                        if (!ImageManager.ExtractImageAndPalette(
+                            bmp, 
+                            GbaConstants.IconFrameSize,
+                            GbaConstants.IconFrameSize * GbaConstants.IconFrameCounts,
+                            out byte[] imageData, 
+                            out Color[] palette))
+                            return;
+
+                        _reservationManager.SetReservation(txtIconImgAddr, (uint)targetAddress, imageData);
+                        DisplayIcon();
+                    }
+                }
+            }
+        }
+
+
+        private void btnIconExport_Click(object sender, EventArgs e)
+        {
+            if (!GetCurrentIconData(out byte[] imageData, out Color[] colors)) return;
+
+            using (var exportBmp = ImageManager.CreateSprite(
+                imageData, 
+                colors,
+                GbaConstants.IconFrameSize,
+                GbaConstants.IconFrameSize * GbaConstants.IconFrameCounts, 
+                true))
+            {
+                using (var sfd = new SaveFileDialog())
+                {
+                    sfd.Filter = GbaConstants.ImageExportFilter;
+                    sfd.FileName = $"pokemon_icon_{(int)nudSpecies.Value:D4}";
+
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        ImageManager.ExportIndexedImage(exportBmp, sfd.FileName);
+                    }
+                }
+            }
+        }
+
+
+
+
+
 
 
 
@@ -489,6 +702,7 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             SaveCurrentPokemonName(idx);
             SaveCurrentSprites(idx);
+            SaveCurrentIcon(idx);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -555,6 +769,21 @@ namespace PochiPochiEditorGabu._Pokemon
             _spriteBackImgManager.Save(idx);
             _spriteNormalPalManager.Save(idx);
             _spriteShinyPalManager.Save(idx);
+        }
+
+        private void SaveCurrentIcon(int idx)
+        {
+            var res = _reservationManager.GetReservation(txtIconImgAddr);
+            if (res != null && res.Data != null)
+            {
+                Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                _reservationManager.ClearReservation(txtIconImgAddr);
+            }
+
+            DataBindingHelper.BindControlsToObject(this, _iconImgManager.Working[idx]);
+            DataBindingHelper.BindControlsToObject(this, _iconPalIdxManager.Working[idx]);
+            _iconImgManager.Save(idx);
+            _iconPalIdxManager.Save(idx);
         }
     }
 }
