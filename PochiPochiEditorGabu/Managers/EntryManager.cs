@@ -189,12 +189,41 @@ namespace PochiPochiEditorGabu.Managers
 
 
 
+    public class ItemSpriteEntry
+    {
+        public uint pSpriteImgAddr;
+        public uint pSpritePalAddr;
+    }
 
+    public class ItemDataEntry
+    {
+        [DynamicString("TrainerClassNameEntryLength")]
+        public string _ItemName = string.Empty;
+        public ushort Idx;
+        public ushort Price;
+        public byte HoldEffectIdx;
+        public byte EffectValue;
+        public uint pDescAddr;
+        public byte CanHold;
+        public byte UnknownValue;
+        public byte PocketIdx;
+        public byte FieldUseType;
+        public uint pFieldUseAddr;
+        public byte BattleUseType;
+        public byte _Padding1;
+        public byte _Padding2;
+        public byte _Padding3;
+        public uint pBattleUseAddr;
+        public byte SpecialIdx;
+        public byte _Padding4;
+        public byte _Padding5;
+        public byte _Padding6;
+    }
 
-
-
-
-
+    public class ItemEffectEntry
+    {
+        public uint pItemEffectAddr;
+    }
 
     public class TrainerClassNameEntry
     {

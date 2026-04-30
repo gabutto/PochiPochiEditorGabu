@@ -48,6 +48,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageSprites = new System.Windows.Forms.TabPage();
             this.grpFootprint = new System.Windows.Forms.GroupBox();
+            this.pnlFootprintCanvas = new System.Windows.Forms.Panel();
             this.btnFootprintExport = new System.Windows.Forms.Button();
             this.btnFootprintImport = new System.Windows.Forms.Button();
             this.txtFootprintImportAddr = new System.Windows.Forms.TextBox();
@@ -89,7 +90,38 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPagePokedex = new System.Windows.Forms.TabPage();
             this.tabPageCries = new System.Windows.Forms.TabPage();
             this.tabPageMusic = new System.Windows.Forms.TabPage();
-            this.pnlFootprintCanvas = new System.Windows.Forms.Panel();
+            this.grpCoordBattle = new System.Windows.Forms.GroupBox();
+            this.picCoordBattleDisplay = new System.Windows.Forms.PictureBox();
+            this.grpCoordBattleAlly = new System.Windows.Forms.GroupBox();
+            this.lblCoordBattleAllyBubble = new System.Windows.Forms.Label();
+            this.lblCoordBattleAllyPokemon = new System.Windows.Forms.Label();
+            this.nudCoordBattleAllyBubbleX = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleAllyBubbleY = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleAllyPokemon = new System.Windows.Forms.NumericUpDown();
+            this.grpCoordBattleEnemy = new System.Windows.Forms.GroupBox();
+            this.nudCoordBattleEnemyBubbleY = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleEnemyPokemon = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleEnemyBubbleX = new System.Windows.Forms.NumericUpDown();
+            this.lblCoordBattleEnemyPokemon = new System.Windows.Forms.Label();
+            this.lblCoordBattleEnemyBubble = new System.Windows.Forms.Label();
+            this.lblCoordBattleEnemyShadow = new System.Windows.Forms.Label();
+            this.nudCoordBattleEnemyShadowY = new System.Windows.Forms.NumericUpDown();
+            this.chkShowBattleBubble = new System.Windows.Forms.CheckBox();
+            this.grpCoordItemUse = new System.Windows.Forms.GroupBox();
+            this.picCoordItemUse1 = new System.Windows.Forms.PictureBox();
+            this.lblCoordItemUse1X = new System.Windows.Forms.Label();
+            this.nudCoordItemUse1X = new System.Windows.Forms.NumericUpDown();
+            this.lblCoordItemUse1Y = new System.Windows.Forms.Label();
+            this.nudCoordItemUse1Y = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordItemUse2Y = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordItemUse2X = new System.Windows.Forms.NumericUpDown();
+            this.lblCoordItemUse2Y = new System.Windows.Forms.Label();
+            this.lblCoordItemUse2X = new System.Windows.Forms.Label();
+            this.picCoordItemUse2 = new System.Windows.Forms.PictureBox();
+            this.lblCoordItemUse2Zoom = new System.Windows.Forms.Label();
+            this.nudCoordItemUse2Zoom = new System.Windows.Forms.NumericUpDown();
+            this.rbCoordItemUse2Normal = new System.Windows.Forms.RadioButton();
+            this.rbCoordItemUse2Zoom = new System.Windows.Forms.RadioButton();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -109,7 +141,27 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteBackNormal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteFrontShiny)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteFrontNormal)).BeginInit();
+            this.tabPageCoordinates.SuspendLayout();
             this.tabPageMusic.SuspendLayout();
+            this.grpCoordBattle.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordBattleDisplay)).BeginInit();
+            this.grpCoordBattleAlly.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyPokemon)).BeginInit();
+            this.grpCoordBattleEnemy.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyPokemon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyShadowY)).BeginInit();
+            this.grpCoordItemUse.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1X)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1Y)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Y)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2X)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Zoom)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSave
@@ -306,7 +358,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabControlMain.Margin = new System.Windows.Forms.Padding(0);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(712, 486);
+            this.tabControlMain.Size = new System.Drawing.Size(696, 506);
             this.tabControlMain.TabIndex = 4;
             // 
             // tabPageSprites
@@ -339,6 +391,14 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpFootprint.TabIndex = 2;
             this.grpFootprint.TabStop = false;
             this.grpFootprint.Text = "足跡";
+            // 
+            // pnlFootprintCanvas
+            // 
+            this.pnlFootprintCanvas.Location = new System.Drawing.Point(20, 60);
+            this.pnlFootprintCanvas.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlFootprintCanvas.Name = "pnlFootprintCanvas";
+            this.pnlFootprintCanvas.Size = new System.Drawing.Size(256, 256);
+            this.pnlFootprintCanvas.TabIndex = 11;
             // 
             // btnFootprintExport
             // 
@@ -690,10 +750,12 @@ namespace PochiPochiEditorGabu._Pokemon
             // 
             // tabPageCoordinates
             // 
+            this.tabPageCoordinates.Controls.Add(this.grpCoordItemUse);
+            this.tabPageCoordinates.Controls.Add(this.grpCoordBattle);
             this.tabPageCoordinates.Location = new System.Drawing.Point(4, 22);
             this.tabPageCoordinates.Margin = new System.Windows.Forms.Padding(0);
             this.tabPageCoordinates.Name = "tabPageCoordinates";
-            this.tabPageCoordinates.Size = new System.Drawing.Size(704, 460);
+            this.tabPageCoordinates.Size = new System.Drawing.Size(688, 480);
             this.tabPageCoordinates.TabIndex = 1;
             this.tabPageCoordinates.Text = "表示位置";
             this.tabPageCoordinates.UseVisualStyleBackColor = true;
@@ -759,19 +821,420 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageMusic.Text = "BGM";
             this.tabPageMusic.UseVisualStyleBackColor = true;
             // 
-            // pnlFootprintCanvas
+            // grpCoordBattle
             // 
-            this.pnlFootprintCanvas.Location = new System.Drawing.Point(20, 60);
-            this.pnlFootprintCanvas.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlFootprintCanvas.Name = "pnlFootprintCanvas";
-            this.pnlFootprintCanvas.Size = new System.Drawing.Size(256, 256);
-            this.pnlFootprintCanvas.TabIndex = 11;
+            this.grpCoordBattle.Controls.Add(this.chkShowBattleBubble);
+            this.grpCoordBattle.Controls.Add(this.grpCoordBattleEnemy);
+            this.grpCoordBattle.Controls.Add(this.grpCoordBattleAlly);
+            this.grpCoordBattle.Controls.Add(this.picCoordBattleDisplay);
+            this.grpCoordBattle.Location = new System.Drawing.Point(20, 16);
+            this.grpCoordBattle.Margin = new System.Windows.Forms.Padding(0);
+            this.grpCoordBattle.Name = "grpCoordBattle";
+            this.grpCoordBattle.Padding = new System.Windows.Forms.Padding(0);
+            this.grpCoordBattle.Size = new System.Drawing.Size(282, 444);
+            this.grpCoordBattle.TabIndex = 0;
+            this.grpCoordBattle.TabStop = false;
+            this.grpCoordBattle.Text = "バトル時";
+            // 
+            // picCoordBattleDisplay
+            // 
+            this.picCoordBattleDisplay.Location = new System.Drawing.Point(20, 28);
+            this.picCoordBattleDisplay.Margin = new System.Windows.Forms.Padding(0);
+            this.picCoordBattleDisplay.Name = "picCoordBattleDisplay";
+            this.picCoordBattleDisplay.Size = new System.Drawing.Size(240, 160);
+            this.picCoordBattleDisplay.TabIndex = 0;
+            this.picCoordBattleDisplay.TabStop = false;
+            // 
+            // grpCoordBattleAlly
+            // 
+            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyBubbleY);
+            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyPokemon);
+            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyBubbleX);
+            this.grpCoordBattleAlly.Controls.Add(this.lblCoordBattleAllyPokemon);
+            this.grpCoordBattleAlly.Controls.Add(this.lblCoordBattleAllyBubble);
+            this.grpCoordBattleAlly.Location = new System.Drawing.Point(20, 198);
+            this.grpCoordBattleAlly.Margin = new System.Windows.Forms.Padding(0);
+            this.grpCoordBattleAlly.Name = "grpCoordBattleAlly";
+            this.grpCoordBattleAlly.Padding = new System.Windows.Forms.Padding(0);
+            this.grpCoordBattleAlly.Size = new System.Drawing.Size(240, 86);
+            this.grpCoordBattleAlly.TabIndex = 1;
+            this.grpCoordBattleAlly.TabStop = false;
+            this.grpCoordBattleAlly.Text = "味方側";
+            // 
+            // lblCoordBattleAllyBubble
+            // 
+            this.lblCoordBattleAllyBubble.AutoSize = true;
+            this.lblCoordBattleAllyBubble.Location = new System.Drawing.Point(18, 28);
+            this.lblCoordBattleAllyBubble.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordBattleAllyBubble.Name = "lblCoordBattleAllyBubble";
+            this.lblCoordBattleAllyBubble.Size = new System.Drawing.Size(89, 12);
+            this.lblCoordBattleAllyBubble.TabIndex = 0;
+            this.lblCoordBattleAllyBubble.Text = "技吹き出し座標 :";
+            // 
+            // lblCoordBattleAllyPokemon
+            // 
+            this.lblCoordBattleAllyPokemon.AutoSize = true;
+            this.lblCoordBattleAllyPokemon.Location = new System.Drawing.Point(18, 52);
+            this.lblCoordBattleAllyPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordBattleAllyPokemon.Name = "lblCoordBattleAllyPokemon";
+            this.lblCoordBattleAllyPokemon.Size = new System.Drawing.Size(79, 12);
+            this.lblCoordBattleAllyPokemon.TabIndex = 0;
+            this.lblCoordBattleAllyPokemon.Text = "ポケモンY座標 :";
+            // 
+            // nudCoordBattleAllyBubbleX
+            // 
+            this.nudCoordBattleAllyBubbleX.Location = new System.Drawing.Point(114, 25);
+            this.nudCoordBattleAllyBubbleX.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleAllyBubbleX.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.nudCoordBattleAllyBubbleX.Name = "nudCoordBattleAllyBubbleX";
+            this.nudCoordBattleAllyBubbleX.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleAllyBubbleX.TabIndex = 1;
+            // 
+            // nudCoordBattleAllyBubbleY
+            // 
+            this.nudCoordBattleAllyBubbleY.Location = new System.Drawing.Point(170, 25);
+            this.nudCoordBattleAllyBubbleY.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleAllyBubbleY.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.nudCoordBattleAllyBubbleY.Name = "nudCoordBattleAllyBubbleY";
+            this.nudCoordBattleAllyBubbleY.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleAllyBubbleY.TabIndex = 1;
+            // 
+            // nudCoordBattleAllyPokemon
+            // 
+            this.nudCoordBattleAllyPokemon.Location = new System.Drawing.Point(114, 49);
+            this.nudCoordBattleAllyPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleAllyPokemon.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+            this.nudCoordBattleAllyPokemon.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
+            this.nudCoordBattleAllyPokemon.Name = "nudCoordBattleAllyPokemon";
+            this.nudCoordBattleAllyPokemon.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleAllyPokemon.TabIndex = 1;
+            // 
+            // grpCoordBattleEnemy
+            // 
+            this.grpCoordBattleEnemy.Controls.Add(this.nudCoordBattleEnemyBubbleY);
+            this.grpCoordBattleEnemy.Controls.Add(this.nudCoordBattleEnemyShadowY);
+            this.grpCoordBattleEnemy.Controls.Add(this.nudCoordBattleEnemyPokemon);
+            this.grpCoordBattleEnemy.Controls.Add(this.nudCoordBattleEnemyBubbleX);
+            this.grpCoordBattleEnemy.Controls.Add(this.lblCoordBattleEnemyShadow);
+            this.grpCoordBattleEnemy.Controls.Add(this.lblCoordBattleEnemyPokemon);
+            this.grpCoordBattleEnemy.Controls.Add(this.lblCoordBattleEnemyBubble);
+            this.grpCoordBattleEnemy.Location = new System.Drawing.Point(20, 292);
+            this.grpCoordBattleEnemy.Margin = new System.Windows.Forms.Padding(0);
+            this.grpCoordBattleEnemy.Name = "grpCoordBattleEnemy";
+            this.grpCoordBattleEnemy.Padding = new System.Windows.Forms.Padding(0);
+            this.grpCoordBattleEnemy.Size = new System.Drawing.Size(240, 108);
+            this.grpCoordBattleEnemy.TabIndex = 2;
+            this.grpCoordBattleEnemy.TabStop = false;
+            this.grpCoordBattleEnemy.Text = "敵側";
+            // 
+            // nudCoordBattleEnemyBubbleY
+            // 
+            this.nudCoordBattleEnemyBubbleY.Location = new System.Drawing.Point(170, 25);
+            this.nudCoordBattleEnemyBubbleY.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleEnemyBubbleY.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.nudCoordBattleEnemyBubbleY.Name = "nudCoordBattleEnemyBubbleY";
+            this.nudCoordBattleEnemyBubbleY.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleEnemyBubbleY.TabIndex = 1;
+            // 
+            // nudCoordBattleEnemyPokemon
+            // 
+            this.nudCoordBattleEnemyPokemon.Location = new System.Drawing.Point(114, 49);
+            this.nudCoordBattleEnemyPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleEnemyPokemon.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+            this.nudCoordBattleEnemyPokemon.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
+            this.nudCoordBattleEnemyPokemon.Name = "nudCoordBattleEnemyPokemon";
+            this.nudCoordBattleEnemyPokemon.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleEnemyPokemon.TabIndex = 1;
+            // 
+            // nudCoordBattleEnemyBubbleX
+            // 
+            this.nudCoordBattleEnemyBubbleX.Location = new System.Drawing.Point(114, 25);
+            this.nudCoordBattleEnemyBubbleX.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleEnemyBubbleX.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.nudCoordBattleEnemyBubbleX.Name = "nudCoordBattleEnemyBubbleX";
+            this.nudCoordBattleEnemyBubbleX.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleEnemyBubbleX.TabIndex = 1;
+            // 
+            // lblCoordBattleEnemyPokemon
+            // 
+            this.lblCoordBattleEnemyPokemon.AutoSize = true;
+            this.lblCoordBattleEnemyPokemon.Location = new System.Drawing.Point(18, 52);
+            this.lblCoordBattleEnemyPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordBattleEnemyPokemon.Name = "lblCoordBattleEnemyPokemon";
+            this.lblCoordBattleEnemyPokemon.Size = new System.Drawing.Size(79, 12);
+            this.lblCoordBattleEnemyPokemon.TabIndex = 0;
+            this.lblCoordBattleEnemyPokemon.Text = "ポケモンY座標 :";
+            // 
+            // lblCoordBattleEnemyBubble
+            // 
+            this.lblCoordBattleEnemyBubble.AutoSize = true;
+            this.lblCoordBattleEnemyBubble.Location = new System.Drawing.Point(18, 28);
+            this.lblCoordBattleEnemyBubble.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordBattleEnemyBubble.Name = "lblCoordBattleEnemyBubble";
+            this.lblCoordBattleEnemyBubble.Size = new System.Drawing.Size(89, 12);
+            this.lblCoordBattleEnemyBubble.TabIndex = 0;
+            this.lblCoordBattleEnemyBubble.Text = "技吹き出し座標 :";
+            // 
+            // lblCoordBattleEnemyShadow
+            // 
+            this.lblCoordBattleEnemyShadow.AutoSize = true;
+            this.lblCoordBattleEnemyShadow.Location = new System.Drawing.Point(18, 76);
+            this.lblCoordBattleEnemyShadow.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordBattleEnemyShadow.Name = "lblCoordBattleEnemyShadow";
+            this.lblCoordBattleEnemyShadow.Size = new System.Drawing.Size(54, 12);
+            this.lblCoordBattleEnemyShadow.TabIndex = 0;
+            this.lblCoordBattleEnemyShadow.Text = "影Y座標 :";
+            // 
+            // nudCoordBattleEnemyShadowY
+            // 
+            this.nudCoordBattleEnemyShadowY.Location = new System.Drawing.Point(114, 73);
+            this.nudCoordBattleEnemyShadowY.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleEnemyShadowY.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+            this.nudCoordBattleEnemyShadowY.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
+            this.nudCoordBattleEnemyShadowY.Name = "nudCoordBattleEnemyShadowY";
+            this.nudCoordBattleEnemyShadowY.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleEnemyShadowY.TabIndex = 1;
+            // 
+            // chkShowBattleBubble
+            // 
+            this.chkShowBattleBubble.AutoSize = true;
+            this.chkShowBattleBubble.Checked = true;
+            this.chkShowBattleBubble.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowBattleBubble.Location = new System.Drawing.Point(20, 412);
+            this.chkShowBattleBubble.Margin = new System.Windows.Forms.Padding(0);
+            this.chkShowBattleBubble.Name = "chkShowBattleBubble";
+            this.chkShowBattleBubble.Size = new System.Drawing.Size(102, 16);
+            this.chkShowBattleBubble.TabIndex = 3;
+            this.chkShowBattleBubble.Text = "技吹き出し表示";
+            this.chkShowBattleBubble.UseVisualStyleBackColor = true;
+            // 
+            // grpCoordItemUse
+            // 
+            this.grpCoordItemUse.Controls.Add(this.rbCoordItemUse2Zoom);
+            this.grpCoordItemUse.Controls.Add(this.rbCoordItemUse2Normal);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2Zoom);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2Y);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2X);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2Zoom);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2Y);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2X);
+            this.grpCoordItemUse.Controls.Add(this.picCoordItemUse2);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse1Y);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse1X);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse1Y);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse1X);
+            this.grpCoordItemUse.Controls.Add(this.picCoordItemUse1);
+            this.grpCoordItemUse.Location = new System.Drawing.Point(320, 16);
+            this.grpCoordItemUse.Margin = new System.Windows.Forms.Padding(0);
+            this.grpCoordItemUse.Name = "grpCoordItemUse";
+            this.grpCoordItemUse.Padding = new System.Windows.Forms.Padding(0);
+            this.grpCoordItemUse.Size = new System.Drawing.Size(346, 424);
+            this.grpCoordItemUse.TabIndex = 1;
+            this.grpCoordItemUse.TabStop = false;
+            this.grpCoordItemUse.Text = "アイテム使用時";
+            // 
+            // picCoordItemUse1
+            // 
+            this.picCoordItemUse1.Location = new System.Drawing.Point(20, 28);
+            this.picCoordItemUse1.Margin = new System.Windows.Forms.Padding(0);
+            this.picCoordItemUse1.Name = "picCoordItemUse1";
+            this.picCoordItemUse1.Size = new System.Drawing.Size(240, 160);
+            this.picCoordItemUse1.TabIndex = 0;
+            this.picCoordItemUse1.TabStop = false;
+            // 
+            // lblCoordItemUse1X
+            // 
+            this.lblCoordItemUse1X.AutoSize = true;
+            this.lblCoordItemUse1X.Location = new System.Drawing.Point(276, 28);
+            this.lblCoordItemUse1X.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse1X.Name = "lblCoordItemUse1X";
+            this.lblCoordItemUse1X.Size = new System.Drawing.Size(42, 12);
+            this.lblCoordItemUse1X.TabIndex = 1;
+            this.lblCoordItemUse1X.Text = "X座標 :";
+            // 
+            // nudCoordItemUse1X
+            // 
+            this.nudCoordItemUse1X.Location = new System.Drawing.Point(276, 48);
+            this.nudCoordItemUse1X.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse1X.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse1X.Name = "nudCoordItemUse1X";
+            this.nudCoordItemUse1X.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse1X.TabIndex = 2;
+            // 
+            // lblCoordItemUse1Y
+            // 
+            this.lblCoordItemUse1Y.AutoSize = true;
+            this.lblCoordItemUse1Y.Location = new System.Drawing.Point(276, 84);
+            this.lblCoordItemUse1Y.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse1Y.Name = "lblCoordItemUse1Y";
+            this.lblCoordItemUse1Y.Size = new System.Drawing.Size(42, 12);
+            this.lblCoordItemUse1Y.TabIndex = 1;
+            this.lblCoordItemUse1Y.Text = "Y座標 :";
+            // 
+            // nudCoordItemUse1Y
+            // 
+            this.nudCoordItemUse1Y.Location = new System.Drawing.Point(276, 104);
+            this.nudCoordItemUse1Y.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse1Y.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse1Y.Name = "nudCoordItemUse1Y";
+            this.nudCoordItemUse1Y.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse1Y.TabIndex = 2;
+            // 
+            // nudCoordItemUse2Y
+            // 
+            this.nudCoordItemUse2Y.Location = new System.Drawing.Point(276, 296);
+            this.nudCoordItemUse2Y.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse2Y.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse2Y.Name = "nudCoordItemUse2Y";
+            this.nudCoordItemUse2Y.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse2Y.TabIndex = 6;
+            // 
+            // nudCoordItemUse2X
+            // 
+            this.nudCoordItemUse2X.Location = new System.Drawing.Point(276, 240);
+            this.nudCoordItemUse2X.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse2X.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse2X.Name = "nudCoordItemUse2X";
+            this.nudCoordItemUse2X.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse2X.TabIndex = 7;
+            // 
+            // lblCoordItemUse2Y
+            // 
+            this.lblCoordItemUse2Y.AutoSize = true;
+            this.lblCoordItemUse2Y.Location = new System.Drawing.Point(276, 276);
+            this.lblCoordItemUse2Y.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse2Y.Name = "lblCoordItemUse2Y";
+            this.lblCoordItemUse2Y.Size = new System.Drawing.Size(42, 12);
+            this.lblCoordItemUse2Y.TabIndex = 4;
+            this.lblCoordItemUse2Y.Text = "Y座標 :";
+            // 
+            // lblCoordItemUse2X
+            // 
+            this.lblCoordItemUse2X.AutoSize = true;
+            this.lblCoordItemUse2X.Location = new System.Drawing.Point(276, 220);
+            this.lblCoordItemUse2X.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse2X.Name = "lblCoordItemUse2X";
+            this.lblCoordItemUse2X.Size = new System.Drawing.Size(42, 12);
+            this.lblCoordItemUse2X.TabIndex = 5;
+            this.lblCoordItemUse2X.Text = "X座標 :";
+            // 
+            // picCoordItemUse2
+            // 
+            this.picCoordItemUse2.Location = new System.Drawing.Point(20, 220);
+            this.picCoordItemUse2.Margin = new System.Windows.Forms.Padding(0);
+            this.picCoordItemUse2.Name = "picCoordItemUse2";
+            this.picCoordItemUse2.Size = new System.Drawing.Size(240, 160);
+            this.picCoordItemUse2.TabIndex = 3;
+            this.picCoordItemUse2.TabStop = false;
+            // 
+            // lblCoordItemUse2Zoom
+            // 
+            this.lblCoordItemUse2Zoom.AutoSize = true;
+            this.lblCoordItemUse2Zoom.Location = new System.Drawing.Point(276, 332);
+            this.lblCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse2Zoom.Name = "lblCoordItemUse2Zoom";
+            this.lblCoordItemUse2Zoom.Size = new System.Drawing.Size(41, 12);
+            this.lblCoordItemUse2Zoom.TabIndex = 4;
+            this.lblCoordItemUse2Zoom.Text = "ズーム :";
+            // 
+            // nudCoordItemUse2Zoom
+            // 
+            this.nudCoordItemUse2Zoom.Location = new System.Drawing.Point(276, 352);
+            this.nudCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse2Zoom.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse2Zoom.Name = "nudCoordItemUse2Zoom";
+            this.nudCoordItemUse2Zoom.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse2Zoom.TabIndex = 6;
+            // 
+            // rbCoordItemUse2Normal
+            // 
+            this.rbCoordItemUse2Normal.AutoSize = true;
+            this.rbCoordItemUse2Normal.Checked = true;
+            this.rbCoordItemUse2Normal.Location = new System.Drawing.Point(20, 392);
+            this.rbCoordItemUse2Normal.Margin = new System.Windows.Forms.Padding(0);
+            this.rbCoordItemUse2Normal.Name = "rbCoordItemUse2Normal";
+            this.rbCoordItemUse2Normal.Size = new System.Drawing.Size(59, 16);
+            this.rbCoordItemUse2Normal.TabIndex = 8;
+            this.rbCoordItemUse2Normal.TabStop = true;
+            this.rbCoordItemUse2Normal.Text = "通常時";
+            this.rbCoordItemUse2Normal.UseVisualStyleBackColor = true;
+            // 
+            // rbCoordItemUse2Zoom
+            // 
+            this.rbCoordItemUse2Zoom.AutoSize = true;
+            this.rbCoordItemUse2Zoom.Location = new System.Drawing.Point(88, 392);
+            this.rbCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
+            this.rbCoordItemUse2Zoom.Name = "rbCoordItemUse2Zoom";
+            this.rbCoordItemUse2Zoom.Size = new System.Drawing.Size(65, 16);
+            this.rbCoordItemUse2Zoom.TabIndex = 8;
+            this.rbCoordItemUse2Zoom.Text = "ズーム時";
+            this.rbCoordItemUse2Zoom.UseVisualStyleBackColor = true;
             // 
             // PokemonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(926, 537);
+            this.ClientSize = new System.Drawing.Size(912, 555);
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.grpPokemonRename);
             this.Controls.Add(this.grpDataIndex);
@@ -804,7 +1267,31 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteBackNormal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteFrontShiny)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteFrontNormal)).EndInit();
+            this.tabPageCoordinates.ResumeLayout(false);
             this.tabPageMusic.ResumeLayout(false);
+            this.grpCoordBattle.ResumeLayout(false);
+            this.grpCoordBattle.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordBattleDisplay)).EndInit();
+            this.grpCoordBattleAlly.ResumeLayout(false);
+            this.grpCoordBattleAlly.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyPokemon)).EndInit();
+            this.grpCoordBattleEnemy.ResumeLayout(false);
+            this.grpCoordBattleEnemy.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyPokemon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyShadowY)).EndInit();
+            this.grpCoordItemUse.ResumeLayout(false);
+            this.grpCoordItemUse.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1X)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1Y)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Y)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2X)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Zoom)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -871,5 +1358,37 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.TabPage tabPageMusic;
         private System.Windows.Forms.RadioButton rbSpriteBackImgAddr;
         private System.Windows.Forms.Panel pnlFootprintCanvas;
+        private System.Windows.Forms.GroupBox grpCoordBattle;
+        private System.Windows.Forms.GroupBox grpCoordBattleAlly;
+        private System.Windows.Forms.NumericUpDown nudCoordBattleAllyBubbleY;
+        private System.Windows.Forms.NumericUpDown nudCoordBattleAllyPokemon;
+        private System.Windows.Forms.NumericUpDown nudCoordBattleAllyBubbleX;
+        private System.Windows.Forms.Label lblCoordBattleAllyPokemon;
+        private System.Windows.Forms.Label lblCoordBattleAllyBubble;
+        private System.Windows.Forms.PictureBox picCoordBattleDisplay;
+        private System.Windows.Forms.GroupBox grpCoordBattleEnemy;
+        private System.Windows.Forms.NumericUpDown nudCoordBattleEnemyBubbleY;
+        private System.Windows.Forms.NumericUpDown nudCoordBattleEnemyPokemon;
+        private System.Windows.Forms.NumericUpDown nudCoordBattleEnemyBubbleX;
+        private System.Windows.Forms.Label lblCoordBattleEnemyPokemon;
+        private System.Windows.Forms.Label lblCoordBattleEnemyBubble;
+        private System.Windows.Forms.CheckBox chkShowBattleBubble;
+        private System.Windows.Forms.NumericUpDown nudCoordBattleEnemyShadowY;
+        private System.Windows.Forms.Label lblCoordBattleEnemyShadow;
+        private System.Windows.Forms.GroupBox grpCoordItemUse;
+        private System.Windows.Forms.NumericUpDown nudCoordItemUse1Y;
+        private System.Windows.Forms.NumericUpDown nudCoordItemUse1X;
+        private System.Windows.Forms.Label lblCoordItemUse1Y;
+        private System.Windows.Forms.Label lblCoordItemUse1X;
+        private System.Windows.Forms.PictureBox picCoordItemUse1;
+        private System.Windows.Forms.NumericUpDown nudCoordItemUse2Y;
+        private System.Windows.Forms.NumericUpDown nudCoordItemUse2X;
+        private System.Windows.Forms.Label lblCoordItemUse2Y;
+        private System.Windows.Forms.Label lblCoordItemUse2X;
+        private System.Windows.Forms.PictureBox picCoordItemUse2;
+        private System.Windows.Forms.RadioButton rbCoordItemUse2Zoom;
+        private System.Windows.Forms.RadioButton rbCoordItemUse2Normal;
+        private System.Windows.Forms.NumericUpDown nudCoordItemUse2Zoom;
+        private System.Windows.Forms.Label lblCoordItemUse2Zoom;
     }
 }

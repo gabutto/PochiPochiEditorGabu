@@ -67,6 +67,12 @@
     <Compile Include="Managers\UIStateManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="_Item\ItemEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_Item\ItemEditor.Designer.cs">
+      <DependentUpon>ItemEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="_Pokemon\PokemonEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +103,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="_Item\ItemEditor.resx">
+      <DependentUpon>ItemEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="_Pokemon\PokemonEditor.resx">
       <DependentUpon>PokemonEditor.cs</DependentUpon>
     </EmbeddedResource>
