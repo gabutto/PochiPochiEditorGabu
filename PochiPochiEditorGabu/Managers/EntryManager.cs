@@ -70,6 +70,38 @@ namespace PochiPochiEditorGabu.Managers
             }
             return size;
         }
+
+        public static EntryManager<T> Create(
+            byte[] romData,
+            TblFileReader tblReader,
+            IniFileReader config,
+            string addressKey,
+            string countKey)
+        {
+            var dynamicLengths = new Dictionary<string, int>();
+
+            var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var field in fields)
+            {
+                var attr = field.GetCustomAttribute<DynamicStringAttribute>();
+                if (attr != null && !dynamicLengths.ContainsKey(attr.Key))
+                {
+                    dynamicLengths[attr.Key] = config.GetInt(attr.Key);
+                }
+            }
+
+            var manager = new EntryManager<T>(
+                romData,
+                tblReader,
+                dynamicLengths.Count > 0 ? dynamicLengths : null
+            );
+
+            uint? tableAddr = config.GetAddr(addressKey);
+            int count = config.GetInt(countKey);
+            manager.Load(tableAddr, count);
+
+            return manager;
+        }
     }
 
     public static class CloneHelper
@@ -80,6 +112,8 @@ namespace PochiPochiEditorGabu.Managers
             return (T)method?.Invoke(source, null);
         }
     }
+
+    // entry
 
     public class PokemonNameeEntry
     {

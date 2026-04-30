@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -45,44 +44,33 @@ namespace PochiPochiEditorGabu._Trainer
 
         private void InitializeManagers()
         {
-            uint? classNameTableAddr = _config.GetAddr("TrainerClassNameTableAddress");
-            int classNameEntryLength = _config.GetInt("TrainerClassNameEntryLength");
-            int classNameCount = _config.GetInt("TrainerClassNameCount");
-            var lengths = new Dictionary<string, int> { { "TrainerClassNameEntryLength", classNameEntryLength } };
-            _nameManager = new EntryManager<TrainerClassNameEntry>(_romData, _tblReader, lengths);
-            _nameManager.Load(classNameTableAddr, classNameCount);
-
-            uint? classMultiTableAddr = _config.GetAddr("TrainerClassPrizeMultiplierTableAddress");
-            int classMultiCount = _config.GetInt("TrainerClassPrizeMultiplierCount");
-            _prizeMultiManager = new EntryManager<TrainerClassPrizeMultiplierEntry>(_romData, _tblReader);
-            _prizeMultiManager.Load(classMultiTableAddr, classMultiCount);
+            _nameManager = EntryManager<TrainerClassNameEntry>.Create(
+               _romData, _tblReader, _config, "TrainerClassNameTableAddress", "TrainerClassNameCount");
+            _prizeMultiManager = EntryManager<TrainerClassPrizeMultiplierEntry>.Create(
+                _romData, _tblReader, _config, "TrainerClassPrizeMultiplierTableAddress", "TrainerClassPrizeMultiplierCount");
 
             if (_config.GetBool("EnableTrainerClassEncounterMusic"))
             {
-                uint? encounterMusicTableAddr = _config.GetAddr("TrainerClassEncounterMusicTableAddress");
-                _encounterMusicManager = new EntryManager<TrainerClassEncounterMusicEntry>(_romData, _tblReader);
-                _encounterMusicManager.Load(encounterMusicTableAddr, classNameCount);
+                _encounterMusicManager = EntryManager<TrainerClassEncounterMusicEntry>.Create(
+                    _romData, _tblReader, _config, "TrainerClassEncounterMusicTableAddress", "TrainerClassNameCount");
             }
 
             if (_config.GetBool("EnableTrainerClassBattleMusic"))
             {
-                uint? battleMusicTableAddr = _config.GetAddr("TrainerClassBattleMusicTableAddress");
-                _battleMusicManager = new EntryManager<TrainerClassBattleMusicEntry>(_romData, _tblReader);
-                _battleMusicManager.Load(battleMusicTableAddr, classNameCount);
+                _battleMusicManager = EntryManager<TrainerClassBattleMusicEntry>.Create(
+                    _romData, _tblReader, _config, "TrainerClassBattleMusicTableAddress", "TrainerClassNameCount");
             }
 
             if (_config.GetBool("EnableTrainerClassPokeBall"))
             {
-                uint? pokeBallTableAddr = _config.GetAddr("TrainerClassPokeBallTableAddress");
-                _pokeBallManager = new EntryManager<TrainerClassPokeBallEntry>(_romData, _tblReader);
-                _pokeBallManager.Load(pokeBallTableAddr, classNameCount);
+                _pokeBallManager = EntryManager<TrainerClassPokeBallEntry>.Create(
+                    _romData, _tblReader, _config, "TrainerClassPokeBallTableAddress", "TrainerClassNameCount");
             }
 
             if (_config.GetBool("EnableTrainerClassBaseIV"))
             {
-                uint? baseIvTableAddr = _config.GetAddr("TrainerClassBaseIVTableAddress");
-                _baseIvManager = new EntryManager<TrainerClassBaseIVEntry>(_romData, _tblReader);
-                _baseIvManager.Load(baseIvTableAddr, classNameCount);
+                _baseIvManager = EntryManager<TrainerClassBaseIVEntry>.Create(
+                    _romData, _tblReader, _config, "TrainerClassBaseIVTableAddress", "TrainerClassNameCount");
             }
         }
 

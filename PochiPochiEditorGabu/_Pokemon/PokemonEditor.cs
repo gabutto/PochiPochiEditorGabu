@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -62,43 +61,36 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void InitializeManagers()
         {
-            uint? pokemonNameTableAddr = _config.GetAddr("PokemonNameTableAddress");
-            int pokemonNameEntryLength = _config.GetInt("PokemonNameEntryLength");
-            int pokemonNameCount = _config.GetInt("PokemonNameCount");
-            var lengths = new Dictionary<string, int> { { "PokemonNameEntryLength", pokemonNameEntryLength } };
-            _pokemonNameManager = new EntryManager<PokemonNameeEntry>(_romData, _tblReader, lengths);
-            _pokemonNameManager.Load(pokemonNameTableAddr, pokemonNameCount);
+            // name
+            _pokemonNameManager = EntryManager<PokemonNameeEntry>.Create(
+                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
-            uint? spriteFrontImgTableAddr = _config.GetAddr("PokemonSpriteFrontImageTableAddress");
-            uint? spriteBackImgTableAddr = _config.GetAddr("PokemonSpriteBackImageTableAddress");
-            uint? spriteNormalPalTableAddr = _config.GetAddr("PokemonSpriteNormalPaletteTableAddress");
-            uint? spriteShinyPalTableAddr = _config.GetAddr("PokemonSpriteShinyPaletteTableAddress");
-            int spriteCount = _config.GetInt("PokemonSpriteCount");
-            _spriteFrontImgManager = new EntryManager<PokemonSpriteFrontImageEntry>(_romData, _tblReader);
-            _spriteFrontImgManager.Load(spriteFrontImgTableAddr, spriteCount);
-            _spriteBackImgManager = new EntryManager<PokemonSpriteBackImageEntry>(_romData, _tblReader);
-            _spriteBackImgManager.Load(spriteBackImgTableAddr, spriteCount);
-            _spriteNormalPalManager = new EntryManager<PokemonSpriteNormalPaletteEntry>(_romData, _tblReader);
-            _spriteNormalPalManager.Load(spriteNormalPalTableAddr, spriteCount);
-            _spriteShinyPalManager = new EntryManager<PokemonSpriteShinyPaletteEntry>(_romData, _tblReader);
-            _spriteShinyPalManager.Load(spriteShinyPalTableAddr, spriteCount);
+            // sprite
+            _spriteFrontImgManager = EntryManager<PokemonSpriteFrontImageEntry>.Create(
+                _romData, _tblReader, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
 
-            uint? iconImgTableAddr = _config.GetAddr("PokemonIconImageTableAddress");
-            uint? iconPalIdxTableAddr = _config.GetAddr("PokemonIconPaletteIndexTableAddress");
-            int iconCount = _config.GetInt("PokemonIconCount");
-            uint? iconPalAddrTableAddr = _config.GetAddr("PokemonIconPaletteAddressTableAddress");
-            int iconPalAddrCount = _config.GetInt("PokemonIconPaletteAddressCount");
-            _iconImgManager = new EntryManager<PokemonIconImageEntry>(_romData, _tblReader);
-            _iconImgManager.Load(iconImgTableAddr, iconCount);
-            _iconPalIdxManager = new EntryManager<PokemonIconPaletteIndexEntry>(_romData, _tblReader);
-            _iconPalIdxManager.Load(iconPalIdxTableAddr, iconCount);
-            _iconPalAddrManager = new EntryManager<PokemonIconPaletteAddressEntry>(_romData, _tblReader);
-            _iconPalAddrManager.Load(iconPalAddrTableAddr, iconPalAddrCount);
+            _spriteBackImgManager = EntryManager<PokemonSpriteBackImageEntry>.Create(
+                _romData, _tblReader, _config, "PokemonSpriteBackImageTableAddress", "PokemonSpriteCount");
 
-            uint? footprintTableAddr = _config.GetAddr("PokemonFootprintTableAddress");
-            int footprintCount = _config.GetInt("PokemonFootprintCount");
-            _footprintImgManager = new EntryManager<PokemonFootPrintImageEntry>(_romData, _tblReader);
-            _footprintImgManager.Load(footprintTableAddr, footprintCount);
+            _spriteNormalPalManager = EntryManager<PokemonSpriteNormalPaletteEntry>.Create(
+                _romData, _tblReader, _config, "PokemonSpriteNormalPaletteTableAddress", "PokemonSpriteCount");
+
+            _spriteShinyPalManager = EntryManager<PokemonSpriteShinyPaletteEntry>.Create(
+                _romData, _tblReader, _config, "PokemonSpriteShinyPaletteTableAddress", "PokemonSpriteCount");
+
+            // icon
+            _iconImgManager = EntryManager<PokemonIconImageEntry>.Create(
+                _romData, _tblReader, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
+
+            _iconPalIdxManager = EntryManager<PokemonIconPaletteIndexEntry>.Create(
+                _romData, _tblReader, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
+
+            _iconPalAddrManager = EntryManager<PokemonIconPaletteAddressEntry>.Create(
+                _romData, _tblReader, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
+
+            // footprint
+            _footprintImgManager = EntryManager<PokemonFootPrintImageEntry>.Create(
+                _romData, _tblReader, _config, "PokemonFootprintTableAddress", "PokemonFootprintCount");
         }
 
         private void InitializeEventHandlers()

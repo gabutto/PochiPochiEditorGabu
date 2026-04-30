@@ -43,20 +43,14 @@ namespace PochiPochiEditorGabu._Trainer
 
         private void InitializeManagers()
         {
-            uint? spriteImgTableAddr = _config.GetAddr("TrainerSpriteImageTableAddress");
-            uint? spritePalTableAddr = _config.GetAddr("TrainerSpritePaletteTableAddress");
-            uint? SpriteYOffsetTableAddr = _config.GetAddr("TrainerSpriteYOffsetTableAddress");
-            uint? SpriteAnimTableAddr = _config.GetAddr("TrainerSpriteAnimationPointerTableAddress");
-            int spriteCount = _config.GetInt("TrainerSpriteCount");
-
-            _ImgManager = new EntryManager<TrainerSpriteImageEntry>(_romData, _tblReader);
-            _ImgManager.Load(spriteImgTableAddr, spriteCount);
-            _PalManager = new EntryManager<TrainerSpritePaletteEntry>(_romData, _tblReader);
-            _PalManager.Load(spritePalTableAddr, spriteCount);
-            _yOffsetManager = new EntryManager<TrainerSpriteYOffsetEntry>(_romData, _tblReader);
-            _yOffsetManager.Load(SpriteYOffsetTableAddr, spriteCount);
-            _animManager = new EntryManager<TrainerSpriteAnimationPointerEntry>(_romData, _tblReader);
-            _animManager.Load(SpriteAnimTableAddr, spriteCount);
+            _ImgManager = EntryManager<TrainerSpriteImageEntry>.Create(
+                _romData, _tblReader, _config, "TrainerSpriteImageTableAddress", "TrainerSpriteCount");
+            _PalManager = EntryManager<TrainerSpritePaletteEntry>.Create(
+                _romData, _tblReader, _config, "TrainerSpritePaletteTableAddress", "TrainerSpriteCount");
+            _yOffsetManager = EntryManager<TrainerSpriteYOffsetEntry>.Create(
+                _romData, _tblReader, _config, "TrainerSpriteYOffsetTableAddress", "TrainerSpriteCount");
+            _animManager = EntryManager<TrainerSpriteAnimationPointerEntry>.Create(
+                _romData, _tblReader, _config, "TrainerSpriteAnimationPointerTableAddress", "TrainerSpriteCount");
         }
 
         private void InitializeEventHandlers()
