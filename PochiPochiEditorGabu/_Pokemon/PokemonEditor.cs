@@ -19,7 +19,7 @@ namespace PochiPochiEditorGabu._Pokemon
         protected ReservationManager _reservationManager;
         protected UIStateManager _uiStateManager;
 
-        private EntryManager<PokemonNameeEntry> _pokemonNameManager;
+        private EntryManager<PokemonNameEntry> _pokemonNameManager;
         private EntryManager<PokemonSpriteFrontImageEntry> _spriteFrontImgManager;
         private EntryManager<PokemonSpriteBackImageEntry> _spriteBackImgManager;
         private EntryManager<PokemonSpriteNormalPaletteEntry> _spriteNormalPalManager;
@@ -62,7 +62,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private void InitializeManagers()
         {
             // name
-            _pokemonNameManager = EntryManager<PokemonNameeEntry>.Create(
+            _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
                 _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
             // sprite
@@ -198,10 +198,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void LoadPokemonNameToUI(int idx)
         {
-            if (cmbPokemonName.SelectedIndex != idx)
-            {
-                cmbPokemonName.SelectedIndex = idx;
-            }
+            cmbPokemonName.SelectedIndex = idx;
             nudSpecies.Value = idx;
             txtSpeciesHex.Text = idx.ToString("X4");
 

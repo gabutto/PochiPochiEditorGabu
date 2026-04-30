@@ -136,10 +136,7 @@ namespace PochiPochiEditorGabu._Trainer
             _isUpdatingUI = true;
 
             _currentClassNameIdx = idx;
-            if (cmbClassName.SelectedIndex != idx)
-            {
-                cmbClassName.SelectedIndex = idx;
-            }
+            cmbClassName.SelectedIndex = idx;
             nudClassName.Value = idx;
 
             // Load class name

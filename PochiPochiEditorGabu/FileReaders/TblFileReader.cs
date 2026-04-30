@@ -148,6 +148,7 @@ namespace PochiPochiEditorGabu.FileReaders
                 // Newline
                 if (text[i] == '\r' && text[i + 1] == '\n')
                 {
+                    result.Add(NewlineByte);
                     i += 2;
                     continue;
                 }
@@ -200,6 +201,32 @@ namespace PochiPochiEditorGabu.FileReaders
             }
 
             return result.ToArray();
+        }
+
+        public void WriteToRom
+            (byte[] romData,
+            uint address,
+            byte[] binaryData,
+            bool align = false,
+            byte alignPaddingByte = GbaConstants.PaddingByte)
+        {
+            Array.Copy(binaryData, 0, romData, address, binaryData.Length);
+
+            if (align)
+            {
+                uint endAddress = address + (uint)binaryData.Length;
+                uint remainder = endAddress % GbaConstants.PtrSize;
+
+                if (remainder != 0)
+                {
+                    uint paddingCount = GbaConstants.PtrSize - remainder;
+                    for (uint i = 0; i < paddingCount; i++)
+                    {
+                        uint padAddress = endAddress + i;
+                        romData[padAddress] = alignPaddingByte;
+                    }
+                }
+            }
         }
 
         private class ByteTrieNode

@@ -63,8 +63,8 @@ namespace PochiPochiEditorGabu.Helpers
                         if (field.FieldType == typeof(string))
                         {
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                            int length = (attr != null && dynamicLengths != null && dynamicLengths.ContainsKey(attr.Key))
-                                ? dynamicLengths[attr.Key] : 0;
+                            int length = (attr != null && dynamicLengths != null && dynamicLengths.ContainsKey(attr.EntryLength))
+                                ? dynamicLengths[attr.EntryLength] : 0;
 
                             if (length > 0)
                             {
@@ -99,6 +99,7 @@ namespace PochiPochiEditorGabu.Helpers
             TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null,
             bool appendTerminator = true,
+            byte freeSpaceByte = GbaConstants.FreeSpaceByte,
             byte paddingByte = GbaConstants.PaddingByte)
         {
             GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
@@ -121,16 +122,53 @@ namespace PochiPochiEditorGabu.Helpers
                         if (field.FieldType == typeof(string))
                         {
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                            int length = (attr != null && dynamicLengths != null && dynamicLengths.ContainsKey(attr.Key))
-                                ? dynamicLengths[attr.Key] : 0;
+                            int entryLength = (
+                                attr != null && 
+                                dynamicLengths != null && 
+                                dynamicLengths.ContainsKey(attr.EntryLength))
+                                ? dynamicLengths[attr.EntryLength] : 0;
 
-                            if (length > 0)
+                            int allowedLength = (
+                                attr != null && 
+                                !string.IsNullOrEmpty(attr.AllowedLength) && 
+                                dynamicLengths != null && 
+                                dynamicLengths.ContainsKey(attr.AllowedLength))
+                                ? dynamicLengths[attr.AllowedLength] : -1;
+
+                            if (entryLength > 0)
                             {
                                 string strVal = (field.GetValue(item) as string) ?? string.Empty;
-                                byte[] result = tblReader.StringToBytes(strVal, appendTerminator, length, paddingByte);
-                                Array.Copy(result, 0, data, currentOffset, length);
 
-                                currentOffset += length;
+                                if (allowedLength > 0)
+                                {
+                                    byte[] rawBytes = tblReader.StringToBytes(strVal, false, -1);
+                                    List<byte> finalBytes = new List<byte>(rawBytes);
+
+                                    // FreeSpaceByte
+                                    if (appendTerminator)
+                                    {
+                                        while (finalBytes.Count < allowedLength)
+                                        {
+                                            finalBytes.Add(freeSpaceByte);
+                                        }
+                                    }
+
+                                    // PaddingByte
+                                    while (finalBytes.Count < entryLength)
+                                    {
+                                        finalBytes.Add(paddingByte);
+                                    }
+
+                                    byte[] result = finalBytes.Take(entryLength).ToArray();
+                                    Array.Copy(result, 0, data, currentOffset, entryLength);
+                                }
+                                else
+                                {
+                                    byte[] result = tblReader.StringToBytes(strVal, appendTerminator, entryLength, paddingByte);
+                                    Array.Copy(result, 0, data, currentOffset, entryLength);
+                                }
+
+                                currentOffset += entryLength;
                             }
                         }
                         else if (field.FieldType.IsValueType)
@@ -156,11 +194,13 @@ namespace PochiPochiEditorGabu.Helpers
     [AttributeUsage(AttributeTargets.Field)]
     public class DynamicStringAttribute : Attribute
     {
-        public string Key { get; }
+        public string EntryLength { get; }
+        public string AllowedLength { get; }
 
-        public DynamicStringAttribute(string key)
+        public DynamicStringAttribute(string entryLength, string allowedLength = null)
         {
-            Key = key;
+            EntryLength = entryLength;
+            AllowedLength = allowedLength;
         }
     }
 }

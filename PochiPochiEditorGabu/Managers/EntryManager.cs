@@ -36,13 +36,24 @@ namespace PochiPochiEditorGabu.Managers
             Working = Original.Select(x => CloneHelper.Clone(x)).ToList();
         }
 
-        public void Save(int idx, bool appendTerminator = true, byte paddingByte = GbaConstants.PaddingByte)
+        public void Save(
+            int idx,
+            bool appendTerminator = true,
+            byte freeSpaceByte = GbaConstants.FreeSpaceByte, 
+            byte paddingByte = GbaConstants.PaddingByte)
         {
             int entrySize = GetEntrySize();
             int offset = (int)Address.Value + (idx * entrySize);
 
             var singleItemList = new List<T> { Working[idx] };
-            IoHelper.WriteStructures(_romData, offset, singleItemList, _tblReader, _dynamicLengths, appendTerminator, paddingByte);
+            IoHelper.WriteStructures(
+                _romData, offset, 
+                singleItemList, 
+                _tblReader, 
+                _dynamicLengths, 
+                appendTerminator, 
+                freeSpaceByte, 
+                paddingByte);
 
             Original[idx] = CloneHelper.Clone(Working[idx]);
         }
@@ -59,8 +70,8 @@ namespace PochiPochiEditorGabu.Managers
                 if (field.FieldType == typeof(string))
                 {
                     var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                    int length = (attr != null && _dynamicLengths != null && _dynamicLengths.ContainsKey(attr.Key))
-                        ? _dynamicLengths[attr.Key] : 0;
+                    int length = (attr != null && _dynamicLengths != null && _dynamicLengths.ContainsKey(attr.EntryLength))
+                        ? _dynamicLengths[attr.EntryLength] : 0;
                     size += length;
                 }
                 else if (field.FieldType.IsValueType)
@@ -84,9 +95,13 @@ namespace PochiPochiEditorGabu.Managers
             foreach (var field in fields)
             {
                 var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                if (attr != null && !dynamicLengths.ContainsKey(attr.Key))
+                if (attr != null)
                 {
-                    dynamicLengths[attr.Key] = config.GetInt(attr.Key);
+                    if (!dynamicLengths.ContainsKey(attr.EntryLength))
+                        dynamicLengths[attr.EntryLength] = config.GetInt(attr.EntryLength);
+
+                    if (!string.IsNullOrEmpty(attr.AllowedLength) && !dynamicLengths.ContainsKey(attr.AllowedLength))
+                        dynamicLengths[attr.AllowedLength] = config.GetInt(attr.AllowedLength);
                 }
             }
 
@@ -115,7 +130,7 @@ namespace PochiPochiEditorGabu.Managers
 
     // entry
 
-    public class PokemonNameeEntry
+    public class PokemonNameEntry
     {
         [DynamicString("PokemonNameEntryLength")]
         public string _PokemonName = string.Empty;
@@ -197,7 +212,7 @@ namespace PochiPochiEditorGabu.Managers
 
     public class ItemDataEntry
     {
-        [DynamicString("TrainerClassNameEntryLength")]
+        [DynamicString("ItemNameEntryLength", "ItemNameMaxLength")]
         public string _ItemName = string.Empty;
         public ushort Idx;
         public ushort Price;

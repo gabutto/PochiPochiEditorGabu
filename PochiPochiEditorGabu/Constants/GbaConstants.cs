@@ -60,6 +60,10 @@
         public const int ItemUseAnimItemX = 76;
         public const int ItemUseAnimItemY = 24;
 
+
+
+        public const int ItemSpriteSize = 24;
+
         public const int DefaultScale = 2;
         public const string RomFileFilter = "Romファイル|*.gba";
         public const string RomFileTitle = "Romを選択";

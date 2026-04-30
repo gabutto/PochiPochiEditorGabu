@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace PochiPochiEditorGabu.Helpers
@@ -247,6 +250,32 @@ namespace PochiPochiEditorGabu.Helpers
             {
                 cmb.EndUpdate();
             }
+        }
+
+        public static void LoadComboBoxFromTextFile(ComboBox comboBox, string filePath)
+        {
+            var entries = File.ReadLines(filePath)
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .Select(line =>
+                {
+                    int closeBracketIndex = line.IndexOf(']');
+                    if (line.StartsWith("[") && closeBracketIndex > 1)
+                    {
+                        string hex = line.Substring(1, closeBracketIndex - 1);
+                        if (int.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int index))
+                        {
+                        return new KeyValuePair<int, string>(index, line.Trim());
+                        }
+                    }
+                    return (KeyValuePair<int, string>?)null;
+                })
+                .Where(entry => entry.HasValue)
+                .Select(entry => entry.Value)
+                .ToList();
+
+            comboBox.DisplayMember = "Value";
+            comboBox.ValueMember = "Key";
+            comboBox.DataSource = entries;
         }
     }
 }
