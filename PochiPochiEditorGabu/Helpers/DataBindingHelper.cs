@@ -112,18 +112,20 @@ namespace PochiPochiEditorGabu.Helpers
                 else if (field.Name.StartsWith("s"))
                 {
                     // Signed
-                    object val = GetControlValueByName(container, field.Name.Substring(1), typeof(int));
-                    if (val != null && val is int intVal)
+                    object val = GetControlValueByName(container, field.Name.Substring(1), typeof(decimal));
+                    if (val != null)
                     {
-                        TypeCode typeCode = Type.GetTypeCode(field.FieldType);
+                        decimal decimalValue = Convert.ToDecimal(val);
+                        int intVal = (int)Math.Truncate(decimalValue);
 
+                        TypeCode typeCode = Type.GetTypeCode(field.FieldType);
                         switch (typeCode)
                         {
                             case TypeCode.Byte:
-                                field.SetValue(obj, unchecked((byte)intVal));
+                                field.SetValue(obj, (byte)(intVal & GbaConstants.Mask8Bits));
                                 break;
                             case TypeCode.UInt16:
-                                field.SetValue(obj, unchecked((ushort)intVal));
+                                field.SetValue(obj, (ushort)(intVal & GbaConstants.Mask16Bits));
                                 break;
                             case TypeCode.UInt32:
                                 field.SetValue(obj, unchecked((uint)intVal));
@@ -142,13 +144,13 @@ namespace PochiPochiEditorGabu.Helpers
 
                         byte byteVal = (byte)(field.GetValue(obj) ?? (byte)0);
 
-                        int highVal = (highValObj != null && highValObj is int h) ? h
-                                    : ((byteVal >> GbaConstants.NibbleShift) & GbaConstants.NibbleMask);
+                        int highVal = (highValObj != null) ? Convert.ToInt32(highValObj)
+                                      : ((byteVal >> GbaConstants.NibbleShift) & GbaConstants.NibbleMask);
+                        int lowVal = (lowValObj != null) ? Convert.ToInt32(lowValObj)
+                                     : (byteVal & GbaConstants.NibbleMask);
 
-                        int lowVal = (lowValObj != null && lowValObj is int l) ? l
-                                    : (byteVal & GbaConstants.NibbleMask);
-
-                        byteVal = (byte)(((highVal & GbaConstants.NibbleMask) << GbaConstants.NibbleShift) | (lowVal & GbaConstants.NibbleMask));
+                        byteVal = (byte)(((highVal & GbaConstants.NibbleMask) << GbaConstants.NibbleShift)
+                                         | (lowVal & GbaConstants.NibbleMask));
                         field.SetValue(obj, byteVal);
                     }
                 }

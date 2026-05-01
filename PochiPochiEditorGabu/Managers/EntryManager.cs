@@ -222,7 +222,7 @@ namespace PochiPochiEditorGabu.Managers
 
     public class PokemonCoordItemUseEntry
     {
-        public uint CoordItemUse2X;
+        public byte CoordItemUse2X;
         public byte CoordItemUse2Y;
         public byte CoordItemUse2Zoom;
         public byte CoordItemUse1X;

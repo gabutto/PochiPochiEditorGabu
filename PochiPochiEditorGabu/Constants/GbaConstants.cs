@@ -59,6 +59,8 @@
         public const int ItemUseAnimPokeY = 40;
         public const int ItemUseAnimItemX = 76;
         public const int ItemUseAnimItemY = 24;
+        public const int ItemUse1PreviewItemIdx = 0xD;
+        public const int ItemUse2PreviewItemIdx = 0x121;
 
 
 

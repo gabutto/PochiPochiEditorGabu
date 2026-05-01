@@ -144,6 +144,12 @@
     <Content Include="img\PokemonCoordBattleShadow.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="img\PokemonCoordItemUse1Background.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="img\PokemonCoordItemUse2Background.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="img\poochyena_image.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

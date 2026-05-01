@@ -33,6 +33,8 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonCoordBattleEnemyShaowEntry> _coordBattleEnemyShadowManager;
         private EntryManager<PokemonCoordItemUseEntry> _coordItemUseManager;
 
+        private EntryManager<ItemSpriteEntry> _itemSpriteManager;
+
         private bool _isUpdatingUI = false;
         private int _currentPokemonIdx = 0;
 
@@ -108,6 +110,11 @@ namespace PochiPochiEditorGabu._Pokemon
                 _romData, _tblReader, _config, "PokemonCoordinateBattleEnemyShadowTableAddress", "PokemonCoordinateBattleEnemyShadowCount");
             _coordItemUseManager = EntryManager<PokemonCoordItemUseEntry>.Create(
                 _romData, _tblReader, _config, "PokemonCoordinateItemUseTableAddress", "PokemonCoordinateItemUseCount");
+
+
+            // item sprite
+            _itemSpriteManager = EntryManager<ItemSpriteEntry>.Create(
+                _romData, _tblReader, _config, "ItemSpriteTableAddress", "ItemDataCount");
         }
 
         private void InitializeEventHandlers()
@@ -153,6 +160,16 @@ namespace PochiPochiEditorGabu._Pokemon
                 nud.ValueChanged += UpdateCoordBattleDisplay;
             }
             chkShowBattleBubble.CheckedChanged += chkShowBattleBubble_CheckedChanged;
+
+            nudCoordItemUse1X.ValueChanged += UpdateCoordItemUse1Preview;
+            nudCoordItemUse1Y.ValueChanged += UpdateCoordItemUse1Preview;
+            nudCoordItemUse2X.ValueChanged += UpdateCoordItemUse2Preview;
+            nudCoordItemUse2Y.ValueChanged += UpdateCoordItemUse2Preview;
+            nudCoordItemUse2Zoom.ValueChanged += UpdateCoordItemUse2Preview;
+            rbCoordItemUse2Normal.CheckedChanged += UpdateCoordItemUse2Preview;
+            rbCoordItemUse2Zoom.CheckedChanged += UpdateCoordItemUse2Preview;
+            rbCoordItemUse2Normal.CheckedChanged += CoordItemUse2Mode_CheckedChanged;
+            rbCoordItemUse2Zoom.CheckedChanged += CoordItemUse2Mode_CheckedChanged;
         }
 
         private void InitializeControls()
@@ -478,8 +495,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 }
             }
 
-            //UpdatePokemonBattleDisplay();
-            //UpdatePokemonItemUseDisplay();
+            UpdateCoordBattleDisplay();
+            UpdateCoordItemUseDisplay();
         }
 
         private void btnSpriteImport_Click(object sender, EventArgs e)
@@ -1014,10 +1031,9 @@ namespace PochiPochiEditorGabu._Pokemon
             }
 
             // discard
-            if (picCoordBattleDisplay.Image != null)
-            {
-                picCoordBattleDisplay.Image.Dispose();
-            }
+            picCoordBattleDisplay.Image?.Dispose();
+            picCoordBattleDisplay.Image = null;
+
             picCoordBattleDisplay.Image = canvas;
         }
 
@@ -1028,19 +1044,184 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void LoadCoordItemUseImages()
         {
-
+            _itemUse1BackgroundImage = (Bitmap)Image.FromFile("img/PokemonCoordItemUse1Background.png");
+            _itemUse2BackgroundImage = (Bitmap)Image.FromFile("img/PokemonCoordItemUse2Background.png");
         }
 
         private void LoadCoordItemUseToUI(int idx)
         {
+            int coordinateIndex = idx - _config.GetInt("PokemonCoordinateItemUseStartIndex");
+            bool isValid = coordinateIndex >= 0 && coordinateIndex < _coordItemUseManager.Count;
+            _isItemUseCoordValid = isValid;
 
+            if (isValid)
+            {
+                ControlHelper.SetControlsEnabled(grpCoordItemUse, true);
+                DataBindingHelper.BindObjectToControls(this, _coordItemUseManager.Working[coordinateIndex]);
+            }
+            else
+            {
+                ControlHelper.SetControlsEnabled(grpCoordItemUse, false);
+                ControlHelper.ResetControls(grpCoordItemUse, excludeTypes: new[] { typeof(RadioButton) });
+            }
+
+            UpdateCoordItemUseDisplay();
+            CoordItemUse2Mode_CheckedChanged(null, null);
         }
 
+        private void UpdateCoordItemUseDisplay()
+        {
+            UpdateCoordItemUse1Preview();
+            UpdateCoordItemUse2Preview();
+        }
 
+        private void UpdateCoordItemUse1Preview(object sender = null, EventArgs e = null)
+        {
+            if (_isUpdatingUI && sender != null) return;
 
+            if (!_isItemUseCoordValid)
+            {
+                picCoordItemUse1.Image?.Dispose();
+                picCoordItemUse1.Image = null;
+                return;
+            }
 
+            if (_battleEnemyImage == null) return;
 
+            Bitmap canvas = new Bitmap(picCoordItemUse1.Width, picCoordItemUse1.Height);
+            using (Graphics g = Graphics.FromImage(canvas))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.DrawImage(_itemUse1BackgroundImage, 0, 0);
+                g.DrawImage(_battleEnemyImage, GbaConstants.ItemUseAnimPokeX, GbaConstants.ItemUseAnimPokeY);
 
+                using (Bitmap itemImage = GetItemSprite(_romData, GbaConstants.ItemUse1PreviewItemIdx, false))
+                {
+                    if (itemImage != null)
+                    {
+                        int itemX = GbaConstants.ItemUseAnimItemX + (int)nudCoordItemUse1X.Value;
+                        int itemY = GbaConstants.ItemUseAnimItemY + (int)nudCoordItemUse1Y.Value;
+                        g.DrawImage(itemImage, itemX, itemY);
+                    }
+                }
+            }
+
+            picCoordItemUse1.Image?.Dispose();
+            picCoordItemUse1.Image = null;
+
+            picCoordItemUse1.Image = canvas;
+        }
+
+        private void UpdateCoordItemUse2Preview(object sender = null, EventArgs e = null)
+        {
+            if (_isUpdatingUI && sender != null) return;
+
+            if (!_isItemUseCoordValid)
+            {
+                picCoordItemUse2.Image?.Dispose();
+                picCoordItemUse2.Image = null;
+                return;
+            }
+
+            if (_battleEnemyImage == null) return;
+
+            Bitmap canvas = new Bitmap(picCoordItemUse2.Width, picCoordItemUse2.Height);
+            using (Graphics g = Graphics.FromImage(canvas))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.DrawImage(_itemUse2BackgroundImage, 0, 0);
+
+                if (rbCoordItemUse2Normal.Checked)
+                {
+                    // normal
+                    g.DrawImage(_battleEnemyImage, GbaConstants.ItemUseAnimPokeX, GbaConstants.ItemUseAnimPokeY);
+
+                    using (Bitmap itemImage = GetItemSprite(_romData, GbaConstants.ItemUse2PreviewItemIdx, false))
+                    {
+                        if (itemImage != null)
+                        {
+                            int itemX = GbaConstants.ItemUseAnimItemX + (int)nudCoordItemUse2X.Value;
+                            int itemY = GbaConstants.ItemUseAnimItemY + (int)nudCoordItemUse2Y.Value;
+                            g.DrawImage(itemImage, itemX, itemY);
+                        }
+                    }
+                }
+                else
+                {
+                    // zoom, magic number
+                    using (Bitmap scaledPokemon = ImageManager.ScalePixelArt(_battleEnemyImage, 2))
+                    using (Bitmap scaledItem = GetItemSprite(_romData, GbaConstants.ItemUse2PreviewItemIdx, false))
+                    {
+                        Bitmap itemScaled = null;
+                        if (scaledItem != null)
+                        {
+                            itemScaled = ImageManager.ScalePixelArt(scaledItem, 2);
+                        }
+
+                        int pokemonCenterX = GbaConstants.ItemUseAnimPokeX + 32;
+                        int pokemonCenterY = GbaConstants.ItemUseAnimPokeY + 32;
+                        int zoomedCenterY = pokemonCenterY + (int)nudCoordItemUse2Zoom.Value;
+
+                        int scaledWidth = _itemUse2BackgroundImage.Width * 2;
+                        int scaledHeight = _itemUse2BackgroundImage.Height * 2;
+
+                        int drawX = pokemonCenterX - (scaledWidth / 2);
+                        int drawY = zoomedCenterY - (scaledHeight / 2) - 8;
+
+                        g.DrawImage(scaledPokemon, drawX + GbaConstants.ItemUseAnimPokeX * 2, drawY + GbaConstants.ItemUseAnimPokeY * 2);
+
+                        if (itemScaled != null)
+                        {
+                            int itemX = drawX + (GbaConstants.ItemUseAnimItemX + (int)nudCoordItemUse2X.Value - 2) * 2;
+                            int itemY = drawY + (GbaConstants.ItemUseAnimItemY + (int)nudCoordItemUse2Y.Value) * 2;
+                            g.DrawImage(itemScaled, itemX, itemY);
+                            itemScaled.Dispose();
+                        }
+                    }
+                }
+            }
+
+            picCoordItemUse2.Image?.Dispose();
+            picCoordItemUse2.Image = null;
+
+            picCoordItemUse2.Image = canvas;
+        }
+
+        private void CoordItemUse2Mode_CheckedChanged(object sender, EventArgs e)
+        {
+            bool isNormal = rbCoordItemUse2Normal.Checked;
+            nudCoordItemUse2X.Enabled = isNormal;
+            nudCoordItemUse2Y.Enabled = isNormal;
+            nudCoordItemUse2Zoom.Enabled = !isNormal;
+        }
+
+        private Bitmap GetItemSprite(byte[] romdata, int idx, bool showBackColor)
+        {
+            uint? imgAddr = _itemSpriteManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
+            uint? palAddr = _itemSpriteManager.Original[idx].pSpritePalAddr - GbaConstants.BaseAddr;
+
+            if (!imgAddr.HasValue || !palAddr.HasValue) return null;
+
+            try
+            {
+                byte[] image = ImageManager.DecompressLZ77(_romData, imgAddr.Value);
+                Color[] palette = ImageManager.DecompressPalette(_romData, palAddr.Value, true);
+                return ImageManager.CreateSprite(
+                    image, 
+                    palette, 
+                    GbaConstants.ItemSpriteSize, 
+                    GbaConstants.ItemSpriteSize, 
+                    showBackColor);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
 
 
@@ -1069,6 +1250,8 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveCurrentSprites(idx);
             SaveCurrentIcon(idx);
             SaveCurrentFootprint(idx);
+            SaveCurrentCoordBattle(idx);
+            SaveCurrentCoordItemUse(idx);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -1104,7 +1287,14 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void SaveCurrentPokemonName(int idx)
         {
-            _pokemonNameManager.Save(idx);
+            if (_config.GetBool("IsAppliedCFRU")) // FF FF FF ...
+            {
+                _pokemonNameManager.Save(idx, true, GbaConstants.FreeSpaceByte, GbaConstants.FreeSpaceByte);
+            }
+            else
+            {
+                _pokemonNameManager.Save(idx); // ... FF 00 00
+            }
         }
 
         private void SaveCurrentSprites(int idx)
@@ -1171,6 +1361,25 @@ namespace PochiPochiEditorGabu._Pokemon
 
             DataBindingHelper.BindControlsToObject(this, _footprintImgManager.Working[idx]);
             _footprintImgManager.Save(idx);
+        }
+
+        private void SaveCurrentCoordBattle(int idx)
+        {
+            DataBindingHelper.BindControlsToObject(this, _coordBattleAllyManager.Working[idx]);
+            DataBindingHelper.BindControlsToObject(this, _coordBattleEnemyManager.Working[idx]);
+            DataBindingHelper.BindControlsToObject(this, _coordBattleEnemyShadowManager.Working[idx]);
+            _coordBattleAllyManager.Save(idx);
+            _coordBattleEnemyManager.Save(idx);
+            _coordBattleEnemyShadowManager.Save(idx);
+        }
+
+        private void SaveCurrentCoordItemUse(int idx)
+        {
+            int coordinateIndex = idx - _config.GetInt("PokemonCoordinateItemUseStartIndex");
+            if (coordinateIndex < 0 || coordinateIndex >= _coordItemUseManager.Count) return;
+
+            DataBindingHelper.BindControlsToObject(this, _coordItemUseManager.Working[coordinateIndex]);
+            _coordItemUseManager.Save(coordinateIndex);
         }
     }
 }
