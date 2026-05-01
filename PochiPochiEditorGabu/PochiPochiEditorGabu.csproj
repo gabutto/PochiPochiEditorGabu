@@ -144,6 +144,9 @@
     <Content Include="img\poochyena_icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="img\screenshot2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="txt\ItemDataBattleUseType.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

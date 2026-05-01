@@ -5,3 +5,4 @@ Supporting only BPRJ
 
 ### スクリーンショット  
 ![altTag](./PochiPochiEditorGabu/img/screenshot1.png)  
+![altTag](./PochiPochiEditorGabu/img/screenshot2.png)  
