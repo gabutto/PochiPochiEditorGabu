@@ -193,8 +193,41 @@ namespace PochiPochiEditorGabu.Managers
         public uint pFootprintImgAddr;
     }
 
+    public class PokemonCoordBattleAllyEntry
+    {
+        [DataBindingHelper.NibbleControlNames(
+            "CoordBattleAllyBubbleX",
+            "CoordBattleAllyBubbleY")]
+        public byte nCoordBattleAllyBubble;
+        public byte sCoordBattleAllyPokemon;
+        public byte _Padding1;
+        public byte _Padding2;
+    }
 
+    public class PokemonCoordBattleEnemyEntry
+    {
+        [DataBindingHelper.NibbleControlNames(
+            "CoordBattleEnemyBubbleX",
+            "CoordBattleEnemyBubbleY")]
+        public byte nCoordBattleEnemyBubble;
+        public byte sCoordBattleEnemyPokemon;
+        public byte _Padding1;
+        public byte _Padding2;
+    }
 
+    public class PokemonCoordBattleEnemyShaowEntry
+    {
+        public byte sCoordBattleEnemyShadowY;
+    }
+
+    public class PokemonCoordItemUseEntry
+    {
+        public uint CoordItemUse2X;
+        public byte CoordItemUse2Y;
+        public byte CoordItemUse2Zoom;
+        public byte CoordItemUse1X;
+        public byte CoordItemUse1Y;
+    }
 
 
 

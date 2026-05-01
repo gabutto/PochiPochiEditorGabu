@@ -28,16 +28,26 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonIconPaletteIndexEntry> _iconPalIdxManager;
         private EntryManager<PokemonIconPaletteAddressEntry> _iconPalAddrManager;
         private EntryManager<PokemonFootPrintImageEntry> _footprintImgManager;
+        private EntryManager<PokemonCoordBattleAllyEntry> _coordBattleAllyManager;
+        private EntryManager<PokemonCoordBattleEnemyEntry> _coordBattleEnemyManager;
+        private EntryManager<PokemonCoordBattleEnemyShaowEntry> _coordBattleEnemyShadowManager;
+        private EntryManager<PokemonCoordItemUseEntry> _coordItemUseManager;
 
         private bool _isUpdatingUI = false;
         private int _currentPokemonIdx = 0;
 
-        private Bitmap _battleAllyImage = null;
-        private Bitmap _battleEnemyImage = null;
         private ImageManager.PokemonIconAnimator _iconAnimator = null;
         private byte[] _currentFootprintData = null;
         private bool _isDrawingFootprint = false;
         private bool _drawingColorIsBlack = false;
+        private Bitmap _battleAllyImage = null;
+        private Bitmap _battleEnemyImage = null;
+        private Bitmap _battleBaackgroundImage = null;
+        private Bitmap _battleShadowImage = null;
+        private Bitmap _battleBubbleImage = null;
+        private Bitmap _itemUse1BackgroundImage = null;
+        private Bitmap _itemUse2BackgroundImage = null;
+        private bool _isItemUseCoordValid = false;
 
         public PokemonEditor(
             byte[] romData, 
@@ -56,6 +66,8 @@ namespace PochiPochiEditorGabu._Pokemon
             InitializeControls();
             InitializeUIStates();
 
+            LoadCoordBattleImages();
+            LoadCoordItemUseImages();
             LoadAllDataToUI(_currentPokemonIdx);
         }
 
@@ -68,29 +80,34 @@ namespace PochiPochiEditorGabu._Pokemon
             // sprite
             _spriteFrontImgManager = EntryManager<PokemonSpriteFrontImageEntry>.Create(
                 _romData, _tblReader, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
-
             _spriteBackImgManager = EntryManager<PokemonSpriteBackImageEntry>.Create(
                 _romData, _tblReader, _config, "PokemonSpriteBackImageTableAddress", "PokemonSpriteCount");
-
             _spriteNormalPalManager = EntryManager<PokemonSpriteNormalPaletteEntry>.Create(
                 _romData, _tblReader, _config, "PokemonSpriteNormalPaletteTableAddress", "PokemonSpriteCount");
-
             _spriteShinyPalManager = EntryManager<PokemonSpriteShinyPaletteEntry>.Create(
                 _romData, _tblReader, _config, "PokemonSpriteShinyPaletteTableAddress", "PokemonSpriteCount");
 
             // icon
             _iconImgManager = EntryManager<PokemonIconImageEntry>.Create(
                 _romData, _tblReader, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
-
             _iconPalIdxManager = EntryManager<PokemonIconPaletteIndexEntry>.Create(
                 _romData, _tblReader, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
-
             _iconPalAddrManager = EntryManager<PokemonIconPaletteAddressEntry>.Create(
                 _romData, _tblReader, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
 
             // footprint
             _footprintImgManager = EntryManager<PokemonFootPrintImageEntry>.Create(
                 _romData, _tblReader, _config, "PokemonFootprintTableAddress", "PokemonFootprintCount");
+
+            // coordinate
+            _coordBattleAllyManager = EntryManager<PokemonCoordBattleAllyEntry>.Create(
+                _romData, _tblReader, _config, "PokemonCoordinateBattleAllyTableAddress", "PokemonCoordinateBattleCount");
+            _coordBattleEnemyManager = EntryManager<PokemonCoordBattleEnemyEntry>.Create(
+                _romData, _tblReader, _config, "PokemonCoordinateBattleEnemyTableAddress", "PokemonCoordinateBattleCount");
+            _coordBattleEnemyShadowManager = EntryManager<PokemonCoordBattleEnemyShaowEntry>.Create(
+                _romData, _tblReader, _config, "PokemonCoordinateBattleEnemyShadowTableAddress", "PokemonCoordinateBattleEnemyShadowCount");
+            _coordItemUseManager = EntryManager<PokemonCoordItemUseEntry>.Create(
+                _romData, _tblReader, _config, "PokemonCoordinateItemUseTableAddress", "PokemonCoordinateItemUseCount");
         }
 
         private void InitializeEventHandlers()
@@ -123,6 +140,19 @@ namespace PochiPochiEditorGabu._Pokemon
             pnlFootprintCanvas.MouseUp += pnlFootprintCanvas_MouseUp;
             btnFootprintImport.Click += btnFootprintImport_Click;
             btnFootprintExport.Click += btnFootprintExport_Click;
+
+            foreach (var nud in new[] {
+                nudCoordBattleAllyBubbleX,
+                nudCoordBattleAllyBubbleY,
+                nudCoordBattleAllyPokemon,
+                nudCoordBattleEnemyBubbleX,
+                nudCoordBattleEnemyBubbleY,
+                nudCoordBattleEnemyPokemon,
+                nudCoordBattleEnemyShadowY})
+            {
+                nud.ValueChanged += UpdateCoordBattleDisplay;
+            }
+            chkShowBattleBubble.CheckedChanged += chkShowBattleBubble_CheckedChanged;
         }
 
         private void InitializeControls()
@@ -161,7 +191,8 @@ namespace PochiPochiEditorGabu._Pokemon
             ControlHelper.AttachExternalBorder(
                 picSpriteFrontNormal, picSpriteBackNormal, picSpriteFrontShiny, picSpriteBackShiny,
                 picIconPal, picIcon, picIconAnimated,
-                picFootprint, pnlFootprintCanvas);
+                picFootprint, pnlFootprintCanvas,
+                picCoordBattleDisplay, picCoordItemUse1, picCoordItemUse2);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
@@ -176,7 +207,10 @@ namespace PochiPochiEditorGabu._Pokemon
                 txtPokemonRename,
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
                 txtIconImgAddr, cmbIconPalIdx,
-                txtFootprintImgAddr);
+                txtFootprintImgAddr,
+                nudCoordBattleAllyBubbleX, nudCoordBattleAllyBubbleY, nudCoordBattleAllyPokemon,
+                nudCoordBattleEnemyBubbleX, nudCoordBattleEnemyBubbleY, nudCoordBattleEnemyPokemon, nudCoordBattleEnemyShadowY,
+                nudCoordItemUse1X, nudCoordItemUse1Y, nudCoordItemUse2X, nudCoordItemUse2Y, nudCoordItemUse2Zoom);
             _uiStateManager.AddBinaries(
                 (pnlFootprintCanvas, null));
         }
@@ -191,6 +225,8 @@ namespace PochiPochiEditorGabu._Pokemon
             LoadSpritesToUI(idx);
             LoadIconToUI(idx);
             LoadFootprintToUI(idx);
+            LoadCoordBattleToUI(idx);
+            LoadCoordItemUseToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -895,6 +931,123 @@ namespace PochiPochiEditorGabu._Pokemon
                 }
             }
         }
+
+        private void LoadCoordBattleImages()
+        {
+            _battleBaackgroundImage = (Bitmap)Image.FromFile("img/PokemonCoordBattleBackground.png");
+
+            var shadowBmp = new Bitmap("img/PokemonCoordBattleShadow.png");
+            shadowBmp.MakeTransparent();
+            _battleShadowImage = shadowBmp;
+
+            var bubbleBmp = new Bitmap("img/PokemonCoordBattleBubble.png");
+            bubbleBmp.MakeTransparent();
+            _battleBubbleImage = bubbleBmp;
+        }
+
+        private void LoadCoordBattleToUI(int idx)
+        {
+            DataBindingHelper.BindObjectToControls(this, _coordBattleAllyManager.Working[idx]);
+            DataBindingHelper.BindObjectToControls(this, _coordBattleEnemyManager.Working[idx]);
+            DataBindingHelper.BindObjectToControls(this, _coordBattleEnemyShadowManager.Working[idx]);
+
+            UpdateCoordBattleDisplay();
+        }
+
+        private void UpdateCoordBattleDisplay(object sender = null, EventArgs e = null)
+        {
+            if (_isUpdatingUI && sender != null) return;
+
+            var canvas = new Bitmap(picCoordBattleDisplay.Width, picCoordBattleDisplay.Height);
+            using (Graphics g = Graphics.FromImage(canvas))
+            {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+
+                // background
+                g.DrawImage(_battleBaackgroundImage, 0, 0, picCoordBattleDisplay.Width, picCoordBattleDisplay.Height);
+
+                // shadow
+                if (nudCoordBattleEnemyShadowY.Value != 0)
+                {
+                    g.DrawImage(_battleShadowImage, GbaConstants.BattleEnemyShadowX, GbaConstants.BattleEnemyShadowY,
+                                _battleShadowImage.Width, _battleShadowImage.Height);
+                }
+
+                // ally
+                if (_battleAllyImage != null)
+                {
+                    int yPosition = GbaConstants.BattleAllyY + (int)nudCoordBattleAllyPokemon.Value;
+                    g.DrawImage(_battleAllyImage, GbaConstants.BattleAllyX, yPosition,
+                                _battleAllyImage.Width, _battleAllyImage.Height);
+                }
+
+                // enemy
+                if (_battleEnemyImage != null)
+                {
+                    int yPosition = GbaConstants.BattleEnemyY + (int)nudCoordBattleEnemyPokemon.Value;
+
+                    if (nudCoordBattleEnemyShadowY.Value != 0)
+                    {
+                        yPosition -= (int)nudCoordBattleEnemyShadowY.Value;
+                    }
+                    g.DrawImage(_battleEnemyImage, GbaConstants.BattleEnemyX, yPosition,
+                                _battleEnemyImage.Width, _battleEnemyImage.Height);
+                }
+
+                // bubble
+                if (chkShowBattleBubble.Checked)
+                {
+                    // ally
+                    int allyX = GbaConstants.BattleAllyBubbleX + ((int)nudCoordBattleAllyBubbleX.Value * GbaConstants.BattleBubbleMultiplier);
+                    int allyY = GbaConstants.BattleAllyBubbleY - ((int)nudCoordBattleAllyBubbleY.Value * GbaConstants.BattleBubbleMultiplier)
+                                + (int)nudCoordBattleAllyPokemon.Value;
+                    g.DrawImage(_battleBubbleImage, allyX, allyY, _battleBubbleImage.Width, _battleBubbleImage.Height);
+
+                    // enemy
+                    int enemyX = GbaConstants.BattleEnemyBubbleX - ((int)nudCoordBattleEnemyBubbleX.Value * GbaConstants.BattleBubbleMultiplier);
+                    int enemyY = GbaConstants.BattleEnemyBubbleY - ((int)nudCoordBattleEnemyBubbleY.Value * GbaConstants.BattleBubbleMultiplier)
+                                 + (int)nudCoordBattleEnemyPokemon.Value - (int)nudCoordBattleEnemyShadowY.Value;
+                    g.DrawImage(_battleBubbleImage, enemyX, enemyY, _battleBubbleImage.Width, _battleBubbleImage.Height);
+                }
+            }
+
+            // discard
+            if (picCoordBattleDisplay.Image != null)
+            {
+                picCoordBattleDisplay.Image.Dispose();
+            }
+            picCoordBattleDisplay.Image = canvas;
+        }
+
+        private void chkShowBattleBubble_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateCoordBattleDisplay(sender, e);
+        }
+
+        private void LoadCoordItemUseImages()
+        {
+
+        }
+
+        private void LoadCoordItemUseToUI(int idx)
+        {
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
