@@ -82,7 +82,7 @@ namespace PochiPochiEditorGabu.Helpers
 
         public static bool TryParseAddress(string addrStr, out uint addrValue)
         {
-            return uint.TryParse(addrStr, System.Globalization.NumberStyles.HexNumber, null, out addrValue);
+            return uint.TryParse(addrStr, NumberStyles.HexNumber, null, out addrValue);
         }
 
         public static bool ValidateAndFormatInputTextBox(TextBox txt, out uint? addrValue, bool showMessage = true)

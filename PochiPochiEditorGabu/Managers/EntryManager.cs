@@ -39,8 +39,8 @@ namespace PochiPochiEditorGabu.Managers
         public void Save(
             int idx,
             bool appendTerminator = true,
-            byte freeSpaceByte = GbaConstants.FreeSpaceByte, 
-            byte paddingByte = GbaConstants.PaddingByte)
+            byte paddingByte1 = GbaConstants.FreeSpaceByte, 
+            byte paddingByte2 = GbaConstants.PaddingByte)
         {
             int entrySize = GetEntrySize();
             int offset = (int)Address.Value + (idx * entrySize);
@@ -51,9 +51,9 @@ namespace PochiPochiEditorGabu.Managers
                 singleItemList, 
                 _tblReader, 
                 _dynamicLengths, 
-                appendTerminator, 
-                freeSpaceByte, 
-                paddingByte);
+                appendTerminator,
+                paddingByte1, 
+                paddingByte2);
 
             Original[idx] = CloneHelper.Clone(Working[idx]);
         }

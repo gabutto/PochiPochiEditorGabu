@@ -108,6 +108,17 @@ namespace PochiPochiEditorGabu._Item
             ControlHelper.LoadComboBoxFromTextFile(cmbPocketIdx, "txt/ItemDataPocketIdx.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbFieldUseType, "txt/ItemDataFieldUseType.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbBattleUseType, "txt/ItemDataBattleUseType.txt");
+
+            //search for [03]モンスターボール
+            var pocketItems = cmbPocketIdx.DataSource as List<KeyValuePair<int, string>>;
+            if (pocketItems != null)
+            {
+                var mbEntry = pocketItems.FirstOrDefault(x => x.Value?.Contains("モンスターボール") == true);
+                if (mbEntry.Value != null)
+                {
+                    _pokeBallPocketIdx = mbEntry.Key;
+                }
+            }
         }
 
         private void InitializeUIStates()
@@ -404,7 +415,10 @@ namespace PochiPochiEditorGabu._Item
                     byte b = _romData[(int)(address + i)];
                     descriptionBytes.Add(b);
                     if (b == 0xFF)
+                    {
                         break;
+                    }
+
                     i++;
                 }
 
@@ -423,7 +437,8 @@ namespace PochiPochiEditorGabu._Item
 
         private void UpdateFieldUseControlsState()
         {
-            if (_isUpdatingUI) return;
+            if (_isUpdatingFieldUseSync) return;
+            _isUpdatingFieldUseSync = true;
 
             var selectedPocket = cmbPocketIdx.SelectedItem;
             bool isPokeBall = false;
@@ -453,6 +468,8 @@ namespace PochiPochiEditorGabu._Item
                     cmbFieldUseType.SelectedIndex = -1;
                 }
             }
+
+            _isUpdatingFieldUseSync = false;
         }
 
         private void cmbPocketIdx_SelectedIndexChanged(object sender, EventArgs e)
@@ -460,10 +477,10 @@ namespace PochiPochiEditorGabu._Item
             if (_isUpdatingUI) return;
 
             int newPocketIndex = Convert.ToInt32(cmbPocketIdx.SelectedValue);
-            bool wasMonsterBall = (_prevPocketIdx == _pokeBallPocketIdx);
-            bool isMonsterBall = (newPocketIndex == _pokeBallPocketIdx);
+            bool wasPokeBall = (_prevPocketIdx == _pokeBallPocketIdx);
+            bool isPokeBall = (newPocketIndex == _pokeBallPocketIdx);
 
-            if (wasMonsterBall && !isMonsterBall)
+            if (wasPokeBall && !isPokeBall)
             {
                 _isUpdatingFieldUseSync = true;
                 nudFieldUseType.Value = 0m;
@@ -503,28 +520,14 @@ namespace PochiPochiEditorGabu._Item
             if (isValid)
             {
                 ControlHelper.SetControlsEnabled(grpItemEffect, true);
-                DataBindingHelper.BindObjectToControls(this, _itemEffectManager.Working[idx]);
+                DataBindingHelper.BindObjectToControls(this, _itemEffectManager.Working[actualIndex]);
             }
             else
             {
                 ControlHelper.SetControlsEnabled(grpItemEffect, false);
                 ControlHelper.ResetControls(grpItemEffect);
-            };
+            }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         private void ResetControls()
         {
@@ -535,7 +538,7 @@ namespace PochiPochiEditorGabu._Item
         {
             SaveCurrentSprite(idx);
             SaveCurrentItemDescData();
-            SaveCurrentItemData(idx);
+            SaveCurrentItemData(idx); // include name
             SaveCurrentEffectAddr(idx);
         }
 
@@ -602,15 +605,26 @@ namespace PochiPochiEditorGabu._Item
             }
         }
 
-        private void SaveCurrentItemData(int idx)
+        private void SaveCurrentItemData(int idx) // include name
         {
             DataBindingHelper.BindControlsToObject(this, _itemDataManager.Working[idx]);
-            _itemDataManager.Save(idx);
+            if (_config.GetBool("IsAppliedCFRU")) // FF 00 00 ...
+            {
+                _itemDataManager.Save(idx, true, GbaConstants.PaddingByte, GbaConstants.PaddingByte);
+            }
+            else
+            {
+                _itemDataManager.Save(idx); // ... FF FF 00
+            }
         }
 
         private void SaveCurrentEffectAddr(int idx)
         {
+            int actualIndex = idx - _config.GetInt("ItemEffectFirstIndex");
+            if (actualIndex < 0 || actualIndex >= _itemEffectManager.Count) return;
 
+            DataBindingHelper.BindControlsToObject(this, _itemEffectManager.Working[actualIndex]);
+            _itemEffectManager.Save(actualIndex);
         }
     }
 }

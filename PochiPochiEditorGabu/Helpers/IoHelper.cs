@@ -99,8 +99,8 @@ namespace PochiPochiEditorGabu.Helpers
             TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null,
             bool appendTerminator = true,
-            byte freeSpaceByte = GbaConstants.FreeSpaceByte,
-            byte paddingByte = GbaConstants.PaddingByte)
+            byte paddingByte1 = GbaConstants.FreeSpaceByte,
+            byte paddingByte2 = GbaConstants.PaddingByte)
         {
             GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
@@ -147,16 +147,18 @@ namespace PochiPochiEditorGabu.Helpers
                                     // FreeSpaceByte
                                     if (appendTerminator)
                                     {
+                                        finalBytes.Add(GbaConstants.FreeSpaceByte);
+
                                         while (finalBytes.Count < allowedLength)
                                         {
-                                            finalBytes.Add(freeSpaceByte);
+                                            finalBytes.Add(paddingByte1);
                                         }
                                     }
 
                                     // PaddingByte
                                     while (finalBytes.Count < entryLength)
                                     {
-                                        finalBytes.Add(paddingByte);
+                                        finalBytes.Add(paddingByte2);
                                     }
 
                                     byte[] result = finalBytes.Take(entryLength).ToArray();
@@ -164,7 +166,7 @@ namespace PochiPochiEditorGabu.Helpers
                                 }
                                 else
                                 {
-                                    byte[] result = tblReader.StringToBytes(strVal, appendTerminator, entryLength, paddingByte);
+                                    byte[] result = tblReader.StringToBytes(strVal, appendTerminator, entryLength, paddingByte2);
                                     Array.Copy(result, 0, data, currentOffset, entryLength);
                                 }
 
