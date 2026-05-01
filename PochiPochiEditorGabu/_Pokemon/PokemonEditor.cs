@@ -694,9 +694,23 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void LoadFootprintToUI(int idx)
         {
-            DataBindingHelper.BindObjectToControls(this, _footprintImgManager.Working[idx]);
+            if (idx >= _config.GetInt("NoFootprintStartIndex"))
+            {
+                ControlHelper.SetControlsEnabled(grpFootprint, false);
+                ControlHelper.ResetControls(grpFootprint);
 
-            DisplayFootprint();
+                picFootprint.Image?.Dispose();
+                picFootprint.Image = null;
+                _currentFootprintData = null;
+                pnlFootprintCanvas.Invalidate();
+            }
+
+            else
+            {
+                ControlHelper.SetControlsEnabled(grpFootprint, true);
+                DataBindingHelper.BindObjectToControls(this, _footprintImgManager.Working[idx]);
+                DisplayFootprint();
+            }
         }
 
         private void txtFootprintImgAddr_TextChanged(object sender, EventArgs e)
@@ -987,6 +1001,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void SaveCurrentFootprint(int idx)
         {
+            if (idx >= _config.GetInt("NoFootprintStartIndex")) return;
             if (!ControlHelper.TryParseAddress(txtFootprintImgAddr.Text, out uint imageAddress)) return;
 
             var res = _reservationManager.GetReservation(txtFootprintImgAddr);
