@@ -177,6 +177,9 @@
     <Content Include="txt\ItemDataPocketIdx.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="txt\PokemonEvolutionMethod.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="txt\PokemonStatsColor.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

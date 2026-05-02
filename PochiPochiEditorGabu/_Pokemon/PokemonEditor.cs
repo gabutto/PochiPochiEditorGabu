@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -56,6 +58,15 @@ namespace PochiPochiEditorGabu._Pokemon
         private Bitmap _itemUse1BackgroundImage = null;
         private Bitmap _itemUse2BackgroundImage = null;
         private bool _isItemUseCoordValid = false;
+        private int _currentEvoSlotIndex = 0;
+
+        private class EvolutionMethodInfo
+        {
+            public string MethodName { get; set; }
+            public string Param1 { get; set; }
+            public string Param2 { get; set; }
+        }
+        private List<EvolutionMethodInfo> evolutionMethodInfos = new List<EvolutionMethodInfo>();
 
         public PokemonEditor(
             byte[] romData, 
@@ -128,6 +139,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 _statsNormalManager = EntryManager<PokemonStatsNormalEntry>.Create(
                     _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
+
+
 
 
 
@@ -209,21 +222,20 @@ namespace PochiPochiEditorGabu._Pokemon
             rbCoordItemUse2Normal.CheckedChanged += CoordItemUse2Mode_CheckedChanged;
             rbCoordItemUse2Zoom.CheckedChanged += CoordItemUse2Mode_CheckedChanged;
 
-
-
-
             cmbStatsHoldItem1.SelectedIndexChanged += HoldItemComboBox_SelectedIndexChanged;
             cmbStatsHoldItem2.SelectedIndexChanged += HoldItemComboBox_SelectedIndexChanged;
+
+            lstEvoSlots.SelectedIndexChanged += lstEvoSlots_SelectedIndexChanged;
+            cmbEvoToPokemon.SelectedIndexChanged += cmbEvoToPokemon_SelectedIndexChanged;
+            cmbEvoCondMethod.SelectedIndexChanged += cmbEvoCondMethod_SelectedIndexChanged;
+            rbEvoInputAssistPokemon.CheckedChanged += EvoInputAssist_CheckedChanged;
+            rbEvoInputAssistType.CheckedChanged += EvoInputAssist_CheckedChanged;
+            rbEvoInputAssistItem.CheckedChanged += EvoInputAssist_CheckedChanged;
+            rbEvoInputAssistMove.CheckedChanged += EvoInputAssist_CheckedChanged;
         }
 
         private void InitializeControls()
         {
-            // cmbPokemonName
-            var classNames = _pokemonNameManager.Working
-                             .Select(entry => entry._PokemonName)
-                             .ToArray();
-            cmbPokemonName.Items.AddRange(classNames);
-
             // cmbSpriteExport
             ControlHelper.SetupComboBoxItems(
                 cmbSpriteExport, 
@@ -251,7 +263,26 @@ namespace PochiPochiEditorGabu._Pokemon
                 nudStatsExp.Maximum = GbaConstants.Mask16Bits;
             }
 
-            // cmbStatsAbility
+            // lstEvoSlots
+            int evoSlotCount = _config.GetInt("PokemonEvolutionSlotCount");
+            lstEvoSlots.Items.Clear();
+            for (int i = 0; i < evoSlotCount; i++)
+            {
+                lstEvoSlots.Items.Add($"進化スロット {i + 1}");
+            }
+
+            // cmbEvoCondMethod
+            InitializePokemonEvolutionMethod();
+
+            // pokemon name for cmb
+            var classNames = _pokemonNameManager.Working
+                             .Select(entry => entry._PokemonName)
+                             .ToArray();
+            cmbPokemonName.Items.AddRange(classNames);
+            cmbEvoToPokemon.Items.AddRange(classNames);
+            cmbEvoInputAssistPokemon.Items.AddRange(classNames);
+
+            // ability for cmb
             var abilityNames = _abilityNameManager.Working
                              .Select(entry => entry._AbilityName)
                              .ToArray();
@@ -259,19 +290,27 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbStatsAbility2.Items.AddRange(abilityNames);
             cmbStatsAbilityHidden.Items.AddRange(abilityNames);
 
-            // cmbStatsHoldItem
+            // item for cmb
             var itemNames = _itemDataManager.Working
                              .Select(entry => entry._ItemName)
                              .ToArray();
             cmbStatsHoldItem1.Items.AddRange(itemNames);
             cmbStatsHoldItem2.Items.AddRange(itemNames);
+            cmbEvoInputAssistItem.Items.AddRange(itemNames);
 
-            //cmbStatsType
+            // type for cmb
             var typeNames = _typeNameManager.Working
                              .Select(entry => entry._TypeName)
                              .ToArray();
             cmbStatsType1.Items.AddRange(typeNames);
             cmbStatsType2.Items.AddRange(typeNames);
+            cmbEvoInputAssistType.Items.AddRange(typeNames);
+
+            // move for cmb
+            var moveNames = _moveNameManager.Working
+                             .Select(entry => entry._MoveName)
+                             .ToArray();
+            cmbEvoInputAssistMove.Items.AddRange(moveNames);
 
             ControlHelper.AttachAddressAutoFormat(
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
@@ -282,7 +321,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 picIconPal, picIcon, picIconAnimated,
                 picFootprint, pnlFootprintCanvas,
                 picCoordBattleDisplay, picCoordItemUse1, picCoordItemUse2,
-                picStatsHoldItem1, picStatsHoldItem2);
+                picStatsHoldItem1, picStatsHoldItem2,
+                picEvoToIcon);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
@@ -325,6 +365,8 @@ namespace PochiPochiEditorGabu._Pokemon
             _reservationManager.ClearAllReservations();
 
             _currentPokemonIdx = idx;
+            _currentEvoSlotIndex = 0;
+
             LoadPokemonNameToUI(idx);
             LoadSpritesToUI(idx);
             LoadIconToUI(idx);
@@ -332,6 +374,7 @@ namespace PochiPochiEditorGabu._Pokemon
             LoadCoordBattleToUI(idx);
             LoadCoordItemUseToUI(idx);
             LoadStatsToUI(idx);
+            LoadEvolutionsToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -1336,6 +1379,12 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
+        private void HoldItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            UpdateHoldItemImages();
+        }
+
         private void LoadStatsToUI(int idx)
         {
             if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
@@ -1399,24 +1448,112 @@ namespace PochiPochiEditorGabu._Pokemon
             return BitConverter.ToUInt16(new byte[] { lowByte, highByte }, 0);
         }
 
-        private void HoldItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void InitializePokemonEvolutionMethod()
         {
-            if (_isUpdatingUI) return;
-            UpdateHoldItemImages();
+            evolutionMethodInfos.Clear();
+            cmbEvoCondMethod.BeginUpdate();
+            cmbEvoCondMethod.Items.Clear();
+
+            string filePath = Path.Combine(Application.StartupPath, "txt", "PokemonEvolutionMethod.txt");
+
+            if (File.Exists(filePath))
+            {
+                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
+
+                foreach (string line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line))
+                    {
+                        continue;
+                    }
+
+                    string[] parts = line.Split(';');
+                    var info = new EvolutionMethodInfo
+                    {
+                        MethodName = parts[0].Trim(),
+                        Param1 = parts[1].Trim(),
+                        Param2 = parts[2].Trim()
+                    };
+
+                    evolutionMethodInfos.Add(info);
+                    cmbEvoCondMethod.Items.Add(info.MethodName);
+                }
+            }
+
+            cmbEvoCondMethod.EndUpdate();
         }
 
+        private void cmbEvoCondMethod_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int selectedIndex = cmbEvoCondMethod.SelectedIndex;
+            if (selectedIndex >= 0 && selectedIndex < evolutionMethodInfos.Count)
+            {
+                txtEvoCondParam1Desc.Text = evolutionMethodInfos[selectedIndex].Param1;
+                txtEvoCondParam2Desc.Text = evolutionMethodInfos[selectedIndex].Param2;
+            }
+        }
 
+        private void UpdateEvoToIcon()
+        {
+            Bitmap icon = null;
 
+            if (cmbEvoToPokemon.SelectedIndex >= 0 && cmbEvoToPokemon.SelectedIndex < cmbEvoToPokemon.Items.Count)
+            {
+                int idx = cmbEvoToPokemon.SelectedIndex;
+                icon = GetPokemonIcon(idx, true);
+            }
 
+            picEvoToIcon.Image?.Dispose();
+            picEvoToIcon.Image = null;
+            picEvoToIcon.Image = icon;
+        }
 
+        public Bitmap GetPokemonIcon(int idx, bool showBackColor)
+        {
+            uint? imageAddress = _iconImgManager.Original[idx].pIconImgAddr - GbaConstants.BaseAddr;
+            int palIndex = _iconPalIdxManager.Original[idx].IconPalIdx;
+            var entry = _iconPalAddrManager.Working[palIndex];
+            uint palettePtr = entry._IconPaletteAddr;
 
+            if (palettePtr == 0) return null;
+            uint paletteAddress = palettePtr - GbaConstants.BaseAddr;
 
+            try
+            {
+                byte[] image = new byte[GbaConstants.IconBytesPerFrame];
+                Array.Copy(_romData, (int)imageAddress.Value, image, 0, GbaConstants.IconBytesPerFrame);
+                Color[] palette = ImageManager.DecompressPalette(_romData, paletteAddress, false);
+                return ImageManager.CreateSprite(image, palette, GbaConstants.IconFrameSize, GbaConstants.IconFrameSize, showBackColor);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
+        private void cmbEvoToPokemon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            UpdateEvoToIcon();
+        }
 
+        private void EvoInputAssist_CheckedChanged(object sender, EventArgs e)
+        {
+            cmbEvoInputAssistPokemon.Enabled = rbEvoInputAssistPokemon.Checked;
+            cmbEvoInputAssistType.Enabled = rbEvoInputAssistType.Checked;
+            cmbEvoInputAssistItem.Enabled = rbEvoInputAssistItem.Checked;
+            cmbEvoInputAssistMove.Enabled = rbEvoInputAssistMove.Checked;
+        }
 
+        private void LoadEvolutionsToUI(int idx)
+        {
+            lstEvoSlots.SelectedIndex = _currentEvoSlotIndex;
+        }
 
-
-
+        private void lstEvoSlots_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_currentEvoSlotIndex == lstEvoSlots.SelectedIndex) return;
+        }
 
 
 
@@ -1443,6 +1580,7 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveCurrentCoordBattle(idx);
             SaveCurrentCoordItemUse(idx);
             SaveCurrentStats(idx);
+            SaveCurrentEvolutions(idx);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -1596,6 +1734,11 @@ namespace PochiPochiEditorGabu._Pokemon
                 DataBindingHelper.BindControlsToObject(this, _statsNormalManager.Working[idx]);
                 _statsNormalManager.Save(idx);
             }
+        }
+
+        private void SaveCurrentEvolutions(int idx)
+        {
+
         }
     }
 }

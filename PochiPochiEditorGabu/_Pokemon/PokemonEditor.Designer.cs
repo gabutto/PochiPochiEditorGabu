@@ -180,6 +180,33 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblStatsSpAtk = new System.Windows.Forms.Label();
             this.lblStatsHp = new System.Windows.Forms.Label();
             this.tabPageEvolutions = new System.Windows.Forms.TabPage();
+            this.grpEvoInputAssist = new System.Windows.Forms.GroupBox();
+            this.cmbEvoInputAssistMove = new System.Windows.Forms.ComboBox();
+            this.cmbEvoInputAssistItem = new System.Windows.Forms.ComboBox();
+            this.cmbEvoInputAssistType = new System.Windows.Forms.ComboBox();
+            this.cmbEvoInputAssistPokemon = new System.Windows.Forms.ComboBox();
+            this.rbEvoInputAssistMove = new System.Windows.Forms.RadioButton();
+            this.rbEvoInputAssistItem = new System.Windows.Forms.RadioButton();
+            this.rbEvoInputAssistType = new System.Windows.Forms.RadioButton();
+            this.rbEvoInputAssistPokemon = new System.Windows.Forms.RadioButton();
+            this.grpEvoCondParam = new System.Windows.Forms.GroupBox();
+            this.nudEvoCondParam2B = new System.Windows.Forms.NumericUpDown();
+            this.nudEvoCondParam1B = new System.Windows.Forms.NumericUpDown();
+            this.nudEvoCondParam2A = new System.Windows.Forms.NumericUpDown();
+            this.nudEvoCondParam1A = new System.Windows.Forms.NumericUpDown();
+            this.lblEvoCondParam2 = new System.Windows.Forms.Label();
+            this.lblEvoCondParam1 = new System.Windows.Forms.Label();
+            this.grpEvoCond = new System.Windows.Forms.GroupBox();
+            this.txtEvoCondParam2Desc = new System.Windows.Forms.TextBox();
+            this.txtEvoCondParam1Desc = new System.Windows.Forms.TextBox();
+            this.cmbEvoCondMethod = new System.Windows.Forms.ComboBox();
+            this.lblEvoCondParam2Desc = new System.Windows.Forms.Label();
+            this.lblEvoCondParam1Desc = new System.Windows.Forms.Label();
+            this.lblEvoCondMethod = new System.Windows.Forms.Label();
+            this.grpEvoTo = new System.Windows.Forms.GroupBox();
+            this.picEvoToIcon = new System.Windows.Forms.PictureBox();
+            this.cmbEvoToPokemon = new System.Windows.Forms.ComboBox();
+            this.lstEvoSlots = new System.Windows.Forms.ListBox();
             this.tabPageLearnsets = new System.Windows.Forms.TabPage();
             this.tabPagePokedex = new System.Windows.Forms.TabPage();
             this.tabPageCries = new System.Windows.Forms.TabPage();
@@ -249,6 +276,16 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.nudStatsAtk)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStatsSpAtk)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStatsHp)).BeginInit();
+            this.tabPageEvolutions.SuspendLayout();
+            this.grpEvoInputAssist.SuspendLayout();
+            this.grpEvoCondParam.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEvoCondParam2B)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEvoCondParam1B)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEvoCondParam2A)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEvoCondParam1A)).BeginInit();
+            this.grpEvoCond.SuspendLayout();
+            this.grpEvoTo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picEvoToIcon)).BeginInit();
             this.tabPageMusic.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1997,6 +2034,11 @@ namespace PochiPochiEditorGabu._Pokemon
             // 
             // tabPageEvolutions
             // 
+            this.tabPageEvolutions.Controls.Add(this.grpEvoInputAssist);
+            this.tabPageEvolutions.Controls.Add(this.grpEvoCondParam);
+            this.tabPageEvolutions.Controls.Add(this.grpEvoCond);
+            this.tabPageEvolutions.Controls.Add(this.grpEvoTo);
+            this.tabPageEvolutions.Controls.Add(this.lstEvoSlots);
             this.tabPageEvolutions.Location = new System.Drawing.Point(4, 22);
             this.tabPageEvolutions.Margin = new System.Windows.Forms.Padding(0);
             this.tabPageEvolutions.Name = "tabPageEvolutions";
@@ -2004,6 +2046,311 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageEvolutions.TabIndex = 3;
             this.tabPageEvolutions.Text = "進化";
             this.tabPageEvolutions.UseVisualStyleBackColor = true;
+            // 
+            // grpEvoInputAssist
+            // 
+            this.grpEvoInputAssist.Controls.Add(this.cmbEvoInputAssistMove);
+            this.grpEvoInputAssist.Controls.Add(this.cmbEvoInputAssistItem);
+            this.grpEvoInputAssist.Controls.Add(this.cmbEvoInputAssistType);
+            this.grpEvoInputAssist.Controls.Add(this.cmbEvoInputAssistPokemon);
+            this.grpEvoInputAssist.Controls.Add(this.rbEvoInputAssistMove);
+            this.grpEvoInputAssist.Controls.Add(this.rbEvoInputAssistItem);
+            this.grpEvoInputAssist.Controls.Add(this.rbEvoInputAssistType);
+            this.grpEvoInputAssist.Controls.Add(this.rbEvoInputAssistPokemon);
+            this.grpEvoInputAssist.Location = new System.Drawing.Point(380, 266);
+            this.grpEvoInputAssist.Margin = new System.Windows.Forms.Padding(0);
+            this.grpEvoInputAssist.Name = "grpEvoInputAssist";
+            this.grpEvoInputAssist.Padding = new System.Windows.Forms.Padding(0);
+            this.grpEvoInputAssist.Size = new System.Drawing.Size(264, 148);
+            this.grpEvoInputAssist.TabIndex = 4;
+            this.grpEvoInputAssist.TabStop = false;
+            this.grpEvoInputAssist.Text = "パラメータ入力補助";
+            // 
+            // cmbEvoInputAssistMove
+            // 
+            this.cmbEvoInputAssistMove.FormattingEnabled = true;
+            this.cmbEvoInputAssistMove.Location = new System.Drawing.Point(96, 106);
+            this.cmbEvoInputAssistMove.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbEvoInputAssistMove.Name = "cmbEvoInputAssistMove";
+            this.cmbEvoInputAssistMove.Size = new System.Drawing.Size(144, 20);
+            this.cmbEvoInputAssistMove.TabIndex = 1;
+            // 
+            // cmbEvoInputAssistItem
+            // 
+            this.cmbEvoInputAssistItem.FormattingEnabled = true;
+            this.cmbEvoInputAssistItem.Location = new System.Drawing.Point(96, 80);
+            this.cmbEvoInputAssistItem.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbEvoInputAssistItem.Name = "cmbEvoInputAssistItem";
+            this.cmbEvoInputAssistItem.Size = new System.Drawing.Size(144, 20);
+            this.cmbEvoInputAssistItem.TabIndex = 1;
+            // 
+            // cmbEvoInputAssistType
+            // 
+            this.cmbEvoInputAssistType.FormattingEnabled = true;
+            this.cmbEvoInputAssistType.Location = new System.Drawing.Point(96, 54);
+            this.cmbEvoInputAssistType.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbEvoInputAssistType.Name = "cmbEvoInputAssistType";
+            this.cmbEvoInputAssistType.Size = new System.Drawing.Size(120, 20);
+            this.cmbEvoInputAssistType.TabIndex = 1;
+            // 
+            // cmbEvoInputAssistPokemon
+            // 
+            this.cmbEvoInputAssistPokemon.FormattingEnabled = true;
+            this.cmbEvoInputAssistPokemon.Location = new System.Drawing.Point(96, 28);
+            this.cmbEvoInputAssistPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbEvoInputAssistPokemon.Name = "cmbEvoInputAssistPokemon";
+            this.cmbEvoInputAssistPokemon.Size = new System.Drawing.Size(120, 20);
+            this.cmbEvoInputAssistPokemon.TabIndex = 1;
+            // 
+            // rbEvoInputAssistMove
+            // 
+            this.rbEvoInputAssistMove.AutoSize = true;
+            this.rbEvoInputAssistMove.Location = new System.Drawing.Point(20, 108);
+            this.rbEvoInputAssistMove.Margin = new System.Windows.Forms.Padding(0);
+            this.rbEvoInputAssistMove.Name = "rbEvoInputAssistMove";
+            this.rbEvoInputAssistMove.Size = new System.Drawing.Size(53, 16);
+            this.rbEvoInputAssistMove.TabIndex = 0;
+            this.rbEvoInputAssistMove.Text = "技名 :";
+            this.rbEvoInputAssistMove.UseVisualStyleBackColor = true;
+            // 
+            // rbEvoInputAssistItem
+            // 
+            this.rbEvoInputAssistItem.AutoSize = true;
+            this.rbEvoInputAssistItem.Location = new System.Drawing.Point(20, 82);
+            this.rbEvoInputAssistItem.Margin = new System.Windows.Forms.Padding(0);
+            this.rbEvoInputAssistItem.Name = "rbEvoInputAssistItem";
+            this.rbEvoInputAssistItem.Size = new System.Drawing.Size(66, 16);
+            this.rbEvoInputAssistItem.TabIndex = 0;
+            this.rbEvoInputAssistItem.Text = "アイテム :";
+            this.rbEvoInputAssistItem.UseVisualStyleBackColor = true;
+            // 
+            // rbEvoInputAssistType
+            // 
+            this.rbEvoInputAssistType.AutoSize = true;
+            this.rbEvoInputAssistType.Location = new System.Drawing.Point(20, 56);
+            this.rbEvoInputAssistType.Margin = new System.Windows.Forms.Padding(0);
+            this.rbEvoInputAssistType.Name = "rbEvoInputAssistType";
+            this.rbEvoInputAssistType.Size = new System.Drawing.Size(55, 16);
+            this.rbEvoInputAssistType.TabIndex = 0;
+            this.rbEvoInputAssistType.Text = "タイプ :";
+            this.rbEvoInputAssistType.UseVisualStyleBackColor = true;
+            // 
+            // rbEvoInputAssistPokemon
+            // 
+            this.rbEvoInputAssistPokemon.AutoSize = true;
+            this.rbEvoInputAssistPokemon.Location = new System.Drawing.Point(20, 30);
+            this.rbEvoInputAssistPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.rbEvoInputAssistPokemon.Name = "rbEvoInputAssistPokemon";
+            this.rbEvoInputAssistPokemon.Size = new System.Drawing.Size(66, 16);
+            this.rbEvoInputAssistPokemon.TabIndex = 0;
+            this.rbEvoInputAssistPokemon.Text = "ポケモン :";
+            this.rbEvoInputAssistPokemon.UseVisualStyleBackColor = true;
+            // 
+            // grpEvoCondParam
+            // 
+            this.grpEvoCondParam.Controls.Add(this.nudEvoCondParam2B);
+            this.grpEvoCondParam.Controls.Add(this.nudEvoCondParam1B);
+            this.grpEvoCondParam.Controls.Add(this.nudEvoCondParam2A);
+            this.grpEvoCondParam.Controls.Add(this.nudEvoCondParam1A);
+            this.grpEvoCondParam.Controls.Add(this.lblEvoCondParam2);
+            this.grpEvoCondParam.Controls.Add(this.lblEvoCondParam1);
+            this.grpEvoCondParam.Location = new System.Drawing.Point(216, 266);
+            this.grpEvoCondParam.Margin = new System.Windows.Forms.Padding(0);
+            this.grpEvoCondParam.Name = "grpEvoCondParam";
+            this.grpEvoCondParam.Padding = new System.Windows.Forms.Padding(0);
+            this.grpEvoCondParam.Size = new System.Drawing.Size(146, 148);
+            this.grpEvoCondParam.TabIndex = 3;
+            this.grpEvoCondParam.TabStop = false;
+            this.grpEvoCondParam.Text = "パラメータ";
+            // 
+            // nudEvoCondParam2B
+            // 
+            this.nudEvoCondParam2B.Location = new System.Drawing.Point(76, 106);
+            this.nudEvoCondParam2B.Margin = new System.Windows.Forms.Padding(0);
+            this.nudEvoCondParam2B.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudEvoCondParam2B.Name = "nudEvoCondParam2B";
+            this.nudEvoCondParam2B.Size = new System.Drawing.Size(48, 19);
+            this.nudEvoCondParam2B.TabIndex = 1;
+            // 
+            // nudEvoCondParam1B
+            // 
+            this.nudEvoCondParam1B.Location = new System.Drawing.Point(76, 50);
+            this.nudEvoCondParam1B.Margin = new System.Windows.Forms.Padding(0);
+            this.nudEvoCondParam1B.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudEvoCondParam1B.Name = "nudEvoCondParam1B";
+            this.nudEvoCondParam1B.Size = new System.Drawing.Size(48, 19);
+            this.nudEvoCondParam1B.TabIndex = 1;
+            // 
+            // nudEvoCondParam2A
+            // 
+            this.nudEvoCondParam2A.Location = new System.Drawing.Point(20, 106);
+            this.nudEvoCondParam2A.Margin = new System.Windows.Forms.Padding(0);
+            this.nudEvoCondParam2A.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudEvoCondParam2A.Name = "nudEvoCondParam2A";
+            this.nudEvoCondParam2A.Size = new System.Drawing.Size(48, 19);
+            this.nudEvoCondParam2A.TabIndex = 1;
+            // 
+            // nudEvoCondParam1A
+            // 
+            this.nudEvoCondParam1A.Location = new System.Drawing.Point(20, 50);
+            this.nudEvoCondParam1A.Margin = new System.Windows.Forms.Padding(0);
+            this.nudEvoCondParam1A.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudEvoCondParam1A.Name = "nudEvoCondParam1A";
+            this.nudEvoCondParam1A.Size = new System.Drawing.Size(48, 19);
+            this.nudEvoCondParam1A.TabIndex = 1;
+            // 
+            // lblEvoCondParam2
+            // 
+            this.lblEvoCondParam2.AutoSize = true;
+            this.lblEvoCondParam2.Location = new System.Drawing.Point(20, 84);
+            this.lblEvoCondParam2.Margin = new System.Windows.Forms.Padding(0);
+            this.lblEvoCondParam2.Name = "lblEvoCondParam2";
+            this.lblEvoCondParam2.Size = new System.Drawing.Size(61, 12);
+            this.lblEvoCondParam2.TabIndex = 0;
+            this.lblEvoCondParam2.Text = "パラメータ2 :";
+            // 
+            // lblEvoCondParam1
+            // 
+            this.lblEvoCondParam1.AutoSize = true;
+            this.lblEvoCondParam1.Location = new System.Drawing.Point(20, 28);
+            this.lblEvoCondParam1.Margin = new System.Windows.Forms.Padding(0);
+            this.lblEvoCondParam1.Name = "lblEvoCondParam1";
+            this.lblEvoCondParam1.Size = new System.Drawing.Size(61, 12);
+            this.lblEvoCondParam1.TabIndex = 0;
+            this.lblEvoCondParam1.Text = "パラメータ1 :";
+            // 
+            // grpEvoCond
+            // 
+            this.grpEvoCond.Controls.Add(this.txtEvoCondParam2Desc);
+            this.grpEvoCond.Controls.Add(this.txtEvoCondParam1Desc);
+            this.grpEvoCond.Controls.Add(this.cmbEvoCondMethod);
+            this.grpEvoCond.Controls.Add(this.lblEvoCondParam2Desc);
+            this.grpEvoCond.Controls.Add(this.lblEvoCondParam1Desc);
+            this.grpEvoCond.Controls.Add(this.lblEvoCondMethod);
+            this.grpEvoCond.Location = new System.Drawing.Point(216, 108);
+            this.grpEvoCond.Margin = new System.Windows.Forms.Padding(0);
+            this.grpEvoCond.Name = "grpEvoCond";
+            this.grpEvoCond.Padding = new System.Windows.Forms.Padding(0);
+            this.grpEvoCond.Size = new System.Drawing.Size(326, 148);
+            this.grpEvoCond.TabIndex = 2;
+            this.grpEvoCond.TabStop = false;
+            this.grpEvoCond.Text = "進化条件";
+            // 
+            // txtEvoCondParam2Desc
+            // 
+            this.txtEvoCondParam2Desc.Location = new System.Drawing.Point(168, 106);
+            this.txtEvoCondParam2Desc.Margin = new System.Windows.Forms.Padding(0);
+            this.txtEvoCondParam2Desc.Name = "txtEvoCondParam2Desc";
+            this.txtEvoCondParam2Desc.ReadOnly = true;
+            this.txtEvoCondParam2Desc.Size = new System.Drawing.Size(136, 19);
+            this.txtEvoCondParam2Desc.TabIndex = 2;
+            // 
+            // txtEvoCondParam1Desc
+            // 
+            this.txtEvoCondParam1Desc.Location = new System.Drawing.Point(20, 106);
+            this.txtEvoCondParam1Desc.Margin = new System.Windows.Forms.Padding(0);
+            this.txtEvoCondParam1Desc.Name = "txtEvoCondParam1Desc";
+            this.txtEvoCondParam1Desc.ReadOnly = true;
+            this.txtEvoCondParam1Desc.Size = new System.Drawing.Size(136, 19);
+            this.txtEvoCondParam1Desc.TabIndex = 2;
+            // 
+            // cmbEvoCondMethod
+            // 
+            this.cmbEvoCondMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbEvoCondMethod.FormattingEnabled = true;
+            this.cmbEvoCondMethod.Location = new System.Drawing.Point(20, 50);
+            this.cmbEvoCondMethod.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbEvoCondMethod.Name = "cmbEvoCondMethod";
+            this.cmbEvoCondMethod.Size = new System.Drawing.Size(284, 20);
+            this.cmbEvoCondMethod.TabIndex = 1;
+            // 
+            // lblEvoCondParam2Desc
+            // 
+            this.lblEvoCondParam2Desc.AutoSize = true;
+            this.lblEvoCondParam2Desc.Location = new System.Drawing.Point(168, 84);
+            this.lblEvoCondParam2Desc.Margin = new System.Windows.Forms.Padding(0);
+            this.lblEvoCondParam2Desc.Name = "lblEvoCondParam2Desc";
+            this.lblEvoCondParam2Desc.Size = new System.Drawing.Size(85, 12);
+            this.lblEvoCondParam2Desc.TabIndex = 0;
+            this.lblEvoCondParam2Desc.Text = "パラメータ2詳細 :";
+            // 
+            // lblEvoCondParam1Desc
+            // 
+            this.lblEvoCondParam1Desc.AutoSize = true;
+            this.lblEvoCondParam1Desc.Location = new System.Drawing.Point(20, 84);
+            this.lblEvoCondParam1Desc.Margin = new System.Windows.Forms.Padding(0);
+            this.lblEvoCondParam1Desc.Name = "lblEvoCondParam1Desc";
+            this.lblEvoCondParam1Desc.Size = new System.Drawing.Size(85, 12);
+            this.lblEvoCondParam1Desc.TabIndex = 0;
+            this.lblEvoCondParam1Desc.Text = "パラメータ1詳細 :";
+            // 
+            // lblEvoCondMethod
+            // 
+            this.lblEvoCondMethod.AutoSize = true;
+            this.lblEvoCondMethod.Location = new System.Drawing.Point(20, 28);
+            this.lblEvoCondMethod.Margin = new System.Windows.Forms.Padding(0);
+            this.lblEvoCondMethod.Name = "lblEvoCondMethod";
+            this.lblEvoCondMethod.Size = new System.Drawing.Size(62, 12);
+            this.lblEvoCondMethod.TabIndex = 0;
+            this.lblEvoCondMethod.Text = "進化コード :";
+            // 
+            // grpEvoTo
+            // 
+            this.grpEvoTo.Controls.Add(this.picEvoToIcon);
+            this.grpEvoTo.Controls.Add(this.cmbEvoToPokemon);
+            this.grpEvoTo.Location = new System.Drawing.Point(216, 18);
+            this.grpEvoTo.Margin = new System.Windows.Forms.Padding(0);
+            this.grpEvoTo.Name = "grpEvoTo";
+            this.grpEvoTo.Padding = new System.Windows.Forms.Padding(0);
+            this.grpEvoTo.Size = new System.Drawing.Size(216, 80);
+            this.grpEvoTo.TabIndex = 1;
+            this.grpEvoTo.TabStop = false;
+            this.grpEvoTo.Text = "進化先ポケモン";
+            // 
+            // picEvoToIcon
+            // 
+            this.picEvoToIcon.Location = new System.Drawing.Point(24, 28);
+            this.picEvoToIcon.Margin = new System.Windows.Forms.Padding(0);
+            this.picEvoToIcon.Name = "picEvoToIcon";
+            this.picEvoToIcon.Size = new System.Drawing.Size(32, 32);
+            this.picEvoToIcon.TabIndex = 1;
+            this.picEvoToIcon.TabStop = false;
+            // 
+            // cmbEvoToPokemon
+            // 
+            this.cmbEvoToPokemon.FormattingEnabled = true;
+            this.cmbEvoToPokemon.Location = new System.Drawing.Point(72, 34);
+            this.cmbEvoToPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbEvoToPokemon.Name = "cmbEvoToPokemon";
+            this.cmbEvoToPokemon.Size = new System.Drawing.Size(120, 20);
+            this.cmbEvoToPokemon.TabIndex = 0;
+            // 
+            // lstEvoSlots
+            // 
+            this.lstEvoSlots.FormattingEnabled = true;
+            this.lstEvoSlots.ItemHeight = 12;
+            this.lstEvoSlots.Location = new System.Drawing.Point(20, 24);
+            this.lstEvoSlots.Margin = new System.Windows.Forms.Padding(0);
+            this.lstEvoSlots.Name = "lstEvoSlots";
+            this.lstEvoSlots.ScrollAlwaysVisible = true;
+            this.lstEvoSlots.Size = new System.Drawing.Size(176, 184);
+            this.lstEvoSlots.TabIndex = 0;
             // 
             // tabPageLearnsets
             // 
@@ -2140,6 +2487,19 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.nudStatsAtk)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStatsSpAtk)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStatsHp)).EndInit();
+            this.tabPageEvolutions.ResumeLayout(false);
+            this.grpEvoInputAssist.ResumeLayout(false);
+            this.grpEvoInputAssist.PerformLayout();
+            this.grpEvoCondParam.ResumeLayout(false);
+            this.grpEvoCondParam.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEvoCondParam2B)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEvoCondParam1B)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEvoCondParam2A)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEvoCondParam1A)).EndInit();
+            this.grpEvoCond.ResumeLayout(false);
+            this.grpEvoCond.PerformLayout();
+            this.grpEvoTo.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picEvoToIcon)).EndInit();
             this.tabPageMusic.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -2301,5 +2661,32 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.ComboBox cmbStatsType1;
         private System.Windows.Forms.Label lblStatsType2;
         private System.Windows.Forms.Label lblStatsType1;
+        private System.Windows.Forms.GroupBox grpEvoCond;
+        private System.Windows.Forms.GroupBox grpEvoTo;
+        private System.Windows.Forms.PictureBox picEvoToIcon;
+        private System.Windows.Forms.ComboBox cmbEvoToPokemon;
+        private System.Windows.Forms.ListBox lstEvoSlots;
+        private System.Windows.Forms.Label lblEvoCondMethod;
+        private System.Windows.Forms.ComboBox cmbEvoCondMethod;
+        private System.Windows.Forms.Label lblEvoCondParam1Desc;
+        private System.Windows.Forms.TextBox txtEvoCondParam2Desc;
+        private System.Windows.Forms.TextBox txtEvoCondParam1Desc;
+        private System.Windows.Forms.Label lblEvoCondParam2Desc;
+        private System.Windows.Forms.GroupBox grpEvoCondParam;
+        private System.Windows.Forms.NumericUpDown nudEvoCondParam2B;
+        private System.Windows.Forms.NumericUpDown nudEvoCondParam1B;
+        private System.Windows.Forms.NumericUpDown nudEvoCondParam2A;
+        private System.Windows.Forms.NumericUpDown nudEvoCondParam1A;
+        private System.Windows.Forms.Label lblEvoCondParam2;
+        private System.Windows.Forms.Label lblEvoCondParam1;
+        private System.Windows.Forms.GroupBox grpEvoInputAssist;
+        private System.Windows.Forms.RadioButton rbEvoInputAssistPokemon;
+        private System.Windows.Forms.ComboBox cmbEvoInputAssistPokemon;
+        private System.Windows.Forms.ComboBox cmbEvoInputAssistMove;
+        private System.Windows.Forms.ComboBox cmbEvoInputAssistItem;
+        private System.Windows.Forms.ComboBox cmbEvoInputAssistType;
+        private System.Windows.Forms.RadioButton rbEvoInputAssistMove;
+        private System.Windows.Forms.RadioButton rbEvoInputAssistItem;
+        private System.Windows.Forms.RadioButton rbEvoInputAssistType;
     }
 }

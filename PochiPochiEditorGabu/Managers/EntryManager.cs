@@ -307,6 +307,16 @@ namespace PochiPochiEditorGabu.Managers
         public string _MoveName = string.Empty;
     }
 
+    public class PokemonEvolutionEntry
+    {
+        public byte EvoCondMethod; 
+        public byte _padding1;
+        public byte EvoCondParam1A;
+        public byte EvoCondParam1B; 
+        public ushort EvoToPokemon; 
+        public byte EvoCondParam2A; 
+        public byte EvoCondParam2B;
+    }
 
 
 

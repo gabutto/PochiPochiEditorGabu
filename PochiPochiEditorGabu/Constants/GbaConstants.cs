@@ -69,7 +69,13 @@
         public const int EvShiftSpAtk = 0;
         public const int EvShiftSpDef = 2;
 
-
+        public const int LevelMoveEntryLength2Byte = 2;
+        public const int LevelMoveEntryLength3Byte = 3;
+        public const int LevelMoveMaxLevel2Byte = 127;
+        public const int LevelMoveMaxLevel3Byte = 255;
+        public const int LevelMoveTerminator2Byte = 0xFFFF;
+        public const int LevelMoveTerminator3ByteMoveId = 0x0;
+        public const int LevelMoveTerminator3ByteLevel = 0xFF;
 
         public const int ItemSpriteSize = 24;
 
