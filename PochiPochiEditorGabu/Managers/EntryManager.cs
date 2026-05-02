@@ -229,6 +229,91 @@ namespace PochiPochiEditorGabu.Managers
         public byte CoordItemUse1Y;
     }
 
+    public class PokemonStatsNormalEntry
+    {
+        public byte StatsHp;
+        public byte StatsAtk;
+        public byte StatsDef;
+        public byte StatsSpeed;
+        public byte StatsSpAtk;
+        public byte StatsSpDef;
+        public byte StatsType1;
+        public byte StatsType2;
+        public byte StatsCatchRate;
+        public byte StatsExp;
+        public ushort _StatsEvs;
+        public ushort StatsHoldItem1;
+        public ushort StatsHoldItem2;
+        public byte StatsGender;
+        public byte StatsEggStep;
+        public byte StatsHappiness;
+        public byte StatsGrowthRate;
+        public byte StatsEggGroup1;
+        public byte StatsEggGroup2;
+        public byte StatsAbility1;
+        public byte StatsAbility2;
+        public byte StatsRunRate;
+        [DataBindingHelper.NibbleControlNames("StatsFlip", "StatsColor")]
+        public byte StatsUnknownValue;
+        public byte StatsAbilityHidden;
+        public byte _Padding1;
+    }
+
+    public class PokemonStatsExpansionEntry
+    {
+        public byte StatsHp;
+        public byte StatsAtk;
+        public byte StatsDef;
+        public byte StatsSpeed;
+        public byte StatsSpAtk;
+        public byte StatsSpDef;
+        public byte StatsType1;
+        public byte StatsType2;
+        public byte StatsCatchRate;
+        public byte _Padding1;
+        public ushort _StatsEvs;
+        public ushort StatsHoldItem1;
+        public ushort StatsHoldItem2;
+        public byte StatsGender;
+        public byte StatsEggStep;
+        public byte StatsHappiness;
+        public byte StatsGrowthRate;
+        public byte StatsEggGroup1;
+        public byte StatsEggGroup2;
+        public ushort StatsAbility1;
+        public byte StatsRunRate;
+        [DataBindingHelper.NibbleControlNames("StatsFlip", "StatsColor")]
+        public byte StatsUnknownValue;
+        public ushort StatsAbility2;
+        public ushort StatsAbilityHidden;
+        public ushort StatsExp;
+    }
+
+    public class AbilityNameEntry
+    {
+        [DynamicString("AbilityNameEntryLength")]
+        public string _AbilityName = string.Empty;
+    }
+
+    public class TypeNameEntry
+    {
+        [DynamicString("TypeNameEntryLength")]
+        public string _TypeName = string.Empty;
+    }
+
+    public class MoveNameEntry
+    {
+        [DynamicString("MoveNameEntryLength")]
+        public string _MoveName = string.Empty;
+    }
+
+
+
+
+
+
+
+
 
 
 

@@ -32,8 +32,14 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonCoordBattleEnemyEntry> _coordBattleEnemyManager;
         private EntryManager<PokemonCoordBattleEnemyShaowEntry> _coordBattleEnemyShadowManager;
         private EntryManager<PokemonCoordItemUseEntry> _coordItemUseManager;
+        private EntryManager<PokemonStatsNormalEntry> _statsNormalManager;
+        private EntryManager<PokemonStatsExpansionEntry> _statsExpansionManager;
 
+        private EntryManager<AbilityNameEntry> _abilityNameManager;
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
+        private EntryManager<ItemDataEntry> _itemDataManager;
+        private EntryManager<TypeNameEntry> _typeNameManager;
+        private EntryManager<MoveNameEntry> _moveNameManager;
 
         private bool _isUpdatingUI = false;
         private int _currentPokemonIdx = 0;
@@ -111,10 +117,42 @@ namespace PochiPochiEditorGabu._Pokemon
             _coordItemUseManager = EntryManager<PokemonCoordItemUseEntry>.Create(
                 _romData, _tblReader, _config, "PokemonCoordinateItemUseTableAddress", "PokemonCoordinateItemUseCount");
 
+            // stats
+            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
+            {
+                _statsNormalManager = EntryManager<PokemonStatsNormalEntry>.Create(
+                    _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
+            }
+            else
+            {
+                _statsExpansionManager = EntryManager<PokemonStatsExpansionEntry>.Create(
+                    _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
+            }
+
+
+
+
+
+
+            // ability name
+            _abilityNameManager = EntryManager<AbilityNameEntry>.Create(
+                _romData, _tblReader, _config, "AbilityNameTableAddress", "AbilityNameCount");
 
             // item sprite
             _itemSpriteManager = EntryManager<ItemSpriteEntry>.Create(
                 _romData, _tblReader, _config, "ItemSpriteTableAddress", "ItemDataCount");
+
+            // item name
+            _itemDataManager = EntryManager<ItemDataEntry>.Create(
+                _romData, _tblReader, _config, "ItemDataTableAddress", "ItemDataCount");
+
+            // type name
+            _typeNameManager = EntryManager<TypeNameEntry>.Create(
+                _romData, _tblReader, _config, "TypeNameTableAddress", "TypeNameCount");
+
+            // move name
+            _moveNameManager = EntryManager<MoveNameEntry>.Create(
+                _romData, _tblReader, _config, "MoveNameTableAddress", "MoveNameCount");
         }
 
         private void InitializeEventHandlers()
@@ -170,6 +208,12 @@ namespace PochiPochiEditorGabu._Pokemon
             rbCoordItemUse2Zoom.CheckedChanged += UpdateCoordItemUse2Preview;
             rbCoordItemUse2Normal.CheckedChanged += CoordItemUse2Mode_CheckedChanged;
             rbCoordItemUse2Zoom.CheckedChanged += CoordItemUse2Mode_CheckedChanged;
+
+
+
+
+            cmbStatsHoldItem1.SelectedIndexChanged += HoldItemComboBox_SelectedIndexChanged;
+            cmbStatsHoldItem2.SelectedIndexChanged += HoldItemComboBox_SelectedIndexChanged;
         }
 
         private void InitializeControls()
@@ -201,6 +245,28 @@ namespace PochiPochiEditorGabu._Pokemon
                 BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.SetValue(pnlFootprintCanvas, true);
 
+            // cmbStatsAbility
+            var abilityNames = _abilityNameManager.Working
+                             .Select(entry => entry._AbilityName)
+                             .ToArray();
+            cmbStatsAbility1.Items.AddRange(abilityNames);
+            cmbStatsAbility2.Items.AddRange(abilityNames);
+            cmbStatsAbilityHidden.Items.AddRange(abilityNames);
+
+            // cmbStatsHoldItem
+            var itemNames = _itemDataManager.Working
+                             .Select(entry => entry._ItemName)
+                             .ToArray();
+            cmbStatsHoldItem1.Items.AddRange(itemNames);
+            cmbStatsHoldItem2.Items.AddRange(itemNames);
+
+            //cmbStatsType
+            var typeNames = _typeNameManager.Working
+                             .Select(entry => entry._TypeName)
+                             .ToArray();
+            cmbStatsType1.Items.AddRange(typeNames);
+            cmbStatsType2.Items.AddRange(typeNames);
+
             ControlHelper.AttachAddressAutoFormat(
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
                 txtIconImgAddr,
@@ -209,11 +275,19 @@ namespace PochiPochiEditorGabu._Pokemon
                 picSpriteFrontNormal, picSpriteBackNormal, picSpriteFrontShiny, picSpriteBackShiny,
                 picIconPal, picIcon, picIconAnimated,
                 picFootprint, pnlFootprintCanvas,
-                picCoordBattleDisplay, picCoordItemUse1, picCoordItemUse2);
+                picCoordBattleDisplay, picCoordItemUse1, picCoordItemUse2,
+                picStatsHoldItem1, picStatsHoldItem2);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteShinyPalAddr, txtSpriteShinyPalAddr);
+            ControlHelper.LoadComboBoxFromTextFile(cmbStatsGrowthRate, "txt/PokemonStatsGrowthRate.txt");
+            ControlHelper.LoadComboBoxFromTextFile(cmbStatsColor, "txt/PokemonStatsColor.txt");
+            ControlHelper.LoadComboBoxFromTextFile(cmbStatsFlip, "txt/PokemonStatsFlip.txt");
+            ControlHelper.LoadComboBoxFromTextFile(cmbStatsGender, "txt/PokemonStatsGender.txt");
+            ControlHelper.LoadComboBoxFromTextFile(cmbStatsEggStep, "txt/PokemonStatsEggStep.txt");
+            ControlHelper.LoadComboBoxFromTextFile(cmbStatsEggGroup1, "txt/PokemonStatsEggGroup.txt");
+            ControlHelper.LoadComboBoxFromTextFile(cmbStatsEggGroup2, "txt/PokemonStatsEggGroup.txt");
         }
 
         private void InitializeUIStates()
@@ -227,7 +301,14 @@ namespace PochiPochiEditorGabu._Pokemon
                 txtFootprintImgAddr,
                 nudCoordBattleAllyBubbleX, nudCoordBattleAllyBubbleY, nudCoordBattleAllyPokemon,
                 nudCoordBattleEnemyBubbleX, nudCoordBattleEnemyBubbleY, nudCoordBattleEnemyPokemon, nudCoordBattleEnemyShadowY,
-                nudCoordItemUse1X, nudCoordItemUse1Y, nudCoordItemUse2X, nudCoordItemUse2Y, nudCoordItemUse2Zoom);
+                nudCoordItemUse1X, nudCoordItemUse1Y, nudCoordItemUse2X, nudCoordItemUse2Y, nudCoordItemUse2Zoom,
+                nudStatsHp, nudStatsAtk, nudStatsDef, nudStatsSpAtk, nudStatsSpDef, nudStatsSpeed,
+                nudStatsEvHp, nudStatsEvAtk, nudStatsEvDef, nudStatsEvSpAtk, nudStatsEvSpDef, nudStatsEvSpeed,
+                nudStatsCatchRate, nudStatsHappiness, nudStatsExp, cmbStatsGrowthRate, cmbStatsColor, cmbStatsFlip, nudStatsRunRate,
+                cmbStatsGender, cmbStatsEggStep, cmbStatsEggGroup1, cmbStatsEggGroup2,
+                cmbStatsAbility1, cmbStatsAbility2, cmbStatsAbilityHidden,
+                cmbStatsHoldItem1, cmbStatsHoldItem2,
+                cmbStatsType1, cmbStatsType2);
             _uiStateManager.AddBinaries(
                 (pnlFootprintCanvas, null));
         }
@@ -1097,7 +1178,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 g.DrawImage(_itemUse1BackgroundImage, 0, 0);
                 g.DrawImage(_battleEnemyImage, GbaConstants.ItemUseAnimPokeX, GbaConstants.ItemUseAnimPokeY);
 
-                using (Bitmap itemImage = GetItemSprite(_romData, GbaConstants.ItemUse1PreviewItemIdx, false))
+                using (Bitmap itemImage = GetItemSprite(GbaConstants.ItemUse1PreviewItemIdx, false))
                 {
                     if (itemImage != null)
                     {
@@ -1140,7 +1221,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     // normal
                     g.DrawImage(_battleEnemyImage, GbaConstants.ItemUseAnimPokeX, GbaConstants.ItemUseAnimPokeY);
 
-                    using (Bitmap itemImage = GetItemSprite(_romData, GbaConstants.ItemUse2PreviewItemIdx, false))
+                    using (Bitmap itemImage = GetItemSprite(GbaConstants.ItemUse2PreviewItemIdx, false))
                     {
                         if (itemImage != null)
                         {
@@ -1154,7 +1235,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 {
                     // zoom, magic number
                     using (Bitmap scaledPokemon = ImageManager.ScalePixelArt(_battleEnemyImage, 2))
-                    using (Bitmap scaledItem = GetItemSprite(_romData, GbaConstants.ItemUse2PreviewItemIdx, false))
+                    using (Bitmap scaledItem = GetItemSprite(GbaConstants.ItemUse2PreviewItemIdx, false))
                     {
                         Bitmap itemScaled = null;
                         if (scaledItem != null)
@@ -1193,13 +1274,15 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void CoordItemUse2Mode_CheckedChanged(object sender, EventArgs e)
         {
+            if (!_isItemUseCoordValid) return;
+
             bool isNormal = rbCoordItemUse2Normal.Checked;
             nudCoordItemUse2X.Enabled = isNormal;
             nudCoordItemUse2Y.Enabled = isNormal;
             nudCoordItemUse2Zoom.Enabled = !isNormal;
         }
 
-        private Bitmap GetItemSprite(byte[] romdata, int idx, bool showBackColor)
+        private Bitmap GetItemSprite(int idx, bool showBackColor)
         {
             uint? imgAddr = _itemSpriteManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
             uint? palAddr = _itemSpriteManager.Original[idx].pSpritePalAddr - GbaConstants.BaseAddr;
@@ -1222,6 +1305,57 @@ namespace PochiPochiEditorGabu._Pokemon
                 return null;
             }
         }
+
+        private void UpdateHoldItemImages()
+        {
+            var itemControls = new[]
+            {
+                (Combo: cmbStatsHoldItem1, Pic: picStatsHoldItem1),
+                (Combo: cmbStatsHoldItem2, Pic: picStatsHoldItem2) 
+            };
+            foreach (var item in itemControls)
+            {
+                Bitmap sprite = null;
+
+                if (item.Combo.SelectedIndex >= 0 && item.Combo.SelectedIndex < item.Combo.Items.Count)
+                {
+                    int itemId = item.Combo.SelectedIndex;
+                    sprite = GetItemSprite(itemId, true);
+                }
+
+                item.Pic.Image?.Dispose();
+                item.Pic.Image = null;
+                item.Pic.Image = sprite;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private void HoldItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            UpdateHoldItemImages();
+        }
+
+
+
+
+
+
+
+
 
 
 

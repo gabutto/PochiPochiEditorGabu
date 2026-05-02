@@ -84,44 +84,106 @@ namespace PochiPochiEditorGabu._Pokemon
             this.rbSpriteBackImgAddr = new System.Windows.Forms.RadioButton();
             this.rbSpriteFrontImgAddr = new System.Windows.Forms.RadioButton();
             this.tabPageCoordinates = new System.Windows.Forms.TabPage();
+            this.grpCoordItemUse = new System.Windows.Forms.GroupBox();
+            this.rbCoordItemUse2Zoom = new System.Windows.Forms.RadioButton();
+            this.rbCoordItemUse2Normal = new System.Windows.Forms.RadioButton();
+            this.nudCoordItemUse2Zoom = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordItemUse2Y = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordItemUse2X = new System.Windows.Forms.NumericUpDown();
+            this.lblCoordItemUse2Zoom = new System.Windows.Forms.Label();
+            this.lblCoordItemUse2Y = new System.Windows.Forms.Label();
+            this.lblCoordItemUse2X = new System.Windows.Forms.Label();
+            this.picCoordItemUse2 = new System.Windows.Forms.PictureBox();
+            this.nudCoordItemUse1Y = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordItemUse1X = new System.Windows.Forms.NumericUpDown();
+            this.lblCoordItemUse1Y = new System.Windows.Forms.Label();
+            this.lblCoordItemUse1X = new System.Windows.Forms.Label();
+            this.picCoordItemUse1 = new System.Windows.Forms.PictureBox();
+            this.grpCoordBattle = new System.Windows.Forms.GroupBox();
+            this.chkShowBattleBubble = new System.Windows.Forms.CheckBox();
+            this.grpCoordBattleEnemy = new System.Windows.Forms.GroupBox();
+            this.nudCoordBattleEnemyBubbleY = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleEnemyShadowY = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleEnemyPokemon = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleEnemyBubbleX = new System.Windows.Forms.NumericUpDown();
+            this.lblCoordBattleEnemyShadow = new System.Windows.Forms.Label();
+            this.lblCoordBattleEnemyPokemon = new System.Windows.Forms.Label();
+            this.lblCoordBattleEnemyBubble = new System.Windows.Forms.Label();
+            this.grpCoordBattleAlly = new System.Windows.Forms.GroupBox();
+            this.nudCoordBattleAllyBubbleY = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleAllyPokemon = new System.Windows.Forms.NumericUpDown();
+            this.nudCoordBattleAllyBubbleX = new System.Windows.Forms.NumericUpDown();
+            this.lblCoordBattleAllyPokemon = new System.Windows.Forms.Label();
+            this.lblCoordBattleAllyBubble = new System.Windows.Forms.Label();
+            this.picCoordBattleDisplay = new System.Windows.Forms.PictureBox();
             this.tabPageStats = new System.Windows.Forms.TabPage();
+            this.grpStatsType = new System.Windows.Forms.GroupBox();
+            this.cmbStatsType2 = new System.Windows.Forms.ComboBox();
+            this.cmbStatsType1 = new System.Windows.Forms.ComboBox();
+            this.lblStatsType2 = new System.Windows.Forms.Label();
+            this.lblStatsType1 = new System.Windows.Forms.Label();
+            this.grpStatsHoldItems = new System.Windows.Forms.GroupBox();
+            this.picStatsHoldItem2 = new System.Windows.Forms.PictureBox();
+            this.picStatsHoldItem1 = new System.Windows.Forms.PictureBox();
+            this.cmbStatsHoldItem2 = new System.Windows.Forms.ComboBox();
+            this.cmbStatsHoldItem1 = new System.Windows.Forms.ComboBox();
+            this.lblStatsHoldItem2 = new System.Windows.Forms.Label();
+            this.lblStatsHoldItem1 = new System.Windows.Forms.Label();
+            this.grpStatsAbilities = new System.Windows.Forms.GroupBox();
+            this.cmbStatsAbilityHidden = new System.Windows.Forms.ComboBox();
+            this.cmbStatsAbility2 = new System.Windows.Forms.ComboBox();
+            this.cmbStatsAbility1 = new System.Windows.Forms.ComboBox();
+            this.lblStatsAbilityHidden = new System.Windows.Forms.Label();
+            this.lblStatsAbility2 = new System.Windows.Forms.Label();
+            this.lblStatsAbility1 = new System.Windows.Forms.Label();
+            this.grpStatsGenderAndEgg = new System.Windows.Forms.GroupBox();
+            this.cmbStatsEggGroup2 = new System.Windows.Forms.ComboBox();
+            this.cmbStatsEggGroup1 = new System.Windows.Forms.ComboBox();
+            this.cmbStatsEggStep = new System.Windows.Forms.ComboBox();
+            this.cmbStatsGender = new System.Windows.Forms.ComboBox();
+            this.lblStatsEggGroup = new System.Windows.Forms.Label();
+            this.lblStatsEggStep = new System.Windows.Forms.Label();
+            this.lblStatsGender = new System.Windows.Forms.Label();
+            this.grpStatsMisc = new System.Windows.Forms.GroupBox();
+            this.cmbStatsFlip = new System.Windows.Forms.ComboBox();
+            this.cmbStatsColor = new System.Windows.Forms.ComboBox();
+            this.cmbStatsGrowthRate = new System.Windows.Forms.ComboBox();
+            this.nudStatsExp = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsRunRate = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsHappiness = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsCatchRate = new System.Windows.Forms.NumericUpDown();
+            this.lblStatsFlip = new System.Windows.Forms.Label();
+            this.lblStatsColor = new System.Windows.Forms.Label();
+            this.lblStatsGrowthRate = new System.Windows.Forms.Label();
+            this.lblStatsExp = new System.Windows.Forms.Label();
+            this.lblStatsRunRate = new System.Windows.Forms.Label();
+            this.lblStatsHappiness = new System.Windows.Forms.Label();
+            this.lblStatsCatchRate = new System.Windows.Forms.Label();
+            this.grpStatsEvs = new System.Windows.Forms.GroupBox();
+            this.nudStatsEvSpeed = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsEvDef = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsEvSpDef = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsEvAtk = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsEvSpAtk = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsEvHp = new System.Windows.Forms.NumericUpDown();
+            this.grpStatsParams = new System.Windows.Forms.GroupBox();
+            this.nudStatsSpeed = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsDef = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsSpDef = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsAtk = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsSpAtk = new System.Windows.Forms.NumericUpDown();
+            this.nudStatsHp = new System.Windows.Forms.NumericUpDown();
+            this.lblStatsSpeed = new System.Windows.Forms.Label();
+            this.lblStatsDef = new System.Windows.Forms.Label();
+            this.lblStatsSpDef = new System.Windows.Forms.Label();
+            this.lblStatsAtk = new System.Windows.Forms.Label();
+            this.lblStatsSpAtk = new System.Windows.Forms.Label();
+            this.lblStatsHp = new System.Windows.Forms.Label();
             this.tabPageEvolutions = new System.Windows.Forms.TabPage();
             this.tabPageLearnsets = new System.Windows.Forms.TabPage();
             this.tabPagePokedex = new System.Windows.Forms.TabPage();
             this.tabPageCries = new System.Windows.Forms.TabPage();
             this.tabPageMusic = new System.Windows.Forms.TabPage();
-            this.grpCoordBattle = new System.Windows.Forms.GroupBox();
-            this.picCoordBattleDisplay = new System.Windows.Forms.PictureBox();
-            this.grpCoordBattleAlly = new System.Windows.Forms.GroupBox();
-            this.lblCoordBattleAllyBubble = new System.Windows.Forms.Label();
-            this.lblCoordBattleAllyPokemon = new System.Windows.Forms.Label();
-            this.nudCoordBattleAllyBubbleX = new System.Windows.Forms.NumericUpDown();
-            this.nudCoordBattleAllyBubbleY = new System.Windows.Forms.NumericUpDown();
-            this.nudCoordBattleAllyPokemon = new System.Windows.Forms.NumericUpDown();
-            this.grpCoordBattleEnemy = new System.Windows.Forms.GroupBox();
-            this.nudCoordBattleEnemyBubbleY = new System.Windows.Forms.NumericUpDown();
-            this.nudCoordBattleEnemyPokemon = new System.Windows.Forms.NumericUpDown();
-            this.nudCoordBattleEnemyBubbleX = new System.Windows.Forms.NumericUpDown();
-            this.lblCoordBattleEnemyPokemon = new System.Windows.Forms.Label();
-            this.lblCoordBattleEnemyBubble = new System.Windows.Forms.Label();
-            this.lblCoordBattleEnemyShadow = new System.Windows.Forms.Label();
-            this.nudCoordBattleEnemyShadowY = new System.Windows.Forms.NumericUpDown();
-            this.chkShowBattleBubble = new System.Windows.Forms.CheckBox();
-            this.grpCoordItemUse = new System.Windows.Forms.GroupBox();
-            this.picCoordItemUse1 = new System.Windows.Forms.PictureBox();
-            this.lblCoordItemUse1X = new System.Windows.Forms.Label();
-            this.nudCoordItemUse1X = new System.Windows.Forms.NumericUpDown();
-            this.lblCoordItemUse1Y = new System.Windows.Forms.Label();
-            this.nudCoordItemUse1Y = new System.Windows.Forms.NumericUpDown();
-            this.nudCoordItemUse2Y = new System.Windows.Forms.NumericUpDown();
-            this.nudCoordItemUse2X = new System.Windows.Forms.NumericUpDown();
-            this.lblCoordItemUse2Y = new System.Windows.Forms.Label();
-            this.lblCoordItemUse2X = new System.Windows.Forms.Label();
-            this.picCoordItemUse2 = new System.Windows.Forms.PictureBox();
-            this.lblCoordItemUse2Zoom = new System.Windows.Forms.Label();
-            this.nudCoordItemUse2Zoom = new System.Windows.Forms.NumericUpDown();
-            this.rbCoordItemUse2Normal = new System.Windows.Forms.RadioButton();
-            this.rbCoordItemUse2Zoom = new System.Windows.Forms.RadioButton();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -142,26 +204,52 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteFrontShiny)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteFrontNormal)).BeginInit();
             this.tabPageCoordinates.SuspendLayout();
-            this.tabPageMusic.SuspendLayout();
-            this.grpCoordBattle.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picCoordBattleDisplay)).BeginInit();
-            this.grpCoordBattleAlly.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleX)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleY)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyPokemon)).BeginInit();
-            this.grpCoordBattleEnemy.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleY)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyPokemon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleX)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyShadowY)).BeginInit();
             this.grpCoordItemUse.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1X)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1Y)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Zoom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2X)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Zoom)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1Y)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1X)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse1)).BeginInit();
+            this.grpCoordBattle.SuspendLayout();
+            this.grpCoordBattleEnemy.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyShadowY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyPokemon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleX)).BeginInit();
+            this.grpCoordBattleAlly.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyPokemon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordBattleDisplay)).BeginInit();
+            this.tabPageStats.SuspendLayout();
+            this.grpStatsType.SuspendLayout();
+            this.grpStatsHoldItems.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picStatsHoldItem2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picStatsHoldItem1)).BeginInit();
+            this.grpStatsAbilities.SuspendLayout();
+            this.grpStatsGenderAndEgg.SuspendLayout();
+            this.grpStatsMisc.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsExp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsRunRate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsHappiness)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsCatchRate)).BeginInit();
+            this.grpStatsEvs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvDef)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvSpDef)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvAtk)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvSpAtk)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvHp)).BeginInit();
+            this.grpStatsParams.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsDef)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsSpDef)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsAtk)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsSpAtk)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsHp)).BeginInit();
+            this.tabPageMusic.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSave
@@ -358,7 +446,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabControlMain.Margin = new System.Windows.Forms.Padding(0);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(696, 506);
+            this.tabControlMain.Size = new System.Drawing.Size(714, 506);
             this.tabControlMain.TabIndex = 4;
             // 
             // tabPageSprites
@@ -369,7 +457,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageSprites.Location = new System.Drawing.Point(4, 22);
             this.tabPageSprites.Margin = new System.Windows.Forms.Padding(0);
             this.tabPageSprites.Name = "tabPageSprites";
-            this.tabPageSprites.Size = new System.Drawing.Size(704, 460);
+            this.tabPageSprites.Size = new System.Drawing.Size(706, 480);
             this.tabPageSprites.TabIndex = 0;
             this.tabPageSprites.Text = "画像";
             this.tabPageSprites.UseVisualStyleBackColor = true;
@@ -755,71 +843,192 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageCoordinates.Location = new System.Drawing.Point(4, 22);
             this.tabPageCoordinates.Margin = new System.Windows.Forms.Padding(0);
             this.tabPageCoordinates.Name = "tabPageCoordinates";
-            this.tabPageCoordinates.Size = new System.Drawing.Size(688, 480);
+            this.tabPageCoordinates.Size = new System.Drawing.Size(706, 480);
             this.tabPageCoordinates.TabIndex = 1;
             this.tabPageCoordinates.Text = "表示位置";
             this.tabPageCoordinates.UseVisualStyleBackColor = true;
             // 
-            // tabPageStats
+            // grpCoordItemUse
             // 
-            this.tabPageStats.Location = new System.Drawing.Point(4, 22);
-            this.tabPageStats.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPageStats.Name = "tabPageStats";
-            this.tabPageStats.Size = new System.Drawing.Size(704, 460);
-            this.tabPageStats.TabIndex = 2;
-            this.tabPageStats.Text = "基本情報";
-            this.tabPageStats.UseVisualStyleBackColor = true;
+            this.grpCoordItemUse.Controls.Add(this.rbCoordItemUse2Zoom);
+            this.grpCoordItemUse.Controls.Add(this.rbCoordItemUse2Normal);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2Zoom);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2Y);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2X);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2Zoom);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2Y);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2X);
+            this.grpCoordItemUse.Controls.Add(this.picCoordItemUse2);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse1Y);
+            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse1X);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse1Y);
+            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse1X);
+            this.grpCoordItemUse.Controls.Add(this.picCoordItemUse1);
+            this.grpCoordItemUse.Location = new System.Drawing.Point(320, 16);
+            this.grpCoordItemUse.Margin = new System.Windows.Forms.Padding(0);
+            this.grpCoordItemUse.Name = "grpCoordItemUse";
+            this.grpCoordItemUse.Padding = new System.Windows.Forms.Padding(0);
+            this.grpCoordItemUse.Size = new System.Drawing.Size(346, 424);
+            this.grpCoordItemUse.TabIndex = 1;
+            this.grpCoordItemUse.TabStop = false;
+            this.grpCoordItemUse.Text = "アイテム使用時";
             // 
-            // tabPageEvolutions
+            // rbCoordItemUse2Zoom
             // 
-            this.tabPageEvolutions.Location = new System.Drawing.Point(4, 22);
-            this.tabPageEvolutions.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPageEvolutions.Name = "tabPageEvolutions";
-            this.tabPageEvolutions.Size = new System.Drawing.Size(704, 460);
-            this.tabPageEvolutions.TabIndex = 3;
-            this.tabPageEvolutions.Text = "進化";
-            this.tabPageEvolutions.UseVisualStyleBackColor = true;
+            this.rbCoordItemUse2Zoom.AutoSize = true;
+            this.rbCoordItemUse2Zoom.Location = new System.Drawing.Point(88, 392);
+            this.rbCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
+            this.rbCoordItemUse2Zoom.Name = "rbCoordItemUse2Zoom";
+            this.rbCoordItemUse2Zoom.Size = new System.Drawing.Size(65, 16);
+            this.rbCoordItemUse2Zoom.TabIndex = 8;
+            this.rbCoordItemUse2Zoom.Text = "ズーム時";
+            this.rbCoordItemUse2Zoom.UseVisualStyleBackColor = true;
             // 
-            // tabPageLearnsets
+            // rbCoordItemUse2Normal
             // 
-            this.tabPageLearnsets.Location = new System.Drawing.Point(4, 22);
-            this.tabPageLearnsets.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPageLearnsets.Name = "tabPageLearnsets";
-            this.tabPageLearnsets.Size = new System.Drawing.Size(704, 460);
-            this.tabPageLearnsets.TabIndex = 4;
-            this.tabPageLearnsets.Text = "習得技";
-            this.tabPageLearnsets.UseVisualStyleBackColor = true;
+            this.rbCoordItemUse2Normal.AutoSize = true;
+            this.rbCoordItemUse2Normal.Checked = true;
+            this.rbCoordItemUse2Normal.Location = new System.Drawing.Point(20, 392);
+            this.rbCoordItemUse2Normal.Margin = new System.Windows.Forms.Padding(0);
+            this.rbCoordItemUse2Normal.Name = "rbCoordItemUse2Normal";
+            this.rbCoordItemUse2Normal.Size = new System.Drawing.Size(59, 16);
+            this.rbCoordItemUse2Normal.TabIndex = 8;
+            this.rbCoordItemUse2Normal.TabStop = true;
+            this.rbCoordItemUse2Normal.Text = "通常時";
+            this.rbCoordItemUse2Normal.UseVisualStyleBackColor = true;
             // 
-            // tabPagePokedex
+            // nudCoordItemUse2Zoom
             // 
-            this.tabPagePokedex.Location = new System.Drawing.Point(4, 22);
-            this.tabPagePokedex.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPagePokedex.Name = "tabPagePokedex";
-            this.tabPagePokedex.Size = new System.Drawing.Size(704, 460);
-            this.tabPagePokedex.TabIndex = 5;
-            this.tabPagePokedex.Text = "図鑑";
-            this.tabPagePokedex.UseVisualStyleBackColor = true;
+            this.nudCoordItemUse2Zoom.Location = new System.Drawing.Point(276, 352);
+            this.nudCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse2Zoom.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse2Zoom.Name = "nudCoordItemUse2Zoom";
+            this.nudCoordItemUse2Zoom.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse2Zoom.TabIndex = 6;
             // 
-            // tabPageCries
+            // nudCoordItemUse2Y
             // 
-            this.tabPageCries.Location = new System.Drawing.Point(4, 22);
-            this.tabPageCries.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPageCries.Name = "tabPageCries";
-            this.tabPageCries.Size = new System.Drawing.Size(704, 460);
-            this.tabPageCries.TabIndex = 6;
-            this.tabPageCries.Text = "鳴き声";
-            this.tabPageCries.UseVisualStyleBackColor = true;
+            this.nudCoordItemUse2Y.Location = new System.Drawing.Point(276, 296);
+            this.nudCoordItemUse2Y.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse2Y.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse2Y.Name = "nudCoordItemUse2Y";
+            this.nudCoordItemUse2Y.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse2Y.TabIndex = 6;
             // 
-            // tabPageMusic
+            // nudCoordItemUse2X
             // 
-            this.tabPageMusic.Controls.Add(this.grpBattleMusic);
-            this.tabPageMusic.Location = new System.Drawing.Point(4, 22);
-            this.tabPageMusic.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPageMusic.Name = "tabPageMusic";
-            this.tabPageMusic.Size = new System.Drawing.Size(704, 460);
-            this.tabPageMusic.TabIndex = 7;
-            this.tabPageMusic.Text = "BGM";
-            this.tabPageMusic.UseVisualStyleBackColor = true;
+            this.nudCoordItemUse2X.Location = new System.Drawing.Point(276, 240);
+            this.nudCoordItemUse2X.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse2X.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse2X.Name = "nudCoordItemUse2X";
+            this.nudCoordItemUse2X.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse2X.TabIndex = 7;
+            // 
+            // lblCoordItemUse2Zoom
+            // 
+            this.lblCoordItemUse2Zoom.AutoSize = true;
+            this.lblCoordItemUse2Zoom.Location = new System.Drawing.Point(276, 332);
+            this.lblCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse2Zoom.Name = "lblCoordItemUse2Zoom";
+            this.lblCoordItemUse2Zoom.Size = new System.Drawing.Size(41, 12);
+            this.lblCoordItemUse2Zoom.TabIndex = 4;
+            this.lblCoordItemUse2Zoom.Text = "ズーム :";
+            // 
+            // lblCoordItemUse2Y
+            // 
+            this.lblCoordItemUse2Y.AutoSize = true;
+            this.lblCoordItemUse2Y.Location = new System.Drawing.Point(276, 276);
+            this.lblCoordItemUse2Y.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse2Y.Name = "lblCoordItemUse2Y";
+            this.lblCoordItemUse2Y.Size = new System.Drawing.Size(42, 12);
+            this.lblCoordItemUse2Y.TabIndex = 4;
+            this.lblCoordItemUse2Y.Text = "Y座標 :";
+            // 
+            // lblCoordItemUse2X
+            // 
+            this.lblCoordItemUse2X.AutoSize = true;
+            this.lblCoordItemUse2X.Location = new System.Drawing.Point(276, 220);
+            this.lblCoordItemUse2X.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse2X.Name = "lblCoordItemUse2X";
+            this.lblCoordItemUse2X.Size = new System.Drawing.Size(42, 12);
+            this.lblCoordItemUse2X.TabIndex = 5;
+            this.lblCoordItemUse2X.Text = "X座標 :";
+            // 
+            // picCoordItemUse2
+            // 
+            this.picCoordItemUse2.Location = new System.Drawing.Point(20, 220);
+            this.picCoordItemUse2.Margin = new System.Windows.Forms.Padding(0);
+            this.picCoordItemUse2.Name = "picCoordItemUse2";
+            this.picCoordItemUse2.Size = new System.Drawing.Size(240, 160);
+            this.picCoordItemUse2.TabIndex = 3;
+            this.picCoordItemUse2.TabStop = false;
+            // 
+            // nudCoordItemUse1Y
+            // 
+            this.nudCoordItemUse1Y.Location = new System.Drawing.Point(276, 104);
+            this.nudCoordItemUse1Y.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse1Y.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse1Y.Name = "nudCoordItemUse1Y";
+            this.nudCoordItemUse1Y.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse1Y.TabIndex = 2;
+            // 
+            // nudCoordItemUse1X
+            // 
+            this.nudCoordItemUse1X.Location = new System.Drawing.Point(276, 48);
+            this.nudCoordItemUse1X.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordItemUse1X.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudCoordItemUse1X.Name = "nudCoordItemUse1X";
+            this.nudCoordItemUse1X.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordItemUse1X.TabIndex = 2;
+            // 
+            // lblCoordItemUse1Y
+            // 
+            this.lblCoordItemUse1Y.AutoSize = true;
+            this.lblCoordItemUse1Y.Location = new System.Drawing.Point(276, 84);
+            this.lblCoordItemUse1Y.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse1Y.Name = "lblCoordItemUse1Y";
+            this.lblCoordItemUse1Y.Size = new System.Drawing.Size(42, 12);
+            this.lblCoordItemUse1Y.TabIndex = 1;
+            this.lblCoordItemUse1Y.Text = "Y座標 :";
+            // 
+            // lblCoordItemUse1X
+            // 
+            this.lblCoordItemUse1X.AutoSize = true;
+            this.lblCoordItemUse1X.Location = new System.Drawing.Point(276, 28);
+            this.lblCoordItemUse1X.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordItemUse1X.Name = "lblCoordItemUse1X";
+            this.lblCoordItemUse1X.Size = new System.Drawing.Size(42, 12);
+            this.lblCoordItemUse1X.TabIndex = 1;
+            this.lblCoordItemUse1X.Text = "X座標 :";
+            // 
+            // picCoordItemUse1
+            // 
+            this.picCoordItemUse1.Location = new System.Drawing.Point(20, 28);
+            this.picCoordItemUse1.Margin = new System.Windows.Forms.Padding(0);
+            this.picCoordItemUse1.Name = "picCoordItemUse1";
+            this.picCoordItemUse1.Size = new System.Drawing.Size(240, 160);
+            this.picCoordItemUse1.TabIndex = 0;
+            this.picCoordItemUse1.TabStop = false;
             // 
             // grpCoordBattle
             // 
@@ -836,94 +1045,18 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpCoordBattle.TabStop = false;
             this.grpCoordBattle.Text = "バトル時";
             // 
-            // picCoordBattleDisplay
+            // chkShowBattleBubble
             // 
-            this.picCoordBattleDisplay.Location = new System.Drawing.Point(20, 28);
-            this.picCoordBattleDisplay.Margin = new System.Windows.Forms.Padding(0);
-            this.picCoordBattleDisplay.Name = "picCoordBattleDisplay";
-            this.picCoordBattleDisplay.Size = new System.Drawing.Size(240, 160);
-            this.picCoordBattleDisplay.TabIndex = 0;
-            this.picCoordBattleDisplay.TabStop = false;
-            // 
-            // grpCoordBattleAlly
-            // 
-            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyBubbleY);
-            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyPokemon);
-            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyBubbleX);
-            this.grpCoordBattleAlly.Controls.Add(this.lblCoordBattleAllyPokemon);
-            this.grpCoordBattleAlly.Controls.Add(this.lblCoordBattleAllyBubble);
-            this.grpCoordBattleAlly.Location = new System.Drawing.Point(20, 198);
-            this.grpCoordBattleAlly.Margin = new System.Windows.Forms.Padding(0);
-            this.grpCoordBattleAlly.Name = "grpCoordBattleAlly";
-            this.grpCoordBattleAlly.Padding = new System.Windows.Forms.Padding(0);
-            this.grpCoordBattleAlly.Size = new System.Drawing.Size(240, 86);
-            this.grpCoordBattleAlly.TabIndex = 1;
-            this.grpCoordBattleAlly.TabStop = false;
-            this.grpCoordBattleAlly.Text = "味方側";
-            // 
-            // lblCoordBattleAllyBubble
-            // 
-            this.lblCoordBattleAllyBubble.AutoSize = true;
-            this.lblCoordBattleAllyBubble.Location = new System.Drawing.Point(18, 28);
-            this.lblCoordBattleAllyBubble.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCoordBattleAllyBubble.Name = "lblCoordBattleAllyBubble";
-            this.lblCoordBattleAllyBubble.Size = new System.Drawing.Size(89, 12);
-            this.lblCoordBattleAllyBubble.TabIndex = 0;
-            this.lblCoordBattleAllyBubble.Text = "技吹き出し座標 :";
-            // 
-            // lblCoordBattleAllyPokemon
-            // 
-            this.lblCoordBattleAllyPokemon.AutoSize = true;
-            this.lblCoordBattleAllyPokemon.Location = new System.Drawing.Point(18, 52);
-            this.lblCoordBattleAllyPokemon.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCoordBattleAllyPokemon.Name = "lblCoordBattleAllyPokemon";
-            this.lblCoordBattleAllyPokemon.Size = new System.Drawing.Size(79, 12);
-            this.lblCoordBattleAllyPokemon.TabIndex = 0;
-            this.lblCoordBattleAllyPokemon.Text = "ポケモンY座標 :";
-            // 
-            // nudCoordBattleAllyBubbleX
-            // 
-            this.nudCoordBattleAllyBubbleX.Location = new System.Drawing.Point(114, 25);
-            this.nudCoordBattleAllyBubbleX.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordBattleAllyBubbleX.Maximum = new decimal(new int[] {
-            15,
-            0,
-            0,
-            0});
-            this.nudCoordBattleAllyBubbleX.Name = "nudCoordBattleAllyBubbleX";
-            this.nudCoordBattleAllyBubbleX.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordBattleAllyBubbleX.TabIndex = 1;
-            // 
-            // nudCoordBattleAllyBubbleY
-            // 
-            this.nudCoordBattleAllyBubbleY.Location = new System.Drawing.Point(170, 25);
-            this.nudCoordBattleAllyBubbleY.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordBattleAllyBubbleY.Maximum = new decimal(new int[] {
-            15,
-            0,
-            0,
-            0});
-            this.nudCoordBattleAllyBubbleY.Name = "nudCoordBattleAllyBubbleY";
-            this.nudCoordBattleAllyBubbleY.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordBattleAllyBubbleY.TabIndex = 1;
-            // 
-            // nudCoordBattleAllyPokemon
-            // 
-            this.nudCoordBattleAllyPokemon.Location = new System.Drawing.Point(114, 49);
-            this.nudCoordBattleAllyPokemon.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordBattleAllyPokemon.Maximum = new decimal(new int[] {
-            127,
-            0,
-            0,
-            0});
-            this.nudCoordBattleAllyPokemon.Minimum = new decimal(new int[] {
-            128,
-            0,
-            0,
-            -2147483648});
-            this.nudCoordBattleAllyPokemon.Name = "nudCoordBattleAllyPokemon";
-            this.nudCoordBattleAllyPokemon.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordBattleAllyPokemon.TabIndex = 1;
+            this.chkShowBattleBubble.AutoSize = true;
+            this.chkShowBattleBubble.Checked = true;
+            this.chkShowBattleBubble.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowBattleBubble.Location = new System.Drawing.Point(20, 412);
+            this.chkShowBattleBubble.Margin = new System.Windows.Forms.Padding(0);
+            this.chkShowBattleBubble.Name = "chkShowBattleBubble";
+            this.chkShowBattleBubble.Size = new System.Drawing.Size(102, 16);
+            this.chkShowBattleBubble.TabIndex = 3;
+            this.chkShowBattleBubble.Text = "技吹き出し表示";
+            this.chkShowBattleBubble.UseVisualStyleBackColor = true;
             // 
             // grpCoordBattleEnemy
             // 
@@ -956,6 +1089,24 @@ namespace PochiPochiEditorGabu._Pokemon
             this.nudCoordBattleEnemyBubbleY.Size = new System.Drawing.Size(48, 19);
             this.nudCoordBattleEnemyBubbleY.TabIndex = 1;
             // 
+            // nudCoordBattleEnemyShadowY
+            // 
+            this.nudCoordBattleEnemyShadowY.Location = new System.Drawing.Point(114, 73);
+            this.nudCoordBattleEnemyShadowY.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleEnemyShadowY.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+            this.nudCoordBattleEnemyShadowY.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
+            this.nudCoordBattleEnemyShadowY.Name = "nudCoordBattleEnemyShadowY";
+            this.nudCoordBattleEnemyShadowY.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleEnemyShadowY.TabIndex = 1;
+            // 
             // nudCoordBattleEnemyPokemon
             // 
             this.nudCoordBattleEnemyPokemon.Location = new System.Drawing.Point(114, 49);
@@ -987,6 +1138,16 @@ namespace PochiPochiEditorGabu._Pokemon
             this.nudCoordBattleEnemyBubbleX.Size = new System.Drawing.Size(48, 19);
             this.nudCoordBattleEnemyBubbleX.TabIndex = 1;
             // 
+            // lblCoordBattleEnemyShadow
+            // 
+            this.lblCoordBattleEnemyShadow.AutoSize = true;
+            this.lblCoordBattleEnemyShadow.Location = new System.Drawing.Point(18, 76);
+            this.lblCoordBattleEnemyShadow.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordBattleEnemyShadow.Name = "lblCoordBattleEnemyShadow";
+            this.lblCoordBattleEnemyShadow.Size = new System.Drawing.Size(54, 12);
+            this.lblCoordBattleEnemyShadow.TabIndex = 0;
+            this.lblCoordBattleEnemyShadow.Text = "影Y座標 :";
+            // 
             // lblCoordBattleEnemyPokemon
             // 
             this.lblCoordBattleEnemyPokemon.AutoSize = true;
@@ -1007,234 +1168,889 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblCoordBattleEnemyBubble.TabIndex = 0;
             this.lblCoordBattleEnemyBubble.Text = "技吹き出し座標 :";
             // 
-            // lblCoordBattleEnemyShadow
+            // grpCoordBattleAlly
             // 
-            this.lblCoordBattleEnemyShadow.AutoSize = true;
-            this.lblCoordBattleEnemyShadow.Location = new System.Drawing.Point(18, 76);
-            this.lblCoordBattleEnemyShadow.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCoordBattleEnemyShadow.Name = "lblCoordBattleEnemyShadow";
-            this.lblCoordBattleEnemyShadow.Size = new System.Drawing.Size(54, 12);
-            this.lblCoordBattleEnemyShadow.TabIndex = 0;
-            this.lblCoordBattleEnemyShadow.Text = "影Y座標 :";
+            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyBubbleY);
+            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyPokemon);
+            this.grpCoordBattleAlly.Controls.Add(this.nudCoordBattleAllyBubbleX);
+            this.grpCoordBattleAlly.Controls.Add(this.lblCoordBattleAllyPokemon);
+            this.grpCoordBattleAlly.Controls.Add(this.lblCoordBattleAllyBubble);
+            this.grpCoordBattleAlly.Location = new System.Drawing.Point(20, 198);
+            this.grpCoordBattleAlly.Margin = new System.Windows.Forms.Padding(0);
+            this.grpCoordBattleAlly.Name = "grpCoordBattleAlly";
+            this.grpCoordBattleAlly.Padding = new System.Windows.Forms.Padding(0);
+            this.grpCoordBattleAlly.Size = new System.Drawing.Size(240, 86);
+            this.grpCoordBattleAlly.TabIndex = 1;
+            this.grpCoordBattleAlly.TabStop = false;
+            this.grpCoordBattleAlly.Text = "味方側";
             // 
-            // nudCoordBattleEnemyShadowY
+            // nudCoordBattleAllyBubbleY
             // 
-            this.nudCoordBattleEnemyShadowY.Location = new System.Drawing.Point(114, 73);
-            this.nudCoordBattleEnemyShadowY.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordBattleEnemyShadowY.Maximum = new decimal(new int[] {
+            this.nudCoordBattleAllyBubbleY.Location = new System.Drawing.Point(170, 25);
+            this.nudCoordBattleAllyBubbleY.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleAllyBubbleY.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.nudCoordBattleAllyBubbleY.Name = "nudCoordBattleAllyBubbleY";
+            this.nudCoordBattleAllyBubbleY.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleAllyBubbleY.TabIndex = 1;
+            // 
+            // nudCoordBattleAllyPokemon
+            // 
+            this.nudCoordBattleAllyPokemon.Location = new System.Drawing.Point(114, 49);
+            this.nudCoordBattleAllyPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleAllyPokemon.Maximum = new decimal(new int[] {
             127,
             0,
             0,
             0});
-            this.nudCoordBattleEnemyShadowY.Minimum = new decimal(new int[] {
+            this.nudCoordBattleAllyPokemon.Minimum = new decimal(new int[] {
             128,
             0,
             0,
             -2147483648});
-            this.nudCoordBattleEnemyShadowY.Name = "nudCoordBattleEnemyShadowY";
-            this.nudCoordBattleEnemyShadowY.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordBattleEnemyShadowY.TabIndex = 1;
+            this.nudCoordBattleAllyPokemon.Name = "nudCoordBattleAllyPokemon";
+            this.nudCoordBattleAllyPokemon.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleAllyPokemon.TabIndex = 1;
             // 
-            // chkShowBattleBubble
+            // nudCoordBattleAllyBubbleX
             // 
-            this.chkShowBattleBubble.AutoSize = true;
-            this.chkShowBattleBubble.Checked = true;
-            this.chkShowBattleBubble.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowBattleBubble.Location = new System.Drawing.Point(20, 412);
-            this.chkShowBattleBubble.Margin = new System.Windows.Forms.Padding(0);
-            this.chkShowBattleBubble.Name = "chkShowBattleBubble";
-            this.chkShowBattleBubble.Size = new System.Drawing.Size(102, 16);
-            this.chkShowBattleBubble.TabIndex = 3;
-            this.chkShowBattleBubble.Text = "技吹き出し表示";
-            this.chkShowBattleBubble.UseVisualStyleBackColor = true;
+            this.nudCoordBattleAllyBubbleX.Location = new System.Drawing.Point(114, 25);
+            this.nudCoordBattleAllyBubbleX.Margin = new System.Windows.Forms.Padding(0);
+            this.nudCoordBattleAllyBubbleX.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.nudCoordBattleAllyBubbleX.Name = "nudCoordBattleAllyBubbleX";
+            this.nudCoordBattleAllyBubbleX.Size = new System.Drawing.Size(48, 19);
+            this.nudCoordBattleAllyBubbleX.TabIndex = 1;
             // 
-            // grpCoordItemUse
+            // lblCoordBattleAllyPokemon
             // 
-            this.grpCoordItemUse.Controls.Add(this.rbCoordItemUse2Zoom);
-            this.grpCoordItemUse.Controls.Add(this.rbCoordItemUse2Normal);
-            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2Zoom);
-            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2Y);
-            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse2X);
-            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2Zoom);
-            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2Y);
-            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse2X);
-            this.grpCoordItemUse.Controls.Add(this.picCoordItemUse2);
-            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse1Y);
-            this.grpCoordItemUse.Controls.Add(this.nudCoordItemUse1X);
-            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse1Y);
-            this.grpCoordItemUse.Controls.Add(this.lblCoordItemUse1X);
-            this.grpCoordItemUse.Controls.Add(this.picCoordItemUse1);
-            this.grpCoordItemUse.Location = new System.Drawing.Point(320, 16);
-            this.grpCoordItemUse.Margin = new System.Windows.Forms.Padding(0);
-            this.grpCoordItemUse.Name = "grpCoordItemUse";
-            this.grpCoordItemUse.Padding = new System.Windows.Forms.Padding(0);
-            this.grpCoordItemUse.Size = new System.Drawing.Size(346, 424);
-            this.grpCoordItemUse.TabIndex = 1;
-            this.grpCoordItemUse.TabStop = false;
-            this.grpCoordItemUse.Text = "アイテム使用時";
+            this.lblCoordBattleAllyPokemon.AutoSize = true;
+            this.lblCoordBattleAllyPokemon.Location = new System.Drawing.Point(18, 52);
+            this.lblCoordBattleAllyPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordBattleAllyPokemon.Name = "lblCoordBattleAllyPokemon";
+            this.lblCoordBattleAllyPokemon.Size = new System.Drawing.Size(79, 12);
+            this.lblCoordBattleAllyPokemon.TabIndex = 0;
+            this.lblCoordBattleAllyPokemon.Text = "ポケモンY座標 :";
             // 
-            // picCoordItemUse1
+            // lblCoordBattleAllyBubble
             // 
-            this.picCoordItemUse1.Location = new System.Drawing.Point(20, 28);
-            this.picCoordItemUse1.Margin = new System.Windows.Forms.Padding(0);
-            this.picCoordItemUse1.Name = "picCoordItemUse1";
-            this.picCoordItemUse1.Size = new System.Drawing.Size(240, 160);
-            this.picCoordItemUse1.TabIndex = 0;
-            this.picCoordItemUse1.TabStop = false;
+            this.lblCoordBattleAllyBubble.AutoSize = true;
+            this.lblCoordBattleAllyBubble.Location = new System.Drawing.Point(18, 28);
+            this.lblCoordBattleAllyBubble.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCoordBattleAllyBubble.Name = "lblCoordBattleAllyBubble";
+            this.lblCoordBattleAllyBubble.Size = new System.Drawing.Size(89, 12);
+            this.lblCoordBattleAllyBubble.TabIndex = 0;
+            this.lblCoordBattleAllyBubble.Text = "技吹き出し座標 :";
             // 
-            // lblCoordItemUse1X
+            // picCoordBattleDisplay
             // 
-            this.lblCoordItemUse1X.AutoSize = true;
-            this.lblCoordItemUse1X.Location = new System.Drawing.Point(276, 28);
-            this.lblCoordItemUse1X.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCoordItemUse1X.Name = "lblCoordItemUse1X";
-            this.lblCoordItemUse1X.Size = new System.Drawing.Size(42, 12);
-            this.lblCoordItemUse1X.TabIndex = 1;
-            this.lblCoordItemUse1X.Text = "X座標 :";
+            this.picCoordBattleDisplay.Location = new System.Drawing.Point(20, 28);
+            this.picCoordBattleDisplay.Margin = new System.Windows.Forms.Padding(0);
+            this.picCoordBattleDisplay.Name = "picCoordBattleDisplay";
+            this.picCoordBattleDisplay.Size = new System.Drawing.Size(240, 160);
+            this.picCoordBattleDisplay.TabIndex = 0;
+            this.picCoordBattleDisplay.TabStop = false;
             // 
-            // nudCoordItemUse1X
+            // tabPageStats
             // 
-            this.nudCoordItemUse1X.Location = new System.Drawing.Point(276, 48);
-            this.nudCoordItemUse1X.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordItemUse1X.Maximum = new decimal(new int[] {
+            this.tabPageStats.Controls.Add(this.grpStatsType);
+            this.tabPageStats.Controls.Add(this.grpStatsHoldItems);
+            this.tabPageStats.Controls.Add(this.grpStatsAbilities);
+            this.tabPageStats.Controls.Add(this.grpStatsGenderAndEgg);
+            this.tabPageStats.Controls.Add(this.grpStatsMisc);
+            this.tabPageStats.Controls.Add(this.grpStatsEvs);
+            this.tabPageStats.Controls.Add(this.grpStatsParams);
+            this.tabPageStats.Location = new System.Drawing.Point(4, 22);
+            this.tabPageStats.Margin = new System.Windows.Forms.Padding(0);
+            this.tabPageStats.Name = "tabPageStats";
+            this.tabPageStats.Size = new System.Drawing.Size(706, 480);
+            this.tabPageStats.TabIndex = 2;
+            this.tabPageStats.Text = "基本情報";
+            this.tabPageStats.UseVisualStyleBackColor = true;
+            // 
+            // grpStatsType
+            // 
+            this.grpStatsType.Controls.Add(this.cmbStatsType2);
+            this.grpStatsType.Controls.Add(this.cmbStatsType1);
+            this.grpStatsType.Controls.Add(this.lblStatsType2);
+            this.grpStatsType.Controls.Add(this.lblStatsType1);
+            this.grpStatsType.Location = new System.Drawing.Point(290, 360);
+            this.grpStatsType.Margin = new System.Windows.Forms.Padding(0);
+            this.grpStatsType.Name = "grpStatsType";
+            this.grpStatsType.Padding = new System.Windows.Forms.Padding(0);
+            this.grpStatsType.Size = new System.Drawing.Size(242, 86);
+            this.grpStatsType.TabIndex = 6;
+            this.grpStatsType.TabStop = false;
+            this.grpStatsType.Text = "タイプ";
+            // 
+            // cmbStatsType2
+            // 
+            this.cmbStatsType2.FormattingEnabled = true;
+            this.cmbStatsType2.Location = new System.Drawing.Point(116, 48);
+            this.cmbStatsType2.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsType2.Name = "cmbStatsType2";
+            this.cmbStatsType2.Size = new System.Drawing.Size(104, 20);
+            this.cmbStatsType2.TabIndex = 4;
+            // 
+            // cmbStatsType1
+            // 
+            this.cmbStatsType1.FormattingEnabled = true;
+            this.cmbStatsType1.Location = new System.Drawing.Point(116, 24);
+            this.cmbStatsType1.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsType1.Name = "cmbStatsType1";
+            this.cmbStatsType1.Size = new System.Drawing.Size(104, 20);
+            this.cmbStatsType1.TabIndex = 3;
+            // 
+            // lblStatsType2
+            // 
+            this.lblStatsType2.AutoSize = true;
+            this.lblStatsType2.Location = new System.Drawing.Point(20, 52);
+            this.lblStatsType2.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsType2.Name = "lblStatsType2";
+            this.lblStatsType2.Size = new System.Drawing.Size(43, 12);
+            this.lblStatsType2.TabIndex = 2;
+            this.lblStatsType2.Text = "タイプ2 :";
+            // 
+            // lblStatsType1
+            // 
+            this.lblStatsType1.AutoSize = true;
+            this.lblStatsType1.Location = new System.Drawing.Point(20, 28);
+            this.lblStatsType1.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsType1.Name = "lblStatsType1";
+            this.lblStatsType1.Size = new System.Drawing.Size(43, 12);
+            this.lblStatsType1.TabIndex = 2;
+            this.lblStatsType1.Text = "タイプ1 :";
+            // 
+            // grpStatsHoldItems
+            // 
+            this.grpStatsHoldItems.Controls.Add(this.picStatsHoldItem2);
+            this.grpStatsHoldItems.Controls.Add(this.picStatsHoldItem1);
+            this.grpStatsHoldItems.Controls.Add(this.cmbStatsHoldItem2);
+            this.grpStatsHoldItems.Controls.Add(this.cmbStatsHoldItem1);
+            this.grpStatsHoldItems.Controls.Add(this.lblStatsHoldItem2);
+            this.grpStatsHoldItems.Controls.Add(this.lblStatsHoldItem1);
+            this.grpStatsHoldItems.Location = new System.Drawing.Point(290, 260);
+            this.grpStatsHoldItems.Margin = new System.Windows.Forms.Padding(0);
+            this.grpStatsHoldItems.Name = "grpStatsHoldItems";
+            this.grpStatsHoldItems.Padding = new System.Windows.Forms.Padding(0);
+            this.grpStatsHoldItems.Size = new System.Drawing.Size(300, 92);
+            this.grpStatsHoldItems.TabIndex = 5;
+            this.grpStatsHoldItems.TabStop = false;
+            this.grpStatsHoldItems.Text = "所持アイテム";
+            // 
+            // picStatsHoldItem2
+            // 
+            this.picStatsHoldItem2.Location = new System.Drawing.Point(84, 50);
+            this.picStatsHoldItem2.Margin = new System.Windows.Forms.Padding(0);
+            this.picStatsHoldItem2.Name = "picStatsHoldItem2";
+            this.picStatsHoldItem2.Size = new System.Drawing.Size(24, 24);
+            this.picStatsHoldItem2.TabIndex = 4;
+            this.picStatsHoldItem2.TabStop = false;
+            // 
+            // picStatsHoldItem1
+            // 
+            this.picStatsHoldItem1.Location = new System.Drawing.Point(84, 22);
+            this.picStatsHoldItem1.Margin = new System.Windows.Forms.Padding(0);
+            this.picStatsHoldItem1.Name = "picStatsHoldItem1";
+            this.picStatsHoldItem1.Size = new System.Drawing.Size(24, 24);
+            this.picStatsHoldItem1.TabIndex = 4;
+            this.picStatsHoldItem1.TabStop = false;
+            // 
+            // cmbStatsHoldItem2
+            // 
+            this.cmbStatsHoldItem2.FormattingEnabled = true;
+            this.cmbStatsHoldItem2.Location = new System.Drawing.Point(116, 52);
+            this.cmbStatsHoldItem2.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsHoldItem2.Name = "cmbStatsHoldItem2";
+            this.cmbStatsHoldItem2.Size = new System.Drawing.Size(160, 20);
+            this.cmbStatsHoldItem2.TabIndex = 3;
+            // 
+            // cmbStatsHoldItem1
+            // 
+            this.cmbStatsHoldItem1.FormattingEnabled = true;
+            this.cmbStatsHoldItem1.Location = new System.Drawing.Point(116, 24);
+            this.cmbStatsHoldItem1.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsHoldItem1.Name = "cmbStatsHoldItem1";
+            this.cmbStatsHoldItem1.Size = new System.Drawing.Size(160, 20);
+            this.cmbStatsHoldItem1.TabIndex = 3;
+            // 
+            // lblStatsHoldItem2
+            // 
+            this.lblStatsHoldItem2.AutoSize = true;
+            this.lblStatsHoldItem2.Location = new System.Drawing.Point(20, 56);
+            this.lblStatsHoldItem2.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsHoldItem2.Name = "lblStatsHoldItem2";
+            this.lblStatsHoldItem2.Size = new System.Drawing.Size(47, 12);
+            this.lblStatsHoldItem2.TabIndex = 2;
+            this.lblStatsHoldItem2.Text = "確率5% :";
+            // 
+            // lblStatsHoldItem1
+            // 
+            this.lblStatsHoldItem1.AutoSize = true;
+            this.lblStatsHoldItem1.Location = new System.Drawing.Point(20, 28);
+            this.lblStatsHoldItem1.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsHoldItem1.Name = "lblStatsHoldItem1";
+            this.lblStatsHoldItem1.Size = new System.Drawing.Size(53, 12);
+            this.lblStatsHoldItem1.TabIndex = 2;
+            this.lblStatsHoldItem1.Text = "確率50% :";
+            // 
+            // grpStatsAbilities
+            // 
+            this.grpStatsAbilities.Controls.Add(this.cmbStatsAbilityHidden);
+            this.grpStatsAbilities.Controls.Add(this.cmbStatsAbility2);
+            this.grpStatsAbilities.Controls.Add(this.cmbStatsAbility1);
+            this.grpStatsAbilities.Controls.Add(this.lblStatsAbilityHidden);
+            this.grpStatsAbilities.Controls.Add(this.lblStatsAbility2);
+            this.grpStatsAbilities.Controls.Add(this.lblStatsAbility1);
+            this.grpStatsAbilities.Location = new System.Drawing.Point(290, 138);
+            this.grpStatsAbilities.Margin = new System.Windows.Forms.Padding(0);
+            this.grpStatsAbilities.Name = "grpStatsAbilities";
+            this.grpStatsAbilities.Padding = new System.Windows.Forms.Padding(0);
+            this.grpStatsAbilities.Size = new System.Drawing.Size(300, 112);
+            this.grpStatsAbilities.TabIndex = 4;
+            this.grpStatsAbilities.TabStop = false;
+            this.grpStatsAbilities.Text = "特性";
+            // 
+            // cmbStatsAbilityHidden
+            // 
+            this.cmbStatsAbilityHidden.FormattingEnabled = true;
+            this.cmbStatsAbilityHidden.Location = new System.Drawing.Point(116, 72);
+            this.cmbStatsAbilityHidden.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsAbilityHidden.Name = "cmbStatsAbilityHidden";
+            this.cmbStatsAbilityHidden.Size = new System.Drawing.Size(160, 20);
+            this.cmbStatsAbilityHidden.TabIndex = 3;
+            // 
+            // cmbStatsAbility2
+            // 
+            this.cmbStatsAbility2.FormattingEnabled = true;
+            this.cmbStatsAbility2.Location = new System.Drawing.Point(116, 48);
+            this.cmbStatsAbility2.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsAbility2.Name = "cmbStatsAbility2";
+            this.cmbStatsAbility2.Size = new System.Drawing.Size(160, 20);
+            this.cmbStatsAbility2.TabIndex = 3;
+            // 
+            // cmbStatsAbility1
+            // 
+            this.cmbStatsAbility1.FormattingEnabled = true;
+            this.cmbStatsAbility1.Location = new System.Drawing.Point(116, 24);
+            this.cmbStatsAbility1.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsAbility1.Name = "cmbStatsAbility1";
+            this.cmbStatsAbility1.Size = new System.Drawing.Size(160, 20);
+            this.cmbStatsAbility1.TabIndex = 3;
+            // 
+            // lblStatsAbilityHidden
+            // 
+            this.lblStatsAbilityHidden.AutoSize = true;
+            this.lblStatsAbilityHidden.Location = new System.Drawing.Point(20, 76);
+            this.lblStatsAbilityHidden.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsAbilityHidden.Name = "lblStatsAbilityHidden";
+            this.lblStatsAbilityHidden.Size = new System.Drawing.Size(58, 12);
+            this.lblStatsAbilityHidden.TabIndex = 2;
+            this.lblStatsAbilityHidden.Text = "隠れ特性 :";
+            // 
+            // lblStatsAbility2
+            // 
+            this.lblStatsAbility2.AutoSize = true;
+            this.lblStatsAbility2.Location = new System.Drawing.Point(20, 52);
+            this.lblStatsAbility2.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsAbility2.Name = "lblStatsAbility2";
+            this.lblStatsAbility2.Size = new System.Drawing.Size(41, 12);
+            this.lblStatsAbility2.TabIndex = 2;
+            this.lblStatsAbility2.Text = "特性2 :";
+            // 
+            // lblStatsAbility1
+            // 
+            this.lblStatsAbility1.AutoSize = true;
+            this.lblStatsAbility1.Location = new System.Drawing.Point(20, 28);
+            this.lblStatsAbility1.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsAbility1.Name = "lblStatsAbility1";
+            this.lblStatsAbility1.Size = new System.Drawing.Size(41, 12);
+            this.lblStatsAbility1.TabIndex = 2;
+            this.lblStatsAbility1.Text = "特性1 :";
+            // 
+            // grpStatsGenderAndEgg
+            // 
+            this.grpStatsGenderAndEgg.Controls.Add(this.cmbStatsEggGroup2);
+            this.grpStatsGenderAndEgg.Controls.Add(this.cmbStatsEggGroup1);
+            this.grpStatsGenderAndEgg.Controls.Add(this.cmbStatsEggStep);
+            this.grpStatsGenderAndEgg.Controls.Add(this.cmbStatsGender);
+            this.grpStatsGenderAndEgg.Controls.Add(this.lblStatsEggGroup);
+            this.grpStatsGenderAndEgg.Controls.Add(this.lblStatsEggStep);
+            this.grpStatsGenderAndEgg.Controls.Add(this.lblStatsGender);
+            this.grpStatsGenderAndEgg.Location = new System.Drawing.Point(290, 16);
+            this.grpStatsGenderAndEgg.Margin = new System.Windows.Forms.Padding(0);
+            this.grpStatsGenderAndEgg.Name = "grpStatsGenderAndEgg";
+            this.grpStatsGenderAndEgg.Padding = new System.Windows.Forms.Padding(0);
+            this.grpStatsGenderAndEgg.Size = new System.Drawing.Size(386, 112);
+            this.grpStatsGenderAndEgg.TabIndex = 3;
+            this.grpStatsGenderAndEgg.TabStop = false;
+            this.grpStatsGenderAndEgg.Text = "性別とタマゴ";
+            // 
+            // cmbStatsEggGroup2
+            // 
+            this.cmbStatsEggGroup2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatsEggGroup2.FormattingEnabled = true;
+            this.cmbStatsEggGroup2.Location = new System.Drawing.Point(244, 72);
+            this.cmbStatsEggGroup2.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsEggGroup2.Name = "cmbStatsEggGroup2";
+            this.cmbStatsEggGroup2.Size = new System.Drawing.Size(120, 20);
+            this.cmbStatsEggGroup2.TabIndex = 1;
+            // 
+            // cmbStatsEggGroup1
+            // 
+            this.cmbStatsEggGroup1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatsEggGroup1.FormattingEnabled = true;
+            this.cmbStatsEggGroup1.Location = new System.Drawing.Point(116, 72);
+            this.cmbStatsEggGroup1.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsEggGroup1.Name = "cmbStatsEggGroup1";
+            this.cmbStatsEggGroup1.Size = new System.Drawing.Size(120, 20);
+            this.cmbStatsEggGroup1.TabIndex = 1;
+            // 
+            // cmbStatsEggStep
+            // 
+            this.cmbStatsEggStep.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatsEggStep.FormattingEnabled = true;
+            this.cmbStatsEggStep.Location = new System.Drawing.Point(116, 48);
+            this.cmbStatsEggStep.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsEggStep.Name = "cmbStatsEggStep";
+            this.cmbStatsEggStep.Size = new System.Drawing.Size(160, 20);
+            this.cmbStatsEggStep.TabIndex = 1;
+            // 
+            // cmbStatsGender
+            // 
+            this.cmbStatsGender.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatsGender.FormattingEnabled = true;
+            this.cmbStatsGender.Location = new System.Drawing.Point(116, 24);
+            this.cmbStatsGender.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsGender.Name = "cmbStatsGender";
+            this.cmbStatsGender.Size = new System.Drawing.Size(160, 20);
+            this.cmbStatsGender.TabIndex = 1;
+            // 
+            // lblStatsEggGroup
+            // 
+            this.lblStatsEggGroup.AutoSize = true;
+            this.lblStatsEggGroup.Location = new System.Drawing.Point(20, 76);
+            this.lblStatsEggGroup.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsEggGroup.Name = "lblStatsEggGroup";
+            this.lblStatsEggGroup.Size = new System.Drawing.Size(75, 12);
+            this.lblStatsEggGroup.TabIndex = 0;
+            this.lblStatsEggGroup.Text = "タマゴグループ :";
+            // 
+            // lblStatsEggStep
+            // 
+            this.lblStatsEggStep.AutoSize = true;
+            this.lblStatsEggStep.Location = new System.Drawing.Point(20, 52);
+            this.lblStatsEggStep.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsEggStep.Name = "lblStatsEggStep";
+            this.lblStatsEggStep.Size = new System.Drawing.Size(61, 12);
+            this.lblStatsEggStep.TabIndex = 0;
+            this.lblStatsEggStep.Text = "タマゴ歩数 :";
+            // 
+            // lblStatsGender
+            // 
+            this.lblStatsGender.AutoSize = true;
+            this.lblStatsGender.Location = new System.Drawing.Point(20, 28);
+            this.lblStatsGender.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsGender.Name = "lblStatsGender";
+            this.lblStatsGender.Size = new System.Drawing.Size(47, 12);
+            this.lblStatsGender.TabIndex = 0;
+            this.lblStatsGender.Text = "性別値 :";
+            // 
+            // grpStatsMisc
+            // 
+            this.grpStatsMisc.Controls.Add(this.cmbStatsFlip);
+            this.grpStatsMisc.Controls.Add(this.cmbStatsColor);
+            this.grpStatsMisc.Controls.Add(this.cmbStatsGrowthRate);
+            this.grpStatsMisc.Controls.Add(this.nudStatsExp);
+            this.grpStatsMisc.Controls.Add(this.nudStatsRunRate);
+            this.grpStatsMisc.Controls.Add(this.nudStatsHappiness);
+            this.grpStatsMisc.Controls.Add(this.nudStatsCatchRate);
+            this.grpStatsMisc.Controls.Add(this.lblStatsFlip);
+            this.grpStatsMisc.Controls.Add(this.lblStatsColor);
+            this.grpStatsMisc.Controls.Add(this.lblStatsGrowthRate);
+            this.grpStatsMisc.Controls.Add(this.lblStatsExp);
+            this.grpStatsMisc.Controls.Add(this.lblStatsRunRate);
+            this.grpStatsMisc.Controls.Add(this.lblStatsHappiness);
+            this.grpStatsMisc.Controls.Add(this.lblStatsCatchRate);
+            this.grpStatsMisc.Location = new System.Drawing.Point(20, 208);
+            this.grpStatsMisc.Margin = new System.Windows.Forms.Padding(0);
+            this.grpStatsMisc.Name = "grpStatsMisc";
+            this.grpStatsMisc.Padding = new System.Windows.Forms.Padding(0);
+            this.grpStatsMisc.Size = new System.Drawing.Size(224, 208);
+            this.grpStatsMisc.TabIndex = 2;
+            this.grpStatsMisc.TabStop = false;
+            this.grpStatsMisc.Text = "その他";
+            // 
+            // cmbStatsFlip
+            // 
+            this.cmbStatsFlip.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatsFlip.FormattingEnabled = true;
+            this.cmbStatsFlip.Location = new System.Drawing.Point(120, 144);
+            this.cmbStatsFlip.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsFlip.Name = "cmbStatsFlip";
+            this.cmbStatsFlip.Size = new System.Drawing.Size(64, 20);
+            this.cmbStatsFlip.TabIndex = 2;
+            // 
+            // cmbStatsColor
+            // 
+            this.cmbStatsColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatsColor.FormattingEnabled = true;
+            this.cmbStatsColor.Location = new System.Drawing.Point(120, 120);
+            this.cmbStatsColor.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsColor.Name = "cmbStatsColor";
+            this.cmbStatsColor.Size = new System.Drawing.Size(64, 20);
+            this.cmbStatsColor.TabIndex = 2;
+            // 
+            // cmbStatsGrowthRate
+            // 
+            this.cmbStatsGrowthRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbStatsGrowthRate.FormattingEnabled = true;
+            this.cmbStatsGrowthRate.Location = new System.Drawing.Point(120, 96);
+            this.cmbStatsGrowthRate.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbStatsGrowthRate.Name = "cmbStatsGrowthRate";
+            this.cmbStatsGrowthRate.Size = new System.Drawing.Size(80, 20);
+            this.cmbStatsGrowthRate.TabIndex = 2;
+            // 
+            // nudStatsExp
+            // 
+            this.nudStatsExp.Location = new System.Drawing.Point(120, 72);
+            this.nudStatsExp.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsExp.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.nudCoordItemUse1X.Name = "nudCoordItemUse1X";
-            this.nudCoordItemUse1X.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordItemUse1X.TabIndex = 2;
+            this.nudStatsExp.Name = "nudStatsExp";
+            this.nudStatsExp.Size = new System.Drawing.Size(64, 19);
+            this.nudStatsExp.TabIndex = 1;
             // 
-            // lblCoordItemUse1Y
+            // nudStatsRunRate
             // 
-            this.lblCoordItemUse1Y.AutoSize = true;
-            this.lblCoordItemUse1Y.Location = new System.Drawing.Point(276, 84);
-            this.lblCoordItemUse1Y.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCoordItemUse1Y.Name = "lblCoordItemUse1Y";
-            this.lblCoordItemUse1Y.Size = new System.Drawing.Size(42, 12);
-            this.lblCoordItemUse1Y.TabIndex = 1;
-            this.lblCoordItemUse1Y.Text = "Y座標 :";
-            // 
-            // nudCoordItemUse1Y
-            // 
-            this.nudCoordItemUse1Y.Location = new System.Drawing.Point(276, 104);
-            this.nudCoordItemUse1Y.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordItemUse1Y.Maximum = new decimal(new int[] {
+            this.nudStatsRunRate.Location = new System.Drawing.Point(120, 168);
+            this.nudStatsRunRate.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsRunRate.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.nudCoordItemUse1Y.Name = "nudCoordItemUse1Y";
-            this.nudCoordItemUse1Y.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordItemUse1Y.TabIndex = 2;
+            this.nudStatsRunRate.Name = "nudStatsRunRate";
+            this.nudStatsRunRate.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsRunRate.TabIndex = 1;
             // 
-            // nudCoordItemUse2Y
+            // nudStatsHappiness
             // 
-            this.nudCoordItemUse2Y.Location = new System.Drawing.Point(276, 296);
-            this.nudCoordItemUse2Y.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordItemUse2Y.Maximum = new decimal(new int[] {
+            this.nudStatsHappiness.Location = new System.Drawing.Point(120, 48);
+            this.nudStatsHappiness.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsHappiness.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.nudCoordItemUse2Y.Name = "nudCoordItemUse2Y";
-            this.nudCoordItemUse2Y.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordItemUse2Y.TabIndex = 6;
+            this.nudStatsHappiness.Name = "nudStatsHappiness";
+            this.nudStatsHappiness.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsHappiness.TabIndex = 1;
             // 
-            // nudCoordItemUse2X
+            // nudStatsCatchRate
             // 
-            this.nudCoordItemUse2X.Location = new System.Drawing.Point(276, 240);
-            this.nudCoordItemUse2X.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordItemUse2X.Maximum = new decimal(new int[] {
+            this.nudStatsCatchRate.Location = new System.Drawing.Point(120, 24);
+            this.nudStatsCatchRate.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsCatchRate.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.nudCoordItemUse2X.Name = "nudCoordItemUse2X";
-            this.nudCoordItemUse2X.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordItemUse2X.TabIndex = 7;
+            this.nudStatsCatchRate.Name = "nudStatsCatchRate";
+            this.nudStatsCatchRate.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsCatchRate.TabIndex = 1;
             // 
-            // lblCoordItemUse2Y
+            // lblStatsFlip
             // 
-            this.lblCoordItemUse2Y.AutoSize = true;
-            this.lblCoordItemUse2Y.Location = new System.Drawing.Point(276, 276);
-            this.lblCoordItemUse2Y.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCoordItemUse2Y.Name = "lblCoordItemUse2Y";
-            this.lblCoordItemUse2Y.Size = new System.Drawing.Size(42, 12);
-            this.lblCoordItemUse2Y.TabIndex = 4;
-            this.lblCoordItemUse2Y.Text = "Y座標 :";
+            this.lblStatsFlip.AutoSize = true;
+            this.lblStatsFlip.Location = new System.Drawing.Point(20, 148);
+            this.lblStatsFlip.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsFlip.Name = "lblStatsFlip";
+            this.lblStatsFlip.Size = new System.Drawing.Size(79, 12);
+            this.lblStatsFlip.TabIndex = 0;
+            this.lblStatsFlip.Text = "ポケモンの向き :";
             // 
-            // lblCoordItemUse2X
+            // lblStatsColor
             // 
-            this.lblCoordItemUse2X.AutoSize = true;
-            this.lblCoordItemUse2X.Location = new System.Drawing.Point(276, 220);
-            this.lblCoordItemUse2X.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCoordItemUse2X.Name = "lblCoordItemUse2X";
-            this.lblCoordItemUse2X.Size = new System.Drawing.Size(42, 12);
-            this.lblCoordItemUse2X.TabIndex = 5;
-            this.lblCoordItemUse2X.Text = "X座標 :";
+            this.lblStatsColor.AutoSize = true;
+            this.lblStatsColor.Location = new System.Drawing.Point(20, 124);
+            this.lblStatsColor.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsColor.Name = "lblStatsColor";
+            this.lblStatsColor.Size = new System.Drawing.Size(70, 12);
+            this.lblStatsColor.TabIndex = 0;
+            this.lblStatsColor.Text = "ポケモンの色 :";
             // 
-            // picCoordItemUse2
+            // lblStatsGrowthRate
             // 
-            this.picCoordItemUse2.Location = new System.Drawing.Point(20, 220);
-            this.picCoordItemUse2.Margin = new System.Windows.Forms.Padding(0);
-            this.picCoordItemUse2.Name = "picCoordItemUse2";
-            this.picCoordItemUse2.Size = new System.Drawing.Size(240, 160);
-            this.picCoordItemUse2.TabIndex = 3;
-            this.picCoordItemUse2.TabStop = false;
+            this.lblStatsGrowthRate.AutoSize = true;
+            this.lblStatsGrowthRate.Location = new System.Drawing.Point(20, 100);
+            this.lblStatsGrowthRate.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsGrowthRate.Name = "lblStatsGrowthRate";
+            this.lblStatsGrowthRate.Size = new System.Drawing.Size(73, 12);
+            this.lblStatsGrowthRate.TabIndex = 0;
+            this.lblStatsGrowthRate.Text = "経験値タイプ :";
             // 
-            // lblCoordItemUse2Zoom
+            // lblStatsExp
             // 
-            this.lblCoordItemUse2Zoom.AutoSize = true;
-            this.lblCoordItemUse2Zoom.Location = new System.Drawing.Point(276, 332);
-            this.lblCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCoordItemUse2Zoom.Name = "lblCoordItemUse2Zoom";
-            this.lblCoordItemUse2Zoom.Size = new System.Drawing.Size(41, 12);
-            this.lblCoordItemUse2Zoom.TabIndex = 4;
-            this.lblCoordItemUse2Zoom.Text = "ズーム :";
+            this.lblStatsExp.AutoSize = true;
+            this.lblStatsExp.Location = new System.Drawing.Point(20, 76);
+            this.lblStatsExp.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsExp.Name = "lblStatsExp";
+            this.lblStatsExp.Size = new System.Drawing.Size(71, 12);
+            this.lblStatsExp.TabIndex = 0;
+            this.lblStatsExp.Text = "基礎経験値 :";
             // 
-            // nudCoordItemUse2Zoom
+            // lblStatsRunRate
             // 
-            this.nudCoordItemUse2Zoom.Location = new System.Drawing.Point(276, 352);
-            this.nudCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
-            this.nudCoordItemUse2Zoom.Maximum = new decimal(new int[] {
+            this.lblStatsRunRate.AutoSize = true;
+            this.lblStatsRunRate.Location = new System.Drawing.Point(20, 172);
+            this.lblStatsRunRate.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsRunRate.Name = "lblStatsRunRate";
+            this.lblStatsRunRate.Size = new System.Drawing.Size(91, 12);
+            this.lblStatsRunRate.TabIndex = 0;
+            this.lblStatsRunRate.Text = "逃走値（サファリ） :";
+            // 
+            // lblStatsHappiness
+            // 
+            this.lblStatsHappiness.AutoSize = true;
+            this.lblStatsHappiness.Location = new System.Drawing.Point(20, 52);
+            this.lblStatsHappiness.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsHappiness.Name = "lblStatsHappiness";
+            this.lblStatsHappiness.Size = new System.Drawing.Size(75, 12);
+            this.lblStatsHappiness.TabIndex = 0;
+            this.lblStatsHappiness.Text = "初期なつき度 :";
+            // 
+            // lblStatsCatchRate
+            // 
+            this.lblStatsCatchRate.AutoSize = true;
+            this.lblStatsCatchRate.Location = new System.Drawing.Point(20, 28);
+            this.lblStatsCatchRate.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsCatchRate.Name = "lblStatsCatchRate";
+            this.lblStatsCatchRate.Size = new System.Drawing.Size(73, 12);
+            this.lblStatsCatchRate.TabIndex = 0;
+            this.lblStatsCatchRate.Text = "ゲットしやすさ :";
+            // 
+            // grpStatsEvs
+            // 
+            this.grpStatsEvs.Controls.Add(this.nudStatsEvSpeed);
+            this.grpStatsEvs.Controls.Add(this.nudStatsEvDef);
+            this.grpStatsEvs.Controls.Add(this.nudStatsEvSpDef);
+            this.grpStatsEvs.Controls.Add(this.nudStatsEvAtk);
+            this.grpStatsEvs.Controls.Add(this.nudStatsEvSpAtk);
+            this.grpStatsEvs.Controls.Add(this.nudStatsEvHp);
+            this.grpStatsEvs.Location = new System.Drawing.Point(184, 16);
+            this.grpStatsEvs.Margin = new System.Windows.Forms.Padding(0);
+            this.grpStatsEvs.Name = "grpStatsEvs";
+            this.grpStatsEvs.Padding = new System.Windows.Forms.Padding(0);
+            this.grpStatsEvs.Size = new System.Drawing.Size(88, 182);
+            this.grpStatsEvs.TabIndex = 1;
+            this.grpStatsEvs.TabStop = false;
+            this.grpStatsEvs.Text = "努力値";
+            // 
+            // nudStatsEvSpeed
+            // 
+            this.nudStatsEvSpeed.Location = new System.Drawing.Point(20, 144);
+            this.nudStatsEvSpeed.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsEvSpeed.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.nudStatsEvSpeed.Name = "nudStatsEvSpeed";
+            this.nudStatsEvSpeed.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsEvSpeed.TabIndex = 2;
+            // 
+            // nudStatsEvDef
+            // 
+            this.nudStatsEvDef.Location = new System.Drawing.Point(20, 72);
+            this.nudStatsEvDef.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsEvDef.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.nudStatsEvDef.Name = "nudStatsEvDef";
+            this.nudStatsEvDef.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsEvDef.TabIndex = 3;
+            // 
+            // nudStatsEvSpDef
+            // 
+            this.nudStatsEvSpDef.Location = new System.Drawing.Point(20, 120);
+            this.nudStatsEvSpDef.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsEvSpDef.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.nudStatsEvSpDef.Name = "nudStatsEvSpDef";
+            this.nudStatsEvSpDef.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsEvSpDef.TabIndex = 4;
+            // 
+            // nudStatsEvAtk
+            // 
+            this.nudStatsEvAtk.Location = new System.Drawing.Point(20, 48);
+            this.nudStatsEvAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsEvAtk.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.nudStatsEvAtk.Name = "nudStatsEvAtk";
+            this.nudStatsEvAtk.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsEvAtk.TabIndex = 5;
+            // 
+            // nudStatsEvSpAtk
+            // 
+            this.nudStatsEvSpAtk.Location = new System.Drawing.Point(20, 96);
+            this.nudStatsEvSpAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsEvSpAtk.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.nudStatsEvSpAtk.Name = "nudStatsEvSpAtk";
+            this.nudStatsEvSpAtk.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsEvSpAtk.TabIndex = 6;
+            // 
+            // nudStatsEvHp
+            // 
+            this.nudStatsEvHp.Location = new System.Drawing.Point(20, 24);
+            this.nudStatsEvHp.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsEvHp.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.nudStatsEvHp.Name = "nudStatsEvHp";
+            this.nudStatsEvHp.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsEvHp.TabIndex = 7;
+            // 
+            // grpStatsParams
+            // 
+            this.grpStatsParams.Controls.Add(this.nudStatsSpeed);
+            this.grpStatsParams.Controls.Add(this.nudStatsDef);
+            this.grpStatsParams.Controls.Add(this.nudStatsSpDef);
+            this.grpStatsParams.Controls.Add(this.nudStatsAtk);
+            this.grpStatsParams.Controls.Add(this.nudStatsSpAtk);
+            this.grpStatsParams.Controls.Add(this.nudStatsHp);
+            this.grpStatsParams.Controls.Add(this.lblStatsSpeed);
+            this.grpStatsParams.Controls.Add(this.lblStatsDef);
+            this.grpStatsParams.Controls.Add(this.lblStatsSpDef);
+            this.grpStatsParams.Controls.Add(this.lblStatsAtk);
+            this.grpStatsParams.Controls.Add(this.lblStatsSpAtk);
+            this.grpStatsParams.Controls.Add(this.lblStatsHp);
+            this.grpStatsParams.Location = new System.Drawing.Point(20, 16);
+            this.grpStatsParams.Margin = new System.Windows.Forms.Padding(0);
+            this.grpStatsParams.Name = "grpStatsParams";
+            this.grpStatsParams.Padding = new System.Windows.Forms.Padding(0);
+            this.grpStatsParams.Size = new System.Drawing.Size(148, 182);
+            this.grpStatsParams.TabIndex = 0;
+            this.grpStatsParams.TabStop = false;
+            this.grpStatsParams.Text = "種族値";
+            // 
+            // nudStatsSpeed
+            // 
+            this.nudStatsSpeed.Location = new System.Drawing.Point(76, 144);
+            this.nudStatsSpeed.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsSpeed.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.nudCoordItemUse2Zoom.Name = "nudCoordItemUse2Zoom";
-            this.nudCoordItemUse2Zoom.Size = new System.Drawing.Size(48, 19);
-            this.nudCoordItemUse2Zoom.TabIndex = 6;
+            this.nudStatsSpeed.Name = "nudStatsSpeed";
+            this.nudStatsSpeed.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsSpeed.TabIndex = 1;
             // 
-            // rbCoordItemUse2Normal
+            // nudStatsDef
             // 
-            this.rbCoordItemUse2Normal.AutoSize = true;
-            this.rbCoordItemUse2Normal.Checked = true;
-            this.rbCoordItemUse2Normal.Location = new System.Drawing.Point(20, 392);
-            this.rbCoordItemUse2Normal.Margin = new System.Windows.Forms.Padding(0);
-            this.rbCoordItemUse2Normal.Name = "rbCoordItemUse2Normal";
-            this.rbCoordItemUse2Normal.Size = new System.Drawing.Size(59, 16);
-            this.rbCoordItemUse2Normal.TabIndex = 8;
-            this.rbCoordItemUse2Normal.TabStop = true;
-            this.rbCoordItemUse2Normal.Text = "通常時";
-            this.rbCoordItemUse2Normal.UseVisualStyleBackColor = true;
+            this.nudStatsDef.Location = new System.Drawing.Point(76, 72);
+            this.nudStatsDef.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsDef.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudStatsDef.Name = "nudStatsDef";
+            this.nudStatsDef.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsDef.TabIndex = 1;
             // 
-            // rbCoordItemUse2Zoom
+            // nudStatsSpDef
             // 
-            this.rbCoordItemUse2Zoom.AutoSize = true;
-            this.rbCoordItemUse2Zoom.Location = new System.Drawing.Point(88, 392);
-            this.rbCoordItemUse2Zoom.Margin = new System.Windows.Forms.Padding(0);
-            this.rbCoordItemUse2Zoom.Name = "rbCoordItemUse2Zoom";
-            this.rbCoordItemUse2Zoom.Size = new System.Drawing.Size(65, 16);
-            this.rbCoordItemUse2Zoom.TabIndex = 8;
-            this.rbCoordItemUse2Zoom.Text = "ズーム時";
-            this.rbCoordItemUse2Zoom.UseVisualStyleBackColor = true;
+            this.nudStatsSpDef.Location = new System.Drawing.Point(76, 120);
+            this.nudStatsSpDef.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsSpDef.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudStatsSpDef.Name = "nudStatsSpDef";
+            this.nudStatsSpDef.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsSpDef.TabIndex = 1;
+            // 
+            // nudStatsAtk
+            // 
+            this.nudStatsAtk.Location = new System.Drawing.Point(76, 48);
+            this.nudStatsAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsAtk.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudStatsAtk.Name = "nudStatsAtk";
+            this.nudStatsAtk.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsAtk.TabIndex = 1;
+            // 
+            // nudStatsSpAtk
+            // 
+            this.nudStatsSpAtk.Location = new System.Drawing.Point(76, 96);
+            this.nudStatsSpAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsSpAtk.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudStatsSpAtk.Name = "nudStatsSpAtk";
+            this.nudStatsSpAtk.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsSpAtk.TabIndex = 1;
+            // 
+            // nudStatsHp
+            // 
+            this.nudStatsHp.Location = new System.Drawing.Point(76, 24);
+            this.nudStatsHp.Margin = new System.Windows.Forms.Padding(0);
+            this.nudStatsHp.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudStatsHp.Name = "nudStatsHp";
+            this.nudStatsHp.Size = new System.Drawing.Size(48, 19);
+            this.nudStatsHp.TabIndex = 1;
+            // 
+            // lblStatsSpeed
+            // 
+            this.lblStatsSpeed.AutoSize = true;
+            this.lblStatsSpeed.Location = new System.Drawing.Point(20, 148);
+            this.lblStatsSpeed.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsSpeed.Name = "lblStatsSpeed";
+            this.lblStatsSpeed.Size = new System.Drawing.Size(49, 12);
+            this.lblStatsSpeed.TabIndex = 0;
+            this.lblStatsSpeed.Text = "すばやさ :";
+            // 
+            // lblStatsDef
+            // 
+            this.lblStatsDef.AutoSize = true;
+            this.lblStatsDef.Location = new System.Drawing.Point(20, 76);
+            this.lblStatsDef.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsDef.Name = "lblStatsDef";
+            this.lblStatsDef.Size = new System.Drawing.Size(45, 12);
+            this.lblStatsDef.TabIndex = 0;
+            this.lblStatsDef.Text = "ぼうぎょ :";
+            // 
+            // lblStatsSpDef
+            // 
+            this.lblStatsSpDef.AutoSize = true;
+            this.lblStatsSpDef.Location = new System.Drawing.Point(20, 124);
+            this.lblStatsSpDef.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsSpDef.Name = "lblStatsSpDef";
+            this.lblStatsSpDef.Size = new System.Drawing.Size(42, 12);
+            this.lblStatsSpDef.TabIndex = 0;
+            this.lblStatsSpDef.Text = "とくぼう :";
+            // 
+            // lblStatsAtk
+            // 
+            this.lblStatsAtk.AutoSize = true;
+            this.lblStatsAtk.Location = new System.Drawing.Point(20, 52);
+            this.lblStatsAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsAtk.Name = "lblStatsAtk";
+            this.lblStatsAtk.Size = new System.Drawing.Size(45, 12);
+            this.lblStatsAtk.TabIndex = 0;
+            this.lblStatsAtk.Text = "こうげき :";
+            // 
+            // lblStatsSpAtk
+            // 
+            this.lblStatsSpAtk.AutoSize = true;
+            this.lblStatsSpAtk.Location = new System.Drawing.Point(20, 100);
+            this.lblStatsSpAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsSpAtk.Name = "lblStatsSpAtk";
+            this.lblStatsSpAtk.Size = new System.Drawing.Size(40, 12);
+            this.lblStatsSpAtk.TabIndex = 0;
+            this.lblStatsSpAtk.Text = "とくこう :";
+            // 
+            // lblStatsHp
+            // 
+            this.lblStatsHp.AutoSize = true;
+            this.lblStatsHp.Location = new System.Drawing.Point(20, 28);
+            this.lblStatsHp.Margin = new System.Windows.Forms.Padding(0);
+            this.lblStatsHp.Name = "lblStatsHp";
+            this.lblStatsHp.Size = new System.Drawing.Size(26, 12);
+            this.lblStatsHp.TabIndex = 0;
+            this.lblStatsHp.Text = "HP :";
+            // 
+            // tabPageEvolutions
+            // 
+            this.tabPageEvolutions.Location = new System.Drawing.Point(4, 22);
+            this.tabPageEvolutions.Margin = new System.Windows.Forms.Padding(0);
+            this.tabPageEvolutions.Name = "tabPageEvolutions";
+            this.tabPageEvolutions.Size = new System.Drawing.Size(706, 480);
+            this.tabPageEvolutions.TabIndex = 3;
+            this.tabPageEvolutions.Text = "進化";
+            this.tabPageEvolutions.UseVisualStyleBackColor = true;
+            // 
+            // tabPageLearnsets
+            // 
+            this.tabPageLearnsets.Location = new System.Drawing.Point(4, 22);
+            this.tabPageLearnsets.Margin = new System.Windows.Forms.Padding(0);
+            this.tabPageLearnsets.Name = "tabPageLearnsets";
+            this.tabPageLearnsets.Size = new System.Drawing.Size(706, 480);
+            this.tabPageLearnsets.TabIndex = 4;
+            this.tabPageLearnsets.Text = "習得技";
+            this.tabPageLearnsets.UseVisualStyleBackColor = true;
+            // 
+            // tabPagePokedex
+            // 
+            this.tabPagePokedex.Location = new System.Drawing.Point(4, 22);
+            this.tabPagePokedex.Margin = new System.Windows.Forms.Padding(0);
+            this.tabPagePokedex.Name = "tabPagePokedex";
+            this.tabPagePokedex.Size = new System.Drawing.Size(706, 480);
+            this.tabPagePokedex.TabIndex = 5;
+            this.tabPagePokedex.Text = "図鑑";
+            this.tabPagePokedex.UseVisualStyleBackColor = true;
+            // 
+            // tabPageCries
+            // 
+            this.tabPageCries.Location = new System.Drawing.Point(4, 22);
+            this.tabPageCries.Margin = new System.Windows.Forms.Padding(0);
+            this.tabPageCries.Name = "tabPageCries";
+            this.tabPageCries.Size = new System.Drawing.Size(706, 480);
+            this.tabPageCries.TabIndex = 6;
+            this.tabPageCries.Text = "鳴き声";
+            this.tabPageCries.UseVisualStyleBackColor = true;
+            // 
+            // tabPageMusic
+            // 
+            this.tabPageMusic.Controls.Add(this.grpBattleMusic);
+            this.tabPageMusic.Location = new System.Drawing.Point(4, 22);
+            this.tabPageMusic.Margin = new System.Windows.Forms.Padding(0);
+            this.tabPageMusic.Name = "tabPageMusic";
+            this.tabPageMusic.Size = new System.Drawing.Size(706, 480);
+            this.tabPageMusic.TabIndex = 7;
+            this.tabPageMusic.Text = "BGM";
+            this.tabPageMusic.UseVisualStyleBackColor = true;
             // 
             // PokemonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(912, 555);
+            this.ClientSize = new System.Drawing.Size(930, 555);
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.grpPokemonRename);
             this.Controls.Add(this.grpDataIndex);
@@ -1268,30 +2084,62 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteFrontShiny)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picSpriteFrontNormal)).EndInit();
             this.tabPageCoordinates.ResumeLayout(false);
-            this.tabPageMusic.ResumeLayout(false);
-            this.grpCoordBattle.ResumeLayout(false);
-            this.grpCoordBattle.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picCoordBattleDisplay)).EndInit();
-            this.grpCoordBattleAlly.ResumeLayout(false);
-            this.grpCoordBattleAlly.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleX)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleY)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyPokemon)).EndInit();
-            this.grpCoordBattleEnemy.ResumeLayout(false);
-            this.grpCoordBattleEnemy.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleY)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyPokemon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleX)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyShadowY)).EndInit();
             this.grpCoordItemUse.ResumeLayout(false);
             this.grpCoordItemUse.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1X)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1Y)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Zoom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Y)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2X)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse2Zoom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1Y)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordItemUse1X)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordItemUse1)).EndInit();
+            this.grpCoordBattle.ResumeLayout(false);
+            this.grpCoordBattle.PerformLayout();
+            this.grpCoordBattleEnemy.ResumeLayout(false);
+            this.grpCoordBattleEnemy.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyShadowY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyPokemon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleEnemyBubbleX)).EndInit();
+            this.grpCoordBattleAlly.ResumeLayout(false);
+            this.grpCoordBattleAlly.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyPokemon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCoordBattleAllyBubbleX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picCoordBattleDisplay)).EndInit();
+            this.tabPageStats.ResumeLayout(false);
+            this.grpStatsType.ResumeLayout(false);
+            this.grpStatsType.PerformLayout();
+            this.grpStatsHoldItems.ResumeLayout(false);
+            this.grpStatsHoldItems.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picStatsHoldItem2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picStatsHoldItem1)).EndInit();
+            this.grpStatsAbilities.ResumeLayout(false);
+            this.grpStatsAbilities.PerformLayout();
+            this.grpStatsGenderAndEgg.ResumeLayout(false);
+            this.grpStatsGenderAndEgg.PerformLayout();
+            this.grpStatsMisc.ResumeLayout(false);
+            this.grpStatsMisc.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsExp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsRunRate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsHappiness)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsCatchRate)).EndInit();
+            this.grpStatsEvs.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvDef)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvSpDef)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvAtk)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvSpAtk)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsEvHp)).EndInit();
+            this.grpStatsParams.ResumeLayout(false);
+            this.grpStatsParams.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsDef)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsSpDef)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsAtk)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsSpAtk)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStatsHp)).EndInit();
+            this.tabPageMusic.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1390,5 +2238,67 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.RadioButton rbCoordItemUse2Normal;
         private System.Windows.Forms.NumericUpDown nudCoordItemUse2Zoom;
         private System.Windows.Forms.Label lblCoordItemUse2Zoom;
+        private System.Windows.Forms.GroupBox grpStatsParams;
+        private System.Windows.Forms.Label lblStatsHp;
+        private System.Windows.Forms.NumericUpDown nudStatsSpeed;
+        private System.Windows.Forms.NumericUpDown nudStatsDef;
+        private System.Windows.Forms.NumericUpDown nudStatsSpDef;
+        private System.Windows.Forms.NumericUpDown nudStatsAtk;
+        private System.Windows.Forms.NumericUpDown nudStatsSpAtk;
+        private System.Windows.Forms.NumericUpDown nudStatsHp;
+        private System.Windows.Forms.Label lblStatsSpeed;
+        private System.Windows.Forms.Label lblStatsDef;
+        private System.Windows.Forms.Label lblStatsSpDef;
+        private System.Windows.Forms.Label lblStatsAtk;
+        private System.Windows.Forms.Label lblStatsSpAtk;
+        private System.Windows.Forms.GroupBox grpStatsEvs;
+        private System.Windows.Forms.NumericUpDown nudStatsEvSpeed;
+        private System.Windows.Forms.NumericUpDown nudStatsEvDef;
+        private System.Windows.Forms.NumericUpDown nudStatsEvSpDef;
+        private System.Windows.Forms.NumericUpDown nudStatsEvAtk;
+        private System.Windows.Forms.NumericUpDown nudStatsEvSpAtk;
+        private System.Windows.Forms.NumericUpDown nudStatsEvHp;
+        private System.Windows.Forms.GroupBox grpStatsMisc;
+        private System.Windows.Forms.Label lblStatsCatchRate;
+        private System.Windows.Forms.NumericUpDown nudStatsCatchRate;
+        private System.Windows.Forms.NumericUpDown nudStatsExp;
+        private System.Windows.Forms.NumericUpDown nudStatsHappiness;
+        private System.Windows.Forms.Label lblStatsExp;
+        private System.Windows.Forms.Label lblStatsHappiness;
+        private System.Windows.Forms.Label lblStatsGrowthRate;
+        private System.Windows.Forms.ComboBox cmbStatsGrowthRate;
+        private System.Windows.Forms.ComboBox cmbStatsFlip;
+        private System.Windows.Forms.ComboBox cmbStatsColor;
+        private System.Windows.Forms.Label lblStatsFlip;
+        private System.Windows.Forms.Label lblStatsColor;
+        private System.Windows.Forms.NumericUpDown nudStatsRunRate;
+        private System.Windows.Forms.Label lblStatsRunRate;
+        private System.Windows.Forms.GroupBox grpStatsGenderAndEgg;
+        private System.Windows.Forms.Label lblStatsGender;
+        private System.Windows.Forms.ComboBox cmbStatsEggGroup2;
+        private System.Windows.Forms.ComboBox cmbStatsEggGroup1;
+        private System.Windows.Forms.ComboBox cmbStatsEggStep;
+        private System.Windows.Forms.ComboBox cmbStatsGender;
+        private System.Windows.Forms.Label lblStatsEggGroup;
+        private System.Windows.Forms.Label lblStatsEggStep;
+        private System.Windows.Forms.GroupBox grpStatsAbilities;
+        private System.Windows.Forms.ComboBox cmbStatsAbilityHidden;
+        private System.Windows.Forms.ComboBox cmbStatsAbility2;
+        private System.Windows.Forms.ComboBox cmbStatsAbility1;
+        private System.Windows.Forms.Label lblStatsAbilityHidden;
+        private System.Windows.Forms.Label lblStatsAbility2;
+        private System.Windows.Forms.Label lblStatsAbility1;
+        private System.Windows.Forms.GroupBox grpStatsHoldItems;
+        private System.Windows.Forms.ComboBox cmbStatsHoldItem2;
+        private System.Windows.Forms.ComboBox cmbStatsHoldItem1;
+        private System.Windows.Forms.Label lblStatsHoldItem2;
+        private System.Windows.Forms.Label lblStatsHoldItem1;
+        private System.Windows.Forms.PictureBox picStatsHoldItem2;
+        private System.Windows.Forms.PictureBox picStatsHoldItem1;
+        private System.Windows.Forms.GroupBox grpStatsType;
+        private System.Windows.Forms.ComboBox cmbStatsType2;
+        private System.Windows.Forms.ComboBox cmbStatsType1;
+        private System.Windows.Forms.Label lblStatsType2;
+        private System.Windows.Forms.Label lblStatsType1;
     }
 }
