@@ -211,6 +211,8 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPagePokedex = new System.Windows.Forms.TabPage();
             this.tabPageCries = new System.Windows.Forms.TabPage();
             this.tabPageMusic = new System.Windows.Forms.TabPage();
+            this.btnEvoInputAssistParam1 = new System.Windows.Forms.Button();
+            this.btnEvoInputAssistParam2 = new System.Windows.Forms.Button();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -2049,6 +2051,8 @@ namespace PochiPochiEditorGabu._Pokemon
             // 
             // grpEvoInputAssist
             // 
+            this.grpEvoInputAssist.Controls.Add(this.btnEvoInputAssistParam2);
+            this.grpEvoInputAssist.Controls.Add(this.btnEvoInputAssistParam1);
             this.grpEvoInputAssist.Controls.Add(this.cmbEvoInputAssistMove);
             this.grpEvoInputAssist.Controls.Add(this.cmbEvoInputAssistItem);
             this.grpEvoInputAssist.Controls.Add(this.cmbEvoInputAssistType);
@@ -2061,7 +2065,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpEvoInputAssist.Margin = new System.Windows.Forms.Padding(0);
             this.grpEvoInputAssist.Name = "grpEvoInputAssist";
             this.grpEvoInputAssist.Padding = new System.Windows.Forms.Padding(0);
-            this.grpEvoInputAssist.Size = new System.Drawing.Size(264, 148);
+            this.grpEvoInputAssist.Size = new System.Drawing.Size(288, 180);
             this.grpEvoInputAssist.TabIndex = 4;
             this.grpEvoInputAssist.TabStop = false;
             this.grpEvoInputAssist.Text = "パラメータ入力補助";
@@ -2393,6 +2397,26 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageMusic.Text = "BGM";
             this.tabPageMusic.UseVisualStyleBackColor = true;
             // 
+            // btnEvoInputAssistParam1
+            // 
+            this.btnEvoInputAssistParam1.Location = new System.Drawing.Point(20, 136);
+            this.btnEvoInputAssistParam1.Margin = new System.Windows.Forms.Padding(0);
+            this.btnEvoInputAssistParam1.Name = "btnEvoInputAssistParam1";
+            this.btnEvoInputAssistParam1.Size = new System.Drawing.Size(120, 23);
+            this.btnEvoInputAssistParam1.TabIndex = 2;
+            this.btnEvoInputAssistParam1.Text = "パラメータ1に代入";
+            this.btnEvoInputAssistParam1.UseVisualStyleBackColor = true;
+            // 
+            // btnEvoInputAssistParam2
+            // 
+            this.btnEvoInputAssistParam2.Location = new System.Drawing.Point(148, 136);
+            this.btnEvoInputAssistParam2.Margin = new System.Windows.Forms.Padding(0);
+            this.btnEvoInputAssistParam2.Name = "btnEvoInputAssistParam2";
+            this.btnEvoInputAssistParam2.Size = new System.Drawing.Size(120, 23);
+            this.btnEvoInputAssistParam2.TabIndex = 2;
+            this.btnEvoInputAssistParam2.Text = "パラメータ2に代入";
+            this.btnEvoInputAssistParam2.UseVisualStyleBackColor = true;
+            // 
             // PokemonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2688,5 +2712,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.RadioButton rbEvoInputAssistMove;
         private System.Windows.Forms.RadioButton rbEvoInputAssistItem;
         private System.Windows.Forms.RadioButton rbEvoInputAssistType;
+        private System.Windows.Forms.Button btnEvoInputAssistParam2;
+        private System.Windows.Forms.Button btnEvoInputAssistParam1;
     }
 }

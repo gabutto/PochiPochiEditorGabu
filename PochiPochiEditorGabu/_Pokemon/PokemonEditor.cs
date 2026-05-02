@@ -256,6 +256,8 @@ namespace PochiPochiEditorGabu._Pokemon
             rbEvoInputAssistType.CheckedChanged += EvoInputAssist_CheckedChanged;
             rbEvoInputAssistItem.CheckedChanged += EvoInputAssist_CheckedChanged;
             rbEvoInputAssistMove.CheckedChanged += EvoInputAssist_CheckedChanged;
+            btnEvoInputAssistParam1.Click += btnEvoInputAssistParam1_Click;
+            btnEvoInputAssistParam2.Click += btnEvoInputAssistParam2_Click;
         }
 
         private void InitializeControls()
@@ -335,6 +337,17 @@ namespace PochiPochiEditorGabu._Pokemon
                              .Select(entry => entry._MoveName)
                              .ToArray();
             cmbEvoInputAssistMove.Items.AddRange(moveNames);
+
+            // grpEvoInputAssist
+            foreach (var cmb in new[] {
+                cmbEvoInputAssistPokemon,
+                cmbEvoInputAssistType,
+                cmbEvoInputAssistItem,
+                cmbEvoInputAssistMove })
+            {
+                cmb.SelectedIndex = 0;
+            }
+            rbEvoInputAssistPokemon.Checked = true;
 
             ControlHelper.AttachAddressAutoFormat(
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
@@ -1606,9 +1619,36 @@ namespace PochiPochiEditorGabu._Pokemon
             _uiStateManager.UpdateBinary(lstEvoSlots, currentBytes);
         }
 
+        private int GetSelectedEvolutionInputAssistValue()
+        {
+            if (rbEvoInputAssistPokemon.Checked && cmbEvoInputAssistPokemon.SelectedIndex >= 0)
+                return cmbEvoInputAssistPokemon.SelectedIndex;
+            if (rbEvoInputAssistType.Checked && cmbEvoInputAssistType.SelectedIndex >= 0)
+                return cmbEvoInputAssistType.SelectedIndex;
+            if (rbEvoInputAssistItem.Checked && cmbEvoInputAssistItem.SelectedIndex >= 0)
+                return cmbEvoInputAssistItem.SelectedIndex;
+            if (rbEvoInputAssistMove.Checked && cmbEvoInputAssistMove.SelectedIndex >= 0)
+                return cmbEvoInputAssistMove.SelectedIndex;
+            return 0;
+        }
 
+        private void btnEvoInputAssistParam1_Click(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
 
+            int val = GetSelectedEvolutionInputAssistValue();
+            nudEvoCondParam1A.Value = val & GbaConstants.Mask8Bits;
+            nudEvoCondParam1B.Value = (val >> GbaConstants.BitsPerByte) & GbaConstants.Mask8Bits;
+        }
 
+        private void btnEvoInputAssistParam2_Click(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            int val = GetSelectedEvolutionInputAssistValue();
+            nudEvoCondParam2A.Value = val & GbaConstants.Mask8Bits;
+            nudEvoCondParam2B.Value = (val >> GbaConstants.BitsPerByte) & GbaConstants.Mask8Bits;
+        }
 
 
 
