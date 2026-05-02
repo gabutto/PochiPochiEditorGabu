@@ -36,6 +36,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonCoordItemUseEntry> _coordItemUseManager;
         private EntryManager<PokemonStatsNormalEntry> _statsNormalManager;
         private EntryManager<PokemonStatsExpansionEntry> _statsExpansionManager;
+        private EntryManager<PokemonEvolutionEntry> _evoManager;
 
         private EntryManager<AbilityNameEntry> _abilityNameManager;
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
@@ -59,6 +60,8 @@ namespace PochiPochiEditorGabu._Pokemon
         private Bitmap _itemUse2BackgroundImage = null;
         private bool _isItemUseCoordValid = false;
         private int _currentEvoSlotIndex = 0;
+        private List<PokemonEvolutionEntry[]> originalEvoSlots = new List<PokemonEvolutionEntry[]>();
+        private List<PokemonEvolutionEntry[]> workingEvoSlots = new List<PokemonEvolutionEntry[]>();
 
         private class EvolutionMethodInfo
         {
@@ -140,9 +143,20 @@ namespace PochiPochiEditorGabu._Pokemon
                     _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
 
-
-
-
+            // evolution
+            uint? evoTableAddr = _config.GetAddr("PokemonEvolutionTableAddress");
+            int evoSlotCount = _config.GetInt("PokemonEvolutionSlotCount");
+            int evoEntryCount = _config.GetInt("PokemonEvolutionEntryCount");
+            _evoManager = new EntryManager<PokemonEvolutionEntry>(_romData, _tblReader);
+            _evoManager.Load(evoTableAddr, evoSlotCount * evoEntryCount);
+            for (int i = 0; i < evoEntryCount; i++)
+            {
+                int start = i * evoSlotCount;
+                var originalSlots = _evoManager.Original.Skip(start).Take(evoSlotCount).ToArray();
+                var workingSlots = _evoManager.Working.Skip(start).Take(evoSlotCount).ToArray();
+                originalEvoSlots.Add(originalSlots);
+                workingEvoSlots.Add(workingSlots);
+            }
 
 
 
@@ -228,6 +242,16 @@ namespace PochiPochiEditorGabu._Pokemon
             lstEvoSlots.SelectedIndexChanged += lstEvoSlots_SelectedIndexChanged;
             cmbEvoToPokemon.SelectedIndexChanged += cmbEvoToPokemon_SelectedIndexChanged;
             cmbEvoCondMethod.SelectedIndexChanged += cmbEvoCondMethod_SelectedIndexChanged;
+            cmbEvoToPokemon.SelectedIndexChanged += OnEvolutionUIChanged;
+            cmbEvoCondMethod.SelectedIndexChanged += OnEvolutionUIChanged;
+            foreach (var nud in new[] {
+                nudEvoCondParam1A,
+                nudEvoCondParam1B,
+                nudEvoCondParam2A,
+                nudEvoCondParam2B})
+            {
+                nud.ValueChanged += OnEvolutionUIChanged;
+            }
             rbEvoInputAssistPokemon.CheckedChanged += EvoInputAssist_CheckedChanged;
             rbEvoInputAssistType.CheckedChanged += EvoInputAssist_CheckedChanged;
             rbEvoInputAssistItem.CheckedChanged += EvoInputAssist_CheckedChanged;
@@ -356,7 +380,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 cmbStatsHoldItem1, cmbStatsHoldItem2,
                 cmbStatsType1, cmbStatsType2);
             _uiStateManager.AddBinaries(
-                (pnlFootprintCanvas, null));
+                (pnlFootprintCanvas, null),
+                (lstEvoSlots, null));
         }
 
         private void LoadAllDataToUI(int idx)
@@ -424,20 +449,11 @@ namespace PochiPochiEditorGabu._Pokemon
 
             int idx = _currentPokemonIdx;
             cmbPokemonName.Items[idx] = validName;
+            cmbEvoToPokemon.Items[idx] = validName;
+            cmbEvoInputAssistPokemon.Items[idx] = validName;
             _pokemonNameManager.Working[idx]._PokemonName = validName;
 
             _isUpdatingUI = false;
-        }
-
-        private void RestorePokemonName(int idx)
-        {
-            var originalEntry = _pokemonNameManager.Original[idx];
-            var workingEntry = _pokemonNameManager.Working[idx];
-
-            var restoredEntry = CloneHelper.Clone(originalEntry);
-            workingEntry._PokemonName = restoredEntry._PokemonName;
-
-            cmbPokemonName.Items[idx] = originalEntry._PokemonName;
         }
 
         private void cmbPokemonName_SelectedIndexChanged(object sender, EventArgs e)
@@ -460,7 +476,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     },
                     () =>
                     {
-                        RestorePokemonName(_currentPokemonIdx);
+                        DiscardAllData(_currentPokemonIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
@@ -468,7 +484,6 @@ namespace PochiPochiEditorGabu._Pokemon
                     {
                         cmbPokemonName.SelectedIndex = _currentPokemonIdx;
                     }
-
                 );
 
                 _isUpdatingUI = false;
@@ -1548,12 +1563,64 @@ namespace PochiPochiEditorGabu._Pokemon
         private void LoadEvolutionsToUI(int idx)
         {
             lstEvoSlots.SelectedIndex = _currentEvoSlotIndex;
+
+            var slots = originalEvoSlots[idx];
+            byte[] binary = EvolutionSlotsToBytes(slots);
+            _uiStateManager.UpdateBinary(lstEvoSlots, binary);
+
+            DataBindingHelper.BindObjectToControls(this, slots[_currentEvoSlotIndex]);
+            UpdateEvoToIcon();
+        }
+
+        private byte[] EvolutionSlotsToBytes(PokemonEvolutionEntry[] entries)
+        {
+            int totalSize = _config.GetInt("PokemonEvolutionSlotLength") * entries.Length;
+            byte[] data = new byte[totalSize];
+            IoHelper.WriteStructures(data, 0, entries, _tblReader);
+            return data;
         }
 
         private void lstEvoSlots_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_isUpdatingUI) return;
             if (_currentEvoSlotIndex == lstEvoSlots.SelectedIndex) return;
+
+            _isUpdatingUI = true;
+
+            int newIndex = lstEvoSlots.SelectedIndex;
+            DataBindingHelper.BindControlsToObject(this, workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
+            _currentEvoSlotIndex = newIndex;
+            DataBindingHelper.BindObjectToControls(this, workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
+
+            _isUpdatingUI = false;
+
+            UpdateEvoToIcon();
         }
+
+        private void OnEvolutionUIChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            DataBindingHelper.BindControlsToObject(this, workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
+            byte[] currentBytes = EvolutionSlotsToBytes(workingEvoSlots[_currentPokemonIdx]);
+            _uiStateManager.UpdateBinary(lstEvoSlots, currentBytes);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1569,6 +1636,48 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbSpriteExport.SelectedIndex = 0;
             txtIconImportAddr.Text = String.Empty;
             txtFootprintImportAddr.Text = String.Empty;
+        }
+
+        private void DiscardAllData(int idx)
+        {
+            _pokemonNameManager.Discard(idx);
+            string originalName = _pokemonNameManager.Original[idx]._PokemonName;
+            cmbPokemonName.Items[idx] = originalName;
+            cmbEvoToPokemon.Items[idx] = originalName;
+            cmbEvoInputAssistPokemon.Items[idx] = originalName;
+
+            _spriteFrontImgManager.Discard(idx);
+            _spriteBackImgManager.Discard(idx);
+            _spriteNormalPalManager.Discard(idx);
+            _spriteShinyPalManager.Discard(idx);
+            _iconImgManager.Discard(idx);
+            _iconPalIdxManager.Discard(idx);
+
+            if (idx < _config.GetInt("NoFootprintStartIndex"))
+            {
+                _footprintImgManager.Discard(idx);
+            }
+
+            _coordBattleAllyManager.Discard(idx);
+            _coordBattleEnemyManager.Discard(idx);
+            _coordBattleEnemyShadowManager.Discard(idx);
+
+            int coordItemIdx = idx - _config.GetInt("PokemonCoordinateItemUseStartIndex");
+            if (coordItemIdx >= 0 && coordItemIdx < _coordItemUseManager.Count)
+            {
+                _coordItemUseManager.Discard(coordItemIdx);
+            }
+
+            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
+            {
+                _statsExpansionManager.Discard(idx);
+            }
+            else
+            {
+                _statsNormalManager.Discard(idx);
+            }
+
+            workingEvoSlots[idx] = originalEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
         }
 
         private void SaveCurrentAllData(int idx)
@@ -1738,7 +1847,12 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void SaveCurrentEvolutions(int idx)
         {
-
+            int entrySize = _config.GetInt("PokemonEvolutionSlotLength");
+            int slotCount = _config.GetInt("PokemonEvolutionSlotCount");
+            uint? baseAddress = _config.GetAddr("PokemonEvolutionTableAddress");
+            uint address = (uint)(baseAddress + idx * slotCount * entrySize);
+            IoHelper.WriteStructures(_romData, (int)address, workingEvoSlots[idx], _tblReader);
+            originalEvoSlots[idx] = workingEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
         }
     }
 }

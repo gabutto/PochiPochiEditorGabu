@@ -202,17 +202,6 @@ namespace PochiPochiEditorGabu._Item
             _isUpdatingUI = false;
         }
 
-        private void RestoreItemName(int idx)
-        {
-            var originalEntry = _itemDataManager.Original[idx];
-            var workingEntry = _itemDataManager.Working[idx];
-
-            var restoredEntry = CloneHelper.Clone(originalEntry);
-            workingEntry._ItemName = restoredEntry._ItemName;
-
-            cmbItemName.Items[idx] = originalEntry._ItemName;
-        }
-
         private void cmbItemName_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI) return;
@@ -233,7 +222,7 @@ namespace PochiPochiEditorGabu._Item
                     },
                     () =>
                     {
-                        RestoreItemName(_currentItemIdx);
+                        DiscardAllData(_currentItemIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
@@ -532,6 +521,20 @@ namespace PochiPochiEditorGabu._Item
         private void ResetControls()
         {
             txtSpriteImportAddr.Text = String.Empty;
+        }
+
+        private void DiscardAllData(int idx)
+        {
+            _itemSpriteManager.Discard(idx);
+            _itemDataManager.Discard(idx);
+            string originalName = _itemDataManager.Original[idx]._ItemName;
+            cmbItemName.Items[idx] = originalName;
+
+            int actualIndex = idx - _config.GetInt("ItemEffectFirstIndex");
+            if (actualIndex >= 0 && actualIndex < _itemEffectManager.Count)
+            {
+                _itemEffectManager.Discard(idx);
+            }
         }
 
         private void SaveCurrentAllData(int idx)

@@ -117,6 +117,11 @@ namespace PochiPochiEditorGabu.Managers
 
             return manager;
         }
+
+        public void Discard(int idx)
+        {
+            Working[idx] = CloneHelper.Clone(Original[idx]);
+        }
     }
 
     public static class CloneHelper

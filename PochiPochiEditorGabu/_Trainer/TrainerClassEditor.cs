@@ -197,7 +197,7 @@ namespace PochiPochiEditorGabu._Trainer
                     },
                     () =>
                     {
-                        RestoreClassName(_currentClassNameIdx);
+                        DiscardAllData(_currentClassNameIdx);
                         LoadDataToUI(newIndex);
                     },
                     () =>
@@ -254,6 +254,19 @@ namespace PochiPochiEditorGabu._Trainer
             _isUpdatingUI = false;
         }
 
+        private void DiscardAllData(int idx)
+        {
+            _nameManager.Discard(idx);
+            _prizeMultiManager.Discard(idx);
+            _encounterMusicManager?.Discard(idx);
+            _battleMusicManager?.Discard(idx);
+            _pokeBallManager?.Discard(idx);
+            _baseIvManager?.Discard(idx);
+
+            _nameManager.Original[idx]._ClassName = _nameManager.Original[idx]._ClassName;
+            cmbClassName.Items[idx] = _nameManager.Original[idx]._ClassName;
+        }
+
         private void SaveCurrentData(int idx)
         {
             _nameManager.Save(idx);
@@ -301,17 +314,6 @@ namespace PochiPochiEditorGabu._Trainer
                     _baseIvManager.Save(idx);
                 }
             }
-        }
-
-        private void RestoreClassName(int idx)
-        {
-            var originalEntry = _nameManager.Original[idx];
-            var workingEntry = _nameManager.Working[idx];
-
-            var restoredEntry = CloneHelper.Clone(originalEntry);
-            workingEntry._ClassName = restoredEntry._ClassName;
-
-            cmbClassName.Items[idx] = originalEntry._ClassName;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
