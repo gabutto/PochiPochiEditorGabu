@@ -120,12 +120,12 @@ namespace PochiPochiEditorGabu._Pokemon
             // stats
             if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
             {
-                _statsNormalManager = EntryManager<PokemonStatsNormalEntry>.Create(
+                _statsExpansionManager = EntryManager<PokemonStatsExpansionEntry>.Create(
                     _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
             else
             {
-                _statsExpansionManager = EntryManager<PokemonStatsExpansionEntry>.Create(
+                _statsNormalManager = EntryManager<PokemonStatsNormalEntry>.Create(
                     _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
 
@@ -245,6 +245,12 @@ namespace PochiPochiEditorGabu._Pokemon
                 BindingFlags.Instance | BindingFlags.NonPublic)
                 ?.SetValue(pnlFootprintCanvas, true);
 
+            // nudStatsExp
+            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
+            {
+                nudStatsExp.Maximum = GbaConstants.Mask16Bits;
+            }
+
             // cmbStatsAbility
             var abilityNames = _abilityNameManager.Working
                              .Select(entry => entry._AbilityName)
@@ -325,6 +331,7 @@ namespace PochiPochiEditorGabu._Pokemon
             LoadFootprintToUI(idx);
             LoadCoordBattleToUI(idx);
             LoadCoordItemUseToUI(idx);
+            LoadStatsToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -1329,19 +1336,68 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
+        private void LoadStatsToUI(int idx)
+        {
+            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
+            {
+                DataBindingHelper.BindObjectToControls(this, _statsExpansionManager.Working[idx]);
+                ApplyEvsToControls(_statsExpansionManager.Working[idx]._StatsEvs);
+            }
+            else
+            {
+                DataBindingHelper.BindObjectToControls(this, _statsNormalManager.Working[idx]);
+                ApplyEvsToControls(_statsNormalManager.Working[idx]._StatsEvs);
+            }
 
+            UpdateHoldItemImages();
+        }
 
+        private void ApplyEvsToControls(ushort evValue)
+        {
+            byte[] evs = DecodeEv(evValue);
+            nudStatsEvHp.Value = evs[0];
+            nudStatsEvAtk.Value = evs[1];
+            nudStatsEvDef.Value = evs[2];
+            nudStatsEvSpAtk.Value = evs[3];
+            nudStatsEvSpDef.Value = evs[4];
+            nudStatsEvSpeed.Value = evs[5];
+        }
 
+        private byte[] DecodeEv(ushort evValue)
+        {
+            byte[] evs = new byte[6];
+            byte[] bytes = BitConverter.GetBytes(evValue);
 
+            // low byte
+            evs[0] = (byte)((bytes[0] >> GbaConstants.EvShiftHp) & GbaConstants.Mask2Bits);         // HP
+            evs[1] = (byte)((bytes[0] >> GbaConstants.EvShiftAtk) & GbaConstants.Mask2Bits);        // Attack
+            evs[2] = (byte)((bytes[0] >> GbaConstants.EvShiftDefense) & GbaConstants.Mask2Bits);    // Defense
+            evs[5] = (byte)((bytes[0] >> GbaConstants.EvShiftSpeed) & GbaConstants.Mask2Bits);      // Speed
 
+            // high byte
+            evs[3] = (byte)((bytes[1] >> GbaConstants.EvShiftSpAtk) & GbaConstants.Mask2Bits);      // SpAttack
+            evs[4] = (byte)((bytes[1] >> GbaConstants.EvShiftSpDef) & GbaConstants.Mask2Bits);      // SpDefense
 
+            return evs;
+        }
 
+        private ushort EncodeEv(byte[] evs)
+        {
+            byte lowByte = 0;
+            byte highByte = 0;
 
+            // low byte
+            lowByte = (byte)(lowByte | ((evs[0] & GbaConstants.Mask2Bits) << GbaConstants.EvShiftHp));          // HP
+            lowByte = (byte)(lowByte | ((evs[1] & GbaConstants.Mask2Bits) << GbaConstants.EvShiftAtk));         // Attack
+            lowByte = (byte)(lowByte | ((evs[2] & GbaConstants.Mask2Bits) << GbaConstants.EvShiftDefense));     // Defense
+            lowByte = (byte)(lowByte | ((evs[5] & GbaConstants.Mask2Bits) << GbaConstants.EvShiftSpeed));       // Speed
 
+            // igh byte
+            highByte = (byte)(highByte | ((evs[3] & GbaConstants.Mask2Bits) << GbaConstants.EvShiftSpAtk));     // SpAttack
+            highByte = (byte)(highByte | ((evs[4] & GbaConstants.Mask2Bits) << GbaConstants.EvShiftSpDef));     // SpDefense
 
-
-
-
+            return BitConverter.ToUInt16(new byte[] { lowByte, highByte }, 0);
+        }
 
         private void HoldItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1386,6 +1442,7 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveCurrentFootprint(idx);
             SaveCurrentCoordBattle(idx);
             SaveCurrentCoordItemUse(idx);
+            SaveCurrentStats(idx);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -1514,6 +1571,31 @@ namespace PochiPochiEditorGabu._Pokemon
 
             DataBindingHelper.BindControlsToObject(this, _coordItemUseManager.Working[coordinateIndex]);
             _coordItemUseManager.Save(coordinateIndex);
+        }
+
+        private void SaveCurrentStats(int idx)
+        {
+            // evs
+            byte[] evs = new byte[6];
+            evs[0] = (byte)nudStatsEvHp.Value;
+            evs[1] = (byte)nudStatsEvAtk.Value;
+            evs[2] = (byte)nudStatsEvDef.Value;
+            evs[3] = (byte)nudStatsEvSpAtk.Value;
+            evs[4] = (byte)nudStatsEvSpDef.Value;
+            evs[5] = (byte)nudStatsEvSpeed.Value;
+
+            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
+            {
+                _statsExpansionManager.Working[idx]._StatsEvs = EncodeEv(evs);
+                DataBindingHelper.BindControlsToObject(this, _statsExpansionManager.Working[idx]);
+                _statsExpansionManager.Save(idx);
+            }
+            else
+            {
+                _statsNormalManager.Working[idx]._StatsEvs = EncodeEv(evs);
+                DataBindingHelper.BindControlsToObject(this, _statsNormalManager.Working[idx]);
+                _statsNormalManager.Save(idx);
+            }
         }
     }
 }

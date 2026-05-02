@@ -62,6 +62,13 @@
         public const int ItemUse1PreviewItemIdx = 0xD;
         public const int ItemUse2PreviewItemIdx = 0x121;
 
+        public const int EvShiftHp = 0;
+        public const int EvShiftAtk = 2;
+        public const int EvShiftDefense = 4;
+        public const int EvShiftSpeed = 6;
+        public const int EvShiftSpAtk = 0;
+        public const int EvShiftSpDef = 2;
+
 
 
         public const int ItemSpriteSize = 24;

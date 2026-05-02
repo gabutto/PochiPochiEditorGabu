@@ -2055,6 +2055,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.Controls.Add(this.grpPokemonRename);
             this.Controls.Add(this.grpDataIndex);
             this.Controls.Add(this.btnSave);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "PokemonEditor";
             this.Text = "ポケモン";

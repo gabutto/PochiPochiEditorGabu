@@ -254,7 +254,7 @@ namespace PochiPochiEditorGabu.Managers
         public byte StatsAbility2;
         public byte StatsRunRate;
         [DataBindingHelper.NibbleControlNames("StatsFlip", "StatsColor")]
-        public byte StatsUnknownValue;
+        public byte nStatsUnknownValue;
         public byte StatsAbilityHidden;
         public byte _Padding1;
     }
