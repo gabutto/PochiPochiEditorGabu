@@ -142,7 +142,6 @@ namespace PochiPochiEditorGabu._Trainer
                     },
                     () =>
                     {
-                        DiscardAllData(_currentSpriteIdx);
                         ControlHelper.ResetControls(grpImportExport);
                         LoadDataToUI(newIndex);
                     },
@@ -262,14 +261,6 @@ namespace PochiPochiEditorGabu._Trainer
                     ImageManager.ExportIndexedImage((Bitmap)picSprite.Image, sfd.FileName);
                 }
             }
-        }
-
-        private void DiscardAllData(int idx)
-        {
-            _ImgManager.Discard(idx);
-            _PalManager.Discard(idx);
-            _yOffsetManager.Discard(idx);
-            _animManager.Discard(idx);
         }
 
         private void SaveCurrentData(int idx)

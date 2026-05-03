@@ -56,6 +56,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private bool _drawingColorIsBlack = false;
         private Bitmap _battleAllyImage = null;
         private Bitmap _battleEnemyImage = null;
+        private Bitmap _currentIconFrame = null;
         private Bitmap _battleBaackgroundImage = null;
         private Bitmap _battleShadowImage = null;
         private Bitmap _battleBubbleImage = null;
@@ -562,7 +563,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     },
                     () =>
                     {
-                        DiscardAllData(_currentPokemonIdx);
+                        DiscardData(_currentPokemonIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
@@ -814,6 +815,7 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             if (_isUpdatingUI) return;
             DisplayIcon();
+            UpdateEvoToIcon();
         }
 
         private void cmbIconPalIdx_SelectedIndexChanged(object sender, EventArgs e)
@@ -863,12 +865,19 @@ namespace PochiPochiEditorGabu._Pokemon
             picIcon.Image?.Dispose();
             picIcon.Image = null;
 
+            // cache
+            _currentIconFrame?.Dispose();
+            _currentIconFrame = null;
+
             if (!GetCurrentIconData(out byte[] imageData, out Color[] colors)) return;
 
             Bitmap[] frames = ImageManager.CreatePokemonIconFrames(imageData, colors, true);
 
             if (frames != null)
             {
+                // cache
+                _currentIconFrame = (Bitmap)frames[0].Clone();
+
                 // preview
                 var fullIcon = new Bitmap(GbaConstants.IconFrameSize, GbaConstants.IconFrameSize * GbaConstants.IconFrameCounts);
                 using (Graphics g = Graphics.FromImage(fullIcon))
@@ -1609,13 +1618,21 @@ namespace PochiPochiEditorGabu._Pokemon
             picEvoToIcon.Image = icon;
         }
 
-        public Bitmap GetPokemonIcon(int idx, bool showBackColor)
+        private Bitmap GetPokemonIcon(int idx, bool showBackColor)
         {
+            // cache?
+            if (idx == _currentPokemonIdx && _currentIconFrame != null)
+            {
+                return (Bitmap)_currentIconFrame.Clone();
+            }
+
+            // normal
             uint? imageAddress = _iconImgManager.Original[idx].pIconImgAddr - GbaConstants.BaseAddr;
+            if (!imageAddress.HasValue) return null;
+
             int palIndex = _iconPalIdxManager.Original[idx].IconPalIdx;
             var entry = _iconPalAddrManager.Working[palIndex];
             uint palettePtr = entry._IconPaletteAddr;
-
             if (palettePtr == 0) return null;
             uint paletteAddress = palettePtr - GbaConstants.BaseAddr;
 
@@ -2062,7 +2079,7 @@ namespace PochiPochiEditorGabu._Pokemon
             txtFootprintImportAddr.Text = String.Empty;
         }
 
-        private void DiscardAllData(int idx)
+        private void DiscardData(int idx)
         {
             _pokemonNameManager.Discard(idx);
             string originalName = _pokemonNameManager.Original[idx]._PokemonName;
@@ -2070,43 +2087,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbEvoToPokemon.Items[idx] = originalName;
             cmbEvoInputAssistPokemon.Items[idx] = originalName;
 
-            _spriteFrontImgManager.Discard(idx);
-            _spriteBackImgManager.Discard(idx);
-            _spriteNormalPalManager.Discard(idx);
-            _spriteShinyPalManager.Discard(idx);
-
-            _iconImgManager.Discard(idx);
-            _iconPalIdxManager.Discard(idx);
-
-            if (idx < _config.GetInt("NoFootprintStartIndex"))
-            {
-                _footprintImgManager.Discard(idx);
-            }
-
-            _coordBattleAllyManager.Discard(idx);
-            _coordBattleEnemyManager.Discard(idx);
-            _coordBattleEnemyShadowManager.Discard(idx);
-
-            int coordItemIdx = idx - _config.GetInt("PokemonCoordinateItemUseStartIndex");
-            if (coordItemIdx >= 0 && coordItemIdx < _coordItemUseManager.Count)
-            {
-                _coordItemUseManager.Discard(coordItemIdx);
-            }
-
-            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
-            {
-                _statsExpansionManager.Discard(idx);
-            }
-            else
-            {
-                _statsNormalManager.Discard(idx);
-            }
-
             _workingEvoSlots[idx] = _originalEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
-
-            _learnsetManager.Discard(idx);
-            LoadLearnFlagData(idx, "TmHmLearnTableAddress", "TmHmCount", clbTmHm, "TmHmData");
-            LoadLearnFlagData(idx, "TutorLearnTableAddress", "TutorCount", clbTutor, "TutorData");
         }
 
         private void SaveCurrentAllData(int idx)

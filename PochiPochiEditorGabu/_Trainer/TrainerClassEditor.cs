@@ -197,7 +197,7 @@ namespace PochiPochiEditorGabu._Trainer
                     },
                     () =>
                     {
-                        DiscardAllData(_currentClassNameIdx);
+                        DiscardData(_currentClassNameIdx);
                         LoadDataToUI(newIndex);
                     },
                     () =>
@@ -254,15 +254,9 @@ namespace PochiPochiEditorGabu._Trainer
             _isUpdatingUI = false;
         }
 
-        private void DiscardAllData(int idx)
+        private void DiscardData(int idx)
         {
             _nameManager.Discard(idx);
-            _prizeMultiManager.Discard(idx);
-            _encounterMusicManager?.Discard(idx);
-            _battleMusicManager?.Discard(idx);
-            _pokeBallManager?.Discard(idx);
-            _baseIvManager?.Discard(idx);
-
             _nameManager.Original[idx]._ClassName = _nameManager.Original[idx]._ClassName;
             cmbClassName.Items[idx] = _nameManager.Original[idx]._ClassName;
         }

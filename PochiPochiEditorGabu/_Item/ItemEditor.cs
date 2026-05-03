@@ -222,7 +222,7 @@ namespace PochiPochiEditorGabu._Item
                     },
                     () =>
                     {
-                        DiscardAllData(_currentItemIdx);
+                        DiscardData(_currentItemIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
@@ -523,18 +523,11 @@ namespace PochiPochiEditorGabu._Item
             txtSpriteImportAddr.Text = String.Empty;
         }
 
-        private void DiscardAllData(int idx)
+        private void DiscardData(int idx)
         {
-            _itemSpriteManager.Discard(idx);
             _itemDataManager.Discard(idx);
             string originalName = _itemDataManager.Original[idx]._ItemName;
             cmbItemName.Items[idx] = originalName;
-
-            int actualIndex = idx - _config.GetInt("ItemEffectFirstIndex");
-            if (actualIndex >= 0 && actualIndex < _itemEffectManager.Count)
-            {
-                _itemEffectManager.Discard(idx);
-            }
         }
 
         private void SaveCurrentAllData(int idx)
