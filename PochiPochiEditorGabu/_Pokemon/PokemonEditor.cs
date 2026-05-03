@@ -289,6 +289,8 @@ namespace PochiPochiEditorGabu._Pokemon
             nudLearnsetLevel.ValueChanged += OnLevelMoveUIChanged;
             cmbLearnsetMove.SelectedIndexChanged += OnLevelMoveUIChanged;
             btnCreateNewLearnset.Click += btnCreateNewLearnset_Click;
+            clbTmHm.ItemCheck += (s, e) => HandleLearnFlagItemCheck(clbTmHm, "TmHmCount", "TmHmData");
+            clbTutor.ItemCheck += (s, e) => HandleLearnFlagItemCheck(clbTutor, "TutorCount", "TutorData");
         }
 
         private void InitializeControls()
@@ -1725,6 +1727,8 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             DataBindingHelper.BindObjectToControls(this, _learnsetManager.Working[idx]);
             UpdateLearnsetDisplay();
+            LoadLearnFlagData(idx, "TmHmLearnTableAddress", "TmHmCount", clbTmHm, "TmHmData");
+            LoadLearnFlagData(idx, "TutorLearnTableAddress", "TutorCount", clbTutor, "TutorData");
         }
 
         private void UpdateLearnsetDisplay(object sender = null, EventArgs e = null)
@@ -1979,7 +1983,56 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
+        private void LoadLearnFlagData(int pokemonIndex, string addressKey, string countKey, CheckedListBox clb, string uiStateKey)
+        {
+            uint baseAddress = (uint)_config.GetAddr(addressKey);
+            int count = _config.GetInt(countKey);
+            int dataLength = (count + (GbaConstants.BitsPerByte - 1)) / GbaConstants.BitsPerByte;
 
+            uint address = baseAddress + (uint)(pokemonIndex * dataLength);
+            byte[] data = new byte[dataLength];
+            Array.Copy(_romData, address, data, 0, dataLength);
+
+            for (int i = 0; i < count; i++)
+            {
+                int byteIndex = i / GbaConstants.BitsPerByte;
+                int bitIndex = i % GbaConstants.BitsPerByte;
+                bool isLearned = (data[byteIndex] & (1 << bitIndex)) != 0;
+                clb.SetItemChecked(i, isLearned);
+            }
+            
+            _uiStateManager.AddBinaries((uiStateKey, data));
+            _uiStateManager.UpdateBinary(uiStateKey, data);
+        }
+
+        private byte[] GetCurrentLearnFlagData(CheckedListBox clb, int count)
+        {
+            int dataLength = (count + (GbaConstants.BitsPerByte - 1)) / GbaConstants.BitsPerByte;
+            byte[] data = new byte[dataLength];
+
+            for (int i = 0; i < count; i++)
+            {
+                if (clb.GetItemChecked(i))
+                {
+                    int byteIndex = i / GbaConstants.BitsPerByte;
+                    int bitIndex = i % GbaConstants.BitsPerByte;
+                    data[byteIndex] |= (byte)(1 << bitIndex);
+                }
+            }
+            return data;
+        }
+
+        private void HandleLearnFlagItemCheck(CheckedListBox clb, string countKey, string uiStateKey)
+        {
+            if (_isUpdatingUI) return;
+
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                int count = _config.GetInt(countKey);
+                byte[] data = GetCurrentLearnFlagData(clb, count);
+                _uiStateManager?.UpdateBinary(uiStateKey, data);
+            });
+        }
 
 
 
@@ -2052,6 +2105,8 @@ namespace PochiPochiEditorGabu._Pokemon
             _workingEvoSlots[idx] = _originalEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
 
             _learnsetManager.Discard(idx);
+            LoadLearnFlagData(idx, "TmHmLearnTableAddress", "TmHmCount", clbTmHm, "TmHmData");
+            LoadLearnFlagData(idx, "TutorLearnTableAddress", "TutorCount", clbTutor, "TutorData");
         }
 
         private void SaveCurrentAllData(int idx)
@@ -2249,6 +2304,21 @@ namespace PochiPochiEditorGabu._Pokemon
 
             DataBindingHelper.BindControlsToObject(this, _learnsetManager.Working[idx]);
             _learnsetManager.Save(idx);
+
+            SaveLearnFlagData(idx, "TmHmLearnTableAddress", "TmHmCount", clbTmHm, "TmHmData");
+            SaveLearnFlagData(idx, "TutorLearnTableAddress", "TutorCount", clbTutor, "TutorData");
+        }
+
+        private void SaveLearnFlagData(int pokemonIndex, string addressKey, string countKey, CheckedListBox clb, string uiStateKey)
+        {
+            if (!_uiStateManager.HasBinaryChanges(uiStateKey)) return;
+
+            int count = _config.GetInt(countKey);
+            byte[] data = GetCurrentLearnFlagData(clb, count); 
+
+            uint baseAddress = (uint)_config.GetAddr(addressKey);
+            uint address = baseAddress + (uint)(pokemonIndex * data.Length);
+            Array.Copy(data, 0, _romData, (int)address, data.Length);
         }
     }
 }
