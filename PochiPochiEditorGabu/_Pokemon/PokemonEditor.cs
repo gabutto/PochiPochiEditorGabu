@@ -37,6 +37,9 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonStatsNormalEntry> _statsNormalManager;
         private EntryManager<PokemonStatsExpansionEntry> _statsExpansionManager;
         private EntryManager<PokemonEvolutionEntry> _evoManager;
+        private EntryManager<PokemonLearnsetEntry> _learnsetManager;
+        private EntryManager<TmHmMoveEntry> _tmHmListManager;
+        private EntryManager<TutorMoveEntry> _tutorListManager;
 
         private EntryManager<AbilityNameEntry> _abilityNameManager;
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
@@ -60,8 +63,8 @@ namespace PochiPochiEditorGabu._Pokemon
         private Bitmap _itemUse2BackgroundImage = null;
         private bool _isItemUseCoordValid = false;
         private int _currentEvoSlotIndex = 0;
-        private List<PokemonEvolutionEntry[]> originalEvoSlots = new List<PokemonEvolutionEntry[]>();
-        private List<PokemonEvolutionEntry[]> workingEvoSlots = new List<PokemonEvolutionEntry[]>();
+        private List<PokemonEvolutionEntry[]> _originalEvoSlots = new List<PokemonEvolutionEntry[]>();
+        private List<PokemonEvolutionEntry[]> _workingEvoSlots = new List<PokemonEvolutionEntry[]>();
 
         private class EvolutionMethodInfo
         {
@@ -69,7 +72,17 @@ namespace PochiPochiEditorGabu._Pokemon
             public string Param1 { get; set; }
             public string Param2 { get; set; }
         }
-        private List<EvolutionMethodInfo> evolutionMethodInfos = new List<EvolutionMethodInfo>();
+        private List<EvolutionMethodInfo> _evolutionMethodInfos = new List<EvolutionMethodInfo>();
+
+        public class LearnsetList
+        {
+            public int Level { get; set; }
+            public int MoveIdx { get; set; }
+            public string MoveName { get; set; }
+
+            public override string ToString() => $"Lv{Level:D2} {MoveName}";
+        }
+        private List<LearnsetList> _currentLearnsetList = new List<LearnsetList>();
 
         public PokemonEditor(
             byte[] romData, 
@@ -154,9 +167,21 @@ namespace PochiPochiEditorGabu._Pokemon
                 int start = i * evoSlotCount;
                 var originalSlots = _evoManager.Original.Skip(start).Take(evoSlotCount).ToArray();
                 var workingSlots = _evoManager.Working.Skip(start).Take(evoSlotCount).ToArray();
-                originalEvoSlots.Add(originalSlots);
-                workingEvoSlots.Add(workingSlots);
+                _originalEvoSlots.Add(originalSlots);
+                _workingEvoSlots.Add(workingSlots);
             }
+
+            // learnset
+            _learnsetManager = EntryManager<PokemonLearnsetEntry>.Create(
+                _romData, _tblReader, _config, "PokemonLearnsetTableAddress", "PokemonLearnsetEntryCount");
+
+            // tm hm
+            _tmHmListManager = EntryManager<TmHmMoveEntry>.Create(
+                _romData, _tblReader, _config, "TmHmListTableAddress", "TmHmCount");
+
+            // tutor
+            _tutorListManager = EntryManager<TutorMoveEntry>.Create( 
+                _romData, _tblReader, _config, "TutorListTableAddress", "TutorCount");
 
 
 
@@ -258,6 +283,11 @@ namespace PochiPochiEditorGabu._Pokemon
             rbEvoInputAssistMove.CheckedChanged += EvoInputAssist_CheckedChanged;
             btnEvoInputAssistParam1.Click += btnEvoInputAssistParam1_Click;
             btnEvoInputAssistParam2.Click += btnEvoInputAssistParam2_Click;
+
+            txtLearnsetAddr.TextChanged += UpdateLearnsetDisplay;
+            lstLearnset.SelectedIndexChanged += lstLearnset_SelectedIndexChanged;
+            nudLearnsetLevel.ValueChanged += OnLevelMoveUIChanged;
+            cmbLearnsetMove.SelectedIndexChanged += OnLevelMoveUIChanged;
         }
 
         private void InitializeControls()
@@ -300,6 +330,42 @@ namespace PochiPochiEditorGabu._Pokemon
             // cmbEvoCondMethod
             InitializePokemonEvolutionMethod();
 
+            // nudLearnsetLevel
+            nudLearnsetLevel.Maximum =
+                _config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableLearnsetExpansion")
+                ? GbaConstants.LearnsetMaxLevel3Byte
+                : GbaConstants.LearnsetMaxLevel2Byte;
+
+            // clbTmHm
+            clbTmHm.BeginUpdate();
+            clbTmHm.Items.Clear();
+            for (int i = 0; i < _config.GetInt("TmHmCount"); i++)
+            {
+                int moveIdx = (int)_tmHmListManager.Working[i]._MoveIdx;
+                string moveName = _moveNameManager.Original[moveIdx]._MoveName;
+                if (i < _config.GetInt("TmCount"))
+                {
+                    clbTmHm.Items.Add($"TM{i + 1:00} - {moveName}");
+                }
+                else
+                {
+                    clbTmHm.Items.Add($"HM{i - _config.GetInt("TmCount") + 1:00} - {moveName}");
+                }
+            }
+            clbTmHm.EndUpdate();
+
+            // clbTutor
+            clbTutor.BeginUpdate();
+            clbTutor.Items.Clear();
+            for (int i = 0; i < _config.GetInt("TutorCount"); i++)
+            {
+                int moveIdx = (int)_tutorListManager.Working[i]._MoveIdx;
+                string moveName = _moveNameManager.Original[moveIdx]._MoveName;
+                clbTutor.Items.Add($"No.{i + 1:00} - {moveName}");
+
+            }
+            clbTmHm.EndUpdate();
+
             // pokemon name for cmb
             var classNames = _pokemonNameManager.Working
                              .Select(entry => entry._PokemonName)
@@ -337,6 +403,7 @@ namespace PochiPochiEditorGabu._Pokemon
                              .Select(entry => entry._MoveName)
                              .ToArray();
             cmbEvoInputAssistMove.Items.AddRange(moveNames);
+            cmbLearnsetMove.Items.AddRange(moveNames);
 
             // grpEvoInputAssist
             foreach (var cmb in new[] {
@@ -352,7 +419,8 @@ namespace PochiPochiEditorGabu._Pokemon
             ControlHelper.AttachAddressAutoFormat(
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
                 txtIconImgAddr,
-                txtFootprintImgAddr);
+                txtFootprintImgAddr,
+                txtLearnsetAddr);
             ControlHelper.AttachExternalBorder(
                 picSpriteFrontNormal, picSpriteBackNormal, picSpriteFrontShiny, picSpriteBackShiny,
                 picIconPal, picIcon, picIconAnimated,
@@ -394,7 +462,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 cmbStatsType1, cmbStatsType2);
             _uiStateManager.AddBinaries(
                 (pnlFootprintCanvas, null),
-                (lstEvoSlots, null));
+                (lstEvoSlots, null),
+                (lstLearnset, null));
         }
 
         private void LoadAllDataToUI(int idx)
@@ -413,6 +482,7 @@ namespace PochiPochiEditorGabu._Pokemon
             LoadCoordItemUseToUI(idx);
             LoadStatsToUI(idx);
             LoadEvolutionsToUI(idx);
+            LoadLearnsetsToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -1478,7 +1548,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void InitializePokemonEvolutionMethod()
         {
-            evolutionMethodInfos.Clear();
+            _evolutionMethodInfos.Clear();
             cmbEvoCondMethod.BeginUpdate();
             cmbEvoCondMethod.Items.Clear();
 
@@ -1503,7 +1573,7 @@ namespace PochiPochiEditorGabu._Pokemon
                         Param2 = parts[2].Trim()
                     };
 
-                    evolutionMethodInfos.Add(info);
+                    _evolutionMethodInfos.Add(info);
                     cmbEvoCondMethod.Items.Add(info.MethodName);
                 }
             }
@@ -1514,10 +1584,10 @@ namespace PochiPochiEditorGabu._Pokemon
         private void cmbEvoCondMethod_SelectedIndexChanged(object sender, EventArgs e)
         {
             int selectedIndex = cmbEvoCondMethod.SelectedIndex;
-            if (selectedIndex >= 0 && selectedIndex < evolutionMethodInfos.Count)
+            if (selectedIndex >= 0 && selectedIndex < _evolutionMethodInfos.Count)
             {
-                txtEvoCondParam1Desc.Text = evolutionMethodInfos[selectedIndex].Param1;
-                txtEvoCondParam2Desc.Text = evolutionMethodInfos[selectedIndex].Param2;
+                txtEvoCondParam1Desc.Text = _evolutionMethodInfos[selectedIndex].Param1;
+                txtEvoCondParam2Desc.Text = _evolutionMethodInfos[selectedIndex].Param2;
             }
         }
 
@@ -1577,7 +1647,7 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             lstEvoSlots.SelectedIndex = _currentEvoSlotIndex;
 
-            var slots = originalEvoSlots[idx];
+            var slots = _originalEvoSlots[idx];
             byte[] binary = EvolutionSlotsToBytes(slots);
             _uiStateManager.UpdateBinary(lstEvoSlots, binary);
 
@@ -1601,9 +1671,9 @@ namespace PochiPochiEditorGabu._Pokemon
             _isUpdatingUI = true;
 
             int newIndex = lstEvoSlots.SelectedIndex;
-            DataBindingHelper.BindControlsToObject(this, workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
+            DataBindingHelper.BindControlsToObject(this, _workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
             _currentEvoSlotIndex = newIndex;
-            DataBindingHelper.BindObjectToControls(this, workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
+            DataBindingHelper.BindObjectToControls(this, _workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
 
             _isUpdatingUI = false;
 
@@ -1614,8 +1684,8 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             if (_isUpdatingUI) return;
 
-            DataBindingHelper.BindControlsToObject(this, workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
-            byte[] currentBytes = EvolutionSlotsToBytes(workingEvoSlots[_currentPokemonIdx]);
+            DataBindingHelper.BindControlsToObject(this, _workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
+            byte[] currentBytes = EvolutionSlotsToBytes(_workingEvoSlots[_currentPokemonIdx]);
             _uiStateManager.UpdateBinary(lstEvoSlots, currentBytes);
         }
 
@@ -1650,14 +1720,207 @@ namespace PochiPochiEditorGabu._Pokemon
             nudEvoCondParam2B.Value = (val >> GbaConstants.BitsPerByte) & GbaConstants.Mask8Bits;
         }
 
+        private void LoadLearnsetsToUI(int idx)
+        {
+            DataBindingHelper.BindObjectToControls(this, _learnsetManager.Working[idx]);
+            UpdateLearnsetDisplay();
+        }
 
+        private void UpdateLearnsetDisplay(object sender = null, EventArgs e = null)
+        {
+            if (_isUpdatingUI && sender != null) return;
 
+            byte[] currentBinary = null;
 
+            if (ControlHelper.TryParseAddress(txtLearnsetAddr.Text, out uint address))
+            {
+                var res = _reservationManager.GetReservation(txtLearnsetAddr);
 
+                if (res != null)
+                {
+                    _currentLearnsetList = DecodeLearnsetData(res.Data, 0);
+                    currentBinary = res.Data;
+                }
+                else
+                {
+                    _currentLearnsetList = DecodeLearnsetData(_romData, address);
+                    currentBinary = EncodeLearnsetData(_currentLearnsetList);
+                }
+            }
+            else
+            {
+                _currentLearnsetList = new List<LearnsetList>();
+            }
 
+            _uiStateManager.UpdateBinary(lstLearnset, currentBinary);
 
+            _isUpdatingUI = true;
 
+            lstLearnset.BeginUpdate();
+            lstLearnset.Items.Clear();
+            foreach (var move in _currentLearnsetList)
+            {
+                lstLearnset.Items.Add(move.ToString());
+            }
+            lstLearnset.EndUpdate();
 
+            _isUpdatingUI = false;
+
+            if (lstLearnset.Items.Count > 0)
+            {
+                lstLearnset.SelectedIndex = 0;
+            }
+            else
+            {
+                _isUpdatingUI = true;
+                nudLearnsetLevel.Value = 0;
+                cmbLearnsetMove.SelectedIndex = -1;
+                _isUpdatingUI = false;
+            }
+        }
+
+        private List<LearnsetList> DecodeLearnsetData(byte[] data, uint offset = 0)
+        {
+            var moves = new List<LearnsetList>();
+            if (data == null || data.Length == 0) return moves;
+
+            int pos = (int)offset;
+            while (moves.Count < 256)
+            {
+                if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableLearnsetExpansion"))
+                {
+                    ushort moveId = BitConverter.ToUInt16(data, pos);
+                    byte level = data[pos + 2];
+                    pos += GbaConstants.LearnsetEntryLength3Byte;
+
+                    if (moveId == GbaConstants.LearnsetTerminator2Byte &&
+                        level == GbaConstants.LearnsetTerminator3ByteLevel) break;
+
+                    moves.Add(new LearnsetList { Level = level, MoveIdx = moveId });
+                }
+                else
+                {
+                    ushort raw = BitConverter.ToUInt16(data, pos);
+                    pos += GbaConstants.LearnsetEntryLength2Byte;
+
+                    if (raw == GbaConstants.LearnsetTerminator2Byte) break;
+
+                    int level = (raw >> GbaConstants.BitsPerByte) / 2;
+                    int moveId = (raw & GbaConstants.Mask8Bits) |
+                                 (((raw >> GbaConstants.BitsPerByte) & 1) << GbaConstants.BitsPerByte);
+                    moves.Add(new LearnsetList { Level = level, MoveIdx = moveId });
+                }
+            }
+
+            foreach (var m in moves)
+            {
+                if (m.MoveIdx >=0 && m.MoveIdx < _moveNameManager.Original.Count)
+                {
+                    m.MoveName = _moveNameManager.Original[m.MoveIdx]._MoveName;
+                }
+                else
+                {
+                    m.MoveName = $"(Invalid Move {m.MoveIdx})";
+                }
+            }
+
+            return moves;
+        }
+
+        private byte[] EncodeLearnsetData(List<LearnsetList> moves, bool align = true)
+        {
+            var data = new List<byte>();
+
+            foreach (var move in moves)
+            {
+                if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableLearnsetExpansion"))
+                {
+                    data.AddRange(BitConverter.GetBytes((ushort)move.MoveIdx));
+                    data.Add((byte)move.Level);
+                }
+                else
+                {
+                    int encodedLevel = (move.Level * 2) | ((move.MoveIdx >> GbaConstants.BitsPerByte) & 1);
+                    ushort raw = (ushort)((encodedLevel << GbaConstants.BitsPerByte) | (move.MoveIdx & GbaConstants.Mask8Bits));
+                    data.AddRange(BitConverter.GetBytes(raw));
+                }
+            }
+
+            // terminate
+            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableLearnsetExpansion"))
+            {
+                data.AddRange(BitConverter.GetBytes((ushort)GbaConstants.LearnsetTerminator2Byte));
+                data.Add(GbaConstants.LearnsetTerminator3ByteLevel);
+            }
+            else
+            {
+                data.AddRange(BitConverter.GetBytes((ushort)GbaConstants.LearnsetTerminator2Byte));
+            }
+
+            // alignment
+            if (align)
+            {
+                while (data.Count % GbaConstants.PtrSize != 0)
+                {
+                    data.Add((byte)GbaConstants.PaddingByte);
+                }
+            }
+
+            return data.ToArray();
+        }
+
+        private void OnLevelMoveUIChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI || lstLearnset.SelectedIndex < 0) return;
+
+            var move = _currentLearnsetList[lstLearnset.SelectedIndex];
+            move.Level = (int)nudLearnsetLevel.Value;
+            move.MoveIdx = cmbLearnsetMove.SelectedIndex;
+
+            if (move.MoveIdx >= 0 && move.MoveIdx < _moveNameManager.Original.Count)
+            {
+                move.MoveName = _moveNameManager.Original[move.MoveIdx]._MoveName;
+            }
+            else
+            {
+                move.MoveName = $"(Invalid Move {move.MoveIdx})";
+            }
+
+            _isUpdatingUI = true;
+            lstLearnset.Items[lstLearnset.SelectedIndex] = move.ToString();
+            _isUpdatingUI = false;
+
+            byte[] newBinary = EncodeLearnsetData(_currentLearnsetList);
+            _uiStateManager.UpdateBinary(lstLearnset, newBinary);
+        }
+
+        private void lstLearnset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            int idx = lstLearnset.SelectedIndex;
+            if (idx < 0 || idx >= _currentLearnsetList.Count) return;
+
+            _isUpdatingUI = true;
+
+            var move = _currentLearnsetList[idx];
+
+            if (move.Level >= nudLearnsetLevel.Minimum && move.Level <= nudLearnsetLevel.Maximum)
+            {
+                nudLearnsetLevel.Value = move.Level;
+            }
+
+            if (move.MoveIdx >= 0 && move.MoveIdx < cmbLearnsetMove.Items.Count)
+            {
+                cmbLearnsetMove.SelectedIndex = move.MoveIdx;
+            }
+            else
+            {
+                cmbLearnsetMove.SelectedIndex = -1;
+            }
+
+            _isUpdatingUI = false;
+        }
 
 
 
@@ -1690,6 +1953,7 @@ namespace PochiPochiEditorGabu._Pokemon
             _spriteBackImgManager.Discard(idx);
             _spriteNormalPalManager.Discard(idx);
             _spriteShinyPalManager.Discard(idx);
+
             _iconImgManager.Discard(idx);
             _iconPalIdxManager.Discard(idx);
 
@@ -1717,7 +1981,9 @@ namespace PochiPochiEditorGabu._Pokemon
                 _statsNormalManager.Discard(idx);
             }
 
-            workingEvoSlots[idx] = originalEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
+            _workingEvoSlots[idx] = _originalEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
+
+            _learnsetManager.Discard(idx);
         }
 
         private void SaveCurrentAllData(int idx)
@@ -1730,6 +1996,7 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveCurrentCoordItemUse(idx);
             SaveCurrentStats(idx);
             SaveCurrentEvolutions(idx);
+            SaveCurrentLearnsets(idx);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -1891,8 +2158,29 @@ namespace PochiPochiEditorGabu._Pokemon
             int slotCount = _config.GetInt("PokemonEvolutionSlotCount");
             uint? baseAddress = _config.GetAddr("PokemonEvolutionTableAddress");
             uint address = (uint)(baseAddress + idx * slotCount * entrySize);
-            IoHelper.WriteStructures(_romData, (int)address, workingEvoSlots[idx], _tblReader);
-            originalEvoSlots[idx] = workingEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
+            IoHelper.WriteStructures(_romData, (int)address, _workingEvoSlots[idx], _tblReader);
+            _originalEvoSlots[idx] = _workingEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
+        }
+
+        private void SaveCurrentLearnsets(int idx)
+        {
+            var res = _reservationManager.GetReservation(txtLearnsetAddr);
+            if (res != null && res.Data != null)
+            {
+                Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                _reservationManager.ClearReservation(txtLearnsetAddr);
+            }
+            else if (_uiStateManager.HasBinaryChanges(lstLearnset) && _currentLearnsetList != null)
+            {
+                if (ControlHelper.TryParseAddress(txtLearnsetAddr.Text, out uint address))
+                {
+                    byte[] dataToSave = EncodeLearnsetData(_currentLearnsetList, false);
+                    Array.Copy(dataToSave, 0, _romData, (int)address, dataToSave.Length);
+                }
+            }
+
+            DataBindingHelper.BindControlsToObject(this, _learnsetManager.Working[idx]);
+            _learnsetManager.Save(idx);
         }
     }
 }

@@ -323,7 +323,20 @@ namespace PochiPochiEditorGabu.Managers
         public byte EvoCondParam2B;
     }
 
+    public class PokemonLearnsetEntry
+    {
+        public uint pLearnsetAddr;
+    }
 
+    public class TmHmMoveEntry
+    {
+        public ushort _MoveIdx;
+    }
+
+    public class TutorMoveEntry
+    {
+        public ushort _MoveIdx;
+    }
 
 
 

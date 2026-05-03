@@ -69,19 +69,19 @@
         public const int EvShiftSpAtk = 0;
         public const int EvShiftSpDef = 2;
 
-        public const int LevelMoveEntryLength2Byte = 2;
-        public const int LevelMoveEntryLength3Byte = 3;
-        public const int LevelMoveMaxLevel2Byte = 127;
-        public const int LevelMoveMaxLevel3Byte = 255;
-        public const int LevelMoveTerminator2Byte = 0xFFFF;
-        public const int LevelMoveTerminator3ByteMoveId = 0x0;
-        public const int LevelMoveTerminator3ByteLevel = 0xFF;
+        public const int LearnsetEntryLength2Byte = 2;
+        public const int LearnsetEntryLength3Byte = 3;
+        public const int LearnsetMaxLevel2Byte = 127;
+        public const int LearnsetMaxLevel3Byte = 255;
+        public const int LearnsetTerminator2Byte = 0xFFFF;
+        public const int LearnsetTerminator3ByteMoveId = 0x0;
+        public const int LearnsetTerminator3ByteLevel = 0xFF;
 
         public const int ItemSpriteSize = 24;
 
         public const int DefaultScale = 2;
-        public const string RomFileFilter = "Romファイル|*.gba";
-        public const string RomFileTitle = "Romを選択";
+        public const string RomFileFilter = "ROMファイル|*.gba";
+        public const string RomFileTitle = "ROMを選択";
         public const string ImageImportFilter = "画像ファイル (*.png;*.bmp)|*.png;*.bmp";
         public const string ImageExportFilter = "PNG画像 (*.png)|*.png|BMP画像 (*.bmp)|*.bmp";
     }
