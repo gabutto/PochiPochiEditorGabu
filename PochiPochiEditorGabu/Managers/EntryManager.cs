@@ -344,7 +344,10 @@ namespace PochiPochiEditorGabu.Managers
 
 
 
-
+    public class PokedexOrderEntry
+    {
+        public ushort _OrderIdx;
+    }
 
 
 
