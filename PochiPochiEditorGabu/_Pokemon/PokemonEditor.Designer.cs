@@ -210,17 +210,43 @@ namespace PochiPochiEditorGabu._Pokemon
             this.cmbEvoToPokemon = new System.Windows.Forms.ComboBox();
             this.lstEvoSlots = new System.Windows.Forms.ListBox();
             this.tabPageLearnsets = new System.Windows.Forms.TabPage();
+            this.clbTutor = new System.Windows.Forms.CheckedListBox();
+            this.clbTmHm = new System.Windows.Forms.CheckedListBox();
+            this.btnCreateNewLearnset = new System.Windows.Forms.Button();
+            this.lstLearnset = new System.Windows.Forms.ListBox();
+            this.cmbLearnsetMove = new System.Windows.Forms.ComboBox();
+            this.nudLearnsetLevel = new System.Windows.Forms.NumericUpDown();
+            this.txtLearnsetAddr = new System.Windows.Forms.TextBox();
+            this.lblLearnsetAddr = new System.Windows.Forms.Label();
             this.tabPagePokedex = new System.Windows.Forms.TabPage();
+            this.grpDexSizeComp = new System.Windows.Forms.GroupBox();
+            this.nudDexSizeCompTrainerSpriteIdx = new System.Windows.Forms.NumericUpDown();
+            this.lblDexSizeCompTrainerSpriteIdx = new System.Windows.Forms.Label();
+            this.picDexSizeCompPreview = new System.Windows.Forms.PictureBox();
+            this.lblDexSizeCompPreview = new System.Windows.Forms.Label();
+            this.nudDexSizeCompParam4 = new System.Windows.Forms.NumericUpDown();
+            this.nudDexSizeCompParam2 = new System.Windows.Forms.NumericUpDown();
+            this.nudDexSizeCompParam3 = new System.Windows.Forms.NumericUpDown();
+            this.nudDexSizeCompParam1 = new System.Windows.Forms.NumericUpDown();
+            this.lblDexSizeCompParam4 = new System.Windows.Forms.Label();
+            this.lblDexSizeCompParam2 = new System.Windows.Forms.Label();
+            this.lblDexSizeCompParam3 = new System.Windows.Forms.Label();
+            this.lblDexSizeCompParam1 = new System.Windows.Forms.Label();
+            this.grpDexDesc = new System.Windows.Forms.GroupBox();
+            this.txtDexDescString = new System.Windows.Forms.TextBox();
+            this.txtDexDescAddr = new System.Windows.Forms.TextBox();
+            this.lblDexDescAddr = new System.Windows.Forms.Label();
+            this.grpDexHeightWeight = new System.Windows.Forms.GroupBox();
+            this.lblDexWeightUnit = new System.Windows.Forms.Label();
+            this.lblDexHeightUnit = new System.Windows.Forms.Label();
+            this.nudDexWeight = new System.Windows.Forms.NumericUpDown();
+            this.nudDexHeight = new System.Windows.Forms.NumericUpDown();
+            this.lblDexWeight = new System.Windows.Forms.Label();
+            this.lblDexHeight = new System.Windows.Forms.Label();
+            this.grpDexCategory = new System.Windows.Forms.GroupBox();
+            this.txtDexCategory = new System.Windows.Forms.TextBox();
             this.tabPageCries = new System.Windows.Forms.TabPage();
             this.tabPageMusic = new System.Windows.Forms.TabPage();
-            this.lblLearnsetAddr = new System.Windows.Forms.Label();
-            this.txtLearnsetAddr = new System.Windows.Forms.TextBox();
-            this.nudLearnsetLevel = new System.Windows.Forms.NumericUpDown();
-            this.cmbLearnsetMove = new System.Windows.Forms.ComboBox();
-            this.lstLearnset = new System.Windows.Forms.ListBox();
-            this.btnCreateNewLearnset = new System.Windows.Forms.Button();
-            this.clbTmHm = new System.Windows.Forms.CheckedListBox();
-            this.clbTutor = new System.Windows.Forms.CheckedListBox();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -297,8 +323,21 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpEvoTo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picEvoToIcon)).BeginInit();
             this.tabPageLearnsets.SuspendLayout();
-            this.tabPageMusic.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudLearnsetLevel)).BeginInit();
+            this.tabPagePokedex.SuspendLayout();
+            this.grpDexSizeComp.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompTrainerSpriteIdx)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picDexSizeCompPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompParam4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompParam2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompParam3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompParam1)).BeginInit();
+            this.grpDexDesc.SuspendLayout();
+            this.grpDexHeightWeight.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexWeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexHeight)).BeginInit();
+            this.grpDexCategory.SuspendLayout();
+            this.tabPageMusic.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSave
@@ -2404,8 +2443,93 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageLearnsets.Text = "習得技";
             this.tabPageLearnsets.UseVisualStyleBackColor = true;
             // 
+            // clbTutor
+            // 
+            this.clbTutor.FormattingEnabled = true;
+            this.clbTutor.Location = new System.Drawing.Point(480, 20);
+            this.clbTutor.Margin = new System.Windows.Forms.Padding(0);
+            this.clbTutor.Name = "clbTutor";
+            this.clbTutor.ScrollAlwaysVisible = true;
+            this.clbTutor.Size = new System.Drawing.Size(200, 382);
+            this.clbTutor.TabIndex = 6;
+            // 
+            // clbTmHm
+            // 
+            this.clbTmHm.FormattingEnabled = true;
+            this.clbTmHm.Location = new System.Drawing.Point(260, 20);
+            this.clbTmHm.Margin = new System.Windows.Forms.Padding(0);
+            this.clbTmHm.Name = "clbTmHm";
+            this.clbTmHm.ScrollAlwaysVisible = true;
+            this.clbTmHm.Size = new System.Drawing.Size(200, 382);
+            this.clbTmHm.TabIndex = 6;
+            // 
+            // btnCreateNewLearnset
+            // 
+            this.btnCreateNewLearnset.Location = new System.Drawing.Point(20, 44);
+            this.btnCreateNewLearnset.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCreateNewLearnset.Name = "btnCreateNewLearnset";
+            this.btnCreateNewLearnset.Size = new System.Drawing.Size(200, 23);
+            this.btnCreateNewLearnset.TabIndex = 5;
+            this.btnCreateNewLearnset.Text = "新規レベル技データ作成";
+            this.btnCreateNewLearnset.UseVisualStyleBackColor = true;
+            // 
+            // lstLearnset
+            // 
+            this.lstLearnset.FormattingEnabled = true;
+            this.lstLearnset.ItemHeight = 12;
+            this.lstLearnset.Location = new System.Drawing.Point(20, 74);
+            this.lstLearnset.Margin = new System.Windows.Forms.Padding(0);
+            this.lstLearnset.Name = "lstLearnset";
+            this.lstLearnset.ScrollAlwaysVisible = true;
+            this.lstLearnset.Size = new System.Drawing.Size(220, 292);
+            this.lstLearnset.TabIndex = 4;
+            // 
+            // cmbLearnsetMove
+            // 
+            this.cmbLearnsetMove.FormattingEnabled = true;
+            this.cmbLearnsetMove.Location = new System.Drawing.Point(76, 374);
+            this.cmbLearnsetMove.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbLearnsetMove.Name = "cmbLearnsetMove";
+            this.cmbLearnsetMove.Size = new System.Drawing.Size(144, 20);
+            this.cmbLearnsetMove.TabIndex = 3;
+            // 
+            // nudLearnsetLevel
+            // 
+            this.nudLearnsetLevel.Location = new System.Drawing.Point(20, 374);
+            this.nudLearnsetLevel.Margin = new System.Windows.Forms.Padding(0);
+            this.nudLearnsetLevel.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudLearnsetLevel.Name = "nudLearnsetLevel";
+            this.nudLearnsetLevel.Size = new System.Drawing.Size(48, 19);
+            this.nudLearnsetLevel.TabIndex = 2;
+            // 
+            // txtLearnsetAddr
+            // 
+            this.txtLearnsetAddr.Location = new System.Drawing.Point(140, 20);
+            this.txtLearnsetAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.txtLearnsetAddr.Name = "txtLearnsetAddr";
+            this.txtLearnsetAddr.Size = new System.Drawing.Size(80, 19);
+            this.txtLearnsetAddr.TabIndex = 1;
+            // 
+            // lblLearnsetAddr
+            // 
+            this.lblLearnsetAddr.AutoSize = true;
+            this.lblLearnsetAddr.Location = new System.Drawing.Point(20, 24);
+            this.lblLearnsetAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.lblLearnsetAddr.Name = "lblLearnsetAddr";
+            this.lblLearnsetAddr.Size = new System.Drawing.Size(88, 12);
+            this.lblLearnsetAddr.TabIndex = 0;
+            this.lblLearnsetAddr.Text = "レベル技アドレス :";
+            // 
             // tabPagePokedex
             // 
+            this.tabPagePokedex.Controls.Add(this.grpDexSizeComp);
+            this.tabPagePokedex.Controls.Add(this.grpDexDesc);
+            this.tabPagePokedex.Controls.Add(this.grpDexHeightWeight);
+            this.tabPagePokedex.Controls.Add(this.grpDexCategory);
             this.tabPagePokedex.Location = new System.Drawing.Point(4, 22);
             this.tabPagePokedex.Margin = new System.Windows.Forms.Padding(0);
             this.tabPagePokedex.Name = "tabPagePokedex";
@@ -2413,6 +2537,318 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPagePokedex.TabIndex = 5;
             this.tabPagePokedex.Text = "図鑑";
             this.tabPagePokedex.UseVisualStyleBackColor = true;
+            // 
+            // grpDexSizeComp
+            // 
+            this.grpDexSizeComp.Controls.Add(this.nudDexSizeCompTrainerSpriteIdx);
+            this.grpDexSizeComp.Controls.Add(this.lblDexSizeCompTrainerSpriteIdx);
+            this.grpDexSizeComp.Controls.Add(this.picDexSizeCompPreview);
+            this.grpDexSizeComp.Controls.Add(this.lblDexSizeCompPreview);
+            this.grpDexSizeComp.Controls.Add(this.nudDexSizeCompParam4);
+            this.grpDexSizeComp.Controls.Add(this.nudDexSizeCompParam2);
+            this.grpDexSizeComp.Controls.Add(this.nudDexSizeCompParam3);
+            this.grpDexSizeComp.Controls.Add(this.nudDexSizeCompParam1);
+            this.grpDexSizeComp.Controls.Add(this.lblDexSizeCompParam4);
+            this.grpDexSizeComp.Controls.Add(this.lblDexSizeCompParam2);
+            this.grpDexSizeComp.Controls.Add(this.lblDexSizeCompParam3);
+            this.grpDexSizeComp.Controls.Add(this.lblDexSizeCompParam1);
+            this.grpDexSizeComp.Location = new System.Drawing.Point(304, 16);
+            this.grpDexSizeComp.Margin = new System.Windows.Forms.Padding(0);
+            this.grpDexSizeComp.Name = "grpDexSizeComp";
+            this.grpDexSizeComp.Padding = new System.Windows.Forms.Padding(0);
+            this.grpDexSizeComp.Size = new System.Drawing.Size(336, 282);
+            this.grpDexSizeComp.TabIndex = 3;
+            this.grpDexSizeComp.TabStop = false;
+            this.grpDexSizeComp.Text = "大きさ比べ";
+            // 
+            // nudDexSizeCompTrainerSpriteIdx
+            // 
+            this.nudDexSizeCompTrainerSpriteIdx.Location = new System.Drawing.Point(228, 238);
+            this.nudDexSizeCompTrainerSpriteIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDexSizeCompTrainerSpriteIdx.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudDexSizeCompTrainerSpriteIdx.Name = "nudDexSizeCompTrainerSpriteIdx";
+            this.nudDexSizeCompTrainerSpriteIdx.Size = new System.Drawing.Size(56, 19);
+            this.nudDexSizeCompTrainerSpriteIdx.TabIndex = 5;
+            // 
+            // lblDexSizeCompTrainerSpriteIdx
+            // 
+            this.lblDexSizeCompTrainerSpriteIdx.AutoSize = true;
+            this.lblDexSizeCompTrainerSpriteIdx.Location = new System.Drawing.Point(228, 216);
+            this.lblDexSizeCompTrainerSpriteIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexSizeCompTrainerSpriteIdx.Name = "lblDexSizeCompTrainerSpriteIdx";
+            this.lblDexSizeCompTrainerSpriteIdx.Size = new System.Drawing.Size(93, 12);
+            this.lblDexSizeCompTrainerSpriteIdx.TabIndex = 4;
+            this.lblDexSizeCompTrainerSpriteIdx.Text = "トレーナー画像ID :";
+            // 
+            // picDexSizeCompPreview
+            // 
+            this.picDexSizeCompPreview.Location = new System.Drawing.Point(20, 112);
+            this.picDexSizeCompPreview.Margin = new System.Windows.Forms.Padding(0);
+            this.picDexSizeCompPreview.Name = "picDexSizeCompPreview";
+            this.picDexSizeCompPreview.Size = new System.Drawing.Size(192, 144);
+            this.picDexSizeCompPreview.TabIndex = 3;
+            this.picDexSizeCompPreview.TabStop = false;
+            // 
+            // lblDexSizeCompPreview
+            // 
+            this.lblDexSizeCompPreview.AutoSize = true;
+            this.lblDexSizeCompPreview.Location = new System.Drawing.Point(20, 88);
+            this.lblDexSizeCompPreview.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexSizeCompPreview.Name = "lblDexSizeCompPreview";
+            this.lblDexSizeCompPreview.Size = new System.Drawing.Size(77, 12);
+            this.lblDexSizeCompPreview.TabIndex = 2;
+            this.lblDexSizeCompPreview.Text = "ゲーム内描画 :";
+            // 
+            // nudDexSizeCompParam4
+            // 
+            this.nudDexSizeCompParam4.Location = new System.Drawing.Point(248, 52);
+            this.nudDexSizeCompParam4.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDexSizeCompParam4.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.nudDexSizeCompParam4.Minimum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            -2147483648});
+            this.nudDexSizeCompParam4.Name = "nudDexSizeCompParam4";
+            this.nudDexSizeCompParam4.Size = new System.Drawing.Size(64, 19);
+            this.nudDexSizeCompParam4.TabIndex = 1;
+            // 
+            // nudDexSizeCompParam2
+            // 
+            this.nudDexSizeCompParam2.Location = new System.Drawing.Point(96, 52);
+            this.nudDexSizeCompParam2.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDexSizeCompParam2.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.nudDexSizeCompParam2.Minimum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            -2147483648});
+            this.nudDexSizeCompParam2.Name = "nudDexSizeCompParam2";
+            this.nudDexSizeCompParam2.Size = new System.Drawing.Size(64, 19);
+            this.nudDexSizeCompParam2.TabIndex = 1;
+            // 
+            // nudDexSizeCompParam3
+            // 
+            this.nudDexSizeCompParam3.Location = new System.Drawing.Point(172, 52);
+            this.nudDexSizeCompParam3.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDexSizeCompParam3.Maximum = new decimal(new int[] {
+            2047,
+            0,
+            0,
+            0});
+            this.nudDexSizeCompParam3.Name = "nudDexSizeCompParam3";
+            this.nudDexSizeCompParam3.Size = new System.Drawing.Size(64, 19);
+            this.nudDexSizeCompParam3.TabIndex = 1;
+            // 
+            // nudDexSizeCompParam1
+            // 
+            this.nudDexSizeCompParam1.Location = new System.Drawing.Point(20, 52);
+            this.nudDexSizeCompParam1.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDexSizeCompParam1.Maximum = new decimal(new int[] {
+            2047,
+            0,
+            0,
+            0});
+            this.nudDexSizeCompParam1.Name = "nudDexSizeCompParam1";
+            this.nudDexSizeCompParam1.Size = new System.Drawing.Size(64, 19);
+            this.nudDexSizeCompParam1.TabIndex = 1;
+            // 
+            // lblDexSizeCompParam4
+            // 
+            this.lblDexSizeCompParam4.AutoSize = true;
+            this.lblDexSizeCompParam4.Location = new System.Drawing.Point(248, 32);
+            this.lblDexSizeCompParam4.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexSizeCompParam4.Name = "lblDexSizeCompParam4";
+            this.lblDexSizeCompParam4.Size = new System.Drawing.Size(36, 12);
+            this.lblDexSizeCompParam4.TabIndex = 0;
+            this.lblDexSizeCompParam4.Text = "Y軸2 :";
+            // 
+            // lblDexSizeCompParam2
+            // 
+            this.lblDexSizeCompParam2.AutoSize = true;
+            this.lblDexSizeCompParam2.Location = new System.Drawing.Point(96, 32);
+            this.lblDexSizeCompParam2.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexSizeCompParam2.Name = "lblDexSizeCompParam2";
+            this.lblDexSizeCompParam2.Size = new System.Drawing.Size(36, 12);
+            this.lblDexSizeCompParam2.TabIndex = 0;
+            this.lblDexSizeCompParam2.Text = "Y軸1 :";
+            // 
+            // lblDexSizeCompParam3
+            // 
+            this.lblDexSizeCompParam3.AutoSize = true;
+            this.lblDexSizeCompParam3.Location = new System.Drawing.Point(172, 32);
+            this.lblDexSizeCompParam3.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexSizeCompParam3.Name = "lblDexSizeCompParam3";
+            this.lblDexSizeCompParam3.Size = new System.Drawing.Size(46, 12);
+            this.lblDexSizeCompParam3.TabIndex = 0;
+            this.lblDexSizeCompParam3.Text = "サイズ2 :";
+            // 
+            // lblDexSizeCompParam1
+            // 
+            this.lblDexSizeCompParam1.AutoSize = true;
+            this.lblDexSizeCompParam1.Location = new System.Drawing.Point(20, 32);
+            this.lblDexSizeCompParam1.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexSizeCompParam1.Name = "lblDexSizeCompParam1";
+            this.lblDexSizeCompParam1.Size = new System.Drawing.Size(46, 12);
+            this.lblDexSizeCompParam1.TabIndex = 0;
+            this.lblDexSizeCompParam1.Text = "サイズ1 :";
+            // 
+            // grpDexDesc
+            // 
+            this.grpDexDesc.Controls.Add(this.txtDexDescString);
+            this.grpDexDesc.Controls.Add(this.txtDexDescAddr);
+            this.grpDexDesc.Controls.Add(this.lblDexDescAddr);
+            this.grpDexDesc.Location = new System.Drawing.Point(20, 192);
+            this.grpDexDesc.Margin = new System.Windows.Forms.Padding(0);
+            this.grpDexDesc.Name = "grpDexDesc";
+            this.grpDexDesc.Padding = new System.Windows.Forms.Padding(0);
+            this.grpDexDesc.Size = new System.Drawing.Size(262, 156);
+            this.grpDexDesc.TabIndex = 2;
+            this.grpDexDesc.TabStop = false;
+            this.grpDexDesc.Text = "説明文";
+            // 
+            // txtDexDescString
+            // 
+            this.txtDexDescString.Location = new System.Drawing.Point(20, 56);
+            this.txtDexDescString.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDexDescString.Multiline = true;
+            this.txtDexDescString.Name = "txtDexDescString";
+            this.txtDexDescString.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtDexDescString.Size = new System.Drawing.Size(220, 78);
+            this.txtDexDescString.TabIndex = 2;
+            // 
+            // txtDexDescAddr
+            // 
+            this.txtDexDescAddr.Location = new System.Drawing.Point(112, 28);
+            this.txtDexDescAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDexDescAddr.Name = "txtDexDescAddr";
+            this.txtDexDescAddr.Size = new System.Drawing.Size(80, 19);
+            this.txtDexDescAddr.TabIndex = 1;
+            // 
+            // lblDexDescAddr
+            // 
+            this.lblDexDescAddr.AutoSize = true;
+            this.lblDexDescAddr.Location = new System.Drawing.Point(20, 32);
+            this.lblDexDescAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexDescAddr.Name = "lblDexDescAddr";
+            this.lblDexDescAddr.Size = new System.Drawing.Size(83, 12);
+            this.lblDexDescAddr.TabIndex = 0;
+            this.lblDexDescAddr.Text = "説明文アドレス :";
+            // 
+            // grpDexHeightWeight
+            // 
+            this.grpDexHeightWeight.Controls.Add(this.lblDexWeightUnit);
+            this.grpDexHeightWeight.Controls.Add(this.lblDexHeightUnit);
+            this.grpDexHeightWeight.Controls.Add(this.nudDexWeight);
+            this.grpDexHeightWeight.Controls.Add(this.nudDexHeight);
+            this.grpDexHeightWeight.Controls.Add(this.lblDexWeight);
+            this.grpDexHeightWeight.Controls.Add(this.lblDexHeight);
+            this.grpDexHeightWeight.Location = new System.Drawing.Point(20, 94);
+            this.grpDexHeightWeight.Margin = new System.Windows.Forms.Padding(0);
+            this.grpDexHeightWeight.Name = "grpDexHeightWeight";
+            this.grpDexHeightWeight.Padding = new System.Windows.Forms.Padding(0);
+            this.grpDexHeightWeight.Size = new System.Drawing.Size(190, 88);
+            this.grpDexHeightWeight.TabIndex = 1;
+            this.grpDexHeightWeight.TabStop = false;
+            this.grpDexHeightWeight.Text = "高さ・重さ";
+            // 
+            // lblDexWeightUnit
+            // 
+            this.lblDexWeightUnit.AutoSize = true;
+            this.lblDexWeightUnit.Location = new System.Drawing.Point(153, 28);
+            this.lblDexWeightUnit.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexWeightUnit.Name = "lblDexWeightUnit";
+            this.lblDexWeightUnit.Size = new System.Drawing.Size(14, 12);
+            this.lblDexWeightUnit.TabIndex = 2;
+            this.lblDexWeightUnit.Text = "m";
+            // 
+            // lblDexHeightUnit
+            // 
+            this.lblDexHeightUnit.AutoSize = true;
+            this.lblDexHeightUnit.Location = new System.Drawing.Point(64, 28);
+            this.lblDexHeightUnit.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexHeightUnit.Name = "lblDexHeightUnit";
+            this.lblDexHeightUnit.Size = new System.Drawing.Size(14, 12);
+            this.lblDexHeightUnit.TabIndex = 2;
+            this.lblDexHeightUnit.Text = "m";
+            // 
+            // nudDexWeight
+            // 
+            this.nudDexWeight.Location = new System.Drawing.Point(104, 48);
+            this.nudDexWeight.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDexWeight.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.nudDexWeight.Name = "nudDexWeight";
+            this.nudDexWeight.Size = new System.Drawing.Size(64, 19);
+            this.nudDexWeight.TabIndex = 1;
+            // 
+            // nudDexHeight
+            // 
+            this.nudDexHeight.Location = new System.Drawing.Point(20, 48);
+            this.nudDexHeight.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDexHeight.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.nudDexHeight.Name = "nudDexHeight";
+            this.nudDexHeight.Size = new System.Drawing.Size(64, 19);
+            this.nudDexHeight.TabIndex = 1;
+            // 
+            // lblDexWeight
+            // 
+            this.lblDexWeight.AutoSize = true;
+            this.lblDexWeight.Location = new System.Drawing.Point(104, 28);
+            this.lblDexWeight.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexWeight.Name = "lblDexWeight";
+            this.lblDexWeight.Size = new System.Drawing.Size(31, 12);
+            this.lblDexWeight.TabIndex = 0;
+            this.lblDexWeight.Text = "000.0";
+            // 
+            // lblDexHeight
+            // 
+            this.lblDexHeight.AutoSize = true;
+            this.lblDexHeight.Location = new System.Drawing.Point(20, 28);
+            this.lblDexHeight.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDexHeight.Name = "lblDexHeight";
+            this.lblDexHeight.Size = new System.Drawing.Size(31, 12);
+            this.lblDexHeight.TabIndex = 0;
+            this.lblDexHeight.Text = "000.0";
+            // 
+            // grpDexCategory
+            // 
+            this.grpDexCategory.Controls.Add(this.txtDexCategory);
+            this.grpDexCategory.Location = new System.Drawing.Point(20, 16);
+            this.grpDexCategory.Margin = new System.Windows.Forms.Padding(0);
+            this.grpDexCategory.Name = "grpDexCategory";
+            this.grpDexCategory.Padding = new System.Windows.Forms.Padding(0);
+            this.grpDexCategory.Size = new System.Drawing.Size(160, 68);
+            this.grpDexCategory.TabIndex = 0;
+            this.grpDexCategory.TabStop = false;
+            this.grpDexCategory.Text = "分類名";
+            // 
+            // txtDexCategory
+            // 
+            this.txtDexCategory.Location = new System.Drawing.Point(20, 28);
+            this.txtDexCategory.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDexCategory.Name = "txtDexCategory";
+            this.txtDexCategory.Size = new System.Drawing.Size(120, 19);
+            this.txtDexCategory.TabIndex = 0;
             // 
             // tabPageCries
             // 
@@ -2435,92 +2871,11 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageMusic.Text = "BGM";
             this.tabPageMusic.UseVisualStyleBackColor = true;
             // 
-            // lblLearnsetAddr
-            // 
-            this.lblLearnsetAddr.AutoSize = true;
-            this.lblLearnsetAddr.Location = new System.Drawing.Point(20, 24);
-            this.lblLearnsetAddr.Margin = new System.Windows.Forms.Padding(0);
-            this.lblLearnsetAddr.Name = "lblLearnsetAddr";
-            this.lblLearnsetAddr.Size = new System.Drawing.Size(88, 12);
-            this.lblLearnsetAddr.TabIndex = 0;
-            this.lblLearnsetAddr.Text = "レベル技アドレス :";
-            // 
-            // txtLearnsetAddr
-            // 
-            this.txtLearnsetAddr.Location = new System.Drawing.Point(140, 20);
-            this.txtLearnsetAddr.Margin = new System.Windows.Forms.Padding(0);
-            this.txtLearnsetAddr.Name = "txtLearnsetAddr";
-            this.txtLearnsetAddr.Size = new System.Drawing.Size(80, 19);
-            this.txtLearnsetAddr.TabIndex = 1;
-            // 
-            // nudLearnsetLevel
-            // 
-            this.nudLearnsetLevel.Location = new System.Drawing.Point(20, 374);
-            this.nudLearnsetLevel.Margin = new System.Windows.Forms.Padding(0);
-            this.nudLearnsetLevel.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.nudLearnsetLevel.Name = "nudLearnsetLevel";
-            this.nudLearnsetLevel.Size = new System.Drawing.Size(48, 19);
-            this.nudLearnsetLevel.TabIndex = 2;
-            // 
-            // cmbLearnsetMove
-            // 
-            this.cmbLearnsetMove.FormattingEnabled = true;
-            this.cmbLearnsetMove.Location = new System.Drawing.Point(76, 374);
-            this.cmbLearnsetMove.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbLearnsetMove.Name = "cmbLearnsetMove";
-            this.cmbLearnsetMove.Size = new System.Drawing.Size(144, 20);
-            this.cmbLearnsetMove.TabIndex = 3;
-            // 
-            // lstLearnset
-            // 
-            this.lstLearnset.FormattingEnabled = true;
-            this.lstLearnset.ItemHeight = 12;
-            this.lstLearnset.Location = new System.Drawing.Point(20, 74);
-            this.lstLearnset.Margin = new System.Windows.Forms.Padding(0);
-            this.lstLearnset.Name = "lstLearnset";
-            this.lstLearnset.ScrollAlwaysVisible = true;
-            this.lstLearnset.Size = new System.Drawing.Size(220, 292);
-            this.lstLearnset.TabIndex = 4;
-            // 
-            // btnCreateNewLearnset
-            // 
-            this.btnCreateNewLearnset.Location = new System.Drawing.Point(20, 44);
-            this.btnCreateNewLearnset.Margin = new System.Windows.Forms.Padding(0);
-            this.btnCreateNewLearnset.Name = "btnCreateNewLearnset";
-            this.btnCreateNewLearnset.Size = new System.Drawing.Size(200, 23);
-            this.btnCreateNewLearnset.TabIndex = 5;
-            this.btnCreateNewLearnset.Text = "新規レベル技データ作成";
-            this.btnCreateNewLearnset.UseVisualStyleBackColor = true;
-            // 
-            // clbTmHm
-            // 
-            this.clbTmHm.FormattingEnabled = true;
-            this.clbTmHm.Location = new System.Drawing.Point(260, 20);
-            this.clbTmHm.Margin = new System.Windows.Forms.Padding(0);
-            this.clbTmHm.Name = "clbTmHm";
-            this.clbTmHm.ScrollAlwaysVisible = true;
-            this.clbTmHm.Size = new System.Drawing.Size(200, 382);
-            this.clbTmHm.TabIndex = 6;
-            // 
-            // clbTutor
-            // 
-            this.clbTutor.FormattingEnabled = true;
-            this.clbTutor.Location = new System.Drawing.Point(480, 20);
-            this.clbTutor.Margin = new System.Windows.Forms.Padding(0);
-            this.clbTutor.Name = "clbTutor";
-            this.clbTutor.ScrollAlwaysVisible = true;
-            this.clbTutor.Size = new System.Drawing.Size(200, 382);
-            this.clbTutor.TabIndex = 6;
-            // 
             // PokemonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(930, 555);
+            this.ClientSize = new System.Drawing.Size(930, 559);
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.grpPokemonRename);
             this.Controls.Add(this.grpDataIndex);
@@ -2625,8 +2980,25 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.picEvoToIcon)).EndInit();
             this.tabPageLearnsets.ResumeLayout(false);
             this.tabPageLearnsets.PerformLayout();
-            this.tabPageMusic.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nudLearnsetLevel)).EndInit();
+            this.tabPagePokedex.ResumeLayout(false);
+            this.grpDexSizeComp.ResumeLayout(false);
+            this.grpDexSizeComp.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompTrainerSpriteIdx)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picDexSizeCompPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompParam4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompParam2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompParam3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexSizeCompParam1)).EndInit();
+            this.grpDexDesc.ResumeLayout(false);
+            this.grpDexDesc.PerformLayout();
+            this.grpDexHeightWeight.ResumeLayout(false);
+            this.grpDexHeightWeight.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexWeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDexHeight)).EndInit();
+            this.grpDexCategory.ResumeLayout(false);
+            this.grpDexCategory.PerformLayout();
+            this.tabPageMusic.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -2824,5 +3196,31 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.Button btnCreateNewLearnset;
         private System.Windows.Forms.CheckedListBox clbTutor;
         private System.Windows.Forms.CheckedListBox clbTmHm;
+        private System.Windows.Forms.GroupBox grpDexHeightWeight;
+        private System.Windows.Forms.GroupBox grpDexCategory;
+        private System.Windows.Forms.TextBox txtDexCategory;
+        private System.Windows.Forms.Label lblDexHeight;
+        private System.Windows.Forms.Label lblDexWeightUnit;
+        private System.Windows.Forms.Label lblDexHeightUnit;
+        private System.Windows.Forms.NumericUpDown nudDexWeight;
+        private System.Windows.Forms.NumericUpDown nudDexHeight;
+        private System.Windows.Forms.Label lblDexWeight;
+        private System.Windows.Forms.GroupBox grpDexDesc;
+        private System.Windows.Forms.TextBox txtDexDescString;
+        private System.Windows.Forms.TextBox txtDexDescAddr;
+        private System.Windows.Forms.Label lblDexDescAddr;
+        private System.Windows.Forms.GroupBox grpDexSizeComp;
+        private System.Windows.Forms.NumericUpDown nudDexSizeCompParam4;
+        private System.Windows.Forms.NumericUpDown nudDexSizeCompParam2;
+        private System.Windows.Forms.NumericUpDown nudDexSizeCompParam3;
+        private System.Windows.Forms.NumericUpDown nudDexSizeCompParam1;
+        private System.Windows.Forms.Label lblDexSizeCompParam4;
+        private System.Windows.Forms.Label lblDexSizeCompParam2;
+        private System.Windows.Forms.Label lblDexSizeCompParam3;
+        private System.Windows.Forms.Label lblDexSizeCompParam1;
+        private System.Windows.Forms.PictureBox picDexSizeCompPreview;
+        private System.Windows.Forms.Label lblDexSizeCompPreview;
+        private System.Windows.Forms.NumericUpDown nudDexSizeCompTrainerSpriteIdx;
+        private System.Windows.Forms.Label lblDexSizeCompTrainerSpriteIdx;
     }
 }

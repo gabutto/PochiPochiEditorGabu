@@ -153,6 +153,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="img\PokedexSizeComparisonBackGround.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="img\PokemonCoordBattleBackground.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

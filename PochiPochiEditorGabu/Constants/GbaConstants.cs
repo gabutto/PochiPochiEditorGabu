@@ -77,6 +77,14 @@
         public const int LearnsetTerminator3ByteMoveId = 0x0;
         public const int LearnsetTerminator3ByteLevel = 0xFF;
 
+        public const int PokedexSizeComparisonBaseWidth = 96;
+        public const int PokedexSizeComparisonBaseHeight = 72;
+        public const int PokedexSizeComparisonPokemonBaseX = 0;
+        public const int PokedexSizeComparisonPokemonBaseY = 8;
+        public const int PokedexSizeComparisonTrainerBaseX = 40;
+        public const int PokedexSizeComparisonTrainerBaseY = 8;
+        public const float PokedexSizeComparisonScaleBase = 256.0F;
+
         public const int ItemSpriteSize = 24;
 
         public const int DefaultScale = 2;

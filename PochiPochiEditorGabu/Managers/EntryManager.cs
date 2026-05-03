@@ -338,6 +338,24 @@ namespace PochiPochiEditorGabu.Managers
         public ushort _MoveIdx;
     }
 
+    public class PokedexEntry
+    {
+        [DynamicString(
+            "PokedexCategoryEntryLength", 
+            "PokedexCategoryMaxLength")]
+        public string _DexCategory;
+        public ushort DexHeight;
+        public ushort DexWeight;
+        public ushort _Padding1;
+        public uint pDexDescAddr;
+        public ushort _Padding2;
+        public ushort DexSizeCompParam1;
+        public ushort DexSizeCompParam2;
+        public ushort DexSizeCompParam3;
+        public ushort DexSizeCompParam4;
+    }
+
+
 
 
 

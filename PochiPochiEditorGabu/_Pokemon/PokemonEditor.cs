@@ -40,6 +40,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonLearnsetEntry> _learnsetManager;
         private EntryManager<TmHmMoveEntry> _tmHmListManager;
         private EntryManager<TutorMoveEntry> _tutorListManager;
+        private EntryManager<PokedexOrderEntry> _orderManager;
 
         private EntryManager<AbilityNameEntry> _abilityNameManager;
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
@@ -183,6 +184,10 @@ namespace PochiPochiEditorGabu._Pokemon
             // tutor
             _tutorListManager = EntryManager<TutorMoveEntry>.Create( 
                 _romData, _tblReader, _config, "TutorListTableAddress", "TutorCount");
+
+            //order
+            _orderManager = EntryManager<PokedexOrderEntry>.Create(
+                _romData, _tblReader, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
 
 
 
@@ -487,6 +492,7 @@ namespace PochiPochiEditorGabu._Pokemon
             LoadStatsToUI(idx);
             LoadEvolutionsToUI(idx);
             LoadLearnsetsToUI(idx);
+            LoadPokedexToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -2051,7 +2057,10 @@ namespace PochiPochiEditorGabu._Pokemon
             });
         }
 
+        private void LoadPokedexToUI(int idx)
+        {
 
+        }
 
 
 
