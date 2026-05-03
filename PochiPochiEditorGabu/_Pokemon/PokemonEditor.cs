@@ -288,6 +288,7 @@ namespace PochiPochiEditorGabu._Pokemon
             lstLearnset.SelectedIndexChanged += lstLearnset_SelectedIndexChanged;
             nudLearnsetLevel.ValueChanged += OnLevelMoveUIChanged;
             cmbLearnsetMove.SelectedIndexChanged += OnLevelMoveUIChanged;
+            btnCreateNewLearnset.Click += btnCreateNewLearnset_Click;
         }
 
         private void InitializeControls()
@@ -1892,6 +1893,12 @@ namespace PochiPochiEditorGabu._Pokemon
 
             byte[] newBinary = EncodeLearnsetData(_currentLearnsetList);
             _uiStateManager.UpdateBinary(lstLearnset, newBinary);
+
+            var reservation = _reservationManager.GetReservation(txtLearnsetAddr);
+            if (reservation != null)
+            {
+                _reservationManager.SetReservation(txtLearnsetAddr, reservation.Address, newBinary);
+            }
         }
 
         private void lstLearnset_SelectedIndexChanged(object sender, EventArgs e)
@@ -1921,6 +1928,67 @@ namespace PochiPochiEditorGabu._Pokemon
 
             _isUpdatingUI = false;
         }
+
+        private void btnCreateNewLearnset_Click(object sender, EventArgs e)
+        {
+            using (var popup = new QuickInputPopup())
+            {
+                popup.Setup(txtLearnsetAddr.Text, nudMin: 1, nudMax: 256, defaultNudValue: 1);
+
+                if (popup.ShowDialog(this) == DialogResult.OK)
+                {
+                    string targetAddressStr = popup.ResultAddress;
+                    int entryCount = popup.ResultEntryCount;
+
+                    if (targetAddressStr != "null" && ControlHelper.TryParseAddress(targetAddressStr, out uint targetAddress))
+                    {
+                        var newMoves = new List<LearnsetList>();
+                        string moveName = string.Empty;
+
+                        if (cmbLearnsetMove.Items.Count > 1)
+                        {
+                            moveName = cmbLearnsetMove.Items[1].ToString();
+                        }
+
+                        for (int i = 0; i < entryCount; i++)
+                        {
+                            newMoves.Add(new LearnsetList
+                            {
+                                Level = 0,
+                                MoveIdx = 0,
+                                MoveName = moveName
+                            });
+                        }
+
+                        byte[] newDataBytes = EncodeLearnsetData(newMoves);
+                        _reservationManager.SetReservation(txtLearnsetAddr, targetAddress, newDataBytes);
+
+                        _isUpdatingUI = true;
+                        _currentLearnsetList = newMoves;
+                        lstLearnset.Items.Clear();
+                        foreach (var move in _currentLearnsetList)
+                        {
+                            lstLearnset.Items.Add(move.ToString());
+                        }
+                        _isUpdatingUI = false;
+
+                        txtLearnsetAddr.Text = targetAddressStr;
+                        UpdateLearnsetDisplay();
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
