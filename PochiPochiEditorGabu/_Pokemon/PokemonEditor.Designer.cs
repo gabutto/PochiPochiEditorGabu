@@ -181,6 +181,8 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblStatsHp = new System.Windows.Forms.Label();
             this.tabPageEvolutions = new System.Windows.Forms.TabPage();
             this.grpEvoInputAssist = new System.Windows.Forms.GroupBox();
+            this.btnEvoInputAssistParam2 = new System.Windows.Forms.Button();
+            this.btnEvoInputAssistParam1 = new System.Windows.Forms.Button();
             this.cmbEvoInputAssistMove = new System.Windows.Forms.ComboBox();
             this.cmbEvoInputAssistItem = new System.Windows.Forms.ComboBox();
             this.cmbEvoInputAssistType = new System.Windows.Forms.ComboBox();
@@ -211,8 +213,14 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPagePokedex = new System.Windows.Forms.TabPage();
             this.tabPageCries = new System.Windows.Forms.TabPage();
             this.tabPageMusic = new System.Windows.Forms.TabPage();
-            this.btnEvoInputAssistParam1 = new System.Windows.Forms.Button();
-            this.btnEvoInputAssistParam2 = new System.Windows.Forms.Button();
+            this.lblLearnsetAddr = new System.Windows.Forms.Label();
+            this.txtLearnsetAddr = new System.Windows.Forms.TextBox();
+            this.nudLearnsetLevel = new System.Windows.Forms.NumericUpDown();
+            this.cmbLearnsetMove = new System.Windows.Forms.ComboBox();
+            this.lstLearnset = new System.Windows.Forms.ListBox();
+            this.btnCreateNewLearnset = new System.Windows.Forms.Button();
+            this.clbTmHm = new System.Windows.Forms.CheckedListBox();
+            this.clbTutor = new System.Windows.Forms.CheckedListBox();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -288,7 +296,9 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpEvoCond.SuspendLayout();
             this.grpEvoTo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picEvoToIcon)).BeginInit();
+            this.tabPageLearnsets.SuspendLayout();
             this.tabPageMusic.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLearnsetLevel)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSave
@@ -2070,6 +2080,26 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpEvoInputAssist.TabStop = false;
             this.grpEvoInputAssist.Text = "パラメータ入力補助";
             // 
+            // btnEvoInputAssistParam2
+            // 
+            this.btnEvoInputAssistParam2.Location = new System.Drawing.Point(148, 136);
+            this.btnEvoInputAssistParam2.Margin = new System.Windows.Forms.Padding(0);
+            this.btnEvoInputAssistParam2.Name = "btnEvoInputAssistParam2";
+            this.btnEvoInputAssistParam2.Size = new System.Drawing.Size(120, 23);
+            this.btnEvoInputAssistParam2.TabIndex = 2;
+            this.btnEvoInputAssistParam2.Text = "パラメータ2に代入";
+            this.btnEvoInputAssistParam2.UseVisualStyleBackColor = true;
+            // 
+            // btnEvoInputAssistParam1
+            // 
+            this.btnEvoInputAssistParam1.Location = new System.Drawing.Point(20, 136);
+            this.btnEvoInputAssistParam1.Margin = new System.Windows.Forms.Padding(0);
+            this.btnEvoInputAssistParam1.Name = "btnEvoInputAssistParam1";
+            this.btnEvoInputAssistParam1.Size = new System.Drawing.Size(120, 23);
+            this.btnEvoInputAssistParam1.TabIndex = 2;
+            this.btnEvoInputAssistParam1.Text = "パラメータ1に代入";
+            this.btnEvoInputAssistParam1.UseVisualStyleBackColor = true;
+            // 
             // cmbEvoInputAssistMove
             // 
             this.cmbEvoInputAssistMove.FormattingEnabled = true;
@@ -2353,11 +2383,19 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lstEvoSlots.Margin = new System.Windows.Forms.Padding(0);
             this.lstEvoSlots.Name = "lstEvoSlots";
             this.lstEvoSlots.ScrollAlwaysVisible = true;
-            this.lstEvoSlots.Size = new System.Drawing.Size(176, 184);
+            this.lstEvoSlots.Size = new System.Drawing.Size(176, 196);
             this.lstEvoSlots.TabIndex = 0;
             // 
             // tabPageLearnsets
             // 
+            this.tabPageLearnsets.Controls.Add(this.clbTutor);
+            this.tabPageLearnsets.Controls.Add(this.clbTmHm);
+            this.tabPageLearnsets.Controls.Add(this.btnCreateNewLearnset);
+            this.tabPageLearnsets.Controls.Add(this.lstLearnset);
+            this.tabPageLearnsets.Controls.Add(this.cmbLearnsetMove);
+            this.tabPageLearnsets.Controls.Add(this.nudLearnsetLevel);
+            this.tabPageLearnsets.Controls.Add(this.txtLearnsetAddr);
+            this.tabPageLearnsets.Controls.Add(this.lblLearnsetAddr);
             this.tabPageLearnsets.Location = new System.Drawing.Point(4, 22);
             this.tabPageLearnsets.Margin = new System.Windows.Forms.Padding(0);
             this.tabPageLearnsets.Name = "tabPageLearnsets";
@@ -2397,25 +2435,86 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabPageMusic.Text = "BGM";
             this.tabPageMusic.UseVisualStyleBackColor = true;
             // 
-            // btnEvoInputAssistParam1
+            // lblLearnsetAddr
             // 
-            this.btnEvoInputAssistParam1.Location = new System.Drawing.Point(20, 136);
-            this.btnEvoInputAssistParam1.Margin = new System.Windows.Forms.Padding(0);
-            this.btnEvoInputAssistParam1.Name = "btnEvoInputAssistParam1";
-            this.btnEvoInputAssistParam1.Size = new System.Drawing.Size(120, 23);
-            this.btnEvoInputAssistParam1.TabIndex = 2;
-            this.btnEvoInputAssistParam1.Text = "パラメータ1に代入";
-            this.btnEvoInputAssistParam1.UseVisualStyleBackColor = true;
+            this.lblLearnsetAddr.AutoSize = true;
+            this.lblLearnsetAddr.Location = new System.Drawing.Point(20, 24);
+            this.lblLearnsetAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.lblLearnsetAddr.Name = "lblLearnsetAddr";
+            this.lblLearnsetAddr.Size = new System.Drawing.Size(88, 12);
+            this.lblLearnsetAddr.TabIndex = 0;
+            this.lblLearnsetAddr.Text = "レベル技アドレス :";
             // 
-            // btnEvoInputAssistParam2
+            // txtLearnsetAddr
             // 
-            this.btnEvoInputAssistParam2.Location = new System.Drawing.Point(148, 136);
-            this.btnEvoInputAssistParam2.Margin = new System.Windows.Forms.Padding(0);
-            this.btnEvoInputAssistParam2.Name = "btnEvoInputAssistParam2";
-            this.btnEvoInputAssistParam2.Size = new System.Drawing.Size(120, 23);
-            this.btnEvoInputAssistParam2.TabIndex = 2;
-            this.btnEvoInputAssistParam2.Text = "パラメータ2に代入";
-            this.btnEvoInputAssistParam2.UseVisualStyleBackColor = true;
+            this.txtLearnsetAddr.Location = new System.Drawing.Point(140, 20);
+            this.txtLearnsetAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.txtLearnsetAddr.Name = "txtLearnsetAddr";
+            this.txtLearnsetAddr.Size = new System.Drawing.Size(80, 19);
+            this.txtLearnsetAddr.TabIndex = 1;
+            // 
+            // nudLearnsetLevel
+            // 
+            this.nudLearnsetLevel.Location = new System.Drawing.Point(20, 374);
+            this.nudLearnsetLevel.Margin = new System.Windows.Forms.Padding(0);
+            this.nudLearnsetLevel.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudLearnsetLevel.Name = "nudLearnsetLevel";
+            this.nudLearnsetLevel.Size = new System.Drawing.Size(48, 19);
+            this.nudLearnsetLevel.TabIndex = 2;
+            // 
+            // cmbLearnsetMove
+            // 
+            this.cmbLearnsetMove.FormattingEnabled = true;
+            this.cmbLearnsetMove.Location = new System.Drawing.Point(76, 374);
+            this.cmbLearnsetMove.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbLearnsetMove.Name = "cmbLearnsetMove";
+            this.cmbLearnsetMove.Size = new System.Drawing.Size(144, 20);
+            this.cmbLearnsetMove.TabIndex = 3;
+            // 
+            // lstLearnset
+            // 
+            this.lstLearnset.FormattingEnabled = true;
+            this.lstLearnset.ItemHeight = 12;
+            this.lstLearnset.Location = new System.Drawing.Point(20, 74);
+            this.lstLearnset.Margin = new System.Windows.Forms.Padding(0);
+            this.lstLearnset.Name = "lstLearnset";
+            this.lstLearnset.ScrollAlwaysVisible = true;
+            this.lstLearnset.Size = new System.Drawing.Size(220, 292);
+            this.lstLearnset.TabIndex = 4;
+            // 
+            // btnCreateNewLearnset
+            // 
+            this.btnCreateNewLearnset.Location = new System.Drawing.Point(20, 44);
+            this.btnCreateNewLearnset.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCreateNewLearnset.Name = "btnCreateNewLearnset";
+            this.btnCreateNewLearnset.Size = new System.Drawing.Size(200, 23);
+            this.btnCreateNewLearnset.TabIndex = 5;
+            this.btnCreateNewLearnset.Text = "新規レベル技データ作成";
+            this.btnCreateNewLearnset.UseVisualStyleBackColor = true;
+            // 
+            // clbTmHm
+            // 
+            this.clbTmHm.FormattingEnabled = true;
+            this.clbTmHm.Location = new System.Drawing.Point(260, 20);
+            this.clbTmHm.Margin = new System.Windows.Forms.Padding(0);
+            this.clbTmHm.Name = "clbTmHm";
+            this.clbTmHm.ScrollAlwaysVisible = true;
+            this.clbTmHm.Size = new System.Drawing.Size(200, 382);
+            this.clbTmHm.TabIndex = 6;
+            // 
+            // clbTutor
+            // 
+            this.clbTutor.FormattingEnabled = true;
+            this.clbTutor.Location = new System.Drawing.Point(480, 20);
+            this.clbTutor.Margin = new System.Windows.Forms.Padding(0);
+            this.clbTutor.Name = "clbTutor";
+            this.clbTutor.ScrollAlwaysVisible = true;
+            this.clbTutor.Size = new System.Drawing.Size(200, 382);
+            this.clbTutor.TabIndex = 6;
             // 
             // PokemonEditor
             // 
@@ -2524,7 +2623,10 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpEvoCond.PerformLayout();
             this.grpEvoTo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picEvoToIcon)).EndInit();
+            this.tabPageLearnsets.ResumeLayout(false);
+            this.tabPageLearnsets.PerformLayout();
             this.tabPageMusic.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nudLearnsetLevel)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -2714,5 +2816,13 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.RadioButton rbEvoInputAssistType;
         private System.Windows.Forms.Button btnEvoInputAssistParam2;
         private System.Windows.Forms.Button btnEvoInputAssistParam1;
+        private System.Windows.Forms.NumericUpDown nudLearnsetLevel;
+        private System.Windows.Forms.TextBox txtLearnsetAddr;
+        private System.Windows.Forms.Label lblLearnsetAddr;
+        private System.Windows.Forms.ComboBox cmbLearnsetMove;
+        private System.Windows.Forms.ListBox lstLearnset;
+        private System.Windows.Forms.Button btnCreateNewLearnset;
+        private System.Windows.Forms.CheckedListBox clbTutor;
+        private System.Windows.Forms.CheckedListBox clbTmHm;
     }
 }
