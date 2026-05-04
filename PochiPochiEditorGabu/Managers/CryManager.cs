@@ -11,15 +11,11 @@ namespace PochiPochiEditorGabu.Managers
 {
     public class Cry
     {
-        public int Index;
-        public int Offset;
-
         public bool Compressed;
         public bool Looped;
         public int SampleRate;
         public int LoopStart;
         public int Size;
-
         public sbyte[] Data;
     }
 
@@ -44,7 +40,6 @@ namespace PochiPochiEditorGabu.Managers
         public Cry LoadCryFromAddress(uint cryAddress, byte[] romData)
         {
             var cry = new Cry();
-            cry.Offset = (int)cryAddress;
 
             cry.Compressed = BitConverter.ToInt16(romData, (int)cryAddress) == CryCompressedFlag;
             cry.Looped = BitConverter.ToInt16(romData, (int)cryAddress + 2) == CryLoopedFlag;
@@ -107,83 +102,6 @@ namespace PochiPochiEditorGabu.Managers
         {
             int result = a + b;
             return (sbyte)(result > 127 ? 127 : (result < -128 ? -128 : result));
-        }
-
-        public void WriteWavToStream(Cry cry, Stream stream)
-        {
-            using (BinaryWriter writer = new BinaryWriter(stream, Encoding.ASCII, true))
-            {
-                // RIFF header
-                writer.Write(Encoding.ASCII.GetBytes("RIFF"));
-                writer.Write(0);
-                writer.Write(Encoding.ASCII.GetBytes("WAVE"));
-
-                // fmt chunk
-                writer.Write(Encoding.ASCII.GetBytes("fmt "));
-                writer.Write(WavFmtChunkSize);           // chunk size
-                writer.Write(WavFormatPcm);              // pcm
-                writer.Write(WavMonoChannels);           // mono
-                writer.Write(cry.SampleRate);            // sample rate
-                writer.Write(cry.SampleRate);            // byte rate
-                writer.Write(WavBlockAlign);             // block align
-                writer.Write(WavBitsPerSample);          // bits per sample
-
-                // data chunk
-                writer.Write(Encoding.ASCII.GetBytes("data"));
-                writer.Write(cry.Data.Length);           // data size
-
-                // unsigned 8-bit
-                foreach (sbyte sample in cry.Data)
-                {
-                    writer.Write((byte)(sample + 128));
-                }
-
-                writer.Seek(WavRiffSizeOffset, SeekOrigin.Begin);
-                writer.Write((int)(stream.Length - WavRiffHeaderSize));
-            }
-        }
-
-        public void PlayCry(Cry cry)
-        {
-            using (var stream = new MemoryStream())
-            {
-                WriteWavToStream(cry, stream);
-                stream.Seek(0, SeekOrigin.Begin);
-                using (var player = new SoundPlayer(stream))
-                {
-                    player.Play();
-                }
-            }
-        }
-
-        public void ExportCryToWav(Cry cry, string filename)
-        {
-            using (var fileStream = File.Create(filename))
-            {
-                WriteWavToStream(cry, fileStream);
-            }
-        }
-
-        public void PlayCryFromAddress(uint cryAddress, byte[] romData)
-        {
-            Cry cry = LoadCryFromAddress(cryAddress, romData);
-            PlayCry(cry);
-        }
-
-        public void ExportCryFromAddress(uint cryAddress, byte[] romData, string pokemonCode)
-        {
-            using (var sfd = new SaveFileDialog())
-            {
-                sfd.Filter = "WAVファイル|*.wav";
-                sfd.Title = "鳴き声をエクスポート";
-                sfd.FileName = $"cry_{pokemonCode}.wav";
-
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    Cry cry = LoadCryFromAddress(cryAddress, romData);
-                    ExportCryToWav(cry, sfd.FileName);
-                }
-            }
         }
 
         public byte[] CompressCryData(sbyte[] data)
@@ -261,7 +179,54 @@ namespace PochiPochiEditorGabu.Managers
             return result.ToArray();
         }
 
-        public Cry ImportAndCompressWav(string filename)
+        public void EncodeToWavStream(Cry cry, Stream stream)
+        {
+            using (BinaryWriter writer = new BinaryWriter(stream, Encoding.ASCII, true))
+            {
+                // RIFF header
+                writer.Write(Encoding.ASCII.GetBytes("RIFF"));
+                writer.Write(0);
+                writer.Write(Encoding.ASCII.GetBytes("WAVE"));
+
+                // fmt chunk
+                writer.Write(Encoding.ASCII.GetBytes("fmt "));
+                writer.Write(WavFmtChunkSize);           // chunk size
+                writer.Write(WavFormatPcm);              // pcm
+                writer.Write(WavMonoChannels);           // mono
+                writer.Write(cry.SampleRate);            // sample rate
+                writer.Write(cry.SampleRate);            // byte rate
+                writer.Write(WavBlockAlign);             // block align
+                writer.Write(WavBitsPerSample);          // bits per sample
+
+                // data chunk
+                writer.Write(Encoding.ASCII.GetBytes("data"));
+                writer.Write(cry.Data.Length);           // data size
+
+                // unsigned 8-bit
+                foreach (sbyte sample in cry.Data)
+                {
+                    writer.Write((byte)(sample + 128));
+                }
+
+                writer.Seek(WavRiffSizeOffset, SeekOrigin.Begin);
+                writer.Write((int)(stream.Length - WavRiffHeaderSize));
+            }
+        }
+
+        public void PlayCry(Cry cry)
+        {
+            using (var stream = new MemoryStream())
+            {
+                EncodeToWavStream(cry, stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                using (var player = new SoundPlayer(stream))
+                {
+                    player.Play();
+                }
+            }
+        }
+
+        public Cry ConvertWavToCryData(string filename)
         {
             var cry = new Cry();
 
@@ -297,7 +262,7 @@ namespace PochiPochiEditorGabu.Managers
                     return ShowErrorAndReturnNull("モノラルのWAVEファイルのみ対応しています");
 
                 cry.SampleRate = reader.ReadInt32();
-                reader.ReadInt32(); // byter aate
+                reader.ReadInt32(); // byte rate
 
                 reader.ReadInt16(); // block align
                 if (reader.ReadInt16() != 8)
@@ -324,7 +289,7 @@ namespace PochiPochiEditorGabu.Managers
             return cry;
         }
 
-        public void SaveCompressedCryToROM(Cry cry, uint address, byte[] romData)
+        public byte[] GetCryBinaryData(Cry cry)
         {
             byte[] compressedData = CompressCryData(cry.Data);
 
@@ -333,20 +298,21 @@ namespace PochiPochiEditorGabu.Managers
             uint sampleRateValue = (uint)cry.SampleRate << CrySampleRateShift;
             uint sizeValue = (uint)(cry.Data.Length - CrySizeAdjustment);
 
-            int offset = (int)address;
+            byte[] result = new byte[16 + compressedData.Length];
+            int offset = 0;
 
             void Write16(ushort val)
             {
-                romData[offset++] = (byte)(val & GbaConstants.Mask8Bits);
-                romData[offset++] = (byte)(val >> GbaConstants.BitsPerByte);
+                result[offset++] = (byte)(val & GbaConstants.Mask8Bits);
+                result[offset++] = (byte)(val >> GbaConstants.BitsPerByte);
             }
 
             void Write32(uint val)
             {
-                romData[offset++] = (byte)(val & GbaConstants.Mask8Bits);
-                romData[offset++] = (byte)((val >> GbaConstants.BitsPerByte) & GbaConstants.Mask8Bits);
-                romData[offset++] = (byte)((val >> (2 * GbaConstants.BitsPerByte)) & GbaConstants.Mask8Bits);
-                romData[offset++] = (byte)((val >> (3 * GbaConstants.BitsPerByte)) & GbaConstants.Mask8Bits);
+                result[offset++] = (byte)(val & GbaConstants.Mask8Bits);
+                result[offset++] = (byte)((val >> GbaConstants.BitsPerByte) & GbaConstants.Mask8Bits);
+                result[offset++] = (byte)((val >> (2 * GbaConstants.BitsPerByte)) & GbaConstants.Mask8Bits);
+                result[offset++] = (byte)((val >> (3 * GbaConstants.BitsPerByte)) & GbaConstants.Mask8Bits);
             }
 
             Write16(compressedFlag);
@@ -355,16 +321,8 @@ namespace PochiPochiEditorGabu.Managers
             Write32((uint)cry.LoopStart);
             Write32(sizeValue);
 
-            Array.Copy(compressedData, 0, romData, offset, compressedData.Length);
-        }
-
-        public void ImportAndSaveWavToAddress(string filename, uint address, byte[] romData)
-        {
-            Cry cry = ImportAndCompressWav(filename);
-            if (cry != null)
-            {
-                SaveCompressedCryToROM(cry, address, romData);
-            }
+            Array.Copy(compressedData, 0, result, offset, compressedData.Length);
+            return result;
         }
     }
 }

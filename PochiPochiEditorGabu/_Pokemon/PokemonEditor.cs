@@ -22,6 +22,7 @@ namespace PochiPochiEditorGabu._Pokemon
         protected TblFileReader _tblReader;
         protected ReservationManager _reservationManager;
         protected UIStateManager _uiStateManager;
+        private CryManager _cryManager = new CryManager();
 
         private EntryManager<PokemonNameEntry> _pokemonNameManager;
         private EntryManager<PokemonSpriteFrontImageEntry> _spriteFrontImgManager;
@@ -79,7 +80,6 @@ namespace PochiPochiEditorGabu._Pokemon
         private List<PokemonEvolutionEntry[]> _workingEvoSlots = new List<PokemonEvolutionEntry[]>();
         private byte[] _currentDexDescData = null;
         private Bitmap _dexSizeCompBackgroundImage = null;
-        private CryManager _cryManager = new CryManager();
         private bool _isExtendCryTable = false;
         private sbyte[] _currentCryData = null;
 
@@ -2455,6 +2455,15 @@ namespace PochiPochiEditorGabu._Pokemon
             DisplayCryData();
         }
 
+        private void ClearCryDataUI()
+        {
+            ControlHelper.SetControlsEnabled(tabPageCry, false);
+            ControlHelper.ResetControls(tabPageCry);
+            lblCryDataSampleRateValue.Text = "000000";
+            lblCryDataSampleCountValue.Text = "000000";
+            DrawCryWaveform(null);
+        }
+
         private void DisplayCryData()
         {
             _isUpdatingUI = true;
@@ -2479,15 +2488,6 @@ namespace PochiPochiEditorGabu._Pokemon
             {
                 ClearCryDataUI();
             }
-        }
-
-        private void ClearCryDataUI()
-        {
-            ControlHelper.SetControlsEnabled(tabPageCry, false);
-            ControlHelper.ResetControls(tabPageCry);
-            lblCryDataSampleRateValue.Text = "000000";
-            lblCryDataSampleCountValue.Text = "000000";
-            DrawCryWaveform(null);
         }
 
         private void DrawCryWaveform(Cry cry)
@@ -2564,7 +2564,8 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             if (ControlHelper.TryParseAddress(txtCryDataAddr.Text, out uint address))
             {
-                _cryManager.PlayCryFromAddress(address, _romData);
+                Cry cry = _cryManager.LoadCryFromAddress(address, _romData);
+                _cryManager.PlayCry(cry);
             }
         }
 
