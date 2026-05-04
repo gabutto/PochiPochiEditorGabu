@@ -184,9 +184,9 @@ namespace PochiPochiEditorGabu._Trainer
                 byte[] imageData;
 
                 var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
-                if (paletteRes?.CurrentData != null)
+                if (paletteRes?.Data != null)
                 {
-                    palette = ImageManager.DecompressPalette(paletteRes.CurrentData, 0, true);
+                    palette = ImageManager.DecompressPalette(paletteRes.Data, 0, true);
                 }
                 else
                 {
@@ -194,9 +194,9 @@ namespace PochiPochiEditorGabu._Trainer
                 }
 
                 var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
-                if (imageRes?.CurrentData != null)
+                if (imageRes?.Data != null)
                 {
-                    imageData = ImageManager.DecompressLZ77(imageRes.CurrentData, 0);
+                    imageData = ImageManager.DecompressLZ77(imageRes.Data, 0);
                 }
                 else
                 {
@@ -287,26 +287,26 @@ namespace PochiPochiEditorGabu._Trainer
         private void SaveCurrentData(int idx)
         {
             var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
-            if (imageRes != null && imageRes.CurrentData != null)
+            if (imageRes != null && imageRes.Data != null)
             {
                 Array.Copy(
-                    imageRes.CurrentData, 
+                    imageRes.Data, 
                     0,
                     _romData, 
                     (int)imageRes.Address, 
-                    imageRes.CurrentData.Length);
+                    imageRes.Data.Length);
                 _reservationManager.ClearReservation(txtSpriteImgAddr);
             }
 
             var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
-            if (paletteRes != null && paletteRes.CurrentData != null)
+            if (paletteRes != null && paletteRes.Data != null)
             {
                 Array.Copy(
-                    paletteRes.CurrentData,
+                    paletteRes.Data,
                     0, 
                     _romData, 
                     (int)paletteRes.Address, 
-                    paletteRes.CurrentData.Length);
+                    paletteRes.Data.Length);
                 _reservationManager.ClearReservation(txtSpritePalAddr);
             }
 

@@ -167,7 +167,7 @@ namespace PochiPochiEditorGabu
                 foreach (var res in reservedAreas)
                 {
                     int resStart = (int)res.Address;
-                    int resEnd = resStart + (res.CurrentData?.Length ?? 0);
+                    int resEnd = resStart + (res.Data?.Length ?? 0);
                     int curStart = currentAddress;
                     int curEnd = currentAddress + neededBytes;
 

@@ -274,9 +274,9 @@ namespace PochiPochiEditorGabu._Item
 
                 // palette
                 var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
-                if (paletteRes?.CurrentData != null)
+                if (paletteRes?.Data != null)
                 {
-                    palette = ImageManager.DecompressPalette(paletteRes.CurrentData, 0, true);
+                    palette = ImageManager.DecompressPalette(paletteRes.Data, 0, true);
                 }
                 else
                 {
@@ -285,9 +285,9 @@ namespace PochiPochiEditorGabu._Item
 
                 // image
                 var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
-                if (imageRes?.CurrentData != null)
+                if (imageRes?.Data != null)
                 {
-                    imageData = ImageManager.DecompressLZ77(imageRes.CurrentData, 0);
+                    imageData = ImageManager.DecompressLZ77(imageRes.Data, 0);
                 }
                 else
                 {
@@ -584,9 +584,9 @@ namespace PochiPochiEditorGabu._Item
             foreach (var txt in textboxes)
             {
                 var res = _reservationManager.GetReservation(txt);
-                if (res != null && res.CurrentData != null)
+                if (res != null && res.Data != null)
                 {
-                    Array.Copy(res.CurrentData, 0, _romData, (int)res.Address, res.CurrentData.Length);
+                    Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
                     _reservationManager.ClearReservation(txt);
                 }
             }
