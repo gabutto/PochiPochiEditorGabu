@@ -2419,7 +2419,9 @@ namespace PochiPochiEditorGabu._Pokemon
             if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableIndexedCryDataTable"))
             {
                 _currentCryIdx = idx;
-                ControlHelper.SetControlsEnabled(tabPageCry, true);
+                ControlHelper.SetControlsEnabled(grpExtendCryTable, false);
+                ControlHelper.ResetControls(grpExtendCryTable);
+                ControlHelper.SetControlsEnabled(tabPageCry, true, new[] { "grpExtendCryTable" });
                 DataBindingHelper.BindObjectToControls(this, _cryData1Manager.Working[_currentCryIdx]);
                 LoadCryData();
                 return;
