@@ -85,6 +85,8 @@
         public const int PokedexSizeComparisonTrainerBaseY = 8;
         public const float PokedexSizeComparisonScaleBase = 256.0F;
 
+        public const float WaveformScale = 128.0f;
+
         public const int ItemSpriteSize = 24;
 
         public const int DefaultScale = 2;

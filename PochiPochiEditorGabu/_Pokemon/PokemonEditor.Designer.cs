@@ -245,28 +245,28 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblDexHeight = new System.Windows.Forms.Label();
             this.grpDexCategory = new System.Windows.Forms.GroupBox();
             this.txtDexCategory = new System.Windows.Forms.TextBox();
-            this.tabPageCries = new System.Windows.Forms.TabPage();
-            this.tabPageMusic = new System.Windows.Forms.TabPage();
+            this.tabPageCry = new System.Windows.Forms.TabPage();
+            this.grpCryDataImportExport = new System.Windows.Forms.GroupBox();
+            this.lblNote1 = new System.Windows.Forms.Label();
+            this.btnCryDataExport = new System.Windows.Forms.Button();
+            this.btnCryDataImport = new System.Windows.Forms.Button();
+            this.txtCryDataImportAddr = new System.Windows.Forms.TextBox();
+            this.grpExtendCryTable = new System.Windows.Forms.GroupBox();
+            this.nudExtendCryIdx = new System.Windows.Forms.NumericUpDown();
+            this.lblExtendCryIdx = new System.Windows.Forms.Label();
             this.grpCryData = new System.Windows.Forms.GroupBox();
-            this.lblCryDataAddr = new System.Windows.Forms.Label();
-            this.txtCryDataAddr = new System.Windows.Forms.TextBox();
-            this.lblCryDataSampleRate = new System.Windows.Forms.Label();
-            this.lblCryDataSampleCount = new System.Windows.Forms.Label();
-            this.lblCryDataSampleRateValue = new System.Windows.Forms.Label();
+            this.hsbCryWave = new System.Windows.Forms.HScrollBar();
+            this.btnCryDataPlay = new System.Windows.Forms.Button();
+            this.lblCryDataSampleCountUnit = new System.Windows.Forms.Label();
             this.lblCryDataSampleRateUnit = new System.Windows.Forms.Label();
             this.lblCryDataSampleCountValue = new System.Windows.Forms.Label();
-            this.lblCryDataSampleCountUnit = new System.Windows.Forms.Label();
-            this.btnCryDataPlay = new System.Windows.Forms.Button();
-            this.pnlCryData = new System.Windows.Forms.Panel();
-            this.hsbCryData = new System.Windows.Forms.HScrollBar();
-            this.grpExtendCryTable = new System.Windows.Forms.GroupBox();
-            this.lblExtendCryIdx = new System.Windows.Forms.Label();
-            this.nudExtendCryIdx = new System.Windows.Forms.NumericUpDown();
-            this.grpCryDataImportExport = new System.Windows.Forms.GroupBox();
-            this.txtCryDataImportAddr = new System.Windows.Forms.TextBox();
-            this.btnCryDataImport = new System.Windows.Forms.Button();
-            this.btnCryDataExport = new System.Windows.Forms.Button();
-            this.lblNote1 = new System.Windows.Forms.Label();
+            this.lblCryDataSampleRateValue = new System.Windows.Forms.Label();
+            this.txtCryDataAddr = new System.Windows.Forms.TextBox();
+            this.lblCryDataSampleCount = new System.Windows.Forms.Label();
+            this.lblCryDataSampleRate = new System.Windows.Forms.Label();
+            this.lblCryDataAddr = new System.Windows.Forms.Label();
+            this.tabPageMusic = new System.Windows.Forms.TabPage();
+            this.pnlCryWave = new System.Windows.Forms.Panel();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -357,12 +357,12 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.nudDexWeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDexHeight)).BeginInit();
             this.grpDexCategory.SuspendLayout();
-            this.tabPageCries.SuspendLayout();
-            this.tabPageMusic.SuspendLayout();
-            this.grpCryData.SuspendLayout();
+            this.tabPageCry.SuspendLayout();
+            this.grpCryDataImportExport.SuspendLayout();
             this.grpExtendCryTable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudExtendCryIdx)).BeginInit();
-            this.grpCryDataImportExport.SuspendLayout();
+            this.grpCryData.SuspendLayout();
+            this.tabPageMusic.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSave
@@ -553,7 +553,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabControlMain.Controls.Add(this.tabPageEvolutions);
             this.tabControlMain.Controls.Add(this.tabPageLearnsets);
             this.tabControlMain.Controls.Add(this.tabPagePokedex);
-            this.tabControlMain.Controls.Add(this.tabPageCries);
+            this.tabControlMain.Controls.Add(this.tabPageCry);
             this.tabControlMain.Controls.Add(this.tabPageMusic);
             this.tabControlMain.Location = new System.Drawing.Point(196, 34);
             this.tabControlMain.Margin = new System.Windows.Forms.Padding(0);
@@ -2880,34 +2880,112 @@ namespace PochiPochiEditorGabu._Pokemon
             this.txtDexCategory.Size = new System.Drawing.Size(120, 19);
             this.txtDexCategory.TabIndex = 0;
             // 
-            // tabPageCries
+            // tabPageCry
             // 
-            this.tabPageCries.Controls.Add(this.grpCryDataImportExport);
-            this.tabPageCries.Controls.Add(this.grpExtendCryTable);
-            this.tabPageCries.Controls.Add(this.grpCryData);
-            this.tabPageCries.Location = new System.Drawing.Point(4, 22);
-            this.tabPageCries.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPageCries.Name = "tabPageCries";
-            this.tabPageCries.Size = new System.Drawing.Size(706, 480);
-            this.tabPageCries.TabIndex = 6;
-            this.tabPageCries.Text = "鳴き声";
-            this.tabPageCries.UseVisualStyleBackColor = true;
+            this.tabPageCry.Controls.Add(this.grpCryDataImportExport);
+            this.tabPageCry.Controls.Add(this.grpExtendCryTable);
+            this.tabPageCry.Controls.Add(this.grpCryData);
+            this.tabPageCry.Location = new System.Drawing.Point(4, 22);
+            this.tabPageCry.Margin = new System.Windows.Forms.Padding(0);
+            this.tabPageCry.Name = "tabPageCry";
+            this.tabPageCry.Size = new System.Drawing.Size(706, 480);
+            this.tabPageCry.TabIndex = 6;
+            this.tabPageCry.Text = "鳴き声";
+            this.tabPageCry.UseVisualStyleBackColor = true;
             // 
-            // tabPageMusic
+            // grpCryDataImportExport
             // 
-            this.tabPageMusic.Controls.Add(this.grpBattleMusic);
-            this.tabPageMusic.Location = new System.Drawing.Point(4, 22);
-            this.tabPageMusic.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPageMusic.Name = "tabPageMusic";
-            this.tabPageMusic.Size = new System.Drawing.Size(706, 480);
-            this.tabPageMusic.TabIndex = 7;
-            this.tabPageMusic.Text = "BGM";
-            this.tabPageMusic.UseVisualStyleBackColor = true;
+            this.grpCryDataImportExport.Controls.Add(this.lblNote1);
+            this.grpCryDataImportExport.Controls.Add(this.btnCryDataExport);
+            this.grpCryDataImportExport.Controls.Add(this.btnCryDataImport);
+            this.grpCryDataImportExport.Controls.Add(this.txtCryDataImportAddr);
+            this.grpCryDataImportExport.Location = new System.Drawing.Point(20, 324);
+            this.grpCryDataImportExport.Margin = new System.Windows.Forms.Padding(0);
+            this.grpCryDataImportExport.Name = "grpCryDataImportExport";
+            this.grpCryDataImportExport.Padding = new System.Windows.Forms.Padding(0);
+            this.grpCryDataImportExport.Size = new System.Drawing.Size(380, 96);
+            this.grpCryDataImportExport.TabIndex = 2;
+            this.grpCryDataImportExport.TabStop = false;
+            this.grpCryDataImportExport.Text = "インポート/エクスポート";
+            // 
+            // lblNote1
+            // 
+            this.lblNote1.AutoSize = true;
+            this.lblNote1.Location = new System.Drawing.Point(204, 32);
+            this.lblNote1.Margin = new System.Windows.Forms.Padding(0);
+            this.lblNote1.Name = "lblNote1";
+            this.lblNote1.Size = new System.Drawing.Size(158, 12);
+            this.lblNote1.TabIndex = 5;
+            this.lblNote1.Text = "※符号なし8ビットPCMのみ対応";
+            // 
+            // btnCryDataExport
+            // 
+            this.btnCryDataExport.Location = new System.Drawing.Point(108, 54);
+            this.btnCryDataExport.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCryDataExport.Name = "btnCryDataExport";
+            this.btnCryDataExport.Size = new System.Drawing.Size(80, 23);
+            this.btnCryDataExport.TabIndex = 4;
+            this.btnCryDataExport.Text = "エクスポート";
+            this.btnCryDataExport.UseVisualStyleBackColor = true;
+            // 
+            // btnCryDataImport
+            // 
+            this.btnCryDataImport.Location = new System.Drawing.Point(108, 26);
+            this.btnCryDataImport.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCryDataImport.Name = "btnCryDataImport";
+            this.btnCryDataImport.Size = new System.Drawing.Size(80, 23);
+            this.btnCryDataImport.TabIndex = 4;
+            this.btnCryDataImport.Text = "インポート";
+            this.btnCryDataImport.UseVisualStyleBackColor = true;
+            // 
+            // txtCryDataImportAddr
+            // 
+            this.txtCryDataImportAddr.Location = new System.Drawing.Point(20, 28);
+            this.txtCryDataImportAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.txtCryDataImportAddr.Name = "txtCryDataImportAddr";
+            this.txtCryDataImportAddr.Size = new System.Drawing.Size(80, 19);
+            this.txtCryDataImportAddr.TabIndex = 3;
+            // 
+            // grpExtendCryTable
+            // 
+            this.grpExtendCryTable.Controls.Add(this.nudExtendCryIdx);
+            this.grpExtendCryTable.Controls.Add(this.lblExtendCryIdx);
+            this.grpExtendCryTable.Location = new System.Drawing.Point(20, 246);
+            this.grpExtendCryTable.Margin = new System.Windows.Forms.Padding(0);
+            this.grpExtendCryTable.Name = "grpExtendCryTable";
+            this.grpExtendCryTable.Padding = new System.Windows.Forms.Padding(0);
+            this.grpExtendCryTable.Size = new System.Drawing.Size(188, 68);
+            this.grpExtendCryTable.TabIndex = 1;
+            this.grpExtendCryTable.TabStop = false;
+            this.grpExtendCryTable.Text = "第三世代鳴き声テーブル";
+            // 
+            // nudExtendCryIdx
+            // 
+            this.nudExtendCryIdx.Location = new System.Drawing.Point(108, 28);
+            this.nudExtendCryIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.nudExtendCryIdx.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudExtendCryIdx.Name = "nudExtendCryIdx";
+            this.nudExtendCryIdx.Size = new System.Drawing.Size(56, 19);
+            this.nudExtendCryIdx.TabIndex = 1;
+            // 
+            // lblExtendCryIdx
+            // 
+            this.lblExtendCryIdx.AutoSize = true;
+            this.lblExtendCryIdx.Location = new System.Drawing.Point(20, 32);
+            this.lblExtendCryIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.lblExtendCryIdx.Name = "lblExtendCryIdx";
+            this.lblExtendCryIdx.Size = new System.Drawing.Size(55, 12);
+            this.lblExtendCryIdx.TabIndex = 0;
+            this.lblExtendCryIdx.Text = "鳴き声ID :";
             // 
             // grpCryData
             // 
-            this.grpCryData.Controls.Add(this.hsbCryData);
-            this.grpCryData.Controls.Add(this.pnlCryData);
+            this.grpCryData.Controls.Add(this.pnlCryWave);
+            this.grpCryData.Controls.Add(this.hsbCryWave);
             this.grpCryData.Controls.Add(this.btnCryDataPlay);
             this.grpCryData.Controls.Add(this.lblCryDataSampleCountUnit);
             this.grpCryData.Controls.Add(this.lblCryDataSampleRateUnit);
@@ -2926,53 +3004,32 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpCryData.TabStop = false;
             this.grpCryData.Text = "鳴き声データ";
             // 
-            // lblCryDataAddr
+            // hsbCryWave
             // 
-            this.lblCryDataAddr.AutoSize = true;
-            this.lblCryDataAddr.Location = new System.Drawing.Point(20, 32);
-            this.lblCryDataAddr.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCryDataAddr.Name = "lblCryDataAddr";
-            this.lblCryDataAddr.Size = new System.Drawing.Size(75, 12);
-            this.lblCryDataAddr.TabIndex = 0;
-            this.lblCryDataAddr.Text = "データアドレス :";
+            this.hsbCryWave.Location = new System.Drawing.Point(228, 180);
+            this.hsbCryWave.Name = "hsbCryWave";
+            this.hsbCryWave.Size = new System.Drawing.Size(324, 17);
+            this.hsbCryWave.TabIndex = 6;
             // 
-            // txtCryDataAddr
+            // btnCryDataPlay
             // 
-            this.txtCryDataAddr.Location = new System.Drawing.Point(108, 28);
-            this.txtCryDataAddr.Margin = new System.Windows.Forms.Padding(0);
-            this.txtCryDataAddr.Name = "txtCryDataAddr";
-            this.txtCryDataAddr.Size = new System.Drawing.Size(80, 19);
-            this.txtCryDataAddr.TabIndex = 1;
+            this.btnCryDataPlay.Location = new System.Drawing.Point(108, 108);
+            this.btnCryDataPlay.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCryDataPlay.Name = "btnCryDataPlay";
+            this.btnCryDataPlay.Size = new System.Drawing.Size(80, 23);
+            this.btnCryDataPlay.TabIndex = 4;
+            this.btnCryDataPlay.Text = "再生";
+            this.btnCryDataPlay.UseVisualStyleBackColor = true;
             // 
-            // lblCryDataSampleRate
+            // lblCryDataSampleCountUnit
             // 
-            this.lblCryDataSampleRate.AutoSize = true;
-            this.lblCryDataSampleRate.Location = new System.Drawing.Point(20, 58);
-            this.lblCryDataSampleRate.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCryDataSampleRate.Name = "lblCryDataSampleRate";
-            this.lblCryDataSampleRate.Size = new System.Drawing.Size(76, 12);
-            this.lblCryDataSampleRate.TabIndex = 0;
-            this.lblCryDataSampleRate.Text = "サンプルレート :";
-            // 
-            // lblCryDataSampleCount
-            // 
-            this.lblCryDataSampleCount.AutoSize = true;
-            this.lblCryDataSampleCount.Location = new System.Drawing.Point(20, 84);
-            this.lblCryDataSampleCount.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCryDataSampleCount.Name = "lblCryDataSampleCount";
-            this.lblCryDataSampleCount.Size = new System.Drawing.Size(61, 12);
-            this.lblCryDataSampleCount.TabIndex = 0;
-            this.lblCryDataSampleCount.Text = "サンプル数 :";
-            // 
-            // lblCryDataSampleRateValue
-            // 
-            this.lblCryDataSampleRateValue.AutoSize = true;
-            this.lblCryDataSampleRateValue.Location = new System.Drawing.Point(108, 58);
-            this.lblCryDataSampleRateValue.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCryDataSampleRateValue.Name = "lblCryDataSampleRateValue";
-            this.lblCryDataSampleRateValue.Size = new System.Drawing.Size(41, 12);
-            this.lblCryDataSampleRateValue.TabIndex = 2;
-            this.lblCryDataSampleRateValue.Text = "000000";
+            this.lblCryDataSampleCountUnit.AutoSize = true;
+            this.lblCryDataSampleCountUnit.Location = new System.Drawing.Point(164, 84);
+            this.lblCryDataSampleCountUnit.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCryDataSampleCountUnit.Name = "lblCryDataSampleCountUnit";
+            this.lblCryDataSampleCountUnit.Size = new System.Drawing.Size(48, 12);
+            this.lblCryDataSampleCountUnit.TabIndex = 3;
+            this.lblCryDataSampleCountUnit.Text = "Samples";
             // 
             // lblCryDataSampleRateUnit
             // 
@@ -2994,129 +3051,72 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblCryDataSampleCountValue.TabIndex = 2;
             this.lblCryDataSampleCountValue.Text = "000000";
             // 
-            // lblCryDataSampleCountUnit
+            // lblCryDataSampleRateValue
             // 
-            this.lblCryDataSampleCountUnit.AutoSize = true;
-            this.lblCryDataSampleCountUnit.Location = new System.Drawing.Point(164, 84);
-            this.lblCryDataSampleCountUnit.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCryDataSampleCountUnit.Name = "lblCryDataSampleCountUnit";
-            this.lblCryDataSampleCountUnit.Size = new System.Drawing.Size(48, 12);
-            this.lblCryDataSampleCountUnit.TabIndex = 3;
-            this.lblCryDataSampleCountUnit.Text = "Samples";
+            this.lblCryDataSampleRateValue.AutoSize = true;
+            this.lblCryDataSampleRateValue.Location = new System.Drawing.Point(108, 58);
+            this.lblCryDataSampleRateValue.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCryDataSampleRateValue.Name = "lblCryDataSampleRateValue";
+            this.lblCryDataSampleRateValue.Size = new System.Drawing.Size(41, 12);
+            this.lblCryDataSampleRateValue.TabIndex = 2;
+            this.lblCryDataSampleRateValue.Text = "000000";
             // 
-            // btnCryDataPlay
+            // txtCryDataAddr
             // 
-            this.btnCryDataPlay.Location = new System.Drawing.Point(108, 108);
-            this.btnCryDataPlay.Margin = new System.Windows.Forms.Padding(0);
-            this.btnCryDataPlay.Name = "btnCryDataPlay";
-            this.btnCryDataPlay.Size = new System.Drawing.Size(80, 23);
-            this.btnCryDataPlay.TabIndex = 4;
-            this.btnCryDataPlay.Text = "再生";
-            this.btnCryDataPlay.UseVisualStyleBackColor = true;
+            this.txtCryDataAddr.Location = new System.Drawing.Point(108, 28);
+            this.txtCryDataAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.txtCryDataAddr.Name = "txtCryDataAddr";
+            this.txtCryDataAddr.Size = new System.Drawing.Size(80, 19);
+            this.txtCryDataAddr.TabIndex = 1;
             // 
-            // pnlCryData
+            // lblCryDataSampleCount
             // 
-            this.pnlCryData.Location = new System.Drawing.Point(228, 28);
-            this.pnlCryData.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlCryData.Name = "pnlCryData";
-            this.pnlCryData.Size = new System.Drawing.Size(324, 146);
-            this.pnlCryData.TabIndex = 5;
+            this.lblCryDataSampleCount.AutoSize = true;
+            this.lblCryDataSampleCount.Location = new System.Drawing.Point(20, 84);
+            this.lblCryDataSampleCount.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCryDataSampleCount.Name = "lblCryDataSampleCount";
+            this.lblCryDataSampleCount.Size = new System.Drawing.Size(61, 12);
+            this.lblCryDataSampleCount.TabIndex = 0;
+            this.lblCryDataSampleCount.Text = "サンプル数 :";
             // 
-            // hsbCryData
+            // lblCryDataSampleRate
             // 
-            this.hsbCryData.Location = new System.Drawing.Point(228, 180);
-            this.hsbCryData.Name = "hsbCryData";
-            this.hsbCryData.Size = new System.Drawing.Size(324, 17);
-            this.hsbCryData.TabIndex = 6;
+            this.lblCryDataSampleRate.AutoSize = true;
+            this.lblCryDataSampleRate.Location = new System.Drawing.Point(20, 58);
+            this.lblCryDataSampleRate.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCryDataSampleRate.Name = "lblCryDataSampleRate";
+            this.lblCryDataSampleRate.Size = new System.Drawing.Size(76, 12);
+            this.lblCryDataSampleRate.TabIndex = 0;
+            this.lblCryDataSampleRate.Text = "サンプルレート :";
             // 
-            // grpExtendCryTable
+            // lblCryDataAddr
             // 
-            this.grpExtendCryTable.Controls.Add(this.nudExtendCryIdx);
-            this.grpExtendCryTable.Controls.Add(this.lblExtendCryIdx);
-            this.grpExtendCryTable.Location = new System.Drawing.Point(20, 246);
-            this.grpExtendCryTable.Margin = new System.Windows.Forms.Padding(0);
-            this.grpExtendCryTable.Name = "grpExtendCryTable";
-            this.grpExtendCryTable.Padding = new System.Windows.Forms.Padding(0);
-            this.grpExtendCryTable.Size = new System.Drawing.Size(188, 68);
-            this.grpExtendCryTable.TabIndex = 1;
-            this.grpExtendCryTable.TabStop = false;
-            this.grpExtendCryTable.Text = "第三世代鳴き声テーブル";
+            this.lblCryDataAddr.AutoSize = true;
+            this.lblCryDataAddr.Location = new System.Drawing.Point(20, 32);
+            this.lblCryDataAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCryDataAddr.Name = "lblCryDataAddr";
+            this.lblCryDataAddr.Size = new System.Drawing.Size(75, 12);
+            this.lblCryDataAddr.TabIndex = 0;
+            this.lblCryDataAddr.Text = "データアドレス :";
             // 
-            // lblExtendCryIdx
+            // tabPageMusic
             // 
-            this.lblExtendCryIdx.AutoSize = true;
-            this.lblExtendCryIdx.Location = new System.Drawing.Point(20, 32);
-            this.lblExtendCryIdx.Margin = new System.Windows.Forms.Padding(0);
-            this.lblExtendCryIdx.Name = "lblExtendCryIdx";
-            this.lblExtendCryIdx.Size = new System.Drawing.Size(55, 12);
-            this.lblExtendCryIdx.TabIndex = 0;
-            this.lblExtendCryIdx.Text = "鳴き声ID :";
+            this.tabPageMusic.Controls.Add(this.grpBattleMusic);
+            this.tabPageMusic.Location = new System.Drawing.Point(4, 22);
+            this.tabPageMusic.Margin = new System.Windows.Forms.Padding(0);
+            this.tabPageMusic.Name = "tabPageMusic";
+            this.tabPageMusic.Size = new System.Drawing.Size(706, 480);
+            this.tabPageMusic.TabIndex = 7;
+            this.tabPageMusic.Text = "BGM";
+            this.tabPageMusic.UseVisualStyleBackColor = true;
             // 
-            // nudExtendCryIdx
+            // pnlCryWave
             // 
-            this.nudExtendCryIdx.Location = new System.Drawing.Point(108, 28);
-            this.nudExtendCryIdx.Margin = new System.Windows.Forms.Padding(0);
-            this.nudExtendCryIdx.Maximum = new decimal(new int[] {
-            65535,
-            0,
-            0,
-            0});
-            this.nudExtendCryIdx.Name = "nudExtendCryIdx";
-            this.nudExtendCryIdx.Size = new System.Drawing.Size(56, 19);
-            this.nudExtendCryIdx.TabIndex = 1;
-            // 
-            // grpCryDataImportExport
-            // 
-            this.grpCryDataImportExport.Controls.Add(this.lblNote1);
-            this.grpCryDataImportExport.Controls.Add(this.btnCryDataExport);
-            this.grpCryDataImportExport.Controls.Add(this.btnCryDataImport);
-            this.grpCryDataImportExport.Controls.Add(this.txtCryDataImportAddr);
-            this.grpCryDataImportExport.Location = new System.Drawing.Point(20, 324);
-            this.grpCryDataImportExport.Margin = new System.Windows.Forms.Padding(0);
-            this.grpCryDataImportExport.Name = "grpCryDataImportExport";
-            this.grpCryDataImportExport.Padding = new System.Windows.Forms.Padding(0);
-            this.grpCryDataImportExport.Size = new System.Drawing.Size(380, 96);
-            this.grpCryDataImportExport.TabIndex = 2;
-            this.grpCryDataImportExport.TabStop = false;
-            this.grpCryDataImportExport.Text = "インポート/エクスポート";
-            // 
-            // txtCryDataImportAddr
-            // 
-            this.txtCryDataImportAddr.Location = new System.Drawing.Point(20, 28);
-            this.txtCryDataImportAddr.Margin = new System.Windows.Forms.Padding(0);
-            this.txtCryDataImportAddr.Name = "txtCryDataImportAddr";
-            this.txtCryDataImportAddr.Size = new System.Drawing.Size(80, 19);
-            this.txtCryDataImportAddr.TabIndex = 3;
-            // 
-            // btnCryDataImport
-            // 
-            this.btnCryDataImport.Location = new System.Drawing.Point(108, 26);
-            this.btnCryDataImport.Margin = new System.Windows.Forms.Padding(0);
-            this.btnCryDataImport.Name = "btnCryDataImport";
-            this.btnCryDataImport.Size = new System.Drawing.Size(80, 23);
-            this.btnCryDataImport.TabIndex = 4;
-            this.btnCryDataImport.Text = "インポート";
-            this.btnCryDataImport.UseVisualStyleBackColor = true;
-            // 
-            // btnCryDataExport
-            // 
-            this.btnCryDataExport.Location = new System.Drawing.Point(108, 54);
-            this.btnCryDataExport.Margin = new System.Windows.Forms.Padding(0);
-            this.btnCryDataExport.Name = "btnCryDataExport";
-            this.btnCryDataExport.Size = new System.Drawing.Size(80, 23);
-            this.btnCryDataExport.TabIndex = 4;
-            this.btnCryDataExport.Text = "エクスポート";
-            this.btnCryDataExport.UseVisualStyleBackColor = true;
-            // 
-            // lblNote1
-            // 
-            this.lblNote1.AutoSize = true;
-            this.lblNote1.Location = new System.Drawing.Point(204, 32);
-            this.lblNote1.Margin = new System.Windows.Forms.Padding(0);
-            this.lblNote1.Name = "lblNote1";
-            this.lblNote1.Size = new System.Drawing.Size(158, 12);
-            this.lblNote1.TabIndex = 5;
-            this.lblNote1.Text = "※符号なし8ビットPCMのみ対応";
+            this.pnlCryWave.Location = new System.Drawing.Point(228, 28);
+            this.pnlCryWave.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlCryWave.Name = "pnlCryWave";
+            this.pnlCryWave.Size = new System.Drawing.Size(324, 146);
+            this.pnlCryWave.TabIndex = 7;
             // 
             // PokemonEditor
             // 
@@ -3245,15 +3245,15 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.nudDexHeight)).EndInit();
             this.grpDexCategory.ResumeLayout(false);
             this.grpDexCategory.PerformLayout();
-            this.tabPageCries.ResumeLayout(false);
-            this.tabPageMusic.ResumeLayout(false);
-            this.grpCryData.ResumeLayout(false);
-            this.grpCryData.PerformLayout();
+            this.tabPageCry.ResumeLayout(false);
+            this.grpCryDataImportExport.ResumeLayout(false);
+            this.grpCryDataImportExport.PerformLayout();
             this.grpExtendCryTable.ResumeLayout(false);
             this.grpExtendCryTable.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudExtendCryIdx)).EndInit();
-            this.grpCryDataImportExport.ResumeLayout(false);
-            this.grpCryDataImportExport.PerformLayout();
+            this.grpCryData.ResumeLayout(false);
+            this.grpCryData.PerformLayout();
+            this.tabPageMusic.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -3280,7 +3280,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.TabPage tabPageEvolutions;
         private System.Windows.Forms.TabPage tabPageLearnsets;
         private System.Windows.Forms.TabPage tabPagePokedex;
-        private System.Windows.Forms.TabPage tabPageCries;
+        private System.Windows.Forms.TabPage tabPageCry;
         private System.Windows.Forms.GroupBox grpSprite;
         private System.Windows.Forms.TextBox txtSpriteShinyPalAddr;
         private System.Windows.Forms.TextBox txtSpriteNormalPalAddr;
@@ -3482,13 +3482,11 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.Label lblCryDataSampleRateUnit;
         private System.Windows.Forms.Label lblCryDataSampleCountValue;
         private System.Windows.Forms.Label lblCryDataSampleRateValue;
-        private System.Windows.Forms.TextBox txtCryDataAddr;
         private System.Windows.Forms.Label lblCryDataSampleCount;
         private System.Windows.Forms.Label lblCryDataSampleRate;
         private System.Windows.Forms.Label lblCryDataAddr;
         private System.Windows.Forms.Button btnCryDataPlay;
-        private System.Windows.Forms.HScrollBar hsbCryData;
-        private System.Windows.Forms.Panel pnlCryData;
+        private System.Windows.Forms.HScrollBar hsbCryWave;
         private System.Windows.Forms.GroupBox grpExtendCryTable;
         private System.Windows.Forms.NumericUpDown nudExtendCryIdx;
         private System.Windows.Forms.Label lblExtendCryIdx;
@@ -3497,5 +3495,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.Button btnCryDataExport;
         private System.Windows.Forms.Button btnCryDataImport;
         private System.Windows.Forms.TextBox txtCryDataImportAddr;
+        private System.Windows.Forms.TextBox txtCryDataAddr;
+        private System.Windows.Forms.Panel pnlCryWave;
     }
 }

@@ -357,6 +357,41 @@ namespace PochiPochiEditorGabu.Managers
     }
 
 
+    public class PokemonCryData1Entry
+    {
+        public byte _Type;
+        public byte _Key;
+        public byte _Padding1;
+        public byte _Padding2;
+        public uint pCryDataAddr;
+        public byte _Unknown1;
+        public byte _Padding3;
+        public byte _Unknown2;
+        public byte _Padding4;
+    }
+
+    public class PokemonCryData2Entry
+    {
+        public byte _Type;
+        public byte _Key;
+        public byte _Padding1;
+        public byte _Padding2;
+        public uint pCryDataAddr;
+        public byte _Unknown1;
+        public byte _Padding3;
+        public byte _Unknown2;
+        public byte _Padding4;
+    }
+
+    public class PokemonCryExtendEntry
+    {
+        public ushort _ExtendIdx;
+    }
+
+
+
+
+
 
 
 

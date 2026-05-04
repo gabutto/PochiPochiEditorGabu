@@ -44,6 +44,9 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<TutorMoveEntry> _tutorListManager;
         private EntryManager<PokedexOrderEntry> _orderManager;
         private EntryManager<PokedexEntry> _dexManager;
+        private EntryManager<PokemonCryData1Entry> _cryData1Manager;
+        private EntryManager<PokemonCryData2Entry> _cryData2Manager;
+        private EntryManager<PokemonCryExtendEntry> _cryDataExtendManager;
 
         private EntryManager<AbilityNameEntry> _abilityNameManager;
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
@@ -56,6 +59,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private bool _isUpdatingUI = false;
         private int _currentPokemonIdx = 0;
         private int _currentdexOrder = -1;
+        private int _currentCryIdx = -1;
 
         private ImageManager.PokemonIconAnimator _iconAnimator = null;
         private byte[] _currentFootprintData = null;
@@ -75,6 +79,9 @@ namespace PochiPochiEditorGabu._Pokemon
         private List<PokemonEvolutionEntry[]> _workingEvoSlots = new List<PokemonEvolutionEntry[]>();
         private byte[] _currentDexDescData = null;
         private Bitmap _dexSizeCompBackgroundImage = null;
+        private CryManager _cryManager = new CryManager();
+        private bool _isExtendCryTable = false;
+        private sbyte[] _currentCryData = null;
 
         private class EvolutionMethodInfo
         {
@@ -194,14 +201,21 @@ namespace PochiPochiEditorGabu._Pokemon
             _tutorListManager = EntryManager<TutorMoveEntry>.Create( 
                 _romData, _tblReader, _config, "TutorListTableAddress", "TutorCount");
 
-            //order
+            // order
             _orderManager = EntryManager<PokedexOrderEntry>.Create(
                 _romData, _tblReader, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
 
-            //pokedex
+            // pokedex
             _dexManager = EntryManager<PokedexEntry>.Create(
                 _romData, _tblReader, _config, "PokedexTableAddress", "PokedexCount");
 
+            // cry
+            _cryData1Manager = EntryManager<PokemonCryData1Entry>.Create(
+                _romData, _tblReader, _config, "CryData1TableAddress", "CryDataCount");
+            _cryData2Manager = EntryManager<PokemonCryData2Entry>.Create(
+                _romData, _tblReader, _config, "CryData1TableAddress", "CryDataCount");
+            _cryDataExtendManager = EntryManager<PokemonCryExtendEntry>.Create(
+                _romData, _tblReader, _config, "ExtendCryTableAddress", "ExtendCryCount");
 
 
 
@@ -335,6 +349,10 @@ namespace PochiPochiEditorGabu._Pokemon
             {
                 nud.ValueChanged += SizeCompParam_ValueChanged;
             }
+
+            pnlCryWave.Paint += pnlCryWave_Paint;
+            hsbCryWave.ValueChanged += hsbCryWave_ValueChanged;
+            btnCryDataPlay.Click += btnCryDataPlay_Click;
         }
 
         private void InitializeControls()
@@ -466,12 +484,19 @@ namespace PochiPochiEditorGabu._Pokemon
             // nudPokedexInfoSizeComparisonTrainerId
             nudDexSizeCompTrainerSpriteIdx.Maximum = _config.GetInt("TrainerSpriteCount") -1;
 
+            // pnlCryWave
+            typeof(Panel).GetProperty(
+                "DoubleBuffered",
+                BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.SetValue(pnlCryWave, true);
+
             ControlHelper.AttachAddressAutoFormat(
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
                 txtIconImgAddr,
                 txtFootprintImgAddr,
                 txtLearnsetAddr,
-                txtDexDescAddr);
+                txtDexDescAddr,
+                txtCryDataAddr);
             ControlHelper.AttachExternalBorder(
                 picSpriteFrontNormal, picSpriteBackNormal, picSpriteFrontShiny, picSpriteBackShiny,
                 picIconPal, picIcon, picIconAnimated,
@@ -479,7 +504,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 picCoordBattleDisplay, picCoordItemUse1, picCoordItemUse2,
                 picStatsHoldItem1, picStatsHoldItem2,
                 picEvoToIcon,
-                picDexSizeCompPreview);
+                picDexSizeCompPreview,
+                pnlCryWave);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
@@ -513,7 +539,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 cmbStatsHoldItem1, cmbStatsHoldItem2,
                 cmbStatsType1, cmbStatsType2,
                 txtDexCategory, nudDexHeight, nudDexWeight, txtDexDescAddr,
-                nudDexSizeCompParam1, nudDexSizeCompParam2, nudDexSizeCompParam3, nudDexSizeCompParam4);
+                nudDexSizeCompParam1, nudDexSizeCompParam2, nudDexSizeCompParam3, nudDexSizeCompParam4,
+                txtCryDataAddr, nudExtendCryIdx);
             _uiStateManager.AddBinaries(
                 (pnlFootprintCanvas, null),
                 (lstEvoSlots, null),
@@ -539,6 +566,7 @@ namespace PochiPochiEditorGabu._Pokemon
             LoadEvolutionsToUI(idx);
             LoadLearnsetsToUI(idx);
             LoadPokedexToUI(idx);
+            LoadCryToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -2380,6 +2408,178 @@ namespace PochiPochiEditorGabu._Pokemon
                 return null;
             }
         }
+
+        private void LoadCryToUI(int idx)
+        {
+            _isExtendCryTable = false;
+
+            // indexed
+            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableIndexedCryDataTable"))
+            {
+                _currentCryIdx = idx;
+                ControlHelper.SetControlsEnabled(tabPageCry, true);
+                DataBindingHelper.BindObjectToControls(this, _cryData1Manager.Working[_currentCryIdx]);
+                DisplayCryData();
+                return;
+            }
+
+            int noCryStart = _config.GetInt("NoCryDataStartIndex");
+            int noCryEnd = _config.GetInt("NoCryDataEndIndex");
+            int extendFirst = _config.GetInt("ExtendCryFirstIndex");
+
+            // invaild
+            if (idx == 0 || (idx >= noCryStart && idx <= noCryEnd))
+            {
+                ClearCryDataUI();
+                return;
+            }
+
+            // extend
+            if (idx >= extendFirst)
+            {
+                int extendOffset = idx - extendFirst;
+                _currentCryIdx = _cryDataExtendManager.Working[extendOffset]._ExtendIdx;
+                ControlHelper.SetControlsEnabled(tabPageCry, true);
+                _isExtendCryTable = true;
+            }
+            // normal
+            else
+            {
+                _currentCryIdx = idx - 1;
+                ControlHelper.SetControlsEnabled(grpExtendCryTable, false);
+                ControlHelper.ResetControls(grpExtendCryTable);
+                ControlHelper.SetControlsEnabled(tabPageCry, true, new [] {"grpExtendCryTable"});
+            }
+
+            DataBindingHelper.BindObjectToControls(this, _cryData1Manager.Working[_currentCryIdx]);
+            DisplayCryData();
+        }
+
+        private void DisplayCryData()
+        {
+            _isUpdatingUI = true;
+
+            if (ControlHelper.TryParseAddress(txtCryDataAddr.Text, out uint address))
+            {
+                Cry cry = _cryManager.LoadCryFromAddress(address, _romData);
+
+                if (cry != null)
+                {
+                    lblCryDataSampleRateValue.Text = cry.SampleRate.ToString();
+                    lblCryDataSampleCountValue.Text = cry.Data.Length.ToString();
+                    DrawCryWaveform(cry);
+                }
+
+                if (_isExtendCryTable)
+                {
+                    nudExtendCryIdx.Value = _currentCryIdx;
+                }
+            }
+            else
+            {
+                ClearCryDataUI();
+            }
+        }
+
+        private void ClearCryDataUI()
+        {
+            ControlHelper.SetControlsEnabled(tabPageCry, false);
+            ControlHelper.ResetControls(tabPageCry);
+            lblCryDataSampleRateValue.Text = "000000";
+            lblCryDataSampleCountValue.Text = "000000";
+            DrawCryWaveform(null);
+        }
+
+        private void DrawCryWaveform(Cry cry)
+        {
+            if (cry == null || cry.Data == null || cry.Data.Length == 0)
+            {
+                _currentCryData = null;
+                hsbCryWave.Enabled = false;
+                pnlCryWave.Invalidate();
+                return;
+            }
+
+            _currentCryData = cry.Data;
+            int visibleWidth = pnlCryWave.ClientSize.Width;
+
+            if (_currentCryData.Length > visibleWidth)
+            {
+                hsbCryWave.Enabled = true;
+                hsbCryWave.Minimum = 0;
+                hsbCryWave.Maximum = _currentCryData.Length - 1;
+                hsbCryWave.LargeChange = visibleWidth;
+                hsbCryWave.SmallChange = Math.Max(1, visibleWidth / 10);
+                hsbCryWave.Value = 0;
+            }
+            else
+            {
+                hsbCryWave.Enabled = false;
+                hsbCryWave.Value = 0;
+            }
+
+            pnlCryWave.Invalidate();
+        }
+
+        private void hsbCryWave_ValueChanged(object sender, EventArgs e)
+        {
+            pnlCryWave.Invalidate();
+        }
+
+        private void pnlCryWave_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            g.Clear(Color.White);
+
+            if (_currentCryData == null || _currentCryData.Length == 0) return;
+
+            int width = pnlCryWave.ClientSize.Width;
+            int height = pnlCryWave.ClientSize.Height;
+            int centerY = height / 2;
+            float yScale = (height / 2.0f) / GbaConstants.WaveformScale;
+            g.DrawLine(Pens.LightGray, 0, centerY, width, centerY);
+
+            using (Pen pen = new Pen(Color.Green, 1))
+            {
+                int startIndex = hsbCryWave.Enabled ? hsbCryWave.Value : 0;
+                int endIndex = Math.Min(startIndex + width, _currentCryData.Length);
+                int pointCount = endIndex - startIndex;
+
+                if (pointCount > 1)
+                {
+                    Point[] points = new Point[pointCount];
+                    for (int i = 0; i < pointCount; i++)
+                    {
+                        int dataIndex = startIndex + i;
+                        int x = i;
+                        int y = (int)(centerY + (_currentCryData[dataIndex] * yScale));
+                        points[i] = new Point(x, y);
+                    }
+                    g.DrawLines(pen, points);
+                }
+            }
+        }
+
+        private void btnCryDataPlay_Click(object sender, EventArgs e)
+        {
+            if (ControlHelper.TryParseAddress(txtCryDataAddr.Text, out uint address))
+            {
+                _cryManager.PlayCryFromAddress(address, _romData);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
