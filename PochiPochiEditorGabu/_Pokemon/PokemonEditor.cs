@@ -782,6 +782,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
             UpdateCoordBattleDisplay();
             UpdateCoordItemUseDisplay();
+            UpdateSizeCompDisplay();
         }
 
         private void btnSpriteImport_Click(object sender, EventArgs e)
