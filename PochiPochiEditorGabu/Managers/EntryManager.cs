@@ -388,15 +388,10 @@ namespace PochiPochiEditorGabu.Managers
         public ushort _ExtendIdx;
     }
 
-
-
-
-
-
-
-
-
-
+    public class PokemonBattleMusicEntry
+    {
+        public ushort BattleMusic;
+    }
 
     public class PokedexOrderEntry
     {

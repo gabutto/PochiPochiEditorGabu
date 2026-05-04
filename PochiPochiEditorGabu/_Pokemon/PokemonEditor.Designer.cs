@@ -255,6 +255,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.nudExtendCryIdx = new System.Windows.Forms.NumericUpDown();
             this.lblExtendCryIdx = new System.Windows.Forms.Label();
             this.grpCryData = new System.Windows.Forms.GroupBox();
+            this.pnlCryWave = new System.Windows.Forms.Panel();
             this.hsbCryWave = new System.Windows.Forms.HScrollBar();
             this.btnCryDataPlay = new System.Windows.Forms.Button();
             this.lblCryDataSampleCountUnit = new System.Windows.Forms.Label();
@@ -265,8 +266,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblCryDataSampleCount = new System.Windows.Forms.Label();
             this.lblCryDataSampleRate = new System.Windows.Forms.Label();
             this.lblCryDataAddr = new System.Windows.Forms.Label();
-            this.tabPageMusic = new System.Windows.Forms.TabPage();
-            this.pnlCryWave = new System.Windows.Forms.Panel();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -362,7 +361,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpExtendCryTable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudExtendCryIdx)).BeginInit();
             this.grpCryData.SuspendLayout();
-            this.tabPageMusic.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSave
@@ -494,18 +492,18 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpBattleMusic.Controls.Add(this.lblBattleMusicHex);
             this.grpBattleMusic.Controls.Add(this.nudBattleMusic);
             this.grpBattleMusic.Controls.Add(this.lblBattleMusic);
-            this.grpBattleMusic.Location = new System.Drawing.Point(31, 46);
+            this.grpBattleMusic.Location = new System.Drawing.Point(20, 296);
             this.grpBattleMusic.Margin = new System.Windows.Forms.Padding(0);
             this.grpBattleMusic.Name = "grpBattleMusic";
             this.grpBattleMusic.Padding = new System.Windows.Forms.Padding(0);
-            this.grpBattleMusic.Size = new System.Drawing.Size(178, 226);
+            this.grpBattleMusic.Size = new System.Drawing.Size(160, 88);
             this.grpBattleMusic.TabIndex = 3;
             this.grpBattleMusic.TabStop = false;
-            this.grpBattleMusic.Text = "野生戦BGMを変更";
+            this.grpBattleMusic.Text = "戦闘BGMを変更";
             // 
             // txtBattleMusicHex
             // 
-            this.txtBattleMusicHex.Location = new System.Drawing.Point(100, 48);
+            this.txtBattleMusicHex.Location = new System.Drawing.Point(84, 48);
             this.txtBattleMusicHex.Margin = new System.Windows.Forms.Padding(0);
             this.txtBattleMusicHex.Name = "txtBattleMusicHex";
             this.txtBattleMusicHex.ReadOnly = true;
@@ -524,7 +522,7 @@ namespace PochiPochiEditorGabu._Pokemon
             // 
             // nudBattleMusic
             // 
-            this.nudBattleMusic.Location = new System.Drawing.Point(100, 24);
+            this.nudBattleMusic.Location = new System.Drawing.Point(84, 24);
             this.nudBattleMusic.Margin = new System.Windows.Forms.Padding(0);
             this.nudBattleMusic.Maximum = new decimal(new int[] {
             65535,
@@ -554,7 +552,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.tabControlMain.Controls.Add(this.tabPageLearnsets);
             this.tabControlMain.Controls.Add(this.tabPagePokedex);
             this.tabControlMain.Controls.Add(this.tabPageCry);
-            this.tabControlMain.Controls.Add(this.tabPageMusic);
             this.tabControlMain.Location = new System.Drawing.Point(196, 34);
             this.tabControlMain.Margin = new System.Windows.Forms.Padding(0);
             this.tabControlMain.Name = "tabControlMain";
@@ -3004,6 +3001,14 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpCryData.TabStop = false;
             this.grpCryData.Text = "鳴き声データ";
             // 
+            // pnlCryWave
+            // 
+            this.pnlCryWave.Location = new System.Drawing.Point(228, 28);
+            this.pnlCryWave.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlCryWave.Name = "pnlCryWave";
+            this.pnlCryWave.Size = new System.Drawing.Size(324, 146);
+            this.pnlCryWave.TabIndex = 7;
+            // 
             // hsbCryWave
             // 
             this.hsbCryWave.Location = new System.Drawing.Point(228, 180);
@@ -3099,30 +3104,12 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblCryDataAddr.TabIndex = 0;
             this.lblCryDataAddr.Text = "データアドレス :";
             // 
-            // tabPageMusic
-            // 
-            this.tabPageMusic.Controls.Add(this.grpBattleMusic);
-            this.tabPageMusic.Location = new System.Drawing.Point(4, 22);
-            this.tabPageMusic.Margin = new System.Windows.Forms.Padding(0);
-            this.tabPageMusic.Name = "tabPageMusic";
-            this.tabPageMusic.Size = new System.Drawing.Size(706, 480);
-            this.tabPageMusic.TabIndex = 7;
-            this.tabPageMusic.Text = "BGM";
-            this.tabPageMusic.UseVisualStyleBackColor = true;
-            // 
-            // pnlCryWave
-            // 
-            this.pnlCryWave.Location = new System.Drawing.Point(228, 28);
-            this.pnlCryWave.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlCryWave.Name = "pnlCryWave";
-            this.pnlCryWave.Size = new System.Drawing.Size(324, 146);
-            this.pnlCryWave.TabIndex = 7;
-            // 
             // PokemonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(930, 559);
+            this.Controls.Add(this.grpBattleMusic);
             this.Controls.Add(this.tabControlMain);
             this.Controls.Add(this.grpPokemonRename);
             this.Controls.Add(this.grpDataIndex);
@@ -3253,7 +3240,6 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.nudExtendCryIdx)).EndInit();
             this.grpCryData.ResumeLayout(false);
             this.grpCryData.PerformLayout();
-            this.tabPageMusic.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -3317,7 +3303,6 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.PictureBox picFootprint;
         private System.Windows.Forms.TextBox txtBattleMusicHex;
         private System.Windows.Forms.Label lblBattleMusicHex;
-        private System.Windows.Forms.TabPage tabPageMusic;
         private System.Windows.Forms.RadioButton rbSpriteBackImgAddr;
         private System.Windows.Forms.Panel pnlFootprintCanvas;
         private System.Windows.Forms.GroupBox grpCoordBattle;

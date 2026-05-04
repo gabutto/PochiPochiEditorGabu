@@ -49,6 +49,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<PokemonCryData1Entry> _cryData1Manager;
         private EntryManager<PokemonCryData2Entry> _cryData2Manager;
         private EntryManager<PokemonCryExtendEntry> _cryDataExtendManager;
+        private EntryManager<PokemonBattleMusicEntry> _battleMusicManager;
 
         private EntryManager<AbilityNameEntry> _abilityNameManager;
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
@@ -218,8 +219,12 @@ namespace PochiPochiEditorGabu._Pokemon
             _cryDataExtendManager = EntryManager<PokemonCryExtendEntry>.Create(
                 _romData, _tblReader, _config, "ExtendCryTableAddress", "ExtendCryCount");
 
-
-
+            // battel music
+            if (_config.GetBool("EnablePokemonBattleMusic"))
+            {
+                _battleMusicManager = EntryManager<PokemonBattleMusicEntry>.Create(
+                _romData, _tblReader, _config, "PokemonBattleMusicTableAddress", "PokemonBattleMusicCount");
+            }
 
             // ability name
             _abilityNameManager = EntryManager<AbilityNameEntry>.Create(
@@ -534,7 +539,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 txtFootprintImgAddr,
                 txtDexCategory, nudDexHeight, nudDexWeight, txtDexDescAddr,
                 nudDexSizeCompParam1, nudDexSizeCompParam2, nudDexSizeCompParam3, nudDexSizeCompParam4,
-                txtCryDataAddr, nudExtendCryIdx);
+                txtCryDataAddr, nudExtendCryIdx,
+                nudBattleMusic);
             _uiStateManager.AddControlsRecursive(
                 grpCoordBattleAlly, grpCoordBattleEnemy, grpCoordItemUse,
                 tabPageStats);
@@ -564,6 +570,7 @@ namespace PochiPochiEditorGabu._Pokemon
             LoadLearnsetsToUI(idx);
             LoadPokedexToUI(idx);
             LoadCryToUI(idx);
+            LoadBattleMusicToUI(idx);
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -1899,7 +1906,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     byte level = data[pos + 2];
                     pos += GbaConstants.LearnsetEntryLength3Byte;
 
-                    if (moveId == GbaConstants.LearnsetTerminator2Byte &&
+                    if (moveId == GbaConstants.LearnsetTerminator3ByteMoveId &&
                         level == GbaConstants.LearnsetTerminator3ByteLevel) break;
 
                     moves.Add(new LearnsetList { Level = level, MoveIdx = moveId });
@@ -2649,20 +2656,22 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        private void LoadBattleMusicToUI(int idx)
+        {
+            if (_config.GetBool("IsAppliedCFRU") &&
+                _config.GetBool("EnablePokemonBattleMusic") &&
+                idx < _config.GetInt("PokemonBattleMusicCount"))
+            {
+                ControlHelper.SetControlsEnabled(grpBattleMusic, true);
+                nudBattleMusic.Value = _battleMusicManager.Working[idx].BattleMusic;
+                txtBattleMusicHex.Text = _battleMusicManager.Working[idx].BattleMusic.ToString("X4");
+            }
+            else
+            {
+                ControlHelper.SetControlsEnabled(grpBattleMusic, false);
+                ControlHelper.ResetControls(grpBattleMusic);
+            }
+        }
 
         private void ResetControls()
         {
@@ -2696,6 +2705,7 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveCurrentLearnsets(idx);
             SaveCurrentPokedex();
             SaveCurrentCry(idx);
+            SaveCurrentBattleMusic(idx);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -2949,6 +2959,17 @@ namespace PochiPochiEditorGabu._Pokemon
             {
                 Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
                 _reservationManager.ClearReservation(txtCryDataAddr);
+            }
+        }
+
+        private void SaveCurrentBattleMusic(int idx)
+        {
+            if (_config.GetBool("IsAppliedCFRU") &&
+                _config.GetBool("EnablePokemonBattleMusic") &&
+                idx < _config.GetInt("PokemonBattleMusicCount"))
+            {
+                _battleMusicManager.Working[idx].BattleMusic = (ushort)nudBattleMusic.Value;
+                _battleMusicManager.Save(idx);
             }
         }
     }
