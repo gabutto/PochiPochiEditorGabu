@@ -14,7 +14,8 @@ namespace PochiPochiEditorGabu._Trainer
         protected IniFileReader _config;
         protected TblFileReader _tblReader;
         protected ReservationManager _reservationManager;
-        protected UIStateManager _uiStateManager;
+
+        private UIStateManager _uiStateManager = null;
 
         private EntryManager<TrainerClassNameEntry> _nameManager;
         private EntryManager<TrainerClassPrizeMultiplierEntry> _prizeMultiManager;
@@ -26,7 +27,11 @@ namespace PochiPochiEditorGabu._Trainer
         private bool _isUpdatingUI;
         private int _currentClassNameIdx = 0;
 
-        public TrainerClassEditor(byte[] romData, IniFileReader config, TblFileReader tblReader, ReservationManager reservationManager)
+        public TrainerClassEditor(
+            byte[] romData, 
+            IniFileReader config,
+            TblFileReader tblReader, 
+            ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
@@ -85,7 +90,7 @@ namespace PochiPochiEditorGabu._Trainer
         private void InitializeControls()
         {
             // cmbClassName
-            var classNames = _nameManager.Working
+            var classNames = _nameManager.Original
                              .Select(entry => entry._ClassName)
                              .ToArray();
             cmbClassName.Items.AddRange(classNames);
@@ -124,8 +129,8 @@ namespace PochiPochiEditorGabu._Trainer
                 ControlHelper.SetControlsEnabled(grpClassDataExtra, false);
             }
 
-            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
             btnSave.Enabled = false;
+            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
             _uiStateManager.AddControls(
                 txtClassName, nudPrizeMulti,
                 nudEncounterMusicIndex, nudBattleMusicIndex, nudPokeBallIndex, nudBaseIv);
@@ -197,7 +202,7 @@ namespace PochiPochiEditorGabu._Trainer
                     },
                     () =>
                     {
-                        DiscardData(_currentClassNameIdx);
+                        RestoreData(_currentClassNameIdx);
                         LoadDataToUI(newIndex);
                     },
                     () =>
@@ -246,25 +251,22 @@ namespace PochiPochiEditorGabu._Trainer
             string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
 
             _isUpdatingUI = true;
-
-            int idx = _currentClassNameIdx;
-            cmbClassName.Items[idx] = validName;
-            _nameManager.Working[idx]._ClassName = validName;
-
+            cmbClassName.Items[_currentClassNameIdx] = validName;
             _isUpdatingUI = false;
         }
 
-        private void DiscardData(int idx)
+        private void RestoreData(int idx)
         {
-            _nameManager.Discard(idx);
-            _nameManager.Original[idx]._ClassName = _nameManager.Original[idx]._ClassName;
             cmbClassName.Items[idx] = _nameManager.Original[idx]._ClassName;
         }
 
         private void SaveCurrentData(int idx)
         {
+            // name
+            _nameManager.Working[idx]._ClassName = cmbClassName.Items[idx].ToString();
             _nameManager.Save(idx);
 
+            // prize multi
             var prizeEntry = _prizeMultiManager.Working.FirstOrDefault(e => e._ClassNameIndex == idx);
             int prizeEntryIndex = -1;
 
