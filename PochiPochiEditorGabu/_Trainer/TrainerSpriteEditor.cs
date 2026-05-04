@@ -15,7 +15,8 @@ namespace PochiPochiEditorGabu._Trainer
         protected IniFileReader _config;
         protected TblFileReader _tblReader;
         protected ReservationManager _reservationManager;
-        protected UIStateManager _uiStateManager;
+
+        private UIStateManager _uiStateManager = null;
 
         private EntryManager<TrainerSpriteImageEntry> _imgManager;
         private EntryManager<TrainerSpritePaletteEntry> _palManager;
@@ -25,7 +26,11 @@ namespace PochiPochiEditorGabu._Trainer
         private bool _isUpdatingUI;
         private int _currentSpriteIdx = 0;
 
-        public TrainerSpriteEditor(byte[] romData, IniFileReader config, TblFileReader tblReader, ReservationManager reservationManager)
+        public TrainerSpriteEditor(
+            byte[] romData, 
+            IniFileReader config, 
+            TblFileReader tblReader, 
+            ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
@@ -84,11 +89,11 @@ namespace PochiPochiEditorGabu._Trainer
 
         private void InitializeUIStates()
         {
-            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
             btnSave.Enabled = false;
-            _uiStateManager.AddControls(txtSpriteImgAddr, txtSpritePalAddr, nudSpriteYOffset);
+            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
+            _uiStateManager.AddControls(
+                txtSpriteImgAddr, txtSpritePalAddr, nudSpriteYOffset);
         }
-
 
         private void LoadDataToUI(int idx)
         {
@@ -179,9 +184,9 @@ namespace PochiPochiEditorGabu._Trainer
                 byte[] imageData;
 
                 var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
-                if (paletteRes?.Data != null)
+                if (paletteRes?.CurrentData != null)
                 {
-                    palette = ImageManager.DecompressPalette(paletteRes.Data, 0, true);
+                    palette = ImageManager.DecompressPalette(paletteRes.CurrentData, 0, true);
                 }
                 else
                 {
@@ -189,16 +194,21 @@ namespace PochiPochiEditorGabu._Trainer
                 }
 
                 var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
-                if (imageRes?.Data != null)
+                if (imageRes?.CurrentData != null)
                 {
-                    imageData = ImageManager.DecompressLZ77(imageRes.Data, 0);
+                    imageData = ImageManager.DecompressLZ77(imageRes.CurrentData, 0);
                 }
                 else
                 {
                     imageData = ImageManager.DecompressLZ77(_romData, imageOffset);
                 }
 
-                Bitmap sprite = ImageManager.CreateSprite(imageData, palette, GbaConstants.SpriteSize, GbaConstants.SpriteSize, true);
+                Bitmap sprite = ImageManager.CreateSprite(
+                    imageData,
+                    palette, 
+                    GbaConstants.SpriteSize, 
+                    GbaConstants.SpriteSize, 
+                    true);
 
                 picSprite.Image?.Dispose();
                 picSprite.Image = sprite;
@@ -225,7 +235,12 @@ namespace PochiPochiEditorGabu._Trainer
                         byte[] imageData = null;
                         Color[] palette = null;
 
-                        if (!ImageManager.ExtractImageAndPalette(bmp, GbaConstants.SpriteSize, GbaConstants.SpriteSize, out imageData, out palette))
+                        if (!ImageManager.ExtractImageAndPalette(
+                            bmp, 
+                            GbaConstants.SpriteSize, 
+                            GbaConstants.SpriteSize, 
+                            out imageData, 
+                            out palette))
                         {
                             return;
                         }
@@ -233,12 +248,18 @@ namespace PochiPochiEditorGabu._Trainer
                         if (rbSpriteImgAddr.Checked)
                         {
                             var compressedData = ImageManager.CompressLZ77(imageData);
-                            _reservationManager.SetReservation(txtSpriteImgAddr, targetAddress.Value, compressedData);
+                            _reservationManager.SetReservation(
+                                txtSpriteImgAddr, 
+                                targetAddress.Value, 
+                                compressedData);
                         }
                         else if (rbSpritePalAddr.Checked)
                         {
                             var compressedPalette = ImageManager.CompressPalette(palette, true);
-                            _reservationManager.SetReservation(txtSpritePalAddr, targetAddress.Value, compressedPalette);
+                            _reservationManager.SetReservation(
+                                txtSpritePalAddr, 
+                                targetAddress.Value, 
+                                compressedPalette);
                         }
 
                         DisplayTrainerSprite();
@@ -266,16 +287,26 @@ namespace PochiPochiEditorGabu._Trainer
         private void SaveCurrentData(int idx)
         {
             var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
-            if (imageRes != null && imageRes.Data != null)
+            if (imageRes != null && imageRes.CurrentData != null)
             {
-                Array.Copy(imageRes.Data, 0, _romData, (int)imageRes.Address, imageRes.Data.Length);
+                Array.Copy(
+                    imageRes.CurrentData, 
+                    0,
+                    _romData, 
+                    (int)imageRes.Address, 
+                    imageRes.CurrentData.Length);
                 _reservationManager.ClearReservation(txtSpriteImgAddr);
             }
 
             var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
-            if (paletteRes != null && paletteRes.Data != null)
+            if (paletteRes != null && paletteRes.CurrentData != null)
             {
-                Array.Copy(paletteRes.Data, 0, _romData, (int)paletteRes.Address, paletteRes.Data.Length);
+                Array.Copy(
+                    paletteRes.CurrentData,
+                    0, 
+                    _romData, 
+                    (int)paletteRes.Address, 
+                    paletteRes.CurrentData.Length);
                 _reservationManager.ClearReservation(txtSpritePalAddr);
             }
 

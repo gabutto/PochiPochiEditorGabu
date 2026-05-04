@@ -17,7 +17,8 @@ namespace PochiPochiEditorGabu._Item
         protected IniFileReader _config;
         protected TblFileReader _tblReader;
         protected ReservationManager _reservationManager;
-        protected UIStateManager _uiStateManager;
+
+        private UIStateManager _uiStateManager = null;
 
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
         private EntryManager<ItemDataEntry> _itemDataManager;
@@ -89,7 +90,7 @@ namespace PochiPochiEditorGabu._Item
         private void InitializeControls()
         {
             //cmbItemName
-            var itemNames = _itemDataManager.Working
+            var itemNames = _itemDataManager.Original
                  .Select(entry => entry._ItemName)
                  .ToArray();
             cmbItemName.Items.AddRange(itemNames);
@@ -125,17 +126,9 @@ namespace PochiPochiEditorGabu._Item
         {
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
             btnSave.Enabled = false;
-            _uiStateManager.AddControls(
-                txtItemRename,
-                txtSpriteImgAddr, txtSpritePalAddr,
-                txtDescAddr,
-                txtItemEffectAddr,
-                nudIdx, nudPrice, cmbHoldEffectIdx, nudEffectValue, cmbCanHold, nudUnknownValue, cmbPocketIdx,
-                nudFieldUseType, cmbFieldUseType, txtFieldUseAddr,
-                cmbBattleUseType, txtBattleUseAddr,
-                nudSpecialIdx);
-            _uiStateManager.AddBinaries(
-                (txtDescString, null));
+            _uiStateManager.AddControls(txtDescAddr, txtItemEffectAddr);
+            _uiStateManager.AddControlsRecursive(grpSprite, grpData);
+            _uiStateManager.AddBinaries((txtDescString, null));
         }
 
         private void LoadAllDataToUI(int idx)
@@ -194,11 +187,7 @@ namespace PochiPochiEditorGabu._Item
             string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
 
             _isUpdatingUI = true;
-
-            int idx = _currentItemIdx;
-            cmbItemName.Items[idx] = validName;
-            _itemDataManager.Working[idx]._ItemName = validName;
-
+            cmbItemName.Items[_currentItemIdx] = validName;
             _isUpdatingUI = false;
         }
 
@@ -222,7 +211,7 @@ namespace PochiPochiEditorGabu._Item
                     },
                     () =>
                     {
-                        DiscardData(_currentItemIdx);
+                        RestoreData(_currentItemIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
@@ -276,10 +265,7 @@ namespace PochiPochiEditorGabu._Item
         private Bitmap GetCurrentItemBitmap()
         {
             if (!ControlHelper.TryParseAddress(txtSpriteImgAddr.Text, out uint imageOffset) ||
-                !ControlHelper.TryParseAddress(txtSpritePalAddr.Text, out uint paletteOffset))
-            {
-                return null;
-            }
+                !ControlHelper.TryParseAddress(txtSpritePalAddr.Text, out uint paletteOffset)) return null;
                 
             try
             {
@@ -288,19 +274,32 @@ namespace PochiPochiEditorGabu._Item
 
                 // palette
                 var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
-                if (paletteRes != null)
-                    palette = ImageManager.DecompressPalette(paletteRes.Data, 0, true);
+                if (paletteRes?.CurrentData != null)
+                {
+                    palette = ImageManager.DecompressPalette(paletteRes.CurrentData, 0, true);
+                }
                 else
+                {
                     palette = ImageManager.DecompressPalette(_romData, paletteOffset, true);
+                }
 
                 // image
                 var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
-                if (imageRes != null)
-                    imageData = ImageManager.DecompressLZ77(imageRes.Data, 0);
+                if (imageRes?.CurrentData != null)
+                {
+                    imageData = ImageManager.DecompressLZ77(imageRes.CurrentData, 0);
+                }
                 else
+                {
                     imageData = ImageManager.DecompressLZ77(_romData, imageOffset);
+                }
 
-                return ImageManager.CreateSprite(imageData, palette, GbaConstants.ItemSpriteSize, GbaConstants.ItemSpriteSize, true);
+                return ImageManager.CreateSprite(
+                    imageData, 
+                    palette, 
+                    GbaConstants.ItemSpriteSize, 
+                    GbaConstants.ItemSpriteSize, 
+                    true);
             }
             catch
             {
@@ -335,12 +334,18 @@ namespace PochiPochiEditorGabu._Item
                         if (rbSpriteImgAddr.Checked)
                         {
                             var compressedData = ImageManager.CompressLZ77(imageData);
-                            _reservationManager.SetReservation(txtSpriteImgAddr, (uint)targetAddress, compressedData);
+                            _reservationManager.SetReservation(
+                                txtSpriteImgAddr, 
+                                (uint)targetAddress, 
+                                compressedData);
                         }
                         else if (rbSpritePalAddr.Checked)
                         {
                             var compressedPalette = ImageManager.CompressPalette(palette, true);
-                            _reservationManager.SetReservation(txtSpritePalAddr, (uint)targetAddress, compressedPalette);
+                            _reservationManager.SetReservation(
+                                txtSpritePalAddr, 
+                                (uint)targetAddress, 
+                                compressedPalette);
                         }
 
                         DisplaySprite();
@@ -524,11 +529,9 @@ namespace PochiPochiEditorGabu._Item
             txtSpriteImportAddr.Text = String.Empty;
         }
 
-        private void DiscardData(int idx)
+        private void RestoreData(int idx)
         {
-            _itemDataManager.Discard(idx);
-            string originalName = _itemDataManager.Original[idx]._ItemName;
-            cmbItemName.Items[idx] = originalName;
+            cmbItemName.Items[idx] = _itemDataManager.Original[idx]._ItemName;
         }
 
         private void SaveCurrentAllData(int idx)
@@ -581,9 +584,9 @@ namespace PochiPochiEditorGabu._Item
             foreach (var txt in textboxes)
             {
                 var res = _reservationManager.GetReservation(txt);
-                if (res != null && res.Data != null)
+                if (res != null && res.CurrentData != null)
                 {
-                    Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                    Array.Copy(res.CurrentData, 0, _romData, (int)res.Address, res.CurrentData.Length);
                     _reservationManager.ClearReservation(txt);
                 }
             }

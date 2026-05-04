@@ -11,26 +11,31 @@ namespace PochiPochiEditorGabu.Managers
         public class ReservedAreaInfo
         {
             public uint Address { get; set; }
-            public byte[] Data { get; set; }
+            public byte[] CurrentData { get; set; }
+            public byte[] InitialData { get; set; }
         }
 
+        public event Action<bool> ReservationStateChanged;
         private readonly Dictionary<TextBox, ReservedAreaInfo> _reservations = new Dictionary<TextBox, ReservedAreaInfo>();
 
         public void SetReservation(TextBox textBox, uint address, byte[] data)
         {
             ClearReservation(textBox, redraw: false);
 
-            _reservations[textBox] = new ReservedAreaInfo
+            var info = new ReservedAreaInfo
             {
                 Address = address,
-                Data = data.ToArray()
+                CurrentData = data?.ToArray(),
+                InitialData = data?.ToArray()
             };
+            _reservations[textBox] = info;
 
             textBox.Text = address.ToString("X8");
             textBox.BackColor = Color.LightPink;
-
             textBox.TextChanged -= TextBox_TextChanged;
             textBox.TextChanged += TextBox_TextChanged;
+
+            EvaluateState();
         }
 
         public void ClearReservation(TextBox textBox, bool redraw = true)
@@ -39,11 +44,14 @@ namespace PochiPochiEditorGabu.Managers
 
             if (_reservations.Remove(textBox))
             {
-                if (redraw)
+                // reset color
+                if (redraw) 
                 {
                     textBox.BackColor = SystemColors.Window;
                 }
+
                 textBox.TextChanged -= TextBox_TextChanged;
+                EvaluateState();
             }
         }
 
@@ -53,6 +61,41 @@ namespace PochiPochiEditorGabu.Managers
             {
                 ClearReservation(textBox, redraw: true);
             }
+        }
+
+        public void UpdateReservationData(TextBox textBox, byte[] newData)
+        {
+            if (_reservations.TryGetValue(textBox, out var info))
+            {
+                info.CurrentData = newData?.ToArray();
+                EvaluateState();
+            }
+        }
+
+        public bool HasReservationChanges()
+        {
+            return _reservations.Values.Any(res =>
+            {
+                if (res.CurrentData == null && res.InitialData == null) return false;
+                if (res.CurrentData == null || res.InitialData == null) return true;
+                if (res.CurrentData.Length != res.InitialData.Length) return true;
+                return !res.CurrentData.SequenceEqual(res.InitialData);
+            });
+        }
+
+        public void AcceptAllChanges()
+        {
+            foreach (var res in _reservations.Values)
+            {
+                res.InitialData = res.CurrentData?.ToArray();
+            }
+
+            EvaluateState();
+        }
+
+        private void EvaluateState()
+        {
+            ReservationStateChanged?.Invoke(HasReservationChanges());
         }
 
         public ReservedAreaInfo GetReservation(TextBox textBox) =>

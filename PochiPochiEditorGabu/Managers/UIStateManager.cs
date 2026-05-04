@@ -29,6 +29,49 @@ namespace PochiPochiEditorGabu.Managers
             }
         }
 
+        public void AddControlsRecursive(params Control[] containers)
+        {
+            var targetControls = new List<Control>();
+
+            foreach (var container in containers)
+            {
+                if (IsAllowedContainer(container))
+                {
+                    FindTargetControls(container, targetControls);
+                }
+            }
+
+            if (targetControls.Count > 0)
+            {
+                AddControls(targetControls.ToArray());
+            }
+        }
+
+        private void FindTargetControls(Control parent, List<Control> targetControls)
+        {
+            if (parent == null) return;
+
+            foreach (Control child in parent.Controls)
+            {
+                if (child is NumericUpDown || child is TextBox || child is ComboBox || child is CheckBox)
+                {
+                    targetControls.Add(child);
+                }
+                else if (IsAllowedContainer(child))
+                {
+                    FindTargetControls(child, targetControls);
+                }
+            }
+        }
+
+        private bool IsAllowedContainer(Control control)
+        {
+            return control is Panel ||
+                   control is GroupBox ||
+                   control is TabControl ||
+                   control is TabPage;
+        }
+
         public void AddBinaries(params (object Key, byte[] Data)[] items)
         {
             foreach (var (key, data) in items)

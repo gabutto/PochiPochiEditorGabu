@@ -131,9 +131,7 @@ namespace PochiPochiEditorGabu._Trainer
 
             btnSave.Enabled = false;
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
-            _uiStateManager.AddControls(
-                txtClassName, nudPrizeMulti,
-                nudEncounterMusicIndex, nudBattleMusicIndex, nudPokeBallIndex, nudBaseIv);
+            _uiStateManager.AddControlsRecursive(grpClassData, grpClassDataExtra);
         }
 
         private void LoadDataToUI(int idx)

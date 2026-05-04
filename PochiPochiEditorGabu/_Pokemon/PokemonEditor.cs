@@ -709,7 +709,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 {
                     var res = _reservationManager.GetReservation(txtSpriteNormalPalAddr);
                     paletteNormal = res != null
-                        ? ImageManager.DecompressPalette(res.Data, 0, true)
+                        ? ImageManager.DecompressPalette(res.CurrentData, 0, true)
                         : ImageManager.DecompressPalette(_romData, paletteNormalOffset, true);
                 }
             }
@@ -723,7 +723,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 {
                     var res = _reservationManager.GetReservation(txtSpriteShinyPalAddr);
                     paletteShiny = res != null
-                        ? ImageManager.DecompressPalette(res.Data, 0, true)
+                        ? ImageManager.DecompressPalette(res.CurrentData, 0, true)
                         : ImageManager.DecompressPalette(_romData, paletteShinyOffset, true);
                 }
             }
@@ -740,7 +740,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     var res = _reservationManager.GetReservation(txtSpriteFrontImgAddr);
                     if (res != null)
                     {
-                        imageFrontData = ImageManager.DecompressLZ77(res.Data, 0);
+                        imageFrontData = ImageManager.DecompressLZ77(res.CurrentData, 0);
                     }
                     else
                     {
@@ -780,7 +780,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     var res = _reservationManager.GetReservation(txtSpriteBackImgAddr);
                     if (res != null)
                     {
-                        imageBackData = ImageManager.DecompressLZ77(res.Data, 0);
+                        imageBackData = ImageManager.DecompressLZ77(res.CurrentData, 0);
                     }
                     else
                     {
@@ -998,7 +998,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
             if (res != null)
             {
-                imageData = res.Data;
+                imageData = res.CurrentData;
             }
             else
             {
@@ -1107,7 +1107,7 @@ namespace PochiPochiEditorGabu._Pokemon
             var res = _reservationManager.GetReservation(txtFootprintImgAddr);
             if (res != null)
             {
-                _currentFootprintData = (byte[])res.Data.Clone();
+                _currentFootprintData = (byte[])res.CurrentData.Clone();
             }
             else
             {
@@ -1844,8 +1844,8 @@ namespace PochiPochiEditorGabu._Pokemon
 
                 if (res != null)
                 {
-                    _currentLearnsetList = DecodeLearnsetData(res.Data, 0);
-                    currentBinary = res.Data;
+                    _currentLearnsetList = DecodeLearnsetData(res.CurrentData, 0);
+                    currentBinary = res.CurrentData;
                 }
                 else
                 {
@@ -2471,10 +2471,10 @@ namespace PochiPochiEditorGabu._Pokemon
                 Cry cry = null;
                 var res = _reservationManager.GetReservation(txtCryDataAddr);
 
-                if (res != null && res.Data != null)
+                if (res != null && res.CurrentData != null)
                 {
                     cry = new Cry();
-                    byte[] resData = res.Data;
+                    byte[] resData = res.CurrentData;
 
                     cry.Compressed = BitConverter.ToInt16(resData, 0) == CryManager.CryCompressedFlag;
                     cry.Looped = BitConverter.ToInt16(resData, 2) == CryManager.CryLoopedFlag;
@@ -2755,9 +2755,9 @@ namespace PochiPochiEditorGabu._Pokemon
             foreach (var txt in textboxes)
             {
                 var res = _reservationManager.GetReservation(txt);
-                if (res != null && res.Data != null)
+                if (res != null && res.CurrentData != null)
                 {
-                    Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                    Array.Copy(res.CurrentData, 0, _romData, (int)res.Address, res.CurrentData.Length);
                     _reservationManager.ClearReservation(txt);
                 }
             }
@@ -2775,9 +2775,9 @@ namespace PochiPochiEditorGabu._Pokemon
         private void SaveCurrentIcon(int idx)
         {
             var res = _reservationManager.GetReservation(txtIconImgAddr);
-            if (res != null && res.Data != null)
+            if (res != null && res.CurrentData != null)
             {
-                Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                Array.Copy(res.CurrentData, 0, _romData, (int)res.Address, res.CurrentData.Length);
                 _reservationManager.ClearReservation(txtIconImgAddr);
             }
 
@@ -2793,9 +2793,9 @@ namespace PochiPochiEditorGabu._Pokemon
             if (!ControlHelper.TryParseAddress(txtFootprintImgAddr.Text, out uint imageAddress)) return;
 
             var res = _reservationManager.GetReservation(txtFootprintImgAddr);
-            if (res != null && res.Data != null)
+            if (res != null && res.CurrentData != null)
             {
-                Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                Array.Copy(res.CurrentData, 0, _romData, (int)res.Address, res.CurrentData.Length);
                 _reservationManager.ClearReservation(txtFootprintImgAddr);
             }
 
@@ -2865,9 +2865,9 @@ namespace PochiPochiEditorGabu._Pokemon
         private void SaveCurrentLearnsets(int idx)
         {
             var res = _reservationManager.GetReservation(txtLearnsetAddr);
-            if (res != null && res.Data != null)
+            if (res != null && res.CurrentData != null)
             {
-                Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                Array.Copy(res.CurrentData, 0, _romData, (int)res.Address, res.CurrentData.Length);
                 _reservationManager.ClearReservation(txtLearnsetAddr);
             }
             else if (_uiStateManager.HasBinaryChanges(lstLearnset) && _currentLearnsetList != null)
@@ -2944,9 +2944,9 @@ namespace PochiPochiEditorGabu._Pokemon
 
             // reserve
             var res = _reservationManager.GetReservation(txtCryDataAddr);
-            if (res != null && res.Data != null)
+            if (res != null && res.CurrentData != null)
             {
-                Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                Array.Copy(res.CurrentData, 0, _romData, (int)res.Address, res.CurrentData.Length);
                 _reservationManager.ClearReservation(txtCryDataAddr);
             }
         }
