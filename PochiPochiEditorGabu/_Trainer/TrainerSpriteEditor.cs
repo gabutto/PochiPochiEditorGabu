@@ -17,8 +17,8 @@ namespace PochiPochiEditorGabu._Trainer
         protected ReservationManager _reservationManager;
         protected UIStateManager _uiStateManager;
 
-        private EntryManager<TrainerSpriteImageEntry> _ImgManager;
-        private EntryManager<TrainerSpritePaletteEntry> _PalManager;
+        private EntryManager<TrainerSpriteImageEntry> _imgManager;
+        private EntryManager<TrainerSpritePaletteEntry> _palManager;
         private EntryManager<TrainerSpriteYOffsetEntry> _yOffsetManager;
         private EntryManager<TrainerSpriteAnimationPointerEntry> _animManager;
 
@@ -43,9 +43,9 @@ namespace PochiPochiEditorGabu._Trainer
 
         private void InitializeManagers()
         {
-            _ImgManager = EntryManager<TrainerSpriteImageEntry>.Create(
+            _imgManager = EntryManager<TrainerSpriteImageEntry>.Create(
                 _romData, _tblReader, _config, "TrainerSpriteImageTableAddress", "TrainerSpriteCount");
-            _PalManager = EntryManager<TrainerSpritePaletteEntry>.Create(
+            _palManager = EntryManager<TrainerSpritePaletteEntry>.Create(
                 _romData, _tblReader, _config, "TrainerSpritePaletteTableAddress", "TrainerSpriteCount");
             _yOffsetManager = EntryManager<TrainerSpriteYOffsetEntry>.Create(
                 _romData, _tblReader, _config, "TrainerSpriteYOffsetTableAddress", "TrainerSpriteCount");
@@ -97,8 +97,8 @@ namespace PochiPochiEditorGabu._Trainer
 
             _currentSpriteIdx = idx;
 
-            DataBindingHelper.BindObjectToControls(this, _ImgManager.Working[idx]);
-            DataBindingHelper.BindObjectToControls(this, _PalManager.Working[idx]);
+            DataBindingHelper.BindObjectToControls(this, _imgManager.Working[idx]);
+            DataBindingHelper.BindObjectToControls(this, _palManager.Working[idx]);
             DataBindingHelper.BindObjectToControls(this, _yOffsetManager.Working[idx]);
             DataBindingHelper.BindObjectToControls(this, _animManager.Working[idx]);
 
@@ -279,13 +279,13 @@ namespace PochiPochiEditorGabu._Trainer
                 _reservationManager.ClearReservation(txtSpritePalAddr);
             }
 
-            DataBindingHelper.BindControlsToObject(this, _ImgManager.Working[idx]);
-            DataBindingHelper.BindControlsToObject(this, _PalManager.Working[idx]);
+            DataBindingHelper.BindControlsToObject(this, _imgManager.Working[idx]);
+            DataBindingHelper.BindControlsToObject(this, _palManager.Working[idx]);
             DataBindingHelper.BindControlsToObject(this, _yOffsetManager.Working[idx]);
             DataBindingHelper.BindControlsToObject(this, _animManager.Working[idx]);
 
-            _ImgManager.Save(idx);
-            _PalManager.Save(idx);
+            _imgManager.Save(idx);
+            _palManager.Save(idx);
             _yOffsetManager.Save(idx);
             _animManager.Save(idx);
         }

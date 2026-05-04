@@ -109,7 +109,7 @@ namespace PochiPochiEditorGabu._Item
             ControlHelper.LoadComboBoxFromTextFile(cmbFieldUseType, "txt/ItemDataFieldUseType.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbBattleUseType, "txt/ItemDataBattleUseType.txt");
 
-            //search for [03]モンスターボール
+            // search for [03]モンスターボール
             var pocketItems = cmbPocketIdx.DataSource as List<KeyValuePair<int, string>>;
             if (pocketItems != null)
             {
@@ -144,7 +144,7 @@ namespace PochiPochiEditorGabu._Item
             _reservationManager.ClearAllReservations();
 
             _currentItemIdx = idx;
-            LoaNameToUI(idx);
+            LoadNameToUI(idx);
             LoadSpriteToUI(idx);
             LoadItemDataToUI(idx);
             LoadEffectAddrToUI(idx);
@@ -153,7 +153,7 @@ namespace PochiPochiEditorGabu._Item
             _uiStateManager.UpdateInitialValues();
         }
 
-        private void LoaNameToUI(int idx)
+        private void LoadNameToUI(int idx)
         {
             cmbItemName.SelectedIndex = idx;
             nudItemId.Value = idx;
@@ -167,8 +167,8 @@ namespace PochiPochiEditorGabu._Item
         {
             if (_isUpdatingUI) return;
 
-            int pokemonNameEntryLength = _config.GetInt("ItemNameMaxLength");
-            int maxAllowedBytes = pokemonNameEntryLength - 1;
+            int pokemonNameMaxLength = _config.GetInt("ItemNameMaxLength");
+            int maxAllowedBytes = pokemonNameMaxLength - 1;
             string currentText = txtItemRename.Text;
             byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
 
@@ -383,6 +383,7 @@ namespace PochiPochiEditorGabu._Item
             if (_isUpdatingUI) return;
             DisplayItemDesc();
         }
+
         private void txtDescString_TextChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI) return;
@@ -413,7 +414,7 @@ namespace PochiPochiEditorGabu._Item
 
                 byte[] byteArr = descriptionBytes.ToArray();
                 _currentDescData = byteArr;
-                txtDescString.Text = _tblReader.BytesToString(byteArr, 0, 255);
+                txtDescString.Text = _tblReader.BytesToString(byteArr, 0, 256);
                 _uiStateManager.UpdateBinary(txtDescString, byteArr);
             }
             else

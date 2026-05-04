@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -41,15 +43,19 @@ namespace PochiPochiEditorGabu._Pokemon
         private EntryManager<TmHmMoveEntry> _tmHmListManager;
         private EntryManager<TutorMoveEntry> _tutorListManager;
         private EntryManager<PokedexOrderEntry> _orderManager;
+        private EntryManager<PokedexEntry> _dexManager;
 
         private EntryManager<AbilityNameEntry> _abilityNameManager;
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
         private EntryManager<ItemDataEntry> _itemDataManager;
         private EntryManager<TypeNameEntry> _typeNameManager;
         private EntryManager<MoveNameEntry> _moveNameManager;
+        private EntryManager<TrainerSpriteImageEntry> _trainerImgManager;
+        private EntryManager<TrainerSpritePaletteEntry> _trainerPalManager;
 
         private bool _isUpdatingUI = false;
         private int _currentPokemonIdx = 0;
+        private int _currentdexOrder = -1;
 
         private ImageManager.PokemonIconAnimator _iconAnimator = null;
         private byte[] _currentFootprintData = null;
@@ -67,6 +73,8 @@ namespace PochiPochiEditorGabu._Pokemon
         private int _currentEvoSlotIndex = 0;
         private List<PokemonEvolutionEntry[]> _originalEvoSlots = new List<PokemonEvolutionEntry[]>();
         private List<PokemonEvolutionEntry[]> _workingEvoSlots = new List<PokemonEvolutionEntry[]>();
+        private byte[] _currentDexDescData = null;
+        private Bitmap _dexSizeCompBackgroundImage = null;
 
         private class EvolutionMethodInfo
         {
@@ -105,6 +113,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
             LoadCoordBattleImages();
             LoadCoordItemUseImages();
+            LoadPokedexSizeCompImages();
             LoadAllDataToUI(_currentPokemonIdx);
         }
 
@@ -189,6 +198,11 @@ namespace PochiPochiEditorGabu._Pokemon
             _orderManager = EntryManager<PokedexOrderEntry>.Create(
                 _romData, _tblReader, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
 
+            //pokedex
+            _dexManager = EntryManager<PokedexEntry>.Create(
+                _romData, _tblReader, _config, "PokedexTableAddress", "PokedexCount");
+
+
 
 
 
@@ -211,6 +225,14 @@ namespace PochiPochiEditorGabu._Pokemon
             // move name
             _moveNameManager = EntryManager<MoveNameEntry>.Create(
                 _romData, _tblReader, _config, "MoveNameTableAddress", "MoveNameCount");
+
+            // trainer img
+            _trainerImgManager = EntryManager<TrainerSpriteImageEntry>.Create(
+                _romData, _tblReader, _config, "TrainerSpriteImageTableAddress", "TrainerSpriteCount");
+
+            //trainer pal
+            _trainerPalManager = EntryManager<TrainerSpritePaletteEntry>.Create(
+                _romData, _tblReader, _config, "TrainerSpritePaletteTableAddress", "TrainerSpriteCount");
         }
 
         private void InitializeEventHandlers()
@@ -297,6 +319,22 @@ namespace PochiPochiEditorGabu._Pokemon
             btnCreateNewLearnset.Click += btnCreateNewLearnset_Click;
             clbTmHm.ItemCheck += (s, e) => HandleLearnFlagItemCheck(clbTmHm, "TmHmCount", "TmHmData");
             clbTutor.ItemCheck += (s, e) => HandleLearnFlagItemCheck(clbTutor, "TutorCount", "TutorData");
+
+            txtDexCategory.TextChanged += txtDexCategory_TextChanged;
+            nudDexHeight.ValueChanged += PokedexInfoNudUnit_ValueChanged;
+            nudDexWeight.ValueChanged += PokedexInfoNudUnit_ValueChanged;
+            txtDexDescAddr.TextChanged += txtDexDescAddr_TextChanged;
+            txtDexDescString.TextChanged += txtDexDescString_TextChanged;
+
+            foreach (var nud in new[] {
+                nudDexSizeCompParam1,
+                nudDexSizeCompParam2,
+                nudDexSizeCompParam3,
+                nudDexSizeCompParam4,
+                nudDexSizeCompTrainerSpriteIdx})
+            {
+                nud.ValueChanged += SizeCompParam_ValueChanged;
+            }
         }
 
         private void InitializeControls()
@@ -425,18 +463,23 @@ namespace PochiPochiEditorGabu._Pokemon
             }
             rbEvoInputAssistPokemon.Checked = true;
 
+            // nudPokedexInfoSizeComparisonTrainerId
+            nudDexSizeCompTrainerSpriteIdx.Maximum = _config.GetInt("TrainerSpriteCount") -1;
+
             ControlHelper.AttachAddressAutoFormat(
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
                 txtIconImgAddr,
                 txtFootprintImgAddr,
-                txtLearnsetAddr);
+                txtLearnsetAddr,
+                txtDexDescAddr);
             ControlHelper.AttachExternalBorder(
                 picSpriteFrontNormal, picSpriteBackNormal, picSpriteFrontShiny, picSpriteBackShiny,
                 picIconPal, picIcon, picIconAnimated,
                 picFootprint, pnlFootprintCanvas,
                 picCoordBattleDisplay, picCoordItemUse1, picCoordItemUse2,
                 picStatsHoldItem1, picStatsHoldItem2,
-                picEvoToIcon);
+                picEvoToIcon,
+                picDexSizeCompPreview);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
             ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
@@ -468,11 +511,14 @@ namespace PochiPochiEditorGabu._Pokemon
                 cmbStatsGender, cmbStatsEggStep, cmbStatsEggGroup1, cmbStatsEggGroup2,
                 cmbStatsAbility1, cmbStatsAbility2, cmbStatsAbilityHidden,
                 cmbStatsHoldItem1, cmbStatsHoldItem2,
-                cmbStatsType1, cmbStatsType2);
+                cmbStatsType1, cmbStatsType2,
+                txtDexCategory, nudDexHeight, nudDexWeight, txtDexDescAddr,
+                nudDexSizeCompParam1, nudDexSizeCompParam2, nudDexSizeCompParam3, nudDexSizeCompParam4);
             _uiStateManager.AddBinaries(
                 (pnlFootprintCanvas, null),
                 (lstEvoSlots, null),
-                (lstLearnset, null));
+                (lstLearnset, null),
+                (txtDexDescString, null));
         }
 
         private void LoadAllDataToUI(int idx)
@@ -2057,24 +2103,282 @@ namespace PochiPochiEditorGabu._Pokemon
             });
         }
 
-        private void LoadPokedexToUI(int idx)
+        private void LoadPokedexSizeCompImages()
         {
-
+            _dexSizeCompBackgroundImage = (Bitmap)Image.FromFile("img/PokedexSizeComparisonBackGround.png");
         }
 
+        private void LoadPokedexToUI(int idx)
+        {
+            _currentdexOrder = (idx == 0) 
+                ? 0 
+                : _orderManager.Working[idx - 1]._OrderIdx;
 
+            nudPokedexOrder.Value = _currentdexOrder;
 
+            if (_currentdexOrder >= 0 && _currentdexOrder < _dexManager.Working.Count)
+            {
+                ControlHelper.SetControlsEnabled(tabPagePokedex, true);
+                DataBindingHelper.BindObjectToControls(this, _dexManager.Working[_currentdexOrder]);
 
+                // category
+                txtDexCategory.Text = _dexManager.Working[_currentdexOrder]._DexCategory;
+                PokedexCategoryTrimming();
 
+                UpdatePokedexInfoUnitLabel(nudDexHeight, lblDexHeight);
+                UpdatePokedexInfoUnitLabel(nudDexWeight, lblDexWeight);
+                DisplayPokedexDesc();
+            }
+            else
+            {
+                ControlHelper.SetControlsEnabled(tabPagePokedex, false);
+                ControlHelper.ResetControls(tabPagePokedex, new[] { "nudDexSizeCompTrainerSpriteIdx" });
+                txtDexDescString.Text = string.Empty;
+                _uiStateManager.UpdateBinary(txtDexDescString, null);
+            }
 
+            UpdateSizeCompDisplay();
+        }
 
+        private void PokedexCategoryTrimming()
+        {
+            int maxAllowedBytes = _config.GetInt("PokedexCategoryMaxLength");
+            string currentText = txtDexCategory.Text;
+            byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
 
+            if (currentBytes.Length > maxAllowedBytes)
+            {
+                while (currentText.Length > 0)
+                {
+                    currentBytes = _tblReader.StringToBytes(currentText, false);
+                    if (currentBytes.Length <= maxAllowedBytes) break;
 
+                    currentText = currentText.Substring(0, currentText.Length - 1);
+                }
 
+                int savedSelectionStart = txtDexCategory.SelectionStart;
+                txtDexCategory.Text = currentText;
+                txtDexCategory.SelectionStart = Math.Min(savedSelectionStart, currentText.Length);
+            }
 
+            if (currentBytes.Length < maxAllowedBytes)
+            {
+                byte[] paddedBytes = new byte[maxAllowedBytes];
+                Array.Copy(currentBytes, paddedBytes, currentBytes.Length);
+                currentBytes = paddedBytes;
+            }
 
+            string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
 
+            if (_currentdexOrder >= 0 && _currentdexOrder < _dexManager.Working.Count)
+            {
+                _dexManager.Working[_currentdexOrder]._DexCategory = validName;
+                txtDexCategory.Text = validName;
+            }
+        }
 
+        private void txtDexCategory_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            PokedexCategoryTrimming();
+        }
+
+        private void UpdatePokedexInfoUnitLabel(NumericUpDown nud, Label lbl)
+        {
+            lbl.Text = (nud.Value / 10m).ToString("0.0");
+        }
+
+        private void PokedexInfoNudUnit_ValueChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            var nud = (NumericUpDown)sender;
+
+            if (nud == nudDexHeight)
+            {
+                UpdatePokedexInfoUnitLabel(nudDexHeight, lblDexHeight);
+            }
+
+            if (nud == nudDexWeight)
+            {
+                UpdatePokedexInfoUnitLabel(nudDexWeight, lblDexWeight);
+            }
+        }
+
+        private void DisplayPokedexDesc()
+        {
+            _isUpdatingUI = true;
+
+            if (ControlHelper.TryParseAddress(txtDexDescAddr.Text, out uint address))
+            {
+                List<byte> descriptionBytes = new List<byte>();
+                uint i = 0;
+
+                while (address + i < _romData.Length)
+                {
+                    byte b = _romData[(int)(address + i)];
+                    descriptionBytes.Add(b);
+                    if (b == 0xFF)
+                    {
+                        break;
+                    }
+
+                    i++;
+                }
+
+                byte[] byteArr = descriptionBytes.ToArray();
+                _currentDexDescData = byteArr;
+                txtDexDescString.Text = _tblReader.BytesToString(byteArr, 0, 256);
+                _uiStateManager.UpdateBinary(txtDexDescString, byteArr);
+            }
+            else
+            {
+                _currentDexDescData = null;
+                txtDexDescString.Text = string.Empty;
+                _uiStateManager.UpdateBinary(txtDexDescString, null);
+            }
+
+            _isUpdatingUI = false;
+        }
+
+        private void txtDexDescAddr_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            DisplayPokedexDesc();
+        }
+
+        private void txtDexDescString_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            byte[] bytes = _tblReader.StringToBytes(txtDexDescString.Text, true);
+            _currentDexDescData = bytes;
+            _uiStateManager.UpdateBinary(txtDexDescString, bytes);
+        }
+
+        private void SizeCompParam_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateSizeCompDisplay(sender, e);
+        }
+
+        private void UpdateSizeCompDisplay(object sender = null, EventArgs e = null)
+        {
+            if (_isUpdatingUI && sender != null) return;
+
+            Bitmap baseCanvas = new Bitmap(GbaConstants.PokedexSizeComparisonBaseWidth, GbaConstants.PokedexSizeComparisonBaseHeight);
+            using (Graphics g = Graphics.FromImage(baseCanvas))
+            {
+                g.SmoothingMode = SmoothingMode.None;
+                g.PixelOffsetMode = PixelOffsetMode.Half;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+                g.DrawImage(_dexSizeCompBackgroundImage, 0, 0,
+                            GbaConstants.PokedexSizeComparisonBaseWidth, GbaConstants.PokedexSizeComparisonBaseHeight);
+
+                // pokemon
+                if (_battleEnemyImage != null)
+                {
+                    try
+                    {
+                        using (Bitmap pokemonSprite = (Bitmap)_battleEnemyImage.Clone())
+                        {
+                            ColorPalette pal = pokemonSprite.Palette;
+                            for (int i = 1; i < pal.Entries.Length; i++)
+                            {
+                                pal.Entries[i] = Color.Black;
+                            }
+                            pokemonSprite.Palette = pal;
+
+                            float param1 = (float)nudDexSizeCompParam1.Value;
+                            if (param1 > 0)
+                            {
+                                float scaleA = GbaConstants.PokedexSizeComparisonScaleBase / param1;
+                                int newWidthA = (int)(GbaConstants.SpriteSize * scaleA);
+                                int newHeightA = (int)(GbaConstants.SpriteSize * scaleA);
+                                int offsetYA = (int)nudDexSizeCompParam2.Value;
+
+                                Rectangle destRectA = new Rectangle(
+                                    GbaConstants.PokedexSizeComparisonPokemonBaseX + (GbaConstants.SpriteSize - newWidthA) / 2,
+                                    GbaConstants.PokedexSizeComparisonPokemonBaseY + (GbaConstants.SpriteSize - newHeightA) / 2 + offsetYA,
+                                    newWidthA, newHeightA);
+
+                                g.DrawImage(pokemonSprite, destRectA);
+                            }
+                        }
+                    }
+                    catch 
+                    { 
+                        //
+                    }
+                }
+
+                // trainer
+                try
+                {
+                    int trainerId = (int)nudDexSizeCompTrainerSpriteIdx.Value;
+                    using (Bitmap trainerSprite = GetTrainerSprite(trainerId, false))
+                    {
+                        if (trainerSprite != null)
+                        {
+                            ColorPalette pal = trainerSprite.Palette;
+                            for (int i = 1; i < pal.Entries.Length; i++)
+                            {
+                                pal.Entries[i] = Color.Black;
+                            }
+                            trainerSprite.Palette = pal;
+
+                            float param3 = (float)nudDexSizeCompParam3.Value;
+                            if (param3 > 0)
+                            {
+                                float scaleB = GbaConstants.PokedexSizeComparisonScaleBase / param3;
+                                int newWidthB = (int)(GbaConstants.SpriteSize * scaleB);
+                                int newHeightB = (int)(GbaConstants.SpriteSize * scaleB);
+                                int offsetYB = (int)nudDexSizeCompParam4.Value;
+
+                                Rectangle destRectB = new Rectangle(
+                                    GbaConstants.PokedexSizeComparisonTrainerBaseX + (GbaConstants.SpriteSize - newWidthB) / 2,
+                                    GbaConstants.PokedexSizeComparisonTrainerBaseY + (GbaConstants.SpriteSize - newHeightB) / 2 + offsetYB,
+                                    newWidthB, newHeightB);
+
+                                g.DrawImage(trainerSprite, destRectB);
+                            }
+                        }
+                    }
+                }
+                catch
+                { 
+                    //
+                }
+            }
+
+            Bitmap scaledCanvas = ImageManager.ScalePixelArt(baseCanvas, GbaConstants.DefaultScale);
+            picDexSizeCompPreview.Image?.Dispose();
+            picDexSizeCompPreview.Image = null;
+            picDexSizeCompPreview.Image = scaledCanvas;
+            baseCanvas.Dispose();
+        }
+
+        private Bitmap GetTrainerSprite(int idx, bool showBackColor)
+        {
+            uint? imgAddr = _trainerImgManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
+            uint? palAddr = _trainerPalManager.Original[idx].pSpritePalAddr - GbaConstants.BaseAddr;
+
+            if (!imgAddr.HasValue || !palAddr.HasValue) return null;
+
+            try
+            {
+                byte[] image = ImageManager.DecompressLZ77(_romData, imgAddr.Value);
+                Color[] palette = ImageManager.DecompressPalette(_romData, palAddr.Value, true);
+                return ImageManager.CreateSprite(
+                    image,
+                    palette,
+                    GbaConstants.SpriteSize,
+                    GbaConstants.SpriteSize,
+                    showBackColor);
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
 
 
@@ -2097,6 +2401,8 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbEvoInputAssistPokemon.Items[idx] = originalName;
 
             _workingEvoSlots[idx] = _originalEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
+
+            _dexManager.Discard(idx);
         }
 
         private void SaveCurrentAllData(int idx)
@@ -2110,6 +2416,7 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveCurrentStats(idx);
             SaveCurrentEvolutions(idx);
             SaveCurrentLearnsets(idx);
+            SaveCurrentPokedex();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -2309,6 +2616,22 @@ namespace PochiPochiEditorGabu._Pokemon
             uint baseAddress = (uint)_config.GetAddr(addressKey);
             uint address = baseAddress + (uint)(pokemonIndex * data.Length);
             Array.Copy(data, 0, _romData, (int)address, data.Length);
+        }
+
+        private void SaveCurrentPokedex()
+        {
+            if (_currentdexOrder >= 0 && _currentdexOrder < _dexManager.Working.Count)
+            {
+                DataBindingHelper.BindControlsToObject(this, _dexManager.Working[_currentdexOrder]);
+                _dexManager.Save(_currentdexOrder, false, GbaConstants.PaddingByte, GbaConstants.PaddingByte);
+
+                // desc
+                if (!ControlHelper.TryParseAddress(txtDexDescAddr.Text, out uint address)) return;
+                if (_uiStateManager.HasBinaryChanges(txtDexDescString) && _currentDexDescData != null)
+                {
+                    _tblReader.WriteToRom(_romData, address, _currentDexDescData);
+                }
+            }
         }
     }
 }

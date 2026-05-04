@@ -45,7 +45,7 @@ namespace PochiPochiEditorGabu.Managers
         {
             if (!_initialBinaryValues.ContainsKey(key)) return;
 
-            _currentBinaryValues[key] = newData.ToArray();
+            _currentBinaryValues[key] = newData?.ToArray();
             EvaluateState();
         }
 
@@ -73,7 +73,7 @@ namespace PochiPochiEditorGabu.Managers
 
             foreach (var key in _initialBinaryValues.Keys.ToList())
             {
-                _initialBinaryValues[key] = _currentBinaryValues[key].ToArray();
+                _initialBinaryValues[key] = _currentBinaryValues[key]?.ToArray();
             }
 
             EvaluateState();

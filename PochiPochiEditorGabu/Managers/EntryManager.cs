@@ -350,9 +350,10 @@ namespace PochiPochiEditorGabu.Managers
         public uint pDexDescAddr;
         public ushort _Padding2;
         public ushort DexSizeCompParam1;
-        public ushort DexSizeCompParam2;
+        public ushort sDexSizeCompParam2;
         public ushort DexSizeCompParam3;
-        public ushort DexSizeCompParam4;
+        public ushort sDexSizeCompParam4;
+        public ushort _Padding3;
     }
 
 

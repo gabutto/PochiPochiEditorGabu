@@ -192,6 +192,7 @@ namespace PochiPochiEditorGabu._Trainer
             this.txtAnimDataAddr.Location = new System.Drawing.Point(80, 48);
             this.txtAnimDataAddr.Margin = new System.Windows.Forms.Padding(0);
             this.txtAnimDataAddr.Name = "txtAnimDataAddr";
+            this.txtAnimDataAddr.ReadOnly = true;
             this.txtAnimDataAddr.Size = new System.Drawing.Size(80, 19);
             this.txtAnimDataAddr.TabIndex = 1;
             // 
@@ -200,6 +201,7 @@ namespace PochiPochiEditorGabu._Trainer
             this.txtAnimPtrAddr.Location = new System.Drawing.Point(80, 24);
             this.txtAnimPtrAddr.Margin = new System.Windows.Forms.Padding(0);
             this.txtAnimPtrAddr.Name = "txtAnimPtrAddr";
+            this.txtAnimPtrAddr.ReadOnly = true;
             this.txtAnimPtrAddr.Size = new System.Drawing.Size(80, 19);
             this.txtAnimPtrAddr.TabIndex = 1;
             // 

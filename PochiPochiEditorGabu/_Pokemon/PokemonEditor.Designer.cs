@@ -2573,6 +2573,11 @@ namespace PochiPochiEditorGabu._Pokemon
             this.nudDexSizeCompTrainerSpriteIdx.Name = "nudDexSizeCompTrainerSpriteIdx";
             this.nudDexSizeCompTrainerSpriteIdx.Size = new System.Drawing.Size(56, 19);
             this.nudDexSizeCompTrainerSpriteIdx.TabIndex = 5;
+            this.nudDexSizeCompTrainerSpriteIdx.Value = new decimal(new int[] {
+            135,
+            0,
+            0,
+            0});
             // 
             // lblDexSizeCompTrainerSpriteIdx
             // 
