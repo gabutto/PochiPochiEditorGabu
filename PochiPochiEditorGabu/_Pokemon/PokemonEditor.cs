@@ -81,7 +81,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private byte[] _currentDexDescData = null;
         private Bitmap _dexSizeCompBackgroundImage = null;
         private bool _isExtendCryTable = false;
-        private sbyte[] _currentCryData = null;
+        private Cry _currentCry = null;
 
         private class EvolutionMethodInfo
         {
@@ -350,9 +350,12 @@ namespace PochiPochiEditorGabu._Pokemon
                 nud.ValueChanged += SizeCompParam_ValueChanged;
             }
 
+            txtCryDataAddr.TextChanged += txtCryDataAddr_TextChanged;
             pnlCryWave.Paint += pnlCryWave_Paint;
             hsbCryWave.ValueChanged += hsbCryWave_ValueChanged;
             btnCryDataPlay.Click += btnCryDataPlay_Click;
+            btnCryDataImport.Click += btnCryDataImport_Click;
+            btnCryDataExport.Click += btnCryDataExport_Click;
         }
 
         private void InitializeControls()
@@ -2419,7 +2422,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 _currentCryIdx = idx;
                 ControlHelper.SetControlsEnabled(tabPageCry, true);
                 DataBindingHelper.BindObjectToControls(this, _cryData1Manager.Working[_currentCryIdx]);
-                DisplayCryData();
+                LoadCryData();
                 return;
             }
 
@@ -2430,7 +2433,11 @@ namespace PochiPochiEditorGabu._Pokemon
             // invaild
             if (idx == 0 || (idx >= noCryStart && idx <= noCryEnd))
             {
-                ClearCryDataUI();
+                ControlHelper.SetControlsEnabled(tabPageCry, false);
+                ControlHelper.ResetControls(tabPageCry);
+                lblCryDataSampleRateValue.Text = "000000";
+                lblCryDataSampleCountValue.Text = "000000";
+                DrawCryWaveform(null);
                 return;
             }
 
@@ -2452,25 +2459,34 @@ namespace PochiPochiEditorGabu._Pokemon
             }
 
             DataBindingHelper.BindObjectToControls(this, _cryData1Manager.Working[_currentCryIdx]);
-            DisplayCryData();
+            LoadCryData();
         }
 
-        private void ClearCryDataUI()
-        {
-            ControlHelper.SetControlsEnabled(tabPageCry, false);
-            ControlHelper.ResetControls(tabPageCry);
-            lblCryDataSampleRateValue.Text = "000000";
-            lblCryDataSampleCountValue.Text = "000000";
-            DrawCryWaveform(null);
-        }
-
-        private void DisplayCryData()
+        private void LoadCryData()
         {
             _isUpdatingUI = true;
 
             if (ControlHelper.TryParseAddress(txtCryDataAddr.Text, out uint address))
             {
-                Cry cry = _cryManager.LoadCryFromAddress(address, _romData);
+                Cry cry = null;
+                var res = _reservationManager.GetReservation(txtCryDataAddr);
+
+                if (res != null && res.Data != null)
+                {
+                    cry = new Cry();
+                    byte[] resData = res.Data;
+
+                    cry.Compressed = BitConverter.ToInt16(resData, 0) == CryManager.CryCompressedFlag;
+                    cry.Looped = BitConverter.ToInt16(resData, 2) == CryManager.CryLoopedFlag;
+                    cry.SampleRate = BitConverter.ToInt32(resData, 4) >> CryManager.CrySampleRateShift;
+                    cry.LoopStart = BitConverter.ToInt32(resData, 8);
+                    cry.Size = BitConverter.ToInt32(resData, 12) + CryManager.CrySizeAdjustment;
+                    cry.Data = _cryManager.DecompressCryData(resData, 16, cry.Size);
+                }
+                else
+                {
+                    cry = _cryManager.LoadCryFromAddress(address, _romData);
+                }
 
                 if (cry != null)
                 {
@@ -2486,28 +2502,39 @@ namespace PochiPochiEditorGabu._Pokemon
             }
             else
             {
-                ClearCryDataUI();
+                lblCryDataSampleRateValue.Text = "000000";
+                lblCryDataSampleCountValue.Text = "000000";
+                DrawCryWaveform(null);
             }
+
+            _isUpdatingUI = false;
+        }
+
+        private void txtCryDataAddr_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            LoadCryData();
         }
 
         private void DrawCryWaveform(Cry cry)
         {
+            _currentCry = cry;
+
             if (cry == null || cry.Data == null || cry.Data.Length == 0)
             {
-                _currentCryData = null;
                 hsbCryWave.Enabled = false;
                 pnlCryWave.Invalidate();
                 return;
             }
 
-            _currentCryData = cry.Data;
             int visibleWidth = pnlCryWave.ClientSize.Width;
+            var data = cry.Data;
 
-            if (_currentCryData.Length > visibleWidth)
+            if (data.Length > visibleWidth)
             {
                 hsbCryWave.Enabled = true;
                 hsbCryWave.Minimum = 0;
-                hsbCryWave.Maximum = _currentCryData.Length - 1;
+                hsbCryWave.Maximum = data.Length - 1;
                 hsbCryWave.LargeChange = visibleWidth;
                 hsbCryWave.SmallChange = Math.Max(1, visibleWidth / 10);
                 hsbCryWave.Value = 0;
@@ -2531,7 +2558,8 @@ namespace PochiPochiEditorGabu._Pokemon
             Graphics g = e.Graphics;
             g.Clear(Color.White);
 
-            if (_currentCryData == null || _currentCryData.Length == 0) return;
+            var data = _currentCry?.Data;
+            if (data == null || data.Length == 0) return;
 
             int width = pnlCryWave.ClientSize.Width;
             int height = pnlCryWave.ClientSize.Height;
@@ -2542,7 +2570,7 @@ namespace PochiPochiEditorGabu._Pokemon
             using (Pen pen = new Pen(Color.Green, 1))
             {
                 int startIndex = hsbCryWave.Enabled ? hsbCryWave.Value : 0;
-                int endIndex = Math.Min(startIndex + width, _currentCryData.Length);
+                int endIndex = Math.Min(startIndex + width, data.Length);
                 int pointCount = endIndex - startIndex;
 
                 if (pointCount > 1)
@@ -2552,7 +2580,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     {
                         int dataIndex = startIndex + i;
                         int x = i;
-                        int y = (int)(centerY + (_currentCryData[dataIndex] * yScale));
+                        int y = (int)(centerY + (data[dataIndex] * yScale));
                         points[i] = new Point(x, y);
                     }
                     g.DrawLines(pen, points);
@@ -2562,14 +2590,62 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void btnCryDataPlay_Click(object sender, EventArgs e)
         {
-            if (ControlHelper.TryParseAddress(txtCryDataAddr.Text, out uint address))
+            if (_currentCry != null && _currentCry.Data != null)
             {
-                Cry cry = _cryManager.LoadCryFromAddress(address, _romData);
-                _cryManager.PlayCry(cry);
+                _cryManager.PlayCry(_currentCry);
             }
         }
 
+        private void btnCryDataImport_Click(object sender, EventArgs e)
+        {
+            if (!ControlHelper.ValidateAndFormatInputTextBox(txtCryDataImportAddr, out uint? targetAddress)) return;
 
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "WAVファイル (*.wav)|*.wav";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        Cry cry = _cryManager.ConvertWavToCryData(ofd.FileName);
+                        if (cry == null) return;
+
+                        byte[] binaryData = _cryManager.GetCryBinaryData(cry);
+                        _reservationManager.SetReservation(txtCryDataAddr, targetAddress.Value, binaryData);
+                    }
+                    catch
+                    {
+                    
+                    }
+                }
+            }
+        }
+
+        private void btnCryDataExport_Click(object sender, EventArgs e)
+        {
+            if (_currentCry == null || _currentCry.Data == null) return;
+
+            using (var sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "WAVファイル (*.wav)|*.wav";
+                sfd.FileName = $"pokemon_cry_{((int)nudSpecies.Value):D4}.wav";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (var stream = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
+                        {
+                            _cryManager.EncodeToWavStream(_currentCry, stream);
+                        }
+                    }
+                    catch
+                    {
+                    
+                    }
+                }
+            }
+        }
 
 
 
@@ -2592,6 +2668,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbSpriteExport.SelectedIndex = 0;
             txtIconImportAddr.Text = String.Empty;
             txtFootprintImportAddr.Text = String.Empty;
+            txtCryDataImportAddr.Text = String.Empty;
         }
 
         private void DiscardData(int idx)
@@ -2619,6 +2696,7 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveCurrentEvolutions(idx);
             SaveCurrentLearnsets(idx);
             SaveCurrentPokedex();
+            SaveCurrentCry(idx);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -2833,6 +2911,43 @@ namespace PochiPochiEditorGabu._Pokemon
                 {
                     _tblReader.WriteToRom(_romData, address, _currentDexDescData);
                 }
+            }
+        }
+
+        private void SaveCurrentCry(int idx)
+        {
+            if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableIndexedCryDataTable"))
+            {
+                DataBindingHelper.BindControlsToObject(this, _cryData1Manager.Working[_currentCryIdx]);
+                _cryData1Manager.Save(_currentCryIdx);
+            }
+            else
+            {
+                int noCryStart = _config.GetInt("NoCryDataStartIndex");
+                int noCryEnd = _config.GetInt("NoCryDataEndIndex");
+
+                if (idx != 0 && !(idx >= noCryStart && idx <= noCryEnd))
+                {
+                    if (_isExtendCryTable)
+                    {
+                        int extendOffset = idx - _config.GetInt("ExtendCryFirstIndex");
+                        _cryDataExtendManager.Working[extendOffset]._ExtendIdx = (ushort)nudExtendCryIdx.Value;
+                        _cryDataExtendManager.Save(extendOffset);
+                    }
+
+                    DataBindingHelper.BindControlsToObject(this, _cryData1Manager.Working[_currentCryIdx]);
+                    _cryData1Manager.Save(_currentCryIdx);
+                    DataBindingHelper.BindControlsToObject(this, _cryData2Manager.Working[_currentCryIdx]);
+                    _cryData2Manager.Save(_currentCryIdx);
+                }
+            }
+
+            // reserve
+            var res = _reservationManager.GetReservation(txtCryDataAddr);
+            if (res != null && res.Data != null)
+            {
+                Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
+                _reservationManager.ClearReservation(txtCryDataAddr);
             }
         }
     }

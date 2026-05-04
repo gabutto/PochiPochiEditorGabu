@@ -21,10 +21,10 @@ namespace PochiPochiEditorGabu.Managers
 
     public class CryManager
     {
-        private const int CryCompressedFlag = 0x1;
-        private const int CryLoopedFlag = 0x4000;
-        private const int CrySampleRateShift = 10;
-        private const int CrySizeAdjustment = 1;
+        public const int CryCompressedFlag = 0x1;
+        public const int CryLoopedFlag = 0x4000;
+        public const int CrySampleRateShift = 10;
+        public const int CrySizeAdjustment = 1;
         private const int CryBlockCompressedDataSize = 0x20;
         private const int WavFmtChunkSize = 16;
         private const ushort WavFormatPcm = 1;
