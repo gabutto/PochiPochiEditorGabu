@@ -126,7 +126,7 @@ namespace PochiPochiEditorGabu._Item
         {
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
             btnSave.Enabled = false;
-            _uiStateManager.AddControls(txtDescAddr, txtItemEffectAddr);
+            _uiStateManager.AddControls(txtItemRename,txtDescAddr, txtItemEffectAddr);
             _uiStateManager.AddControlsRecursive(grpSprite, grpData);
             _uiStateManager.AddBinaries((txtDescString, null));
         }
@@ -608,6 +608,8 @@ namespace PochiPochiEditorGabu._Item
         private void SaveCurrentItemData(int idx) // include name
         {
             DataBindingHelper.BindControlsToObject(this, _itemDataManager.Working[idx]);
+            _itemDataManager.Working[idx]._ItemName = cmbItemName.Items[idx].ToString();
+
             if (_config.GetBool("IsAppliedCFRU")) // FF 00 00 ...
             {
                 _itemDataManager.Save(idx, true, GbaConstants.PaddingByte, GbaConstants.PaddingByte);

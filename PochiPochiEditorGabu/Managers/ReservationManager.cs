@@ -72,7 +72,7 @@ namespace PochiPochiEditorGabu.Managers
             }
         }
 
-        public bool HasReservationChanges()
+        public bool HasReservationsChanges()
         {
             return _reservations.Values.Any(res =>
             {
@@ -95,7 +95,7 @@ namespace PochiPochiEditorGabu.Managers
 
         private void EvaluateState()
         {
-            ReservationStateChanged?.Invoke(HasReservationChanges());
+            ReservationStateChanged?.Invoke(HasReservationsChanges());
         }
 
         public ReservedAreaInfo GetReservation(TextBox textBox) =>

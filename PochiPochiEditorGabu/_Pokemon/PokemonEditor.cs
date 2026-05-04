@@ -21,7 +21,8 @@ namespace PochiPochiEditorGabu._Pokemon
         protected IniFileReader _config;
         protected TblFileReader _tblReader;
         protected ReservationManager _reservationManager;
-        protected UIStateManager _uiStateManager;
+
+        private UIStateManager _uiStateManager;
         private CryManager _cryManager = new CryManager();
 
         private EntryManager<PokemonNameEntry> _pokemonNameManager;
@@ -435,7 +436,7 @@ namespace PochiPochiEditorGabu._Pokemon
             clbTmHm.EndUpdate();
 
             // pokemon name for cmb
-            var classNames = _pokemonNameManager.Working
+            var classNames = _pokemonNameManager.Original
                              .Select(entry => entry._PokemonName)
                              .ToArray();
             cmbPokemonName.Items.AddRange(classNames);
@@ -443,7 +444,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbEvoInputAssistPokemon.Items.AddRange(classNames);
 
             // ability for cmb
-            var abilityNames = _abilityNameManager.Working
+            var abilityNames = _abilityNameManager.Original
                              .Select(entry => entry._AbilityName)
                              .ToArray();
             cmbStatsAbility1.Items.AddRange(abilityNames);
@@ -451,7 +452,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbStatsAbilityHidden.Items.AddRange(abilityNames);
 
             // item for cmb
-            var itemNames = _itemDataManager.Working
+            var itemNames = _itemDataManager.Original
                              .Select(entry => entry._ItemName)
                              .ToArray();
             cmbStatsHoldItem1.Items.AddRange(itemNames);
@@ -459,7 +460,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbEvoInputAssistItem.Items.AddRange(itemNames);
 
             // type for cmb
-            var typeNames = _typeNameManager.Working
+            var typeNames = _typeNameManager.Original
                              .Select(entry => entry._TypeName)
                              .ToArray();
             cmbStatsType1.Items.AddRange(typeNames);
@@ -467,7 +468,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbEvoInputAssistType.Items.AddRange(typeNames);
 
             // move for cmb
-            var moveNames = _moveNameManager.Working
+            var moveNames = _moveNameManager.Original
                              .Select(entry => entry._MoveName)
                              .ToArray();
             cmbEvoInputAssistMove.Items.AddRange(moveNames);
@@ -531,21 +532,13 @@ namespace PochiPochiEditorGabu._Pokemon
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,
                 txtIconImgAddr, cmbIconPalIdx,
                 txtFootprintImgAddr,
-                nudCoordBattleAllyBubbleX, nudCoordBattleAllyBubbleY, nudCoordBattleAllyPokemon,
-                nudCoordBattleEnemyBubbleX, nudCoordBattleEnemyBubbleY, nudCoordBattleEnemyPokemon, nudCoordBattleEnemyShadowY,
-                nudCoordItemUse1X, nudCoordItemUse1Y, nudCoordItemUse2X, nudCoordItemUse2Y, nudCoordItemUse2Zoom,
-                nudStatsHp, nudStatsAtk, nudStatsDef, nudStatsSpAtk, nudStatsSpDef, nudStatsSpeed,
-                nudStatsEvHp, nudStatsEvAtk, nudStatsEvDef, nudStatsEvSpAtk, nudStatsEvSpDef, nudStatsEvSpeed,
-                nudStatsCatchRate, nudStatsHappiness, nudStatsExp, cmbStatsGrowthRate, cmbStatsColor, cmbStatsFlip, nudStatsRunRate,
-                cmbStatsGender, cmbStatsEggStep, cmbStatsEggGroup1, cmbStatsEggGroup2,
-                cmbStatsAbility1, cmbStatsAbility2, cmbStatsAbilityHidden,
-                cmbStatsHoldItem1, cmbStatsHoldItem2,
-                cmbStatsType1, cmbStatsType2,
                 txtDexCategory, nudDexHeight, nudDexWeight, txtDexDescAddr,
                 nudDexSizeCompParam1, nudDexSizeCompParam2, nudDexSizeCompParam3, nudDexSizeCompParam4,
                 txtCryDataAddr, nudExtendCryIdx);
+            _uiStateManager.AddControlsRecursive(
+                grpCoordBattleAlly, grpCoordBattleEnemy, grpCoordItemUse,
+                tabPageStats);
             _uiStateManager.AddBinaries(
-                (pnlFootprintCanvas, null),
                 (lstEvoSlots, null),
                 (lstLearnset, null),
                 (txtDexDescString, null));
@@ -616,13 +609,10 @@ namespace PochiPochiEditorGabu._Pokemon
             string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
 
             _isUpdatingUI = true;
-
             int idx = _currentPokemonIdx;
             cmbPokemonName.Items[idx] = validName;
             cmbEvoToPokemon.Items[idx] = validName;
             cmbEvoInputAssistPokemon.Items[idx] = validName;
-            _pokemonNameManager.Working[idx]._PokemonName = validName;
-
             _isUpdatingUI = false;
         }
 
@@ -646,7 +636,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     },
                     () =>
                     {
-                        DiscardData(_currentPokemonIdx);
+                        RestoreData(_currentPokemonIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
@@ -713,8 +703,9 @@ namespace PochiPochiEditorGabu._Pokemon
                         : ImageManager.DecompressPalette(_romData, paletteNormalOffset, true);
                 }
             }
-            catch (Exception)
+            catch
             {
+                //
             }
 
             try
@@ -727,8 +718,9 @@ namespace PochiPochiEditorGabu._Pokemon
                         : ImageManager.DecompressPalette(_romData, paletteShinyOffset, true);
                 }
             }
-            catch (Exception)
+            catch
             {
+                //
             }
 
             // front image
@@ -766,8 +758,9 @@ namespace PochiPochiEditorGabu._Pokemon
                         picSpriteFrontShiny.Refresh();
                     }
                 }
-                catch (Exception)
+                catch
                 {
+                    //
                 }
             }
 
@@ -806,8 +799,9 @@ namespace PochiPochiEditorGabu._Pokemon
                         picSpriteBackShiny.Refresh();
                     }
                 }
-                catch (Exception)
+                catch
                 {
+                    //
                 }
             }
 
@@ -963,7 +957,9 @@ namespace PochiPochiEditorGabu._Pokemon
                 _currentIconFrame = (Bitmap)frames[0].Clone();
 
                 // preview
-                var fullIcon = new Bitmap(GbaConstants.IconFrameSize, GbaConstants.IconFrameSize * GbaConstants.IconFrameCounts);
+                var fullIcon = new Bitmap(
+                    GbaConstants.IconFrameSize, 
+                    GbaConstants.IconFrameSize * GbaConstants.IconFrameCounts);
                 using (Graphics g = Graphics.FromImage(fullIcon))
                 {
                     g.DrawImage(frames[0], 0, 0);
@@ -1105,12 +1101,17 @@ namespace PochiPochiEditorGabu._Pokemon
             if (!ControlHelper.TryParseAddress(txtFootprintImgAddr.Text, out uint imageAddress)) return;
 
             var res = _reservationManager.GetReservation(txtFootprintImgAddr);
-            if (res != null)
+            uint currentAddr = imageAddress;
+            if (res != null && res.Address == currentAddr)
             {
                 _currentFootprintData = (byte[])res.CurrentData.Clone();
             }
             else
             {
+                if (res != null)
+                {
+                    _reservationManager.ClearReservation(txtFootprintImgAddr);
+                }
                 _currentFootprintData = new byte[GbaConstants.FootprintDataSize];
                 Array.Copy(_romData, (int)imageAddress, _currentFootprintData, 0, GbaConstants.FootprintDataSize);
             }
@@ -1122,15 +1123,15 @@ namespace PochiPochiEditorGabu._Pokemon
             }
 
             pnlFootprintCanvas.Invalidate();
-            _uiStateManager.UpdateBinary(pnlFootprintCanvas, _currentFootprintData);
+            _reservationManager.UpdateReservationData(txtFootprintImgAddr, _currentFootprintData);
         }
 
         private void pnlFootprintCanvas_Paint(object sender, PaintEventArgs e)
         {
             if (_currentFootprintData == null) return;
 
-            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+            e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+            e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
 
             Color[] palette = { Color.White, Color.Black };
             using (var bmp = ImageManager.DecodeFootprint(_currentFootprintData, palette))
@@ -1175,9 +1176,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void pnlFootprintCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_isDrawingFootprint)
-                return;
-
+            if (!_isDrawingFootprint) return;
             ApplyFootprintDraw(e.X, e.Y);
         }
 
@@ -1208,7 +1207,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 oldImage?.Dispose();
             }
 
-            _uiStateManager.UpdateBinary(pnlFootprintCanvas, _currentFootprintData);
+            _reservationManager.UpdateReservationData(txtFootprintImgAddr, _currentFootprintData);
         }
 
         private void UpdateFootprintPixel(int x, int y, bool isBlack)
@@ -1303,9 +1302,9 @@ namespace PochiPochiEditorGabu._Pokemon
             var canvas = new Bitmap(picCoordBattleDisplay.Width, picCoordBattleDisplay.Height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.SmoothingMode = SmoothingMode.None;
+                g.PixelOffsetMode = PixelOffsetMode.Half;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
 
                 // background
                 g.DrawImage(_battleBaackgroundImage, 0, 0, picCoordBattleDisplay.Width, picCoordBattleDisplay.Height);
@@ -1416,9 +1415,9 @@ namespace PochiPochiEditorGabu._Pokemon
             Bitmap canvas = new Bitmap(picCoordItemUse1.Width, picCoordItemUse1.Height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.SmoothingMode = SmoothingMode.None;
+                g.PixelOffsetMode = PixelOffsetMode.Half;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
                 g.DrawImage(_itemUse1BackgroundImage, 0, 0);
                 g.DrawImage(_battleEnemyImage, GbaConstants.ItemUseAnimPokeX, GbaConstants.ItemUseAnimPokeY);
 
@@ -1455,9 +1454,9 @@ namespace PochiPochiEditorGabu._Pokemon
             Bitmap canvas = new Bitmap(picCoordItemUse2.Width, picCoordItemUse2.Height);
             using (Graphics g = Graphics.FromImage(canvas))
             {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.SmoothingMode = SmoothingMode.None;
+                g.PixelOffsetMode = PixelOffsetMode.Half;
+                g.InterpolationMode = InterpolationMode.NearestNeighbor;
                 g.DrawImage(_itemUse2BackgroundImage, 0, 0);
 
                 if (rbCoordItemUse2Normal.Checked)
@@ -2615,7 +2614,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     }
                     catch
                     {
-                    
+                        //
                     }
                 }
             }
@@ -2641,7 +2640,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     }
                     catch
                     {
-                    
+                        //
                     }
                 }
             }
@@ -2671,17 +2670,14 @@ namespace PochiPochiEditorGabu._Pokemon
             txtCryDataImportAddr.Text = String.Empty;
         }
 
-        private void DiscardData(int idx)
+        private void RestoreData(int idx)
         {
-            _pokemonNameManager.Discard(idx);
             string originalName = _pokemonNameManager.Original[idx]._PokemonName;
             cmbPokemonName.Items[idx] = originalName;
             cmbEvoToPokemon.Items[idx] = originalName;
             cmbEvoInputAssistPokemon.Items[idx] = originalName;
 
             _workingEvoSlots[idx] = _originalEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
-
-            _dexManager.Discard(idx);
         }
 
         private void SaveCurrentAllData(int idx)
@@ -2732,6 +2728,8 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void SaveCurrentPokemonName(int idx)
         {
+            _pokemonNameManager.Working[idx]._PokemonName = cmbPokemonName.Items[idx].ToString();
+
             if (_config.GetBool("IsAppliedCFRU")) // FF FF FF ...
             {
                 _pokemonNameManager.Save(idx, true, GbaConstants.FreeSpaceByte, GbaConstants.FreeSpaceByte);
@@ -2799,9 +2797,10 @@ namespace PochiPochiEditorGabu._Pokemon
                 _reservationManager.ClearReservation(txtFootprintImgAddr);
             }
 
-            if (_uiStateManager.HasBinaryChanges(pnlFootprintCanvas) && _currentFootprintData != null)
+            if (_reservationManager.HasReservationsChanges() && _currentFootprintData != null)
             {
                 Array.Copy(_currentFootprintData, 0, _romData, (int)imageAddress, GbaConstants.FootprintDataSize);
+                _reservationManager.AcceptAllChanges();
             }
 
             DataBindingHelper.BindControlsToObject(this, _footprintImgManager.Working[idx]);
