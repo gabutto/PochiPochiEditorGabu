@@ -17,8 +17,8 @@ namespace PochiPochiEditorGabu
         private byte[] _romData = Array.Empty<byte>();
         private bool _isRomLoaded = false;
         private string _romPath = string.Empty;
-        private string _iniPath = Path.Combine(Application.StartupPath, "config", "roms.ini");
-        private string _tblPath = Path.Combine(Application.StartupPath, "config", "charmap.tbl");
+        private string _iniPath = Path.Combine(Application.StartupPath, "cfg", "roms.ini");
+        private string _tblPath = Path.Combine(Application.StartupPath, "cfg", "charmap.tbl");
 
         private IniFileReader _config;
         private TblFileReader _charmap;

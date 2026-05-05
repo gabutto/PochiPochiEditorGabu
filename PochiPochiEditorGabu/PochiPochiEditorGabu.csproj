@@ -134,10 +134,10 @@
     <EmbeddedResource Include="_Trainer\TrainerSpriteEditor.resx">
       <DependentUpon>TrainerSpriteEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="config\charmap.tbl">
+    <None Include="cfg\charmap.tbl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="config\roms.ini">
+    <None Include="cfg\roms.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
