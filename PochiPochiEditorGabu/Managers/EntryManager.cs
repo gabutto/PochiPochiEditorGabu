@@ -58,7 +58,7 @@ namespace PochiPochiEditorGabu.Managers
             Original[idx] = CloneHelper.Clone(Working[idx]);
         }
 
-        private int GetEntrySize()
+        public int GetEntrySize()
         {
             var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
                                   .OrderBy(f => f.MetadataToken)

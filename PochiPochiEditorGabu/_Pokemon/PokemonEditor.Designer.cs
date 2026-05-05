@@ -266,6 +266,9 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblCryDataSampleCount = new System.Windows.Forms.Label();
             this.lblCryDataSampleRate = new System.Windows.Forms.Label();
             this.lblCryDataAddr = new System.Windows.Forms.Label();
+            this.grpDexSaveLoad = new System.Windows.Forms.GroupBox();
+            this.btnDexSave = new System.Windows.Forms.Button();
+            this.btnDexLoad = new System.Windows.Forms.Button();
             this.grpDataIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPokedexOrder)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
@@ -361,6 +364,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpExtendCryTable.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudExtendCryIdx)).BeginInit();
             this.grpCryData.SuspendLayout();
+            this.grpDexSaveLoad.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSave
@@ -2548,6 +2552,7 @@ namespace PochiPochiEditorGabu._Pokemon
             // 
             // tabPagePokedex
             // 
+            this.tabPagePokedex.Controls.Add(this.grpDexSaveLoad);
             this.tabPagePokedex.Controls.Add(this.grpDexSizeComp);
             this.tabPagePokedex.Controls.Add(this.grpDexDesc);
             this.tabPagePokedex.Controls.Add(this.grpDexHeightWeight);
@@ -3104,6 +3109,39 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblCryDataAddr.TabIndex = 0;
             this.lblCryDataAddr.Text = "データアドレス :";
             // 
+            // grpDexSaveLoad
+            // 
+            this.grpDexSaveLoad.Controls.Add(this.btnDexLoad);
+            this.grpDexSaveLoad.Controls.Add(this.btnDexSave);
+            this.grpDexSaveLoad.Location = new System.Drawing.Point(304, 310);
+            this.grpDexSaveLoad.Margin = new System.Windows.Forms.Padding(0);
+            this.grpDexSaveLoad.Name = "grpDexSaveLoad";
+            this.grpDexSaveLoad.Padding = new System.Windows.Forms.Padding(0);
+            this.grpDexSaveLoad.Size = new System.Drawing.Size(202, 100);
+            this.grpDexSaveLoad.TabIndex = 4;
+            this.grpDexSaveLoad.TabStop = false;
+            this.grpDexSaveLoad.Text = "図鑑内容を保存・読み込み";
+            // 
+            // btnDexSave
+            // 
+            this.btnDexSave.Location = new System.Drawing.Point(20, 28);
+            this.btnDexSave.Margin = new System.Windows.Forms.Padding(0);
+            this.btnDexSave.Name = "btnDexSave";
+            this.btnDexSave.Size = new System.Drawing.Size(160, 23);
+            this.btnDexSave.TabIndex = 0;
+            this.btnDexSave.Text = "BINファイルとして保存";
+            this.btnDexSave.UseVisualStyleBackColor = true;
+            // 
+            // btnDexLoad
+            // 
+            this.btnDexLoad.Location = new System.Drawing.Point(20, 58);
+            this.btnDexLoad.Margin = new System.Windows.Forms.Padding(0);
+            this.btnDexLoad.Name = "btnDexLoad";
+            this.btnDexLoad.Size = new System.Drawing.Size(160, 23);
+            this.btnDexLoad.TabIndex = 0;
+            this.btnDexLoad.Text = "BINファイルを読み込み";
+            this.btnDexLoad.UseVisualStyleBackColor = true;
+            // 
             // PokemonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -3240,6 +3278,7 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.nudExtendCryIdx)).EndInit();
             this.grpCryData.ResumeLayout(false);
             this.grpCryData.PerformLayout();
+            this.grpDexSaveLoad.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -3482,5 +3521,8 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.TextBox txtCryDataImportAddr;
         private System.Windows.Forms.TextBox txtCryDataAddr;
         private System.Windows.Forms.Panel pnlCryWave;
+        private System.Windows.Forms.GroupBox grpDexSaveLoad;
+        private System.Windows.Forms.Button btnDexLoad;
+        private System.Windows.Forms.Button btnDexSave;
     }
 }

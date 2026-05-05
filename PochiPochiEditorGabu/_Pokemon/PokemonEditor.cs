@@ -345,6 +345,8 @@ namespace PochiPochiEditorGabu._Pokemon
             nudDexWeight.ValueChanged += PokedexInfoNudUnit_ValueChanged;
             txtDexDescAddr.TextChanged += txtDexDescAddr_TextChanged;
             txtDexDescString.TextChanged += txtDexDescString_TextChanged;
+            btnDexSave.Click += btnDexSave_Click;
+            btnDexLoad.Click += btnDexLoad_Click;
 
             foreach (var nud in new[] {
                 nudDexSizeCompParam1,
@@ -2416,6 +2418,96 @@ namespace PochiPochiEditorGabu._Pokemon
             catch
             {
                 return null;
+            }
+        }
+
+        private void btnDexSave_Click(object sender, EventArgs e)
+        {
+            if (_currentdexOrder < 0 || _currentdexOrder >= _dexManager.Working.Count) return;
+
+            using (var sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "BINファイル (*.bin)|*.bin";
+                sfd.FileName = $"pokedex_{((int)nudSpecies.Value):D4}.bin";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        PokedexEntry entry = new PokedexEntry();
+                        DataBindingHelper.BindControlsToObject(this, entry);
+                        entry._DexCategory = txtDexCategory.Text;
+
+                        // category
+                        int categoryEntryLength = _config.GetInt("PokedexCategoryEntryLength");
+                        int categoryMaxLength = _config.GetInt("PokedexCategoryMaxLength");
+                        var dynamicLengths = new Dictionary<string, int>
+                        {
+                            { "PokedexCategoryEntryLength", categoryEntryLength },
+                            { "PokedexCategoryMaxLength", categoryMaxLength }
+                        };
+
+                        // calc
+                        int totalSize = _dexManager.GetEntrySize();
+                        byte[] buffer = new byte[totalSize];
+
+                        IoHelper.WriteStructures(
+                            buffer,
+                            0,
+                            new[] { entry },
+                            _tblReader,
+                            dynamicLengths,
+                            false,
+                            GbaConstants.PaddingByte,
+                            GbaConstants.PaddingByte);
+
+                        File.WriteAllBytes(sfd.FileName, buffer);
+                    }
+                    catch 
+                    {
+                        //
+                    }
+                }
+            }
+        }
+
+        private void btnDexLoad_Click(object sender, EventArgs e)
+        {
+            if (_currentdexOrder < 0 || _currentdexOrder >= _dexManager.Working.Count) return;
+
+            using (var ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "BINファイル (*.bin)|*.bin";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        byte[] buffer = File.ReadAllBytes(ofd.FileName);
+
+                        int categoryEntryLength = _config.GetInt("PokedexCategoryEntryLength");
+                        int categoryMaxLength = _config.GetInt("PokedexCategoryMaxLength");
+                        var dynamicLengths = new Dictionary<string, int>
+                        {
+                            { "PokedexCategoryEntryLength", categoryEntryLength },
+                            { "PokedexCategoryMaxLength", categoryMaxLength }
+                        };
+
+                        // load bin file
+                        var list = IoHelper.ReadStructures<PokedexEntry>(buffer, 0, 1, _tblReader, dynamicLengths);
+
+                        if (list.Count > 0)
+                        {
+                            PokedexEntry entry = list[0];
+                            DataBindingHelper.BindObjectToControls(this, entry);
+                            txtDexCategory.Text = entry._DexCategory;
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
             }
         }
 
