@@ -32,34 +32,34 @@ namespace PochiPochiEditorGabu._Pokemon
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PokedexHabitatEditor));
             this.btnSave = new System.Windows.Forms.Button();
             this.grpSelectArea = new System.Windows.Forms.GroupBox();
-            this.cmbArea = new System.Windows.Forms.ComboBox();
-            this.lblAreaAddr = new System.Windows.Forms.Label();
+            this.btnCreateNewAreaData = new System.Windows.Forms.Button();
+            this.nudPageCount = new System.Windows.Forms.NumericUpDown();
             this.txtAreaAddr = new System.Windows.Forms.TextBox();
             this.lblPageCount = new System.Windows.Forms.Label();
-            this.nudPageCount = new System.Windows.Forms.NumericUpDown();
-            this.btnCreateNewAreaData = new System.Windows.Forms.Button();
+            this.lblAreaAddr = new System.Windows.Forms.Label();
+            this.cmbArea = new System.Windows.Forms.ComboBox();
             this.grpSelectPage = new System.Windows.Forms.GroupBox();
+            this.grpPokemon = new System.Windows.Forms.GroupBox();
+            this.picPokemon4 = new System.Windows.Forms.PictureBox();
+            this.picPokemon3 = new System.Windows.Forms.PictureBox();
+            this.picPokemon2 = new System.Windows.Forms.PictureBox();
+            this.picPokemon1 = new System.Windows.Forms.PictureBox();
+            this.cmbPokemonName = new System.Windows.Forms.ComboBox();
+            this.lstPage = new System.Windows.Forms.ListBox();
             this.btnCreateNewPageData = new System.Windows.Forms.Button();
             this.nudPokemonCount = new System.Windows.Forms.NumericUpDown();
             this.txtPageAddr = new System.Windows.Forms.TextBox();
             this.lblPokemonCount = new System.Windows.Forms.Label();
             this.lblPageAddr = new System.Windows.Forms.Label();
-            this.lstPage = new System.Windows.Forms.ListBox();
-            this.grpPokemon = new System.Windows.Forms.GroupBox();
-            this.cmbPokemonName = new System.Windows.Forms.ComboBox();
-            this.picPokemon1 = new System.Windows.Forms.PictureBox();
-            this.picPokemon2 = new System.Windows.Forms.PictureBox();
-            this.picPokemon3 = new System.Windows.Forms.PictureBox();
-            this.picPokemon4 = new System.Windows.Forms.PictureBox();
             this.grpSelectArea.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPageCount)).BeginInit();
             this.grpSelectPage.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudPokemonCount)).BeginInit();
             this.grpPokemon.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picPokemon1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picPokemon2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picPokemon3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picPokemon4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picPokemon3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picPokemon2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picPokemon1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPokemonCount)).BeginInit();
             this.SuspendLayout();
             // 
             // btnSave
@@ -89,25 +89,33 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpSelectArea.TabStop = false;
             this.grpSelectArea.Text = "エリアを選択";
             // 
-            // cmbArea
+            // btnCreateNewAreaData
             // 
-            this.cmbArea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbArea.FormattingEnabled = true;
-            this.cmbArea.Location = new System.Drawing.Point(20, 28);
-            this.cmbArea.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbArea.Name = "cmbArea";
-            this.cmbArea.Size = new System.Drawing.Size(138, 20);
-            this.cmbArea.TabIndex = 0;
+            this.btnCreateNewAreaData.Location = new System.Drawing.Point(20, 102);
+            this.btnCreateNewAreaData.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCreateNewAreaData.Name = "btnCreateNewAreaData";
+            this.btnCreateNewAreaData.Size = new System.Drawing.Size(138, 23);
+            this.btnCreateNewAreaData.TabIndex = 4;
+            this.btnCreateNewAreaData.Text = "ページ数を変更";
+            this.btnCreateNewAreaData.UseVisualStyleBackColor = true;
             // 
-            // lblAreaAddr
+            // nudPageCount
             // 
-            this.lblAreaAddr.AutoSize = true;
-            this.lblAreaAddr.Location = new System.Drawing.Point(20, 58);
-            this.lblAreaAddr.Margin = new System.Windows.Forms.Padding(0);
-            this.lblAreaAddr.Name = "lblAreaAddr";
-            this.lblAreaAddr.Size = new System.Drawing.Size(47, 12);
-            this.lblAreaAddr.TabIndex = 1;
-            this.lblAreaAddr.Text = "アドレス :";
+            this.nudPageCount.Increment = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudPageCount.Location = new System.Drawing.Point(80, 78);
+            this.nudPageCount.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudPageCount.Name = "nudPageCount";
+            this.nudPageCount.ReadOnly = true;
+            this.nudPageCount.Size = new System.Drawing.Size(78, 19);
+            this.nudPageCount.TabIndex = 3;
             // 
             // txtAreaAddr
             // 
@@ -128,33 +136,25 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblPageCount.TabIndex = 1;
             this.lblPageCount.Text = "ページ数 :";
             // 
-            // nudPageCount
+            // lblAreaAddr
             // 
-            this.nudPageCount.Increment = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudPageCount.Location = new System.Drawing.Point(80, 78);
-            this.nudPageCount.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.nudPageCount.Name = "nudPageCount";
-            this.nudPageCount.ReadOnly = true;
-            this.nudPageCount.Size = new System.Drawing.Size(78, 19);
-            this.nudPageCount.TabIndex = 3;
+            this.lblAreaAddr.AutoSize = true;
+            this.lblAreaAddr.Location = new System.Drawing.Point(20, 58);
+            this.lblAreaAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.lblAreaAddr.Name = "lblAreaAddr";
+            this.lblAreaAddr.Size = new System.Drawing.Size(47, 12);
+            this.lblAreaAddr.TabIndex = 1;
+            this.lblAreaAddr.Text = "アドレス :";
             // 
-            // btnCreateNewAreaData
+            // cmbArea
             // 
-            this.btnCreateNewAreaData.Location = new System.Drawing.Point(20, 102);
-            this.btnCreateNewAreaData.Margin = new System.Windows.Forms.Padding(0);
-            this.btnCreateNewAreaData.Name = "btnCreateNewAreaData";
-            this.btnCreateNewAreaData.Size = new System.Drawing.Size(138, 23);
-            this.btnCreateNewAreaData.TabIndex = 4;
-            this.btnCreateNewAreaData.Text = "ページ数を変更";
-            this.btnCreateNewAreaData.UseVisualStyleBackColor = true;
+            this.cmbArea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbArea.FormattingEnabled = true;
+            this.cmbArea.Location = new System.Drawing.Point(20, 28);
+            this.cmbArea.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbArea.Name = "cmbArea";
+            this.cmbArea.Size = new System.Drawing.Size(138, 20);
+            this.cmbArea.TabIndex = 0;
             // 
             // grpSelectPage
             // 
@@ -173,6 +173,78 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpSelectPage.TabIndex = 2;
             this.grpSelectPage.TabStop = false;
             this.grpSelectPage.Text = "ページを選択";
+            // 
+            // grpPokemon
+            // 
+            this.grpPokemon.Controls.Add(this.picPokemon4);
+            this.grpPokemon.Controls.Add(this.picPokemon3);
+            this.grpPokemon.Controls.Add(this.picPokemon2);
+            this.grpPokemon.Controls.Add(this.picPokemon1);
+            this.grpPokemon.Controls.Add(this.cmbPokemonName);
+            this.grpPokemon.Location = new System.Drawing.Point(156, 110);
+            this.grpPokemon.Margin = new System.Windows.Forms.Padding(0);
+            this.grpPokemon.Name = "grpPokemon";
+            this.grpPokemon.Padding = new System.Windows.Forms.Padding(0);
+            this.grpPokemon.Size = new System.Drawing.Size(360, 152);
+            this.grpPokemon.TabIndex = 11;
+            this.grpPokemon.TabStop = false;
+            this.grpPokemon.Text = "データ";
+            // 
+            // picPokemon4
+            // 
+            this.picPokemon4.Location = new System.Drawing.Point(274, 66);
+            this.picPokemon4.Margin = new System.Windows.Forms.Padding(0);
+            this.picPokemon4.Name = "picPokemon4";
+            this.picPokemon4.Size = new System.Drawing.Size(64, 64);
+            this.picPokemon4.TabIndex = 1;
+            this.picPokemon4.TabStop = false;
+            // 
+            // picPokemon3
+            // 
+            this.picPokemon3.Location = new System.Drawing.Point(188, 66);
+            this.picPokemon3.Margin = new System.Windows.Forms.Padding(0);
+            this.picPokemon3.Name = "picPokemon3";
+            this.picPokemon3.Size = new System.Drawing.Size(64, 64);
+            this.picPokemon3.TabIndex = 1;
+            this.picPokemon3.TabStop = false;
+            // 
+            // picPokemon2
+            // 
+            this.picPokemon2.Location = new System.Drawing.Point(104, 66);
+            this.picPokemon2.Margin = new System.Windows.Forms.Padding(0);
+            this.picPokemon2.Name = "picPokemon2";
+            this.picPokemon2.Size = new System.Drawing.Size(64, 64);
+            this.picPokemon2.TabIndex = 1;
+            this.picPokemon2.TabStop = false;
+            // 
+            // picPokemon1
+            // 
+            this.picPokemon1.Location = new System.Drawing.Point(20, 66);
+            this.picPokemon1.Margin = new System.Windows.Forms.Padding(0);
+            this.picPokemon1.Name = "picPokemon1";
+            this.picPokemon1.Size = new System.Drawing.Size(64, 64);
+            this.picPokemon1.TabIndex = 1;
+            this.picPokemon1.TabStop = false;
+            // 
+            // cmbPokemonName
+            // 
+            this.cmbPokemonName.FormattingEnabled = true;
+            this.cmbPokemonName.Location = new System.Drawing.Point(20, 28);
+            this.cmbPokemonName.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbPokemonName.Name = "cmbPokemonName";
+            this.cmbPokemonName.Size = new System.Drawing.Size(120, 20);
+            this.cmbPokemonName.TabIndex = 0;
+            // 
+            // lstPage
+            // 
+            this.lstPage.FormattingEnabled = true;
+            this.lstPage.ItemHeight = 12;
+            this.lstPage.Location = new System.Drawing.Point(20, 28);
+            this.lstPage.Margin = new System.Windows.Forms.Padding(0);
+            this.lstPage.Name = "lstPage";
+            this.lstPage.ScrollAlwaysVisible = true;
+            this.lstPage.Size = new System.Drawing.Size(120, 232);
+            this.lstPage.TabIndex = 10;
             // 
             // btnCreateNewPageData
             // 
@@ -231,77 +303,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblPageAddr.TabIndex = 6;
             this.lblPageAddr.Text = "アドレス :";
             // 
-            // lstPage
-            // 
-            this.lstPage.FormattingEnabled = true;
-            this.lstPage.ItemHeight = 12;
-            this.lstPage.Location = new System.Drawing.Point(20, 28);
-            this.lstPage.Margin = new System.Windows.Forms.Padding(0);
-            this.lstPage.Name = "lstPage";
-            this.lstPage.Size = new System.Drawing.Size(120, 232);
-            this.lstPage.TabIndex = 10;
-            // 
-            // grpPokemon
-            // 
-            this.grpPokemon.Controls.Add(this.picPokemon4);
-            this.grpPokemon.Controls.Add(this.picPokemon3);
-            this.grpPokemon.Controls.Add(this.picPokemon2);
-            this.grpPokemon.Controls.Add(this.picPokemon1);
-            this.grpPokemon.Controls.Add(this.cmbPokemonName);
-            this.grpPokemon.Location = new System.Drawing.Point(156, 110);
-            this.grpPokemon.Margin = new System.Windows.Forms.Padding(0);
-            this.grpPokemon.Name = "grpPokemon";
-            this.grpPokemon.Padding = new System.Windows.Forms.Padding(0);
-            this.grpPokemon.Size = new System.Drawing.Size(360, 152);
-            this.grpPokemon.TabIndex = 11;
-            this.grpPokemon.TabStop = false;
-            this.grpPokemon.Text = "データ";
-            // 
-            // cmbPokemonName
-            // 
-            this.cmbPokemonName.FormattingEnabled = true;
-            this.cmbPokemonName.Location = new System.Drawing.Point(20, 28);
-            this.cmbPokemonName.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbPokemonName.Name = "cmbPokemonName";
-            this.cmbPokemonName.Size = new System.Drawing.Size(120, 20);
-            this.cmbPokemonName.TabIndex = 0;
-            // 
-            // picPokemon1
-            // 
-            this.picPokemon1.Location = new System.Drawing.Point(20, 66);
-            this.picPokemon1.Margin = new System.Windows.Forms.Padding(0);
-            this.picPokemon1.Name = "picPokemon1";
-            this.picPokemon1.Size = new System.Drawing.Size(64, 64);
-            this.picPokemon1.TabIndex = 1;
-            this.picPokemon1.TabStop = false;
-            // 
-            // picPokemon2
-            // 
-            this.picPokemon2.Location = new System.Drawing.Point(104, 66);
-            this.picPokemon2.Margin = new System.Windows.Forms.Padding(0);
-            this.picPokemon2.Name = "picPokemon2";
-            this.picPokemon2.Size = new System.Drawing.Size(64, 64);
-            this.picPokemon2.TabIndex = 1;
-            this.picPokemon2.TabStop = false;
-            // 
-            // picPokemon3
-            // 
-            this.picPokemon3.Location = new System.Drawing.Point(188, 66);
-            this.picPokemon3.Margin = new System.Windows.Forms.Padding(0);
-            this.picPokemon3.Name = "picPokemon3";
-            this.picPokemon3.Size = new System.Drawing.Size(64, 64);
-            this.picPokemon3.TabIndex = 1;
-            this.picPokemon3.TabStop = false;
-            // 
-            // picPokemon4
-            // 
-            this.picPokemon4.Location = new System.Drawing.Point(274, 66);
-            this.picPokemon4.Margin = new System.Windows.Forms.Padding(0);
-            this.picPokemon4.Name = "picPokemon4";
-            this.picPokemon4.Size = new System.Drawing.Size(64, 64);
-            this.picPokemon4.TabIndex = 1;
-            this.picPokemon4.TabStop = false;
-            // 
             // PokedexHabitatEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -319,12 +320,12 @@ namespace PochiPochiEditorGabu._Pokemon
             ((System.ComponentModel.ISupportInitialize)(this.nudPageCount)).EndInit();
             this.grpSelectPage.ResumeLayout(false);
             this.grpSelectPage.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudPokemonCount)).EndInit();
             this.grpPokemon.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picPokemon1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picPokemon2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picPokemon3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picPokemon4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picPokemon3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picPokemon2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picPokemon1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPokemonCount)).EndInit();
             this.ResumeLayout(false);
 
         }

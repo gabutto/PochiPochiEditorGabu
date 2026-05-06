@@ -92,6 +92,12 @@
     <Compile Include="_Pokemon\PokedexOrderEditor.Designer.cs">
       <DependentUpon>PokedexOrderEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="_Pokemon\PokedexSearchEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_Pokemon\PokedexSearchEditor.Designer.cs">
+      <DependentUpon>PokedexSearchEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="_Pokemon\PokemonEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,6 +139,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="_Pokemon\PokedexOrderEditor.resx">
       <DependentUpon>PokedexOrderEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_Pokemon\PokedexSearchEditor.resx">
+      <DependentUpon>PokedexSearchEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="_Pokemon\PokemonEditor.resx">
       <DependentUpon>PokemonEditor.cs</DependentUpon>
