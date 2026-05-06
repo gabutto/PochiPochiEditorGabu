@@ -93,13 +93,19 @@ namespace PochiPochiEditorGabu._Pokemon
             _uiStateManager.AddBinaries((lstPage, null));
 
             // event handler
+            btnSave.Click += btnSave_Click;
+            this.FormClosing += PokedexHabitatEditor_FormClosing;
             cmbArea.SelectedIndexChanged += CmbArea_SelectedIndexChanged;
             lstPage.SelectedIndexChanged += (s, e) => LoadPageToUI(lstPage.SelectedIndex);
+            btnCreateNewAreaData.Click += btnCreateNewAreaData_Click;
+            btnCreateNewPageData.Click += btnCreateNewPageData_Click;
         }
 
         private void LoadAreaToUI(int areaIdx)
         {
             _currentAreaIdx = areaIdx;
+            _reservationManager.ClearAllReservations();
+
             var areaEntry = _areaManager.Original[areaIdx];
             uint actualAddr = areaEntry.pAreaAddr - GbaConstants.BaseAddr;
             int pageCount = areaEntry.PageCount;
@@ -132,7 +138,7 @@ namespace PochiPochiEditorGabu._Pokemon
             DataBindingHelper.BindObjectToControls(grpSelectArea, _areaManager.Original[areaIdx]);
 
             // uistate
-            _uiStateManager.UpdateBinary(lstPage, ConvertAreaDataToBytes(_currentAreaPokemonData));
+            _uiStateManager.UpdateBinary(lstPage, ConvertAreaAndPageDataToBytes());
             _uiStateManager.UpdateInitialValues();
 
             // lstPage
@@ -222,7 +228,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 ControlHelper.HandleUnsavedChanges(
                     saveAction: () =>
                     {
-                        /* 必要に応じてエリア保存処理を実装（現在のエリアの変更をROMに書き込む） */
+                        SaveCurrentArea(_currentAreaIdx);
                         LoadAreaToUI(cmbArea.SelectedIndex);
                     },
                     proceedAction: () =>
@@ -288,7 +294,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 _picPokemons[_selectedPicIndex].Image = GetPokemonSprite(selectedPokemonIdx, true);
 
                 // uistate
-                byte[] areaDataBytes = ConvertAreaDataToBytes(_currentAreaPokemonData);
+                byte[] areaDataBytes = ConvertAreaAndPageDataToBytes();
                 _uiStateManager.UpdateBinary(lstPage, areaDataBytes);
             }
         }
@@ -309,16 +315,26 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
-        private byte[] ConvertAreaDataToBytes(List<ushort[]> pageDataList)
+        private byte[] ConvertAreaAndPageDataToBytes()
         {
             using (var ms = new MemoryStream())
             using (var writer = new BinaryWriter(ms))
             {
-                foreach (var pageData in pageDataList)
+                var area = _areaManager.Working[_currentAreaIdx];
+                writer.Write(area.pAreaAddr);
+                writer.Write(area.PageCount);
+
+                for (int i = 0; i < _currentAreaPages.Count; i++)
                 {
-                    foreach (var pokemonIdx in pageData)
+                    writer.Write(_currentAreaPages[i].pPageAddr);
+                    writer.Write(_currentAreaPages[i].PokemonCount);
+
+                    if (i < _currentAreaPokemonData.Count)
                     {
-                        writer.Write(pokemonIdx);
+                        foreach (var pokemonIdx in _currentAreaPokemonData[i])
+                        {
+                            writer.Write(pokemonIdx);
+                        }
                     }
                 }
                 return ms.ToArray();
@@ -347,6 +363,197 @@ namespace PochiPochiEditorGabu._Pokemon
             {
                 return null;
             }
+        }
+
+        private void btnCreateNewPageData_Click(object sender, EventArgs e)
+        {
+            using (var popup = new QuickInputPopup())
+            {
+                popup.Setup(txtPageAddr.Text, nudMin: 0, nudMax: 4);
+
+                if (popup.ShowDialog(this) == DialogResult.OK)
+                {
+                    string targetAddressStr = popup.ResultAddress;
+                    int entryCount = popup.ResultEntryCount;
+
+                    if (targetAddressStr != "null" && ControlHelper.TryParseAddress(targetAddressStr, out uint targetAddress))
+                    {
+                        var page = _currentAreaPages[_currentPageIdx];
+                        page.pPageAddr = targetAddress + GbaConstants.BaseAddr;
+                        page.PokemonCount = (byte)entryCount;
+
+                        // pokemon dummy
+                        var newData = new ushort[entryCount];
+                        _currentAreaPokemonData[_currentPageIdx] = newData;
+
+                        // reserve
+                        byte[] data = new byte[entryCount * 2];
+                        Buffer.BlockCopy(newData, 0, data, 0, newData.Length * 2);
+                        _reservationManager.SetReservation(txtPageAddr, targetAddress, data);
+
+                        // uistate
+                        LoadPageToUI(_currentPageIdx);
+                        _uiStateManager.UpdateBinary(lstPage, ConvertAreaAndPageDataToBytes());
+                    }
+                    else if (targetAddressStr == "null")
+                    {
+                        // null
+                        var page = _currentAreaPages[_currentPageIdx];
+                        page.pPageAddr = 0;
+                        page.PokemonCount = 0;
+                        _currentAreaPokemonData[_currentPageIdx] = new ushort[0];
+
+                        _reservationManager.ClearReservation(txtPageAddr);
+
+                        LoadPageToUI(_currentPageIdx);
+                        _uiStateManager.UpdateBinary(lstPage, ConvertAreaAndPageDataToBytes());
+                    }
+                }
+            }
+        }
+
+        private void btnCreateNewAreaData_Click(object sender, EventArgs e)
+        {
+            using (var popup = new QuickInputPopup())
+            {
+                popup.Setup(txtAreaAddr.Text, nudMin: 0, nudMax: 255);
+
+                if (popup.ShowDialog(this) == DialogResult.OK)
+                {
+                    string targetAddressStr = popup.ResultAddress;
+                    int entryCount = popup.ResultEntryCount;
+
+                    if (targetAddressStr != "null" && ControlHelper.TryParseAddress(targetAddressStr, out uint targetAddress))
+                    {
+                        var area = _areaManager.Working[_currentAreaIdx];
+                        area.pAreaAddr = targetAddress + GbaConstants.BaseAddr;
+                        area.PageCount = (byte)entryCount;
+
+                        // area dummy
+                        _currentAreaPages.Clear();
+                        _currentAreaPokemonData.Clear();
+                        for (int i = 0; i < entryCount; i++)
+                        {
+                            _currentAreaPages.Add(new PokedexHabitatPageEntry { pPageAddr = 0, PokemonCount = 0 });
+                            _currentAreaPokemonData.Add(new ushort[0]);
+                        }
+
+                        // reserve
+                        var tempManager = new EntryManager<PokedexHabitatPageEntry>(_romData, _tblReader, null);
+                        int entrySize = tempManager.GetEntrySize();
+                        byte[] data = new byte[entryCount * entrySize];
+                        _reservationManager.SetReservation(txtAreaAddr, targetAddress, data);
+
+                        // uistate
+                        DataBindingHelper.BindObjectToControls(grpSelectArea, area);
+
+                        _isUpdatingUI = true;
+                        int prevSelectedIndex = lstPage.SelectedIndex;
+                        lstPage.Items.Clear();
+                        for (int i = 0; i < _currentAreaPages.Count; i++)
+                        {
+                            lstPage.Items.Add($"ページ {i + 1}");
+                        }
+
+                        if (lstPage.Items.Count > 0)
+                        {
+                            lstPage.SelectedIndex = Math.Min(Math.Max(0, prevSelectedIndex), lstPage.Items.Count - 1);
+                        }
+                        _isUpdatingUI = false;
+
+                        LoadPageToUI(lstPage.SelectedIndex);
+                        _uiStateManager.UpdateBinary(lstPage, ConvertAreaAndPageDataToBytes());
+                    }
+                }
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveCurrentArea(_currentAreaIdx);
+            _uiStateManager.UpdateInitialValues();
+        }
+
+        private void PokedexHabitatEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (btnSave.Enabled)
+            {
+                _isUpdatingUI = true;
+
+                ControlHelper.HandleUnsavedChanges(
+                    () =>
+                    {
+                        SaveCurrentArea(_currentAreaIdx);
+                    },
+                    () =>
+                    {
+                        // unnecessary
+                    },
+                    () =>
+                    {
+                        e.Cancel = true;
+                    }
+                );
+
+                _isUpdatingUI = false;
+            }
+        }
+
+        private void SaveCurrentArea(int idx)
+        {
+            // area
+            var areaEntry = _areaManager.Working[idx];
+            DataBindingHelper.BindControlsToObject(grpSelectArea, areaEntry);
+
+            // reserve
+            var areaReservation = _reservationManager.GetReservation(txtAreaAddr);
+            if (areaReservation != null)
+            {
+                areaEntry.pAreaAddr = areaReservation.Address + GbaConstants.BaseAddr;
+            }
+
+            uint? actualAreaAddr = areaEntry.pAreaAddr == 0 ? (uint?)null : areaEntry.pAreaAddr - GbaConstants.BaseAddr;
+
+            // page, pokemon
+            for (int i = 0; i < _currentAreaPages.Count; i++)
+            {
+                var page = _currentAreaPages[i];
+
+                if (i == _currentPageIdx)
+                {
+                    DataBindingHelper.BindControlsToObject(grpSelectPage, page);
+                    var pageReservation = _reservationManager.GetReservation(txtPageAddr);
+                    if (pageReservation != null)
+                    {
+                        page.pPageAddr = pageReservation.Address + GbaConstants.BaseAddr;
+                    }
+                }
+
+                uint? actualPageAddr = page.pPageAddr == 0 ? (uint?)null : page.pPageAddr - GbaConstants.BaseAddr;
+
+                if (actualPageAddr.HasValue && page.PokemonCount > 0)
+                {
+                    var pokemonData = _currentAreaPokemonData[i];
+                    for (int p = 0; p < pokemonData.Length; p++)
+                    {
+                        int offset = (int)(actualPageAddr.Value + p * 2);
+                        byte[] bytes = BitConverter.GetBytes(pokemonData[p]);
+                        _romData[offset] = bytes[0];
+                        _romData[offset + 1] = bytes[1];
+                    }
+                }
+            }
+
+            if (actualAreaAddr.HasValue && areaEntry.PageCount > 0)
+            {
+                IoHelper.WriteStructures(
+                    _romData,
+                    (int)actualAreaAddr.Value,
+                    _currentAreaPages.Take(areaEntry.PageCount),
+                    _tblReader);
+            }
+
+            _areaManager.Save(idx);
         }
     }
 }
