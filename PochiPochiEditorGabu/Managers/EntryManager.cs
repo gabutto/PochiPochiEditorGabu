@@ -416,6 +416,20 @@ namespace PochiPochiEditorGabu.Managers
         public byte _Padding3;
     }
 
+    public class PokedexSearchSortEntry
+    {
+        public ushort _Idx;
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 
