@@ -443,12 +443,12 @@ namespace PochiPochiEditorGabu._Pokemon
             clbTmHm.EndUpdate();
 
             // pokemon name for cmb
-            var classNames = _pokemonNameManager.Original
+            var pokemonNames = _pokemonNameManager.Original
                              .Select(entry => entry._PokemonName)
                              .ToArray();
-            cmbPokemonName.Items.AddRange(classNames);
-            cmbEvoToPokemon.Items.AddRange(classNames);
-            cmbEvoInputAssistPokemon.Items.AddRange(classNames);
+            cmbPokemonName.Items.AddRange(pokemonNames);
+            cmbEvoToPokemon.Items.AddRange(pokemonNames);
+            cmbEvoInputAssistPokemon.Items.AddRange(pokemonNames);
 
             // ability for cmb
             var abilityNames = _abilityNameManager.Original
@@ -532,8 +532,8 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void InitializeUIStates()
         {
-            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
             btnSave.Enabled = false;
+            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
             _uiStateManager.AddControls(
                 txtPokemonRename,
                 txtSpriteFrontImgAddr, txtSpriteBackImgAddr, txtSpriteNormalPalAddr, txtSpriteShinyPalAddr,

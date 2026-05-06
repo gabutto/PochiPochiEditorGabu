@@ -37,7 +37,8 @@ namespace PochiPochiEditorGabu.Helpers
         public static List<T> ReadStructures<T>(
             byte[] data,
             uint? addr,
-            int count,TblFileReader tblReader,
+            int count,
+            TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null) where T : new()
         {
             var list = new List<T>();

@@ -398,6 +398,25 @@ namespace PochiPochiEditorGabu.Managers
         public ushort _OrderIdx;
     }
 
+    public class PokedexHabitatAreaEntry
+    {
+        public uint pAreaAddr;
+        public byte PageCount;
+        public byte _Padding1;
+        public byte _Padding2;
+        public byte _Padding3;
+    }
+
+    public class PokedexHabitatPageEntry
+    {
+        public uint pPageAddr;
+        public byte PokemonCount;
+        public byte _Padding1;
+        public byte _Padding2;
+        public byte _Padding3;
+    }
+
+
 
 
 
