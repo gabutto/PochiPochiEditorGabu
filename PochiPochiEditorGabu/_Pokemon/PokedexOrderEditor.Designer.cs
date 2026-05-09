@@ -40,10 +40,11 @@ namespace PochiPochiEditorGabu._Pokemon
             this.txtSpeciesHex = new System.Windows.Forms.TextBox();
             this.lblSpeciesHex = new System.Windows.Forms.Label();
             this.grpNotes = new System.Windows.Forms.GroupBox();
-            this.lblNote1 = new System.Windows.Forms.Label();
             this.lblNote2 = new System.Windows.Forms.Label();
+            this.lblNote1 = new System.Windows.Forms.Label();
             this.lstUnused = new System.Windows.Forms.ListBox();
             this.lblUnused = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpecies)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudOrder)).BeginInit();
@@ -164,16 +165,6 @@ namespace PochiPochiEditorGabu._Pokemon
             this.grpNotes.TabStop = false;
             this.grpNotes.Text = "備考";
             // 
-            // lblNote1
-            // 
-            this.lblNote1.AutoSize = true;
-            this.lblNote1.Location = new System.Drawing.Point(20, 28);
-            this.lblNote1.Margin = new System.Windows.Forms.Padding(0);
-            this.lblNote1.Name = "lblNote1";
-            this.lblNote1.Size = new System.Drawing.Size(130, 12);
-            this.lblNote1.TabIndex = 0;
-            this.lblNote1.Text = "赤色 : 重複する図鑑番号";
-            // 
             // lblNote2
             // 
             this.lblNote2.AutoSize = true;
@@ -183,6 +174,16 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblNote2.Size = new System.Drawing.Size(123, 12);
             this.lblNote2.TabIndex = 0;
             this.lblNote2.Text = "黄色 : 図鑑番号範囲外";
+            // 
+            // lblNote1
+            // 
+            this.lblNote1.AutoSize = true;
+            this.lblNote1.Location = new System.Drawing.Point(20, 28);
+            this.lblNote1.Margin = new System.Windows.Forms.Padding(0);
+            this.lblNote1.Name = "lblNote1";
+            this.lblNote1.Size = new System.Drawing.Size(130, 12);
+            this.lblNote1.TabIndex = 0;
+            this.lblNote1.Text = "赤色 : 重複する図鑑番号";
             // 
             // lstUnused
             // 
@@ -205,11 +206,21 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblUnused.TabIndex = 8;
             this.lblUnused.Text = "未使用の図鑑番号 :";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(14, 416);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(395, 12);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "※「ポケモン」の図鑑タブは、図鑑番号準拠なので図鑑番号を変更する際は要修正";
+            // 
             // PokedexOrderEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(426, 423);
+            this.ClientSize = new System.Drawing.Size(426, 441);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lblUnused);
             this.Controls.Add(this.lstUnused);
             this.Controls.Add(this.grpNotes);
@@ -252,5 +263,6 @@ namespace PochiPochiEditorGabu._Pokemon
         private System.Windows.Forms.Label lblNote1;
         private System.Windows.Forms.ListBox lstUnused;
         private System.Windows.Forms.Label lblUnused;
+        private System.Windows.Forms.Label label1;
     }
 }

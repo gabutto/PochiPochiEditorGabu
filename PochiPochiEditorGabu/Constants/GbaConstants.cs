@@ -87,6 +87,9 @@
 
         public const float WaveformScale = 128.0f;
 
+        public const int EggMoveTableTerminator = 0xFFFF;
+        public const int SpeciesIndexThreshold = 0x4E20;
+
         public const int ItemSpriteSize = 24;
 
         public const int DefaultScale = 2;

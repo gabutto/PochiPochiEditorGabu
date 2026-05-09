@@ -306,12 +306,6 @@ namespace PochiPochiEditorGabu.Managers
         public string _TypeName = string.Empty;
     }
 
-    public class MoveNameEntry
-    {
-        [DynamicString("MoveNameEntryLength")]
-        public string _MoveName = string.Empty;
-    }
-
     public class PokemonEvolutionEntry
     {
         public byte EvoCondMethod; 
@@ -421,14 +415,21 @@ namespace PochiPochiEditorGabu.Managers
         public ushort _Idx;
     }
 
+    public class MoveNameEntry
+    {
+        [DynamicString("MoveNameEntryLength")]
+        public string _MoveName = string.Empty;
+    }
 
 
 
 
 
 
-
-
+    public class EggMoveEntry
+    {
+        public ushort _MoveIdx;
+    }
 
 
 

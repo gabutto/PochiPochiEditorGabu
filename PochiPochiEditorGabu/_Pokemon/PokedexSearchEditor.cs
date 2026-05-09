@@ -442,7 +442,24 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void SaveCurrentAllSort()
         {
+            SaveSortManagerIfChanged("SortAiueo", _sortAiueoManager);
+            SaveSortManagerIfChanged("SortType", _sortTypeManager);
+            SaveSortManagerIfChanged("SortWeight", _sortWeightManager);
+            SaveSortManagerIfChanged("SortHeight", _sortHeightManager);
+        }
 
+        private void SaveSortManagerIfChanged(string binaryKey, EntryManager<PokedexSearchSortEntry> manager)
+        {
+            if (_uiStateManager.HasBinaryChanges(binaryKey))
+            {
+                for (int i = 0; i < manager.Working.Count; i++)
+                {
+                    if (manager.Original[i]._Idx != manager.Working[i]._Idx)
+                    {
+                        manager.Save(i);
+                    }
+                }
+            }
         }
     }
 }

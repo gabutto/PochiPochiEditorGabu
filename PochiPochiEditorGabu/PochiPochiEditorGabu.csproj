@@ -80,6 +80,12 @@
     <Compile Include="_Item\ItemEditor.Designer.cs">
       <DependentUpon>ItemEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="_Move\EggMoveEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_Move\EggMoveEditor.Designer.cs">
+      <DependentUpon>EggMoveEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="_Pokemon\PokedexHabitatEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,6 +139,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="_Item\ItemEditor.resx">
       <DependentUpon>ItemEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_Move\EggMoveEditor.resx">
+      <DependentUpon>EggMoveEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="_Pokemon\PokedexHabitatEditor.resx">
       <DependentUpon>PokedexHabitatEditor.cs</DependentUpon>
