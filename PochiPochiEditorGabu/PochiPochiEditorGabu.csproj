@@ -86,6 +86,12 @@
     <Compile Include="_Move\EggMoveEditor.Designer.cs">
       <DependentUpon>EggMoveEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="_Move\TmHmTutorEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_Move\TmHmTutorEditor.Designer.cs">
+      <DependentUpon>TmHmTutorEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="_Pokemon\PokedexHabitatEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,6 +148,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="_Move\EggMoveEditor.resx">
       <DependentUpon>EggMoveEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_Move\TmHmTutorEditor.resx">
+      <DependentUpon>TmHmTutorEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="_Pokemon\PokedexHabitatEditor.resx">
       <DependentUpon>PokedexHabitatEditor.cs</DependentUpon>

@@ -42,14 +42,14 @@ namespace PochiPochiEditorGabu
             this.btnBattleBackground = new System.Windows.Forms.Button();
             this.btnOverworldSprite = new System.Windows.Forms.Button();
             this.btnMap = new System.Windows.Forms.Button();
-            this.btnApplyPatch = new System.Windows.Forms.Button();
+            this.btnFameChecker = new System.Windows.Forms.Button();
             this.btnMail = new System.Windows.Forms.Button();
             this.btnTrainerList = new System.Windows.Forms.Button();
             this.btnTrainerClass = new System.Windows.Forms.Button();
             this.btnIngameTrade = new System.Windows.Forms.Button();
             this.btnTrainerSprite = new System.Windows.Forms.Button();
             this.btnItem = new System.Windows.Forms.Button();
-            this.btnExpandTable = new System.Windows.Forms.Button();
+            this.btnMoveData = new System.Windows.Forms.Button();
             this.btnEggMove = new System.Windows.Forms.Button();
             this.btnPokedexSearch = new System.Windows.Forms.Button();
             this.btnPokedexOrder = new System.Windows.Forms.Button();
@@ -65,8 +65,6 @@ namespace PochiPochiEditorGabu
             this.lblFsfResultAddr = new System.Windows.Forms.Label();
             this.lblFsfStartAddr = new System.Windows.Forms.Label();
             this.picFormPokemon = new System.Windows.Forms.PictureBox();
-            this.btnMoveData = new System.Windows.Forms.Button();
-            this.btnFameChecker = new System.Windows.Forms.Button();
             this.grpSelectEditor.SuspendLayout();
             this.grpFreeSpaceFinder.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudFsfByteAmount)).BeginInit();
@@ -132,7 +130,6 @@ namespace PochiPochiEditorGabu
             this.grpSelectEditor.Controls.Add(this.btnOverworldSprite);
             this.grpSelectEditor.Controls.Add(this.btnMap);
             this.grpSelectEditor.Controls.Add(this.btnFameChecker);
-            this.grpSelectEditor.Controls.Add(this.btnApplyPatch);
             this.grpSelectEditor.Controls.Add(this.btnMail);
             this.grpSelectEditor.Controls.Add(this.btnTrainerList);
             this.grpSelectEditor.Controls.Add(this.btnTrainerClass);
@@ -140,7 +137,6 @@ namespace PochiPochiEditorGabu
             this.grpSelectEditor.Controls.Add(this.btnTrainerSprite);
             this.grpSelectEditor.Controls.Add(this.btnItem);
             this.grpSelectEditor.Controls.Add(this.btnMoveData);
-            this.grpSelectEditor.Controls.Add(this.btnExpandTable);
             this.grpSelectEditor.Controls.Add(this.btnEggMove);
             this.grpSelectEditor.Controls.Add(this.btnPokedexSearch);
             this.grpSelectEditor.Controls.Add(this.btnPokedexOrder);
@@ -150,7 +146,7 @@ namespace PochiPochiEditorGabu
             this.grpSelectEditor.Location = new System.Drawing.Point(20, 72);
             this.grpSelectEditor.Margin = new System.Windows.Forms.Padding(0);
             this.grpSelectEditor.Name = "grpSelectEditor";
-            this.grpSelectEditor.Size = new System.Drawing.Size(404, 266);
+            this.grpSelectEditor.Size = new System.Drawing.Size(404, 238);
             this.grpSelectEditor.TabIndex = 4;
             this.grpSelectEditor.TabStop = false;
             this.grpSelectEditor.Text = "編集項目を選択";
@@ -215,15 +211,15 @@ namespace PochiPochiEditorGabu
             this.btnMap.Text = "マップ";
             this.btnMap.UseVisualStyleBackColor = true;
             // 
-            // btnApplyPatch
+            // btnFameChecker
             // 
-            this.btnApplyPatch.Location = new System.Drawing.Point(144, 224);
-            this.btnApplyPatch.Margin = new System.Windows.Forms.Padding(0);
-            this.btnApplyPatch.Name = "btnApplyPatch";
-            this.btnApplyPatch.Size = new System.Drawing.Size(114, 23);
-            this.btnApplyPatch.TabIndex = 0;
-            this.btnApplyPatch.Text = "※パッチを適用";
-            this.btnApplyPatch.UseVisualStyleBackColor = true;
+            this.btnFameChecker.Location = new System.Drawing.Point(144, 196);
+            this.btnFameChecker.Margin = new System.Windows.Forms.Padding(0);
+            this.btnFameChecker.Name = "btnFameChecker";
+            this.btnFameChecker.Size = new System.Drawing.Size(114, 23);
+            this.btnFameChecker.TabIndex = 0;
+            this.btnFameChecker.Text = "ボイスチェッカー";
+            this.btnFameChecker.UseVisualStyleBackColor = true;
             // 
             // btnMail
             // 
@@ -285,15 +281,15 @@ namespace PochiPochiEditorGabu
             this.btnItem.Text = "アイテム";
             this.btnItem.UseVisualStyleBackColor = true;
             // 
-            // btnExpandTable
+            // btnMoveData
             // 
-            this.btnExpandTable.Location = new System.Drawing.Point(20, 224);
-            this.btnExpandTable.Margin = new System.Windows.Forms.Padding(0);
-            this.btnExpandTable.Name = "btnExpandTable";
-            this.btnExpandTable.Size = new System.Drawing.Size(114, 23);
-            this.btnExpandTable.TabIndex = 0;
-            this.btnExpandTable.Text = "※テーブルを拡張";
-            this.btnExpandTable.UseVisualStyleBackColor = true;
+            this.btnMoveData.Location = new System.Drawing.Point(20, 140);
+            this.btnMoveData.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMoveData.Name = "btnMoveData";
+            this.btnMoveData.Size = new System.Drawing.Size(114, 23);
+            this.btnMoveData.TabIndex = 0;
+            this.btnMoveData.Text = "技データ";
+            this.btnMoveData.UseVisualStyleBackColor = true;
             // 
             // btnEggMove
             // 
@@ -364,7 +360,7 @@ namespace PochiPochiEditorGabu
             this.grpFreeSpaceFinder.Controls.Add(this.lblFsfByteAmount);
             this.grpFreeSpaceFinder.Controls.Add(this.lblFsfResultAddr);
             this.grpFreeSpaceFinder.Controls.Add(this.lblFsfStartAddr);
-            this.grpFreeSpaceFinder.Location = new System.Drawing.Point(440, 72);
+            this.grpFreeSpaceFinder.Location = new System.Drawing.Point(440, 42);
             this.grpFreeSpaceFinder.Margin = new System.Windows.Forms.Padding(0);
             this.grpFreeSpaceFinder.Name = "grpFreeSpaceFinder";
             this.grpFreeSpaceFinder.Padding = new System.Windows.Forms.Padding(0);
@@ -444,38 +440,18 @@ namespace PochiPochiEditorGabu
             // 
             // picFormPokemon
             // 
-            this.picFormPokemon.Location = new System.Drawing.Point(462, 234);
+            this.picFormPokemon.Location = new System.Drawing.Point(462, 206);
             this.picFormPokemon.Margin = new System.Windows.Forms.Padding(0);
             this.picFormPokemon.Name = "picFormPokemon";
             this.picFormPokemon.Size = new System.Drawing.Size(136, 104);
             this.picFormPokemon.TabIndex = 6;
             this.picFormPokemon.TabStop = false;
             // 
-            // btnMoveData
-            // 
-            this.btnMoveData.Location = new System.Drawing.Point(20, 140);
-            this.btnMoveData.Margin = new System.Windows.Forms.Padding(0);
-            this.btnMoveData.Name = "btnMoveData";
-            this.btnMoveData.Size = new System.Drawing.Size(114, 23);
-            this.btnMoveData.TabIndex = 0;
-            this.btnMoveData.Text = "技データ";
-            this.btnMoveData.UseVisualStyleBackColor = true;
-            // 
-            // btnFameChecker
-            // 
-            this.btnFameChecker.Location = new System.Drawing.Point(144, 196);
-            this.btnFameChecker.Margin = new System.Windows.Forms.Padding(0);
-            this.btnFameChecker.Name = "btnFameChecker";
-            this.btnFameChecker.Size = new System.Drawing.Size(114, 23);
-            this.btnFameChecker.TabIndex = 0;
-            this.btnFameChecker.Text = "ボイスチェッカー";
-            this.btnFameChecker.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(668, 355);
+            this.ClientSize = new System.Drawing.Size(668, 329);
             this.Controls.Add(this.picFormPokemon);
             this.Controls.Add(this.grpFreeSpaceFinder);
             this.Controls.Add(this.grpSelectEditor);
@@ -524,8 +500,6 @@ namespace PochiPochiEditorGabu
         private System.Windows.Forms.Button btnTmHmTutor;
         private System.Windows.Forms.Button btnPokedexHabitat;
         private System.Windows.Forms.Button btnPokemon;
-        private System.Windows.Forms.Button btnApplyPatch;
-        private System.Windows.Forms.Button btnExpandTable;
         private System.Windows.Forms.GroupBox grpFreeSpaceFinder;
         private System.Windows.Forms.Button btnFsfSearch;
         private System.Windows.Forms.NumericUpDown nudFsfByteAmount;

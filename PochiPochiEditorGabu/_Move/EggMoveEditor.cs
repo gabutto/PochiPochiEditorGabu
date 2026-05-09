@@ -154,7 +154,7 @@ namespace PochiPochiEditorGabu._Move
             }
             tableBytes.AddRange(BitConverter.GetBytes(GbaConstants.EggMoveTableTerminator));
             byte[] data = tableBytes.ToArray();
-            _uiStateManager.AddBinaries(("EggMoveTable", data));
+            _uiStateManager.AddBinaries((lstEggMoves, data));
 
             RefreshEggMoveTableDisplay();
         }
@@ -218,7 +218,7 @@ namespace PochiPochiEditorGabu._Move
             tableBytes.AddRange(BitConverter.GetBytes(GbaConstants.EggMoveTableTerminator));
 
             byte[] data = tableBytes.ToArray();
-            _uiStateManager.UpdateBinary("EggMoveTable", data);
+            _uiStateManager.UpdateBinary(lstEggMoves, data);
         }
 
         private void LstEggMoves_SelectedIndexChanged(object sender, EventArgs e)
