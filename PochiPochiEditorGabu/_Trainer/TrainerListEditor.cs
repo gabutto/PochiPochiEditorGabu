@@ -1,11 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using PochiPochiEditorGabu.Constants;
@@ -25,10 +23,6 @@ namespace PochiPochiEditorGabu._Trainer
         private UIStateManager _uiStateManager;
 
         private EntryManager<TrainerListEntry> _trainerListManager;
-        private EntryManager<TrainerPartyEntry00> _trainerParty00Manager;
-        private EntryManager<TrainerPartyEntry01> _trainerParty01Manager;
-        private EntryManager<TrainerPartyEntry02> _trainerParty02Manager;
-        private EntryManager<TrainerPartyEntry03> _trainerParty03Manager;
 
         private EntryManager<TrainerClassNameEntry> _classNameManager;
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
@@ -40,6 +34,9 @@ namespace PochiPochiEditorGabu._Trainer
 
         private bool _isUpdatingUI = false;
         private int _currentTrainerIdx = 0;
+
+        private IList _currentPartyEntries;
+        private const string PartyBinaryKey = "PartyBinary";
 
         public TrainerListEditor(
             byte[] romData,
@@ -103,6 +100,7 @@ namespace PochiPochiEditorGabu._Trainer
             lstTrainerData.SelectedIndexChanged += lstTrainerData_SelectedIndexChanged;
             txtName.TextChanged += txtName_TextChanged;
             nudSpriteIdx.ValueChanged += nudTrainerSpriteIdx_ValueChanged;
+
             foreach (var nud in new[] {
                 cmbHoldItem1,
                 cmbHoldItem2,
@@ -112,6 +110,24 @@ namespace PochiPochiEditorGabu._Trainer
             {
                 nud.SelectedIndexChanged += ItemComboBox_SelectedIndexChanged;
             }
+
+            cmbPartyData.SelectedIndexChanged += cmbPartyData_SelectedIndexChanged;
+
+            EventHandler partyDataChangedHandler = (sender, e) =>
+            {
+                if (_isUpdatingUI) return;
+                UpdateCurrentPartyEntryFromUI();
+            };
+
+            cmbPartyPokemon.SelectedIndexChanged += partyDataChangedHandler;
+            nudPartyLevel.ValueChanged += partyDataChangedHandler;
+            nudPartyIv.ValueChanged += partyDataChangedHandler;
+            cmbPartyEv.SelectedIndexChanged += partyDataChangedHandler;
+            cmbPartyItem.SelectedIndexChanged += partyDataChangedHandler;
+            cmbPartyMove1.SelectedIndexChanged += partyDataChangedHandler;
+            cmbPartyMove2.SelectedIndexChanged += partyDataChangedHandler;
+            cmbPartyMove3.SelectedIndexChanged += partyDataChangedHandler;
+            cmbPartyMove4.SelectedIndexChanged += partyDataChangedHandler;
         }
 
         private void InitializeControls()
@@ -186,6 +202,9 @@ namespace PochiPochiEditorGabu._Trainer
             // name
             txtName.Text = _trainerListManager.Original[idx]._Name;
 
+            // party data
+            LoadPartyData(idx);
+
             UpdateTrainerSprite();
             UpdateItemImages();
 
@@ -257,9 +276,238 @@ namespace PochiPochiEditorGabu._Trainer
             string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
 
             _isUpdatingUI = true;
+            // direct
             _trainerListManager.Working[_currentTrainerIdx]._Name = validName;
             lstTrainerData.Items[_currentTrainerIdx] = $"{_currentTrainerIdx:X4} - {validName}";
             _isUpdatingUI = false;
+        }
+
+        private void LoadPartyData(int idx)
+        {
+            uint? partyAddrOffset = _trainerListManager.Original[idx].pPartyAddr;
+            uint? actualPartyAddr = 
+                (partyAddrOffset == 0) 
+                ? null 
+                : partyAddrOffset - GbaConstants.BaseAddr;
+            int partyCount = _trainerListManager.Original[idx].PartyCount;
+            byte dataType = _trainerListManager.Original[idx].DataType;
+
+            // iv or ev?
+            bool isCFRU = _config.GetBool("IsAppliedCFRU");
+            bool enableTrainerEV = _config.GetBool("EnableTrainerEV");
+            bool isEvMode = isCFRU && enableTrainerEV;
+
+            rbPartyEv.Checked = isEvMode;
+            rbPartyIv.Checked = !isEvMode;
+            rbPartyEv.Enabled = isEvMode;
+            cmbPartyEv.Enabled = isEvMode;
+            rbPartyIv.Enabled = !isEvMode;
+            nudPartyIv.Enabled = !isEvMode;
+
+            _currentPartyEntries = new List<object>();
+
+            if (actualPartyAddr.HasValue && partyCount > 0)
+            {
+                switch (dataType)
+                {
+                    case 0:
+                        _currentPartyEntries = IoHelper.ReadStructures<TrainerPartyEntry00>(
+                            _romData, 
+                            actualPartyAddr, 
+                            partyCount, 
+                            _tblReader).Cast<object>().ToList();
+                        break;
+                    case 1:
+                        _currentPartyEntries = IoHelper.ReadStructures<TrainerPartyEntry01>(
+                            _romData, 
+                            actualPartyAddr, 
+                            partyCount, 
+                            _tblReader).Cast<object>().ToList();
+                        break;
+                    case 2:
+                        _currentPartyEntries = IoHelper.ReadStructures<TrainerPartyEntry02>(
+                            _romData, 
+                            actualPartyAddr, 
+                            partyCount, 
+                            _tblReader).Cast<object>().ToList();
+                        break;
+                    case 3:
+                        _currentPartyEntries = IoHelper.ReadStructures<TrainerPartyEntry03>(
+                            _romData, 
+                            actualPartyAddr, 
+                            partyCount,
+                            _tblReader).Cast<object>().ToList();
+                        break;
+                }
+            }
+
+            UpdatePartyBinaryState(true);
+
+            _isUpdatingUI = true;
+            cmbPartyData.Items.Clear();
+            if (partyCount > 0)
+            {
+                for (int i = 0; i < partyCount; i++)
+                {
+                    cmbPartyData.Items.Add($"{i + 1}体目");
+                }
+                cmbPartyData.SelectedIndex = 0;
+                UpdatePartyUIForIndex(0);
+            }
+            else
+            {
+                ClearPartyUI();
+            }
+            _isUpdatingUI = false;
+        }
+
+        private void UpdatePartyUIForIndex(int pIdx)
+        {
+            if (_currentPartyEntries == null || pIdx < 0 || pIdx >= _currentPartyEntries.Count) return;
+
+            object entry = _currentPartyEntries[pIdx];
+            DataBindingHelper.BindObjectToControls(grpPartyData, entry);
+
+            // _PartyIvOrEv
+            ushort ivOrEv = 0;
+            if (entry is TrainerPartyEntry00 p00) ivOrEv = p00._PartyIvOrEv;
+            else if (entry is TrainerPartyEntry01 p01) ivOrEv = p01._PartyIvOrEv;
+            else if (entry is TrainerPartyEntry02 p02) ivOrEv = p02._PartyIvOrEv;
+            else if (entry is TrainerPartyEntry03 p03) ivOrEv = p03._PartyIvOrEv;
+
+            if (rbPartyEv.Checked)
+            {
+                cmbPartyEv.SelectedIndex = ivOrEv < cmbPartyEv.Items.Count ? ivOrEv : -1;
+                nudPartyIv.Value = Math.Max(nudPartyIv.Minimum, 0);
+            }
+            else
+            {
+                nudPartyIv.Value = Math.Min(ivOrEv, nudPartyIv.Maximum);
+                cmbPartyEv.SelectedIndex = -1;
+            }
+
+            byte dataType = _trainerListManager.Working[_currentTrainerIdx].DataType;
+            UpdatePartyUIByDataType(dataType);
+            UpdateItemImages();
+        }
+
+        private void ClearPartyUI()
+        {
+            DisableAndResetControl(grpPartyData);
+            cmbPartyData.Enabled = false;
+        }
+
+        private void DisableAndResetControl(Control target)
+        {
+            target.Enabled = false;
+
+            if (target is ComboBox cmb) cmb.SelectedIndex = -1;
+            else if (target is NumericUpDown nud) nud.Value = Math.Max(nud.Minimum, 0);
+            else if (target is TextBox txt) txt.Text = string.Empty;
+            else if (target is CheckBox chk) chk.Checked = false;
+            else if (target is RadioButton rb) rb.Checked = false;
+
+            target.ResetControls();
+        }
+
+        private void UpdatePartyUIByDataType(byte dataType)
+        {
+            grpPartyData.SetControlsEnabled(true);
+            cmbPartyData.Enabled = true;
+
+            bool isEvMode = _config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableTrainerEV");
+            rbPartyEv.Enabled = isEvMode;
+            cmbPartyEv.Enabled = isEvMode;
+            rbPartyIv.Enabled = !isEvMode;
+            nudPartyIv.Enabled = !isEvMode;
+
+            if (dataType == 0) // no item, no move
+            {
+                DisableAndResetControl(cmbPartyItem);
+                DisableAndResetControl(grpPartyMoves);
+            }
+            else if (dataType == 1) // no item, has move
+            {
+                DisableAndResetControl(cmbPartyItem);
+            }
+            else if (dataType == 2) // has item、no move
+            {
+                DisableAndResetControl(grpPartyMoves);
+            }
+            else if (dataType == 3) // has item、has move
+            {
+                //
+            }
+        }
+
+        private void UpdatePartyBinaryState(bool isInitial)
+        {
+            byte[] partyBinary = null;
+
+            if (_currentPartyEntries != null && _currentPartyEntries.Count > 0)
+            {
+                int entrySize = Marshal.SizeOf(_currentPartyEntries[0].GetType());
+                int totalSize = entrySize * _currentPartyEntries.Count;
+                partyBinary = new byte[totalSize];
+
+                IntPtr ptr = Marshal.AllocHGlobal(totalSize);
+                try
+                {
+                    int offset = 0;
+                    foreach (var entry in _currentPartyEntries)
+                    {
+                        Marshal.StructureToPtr(entry, ptr + offset, false);
+                        offset += entrySize;
+                    }
+                    Marshal.Copy(ptr, partyBinary, 0, totalSize);
+                }
+                finally
+                {
+                    Marshal.FreeHGlobal(ptr);
+                }
+            }
+
+            if (isInitial)
+            {
+                _uiStateManager.AddBinaries((PartyBinaryKey, partyBinary));
+            }
+
+            _uiStateManager.UpdateBinary(PartyBinaryKey, partyBinary);
+        }
+
+        private void UpdateCurrentPartyEntryFromUI()
+        {
+            int pIdx = cmbPartyData.SelectedIndex;
+            if (pIdx < 0 || _currentPartyEntries == null || pIdx >= _currentPartyEntries.Count) return;
+
+            object entry = _currentPartyEntries[pIdx];
+            DataBindingHelper.BindControlsToObject(grpPartyData, entry);
+
+            // _PartyIvOrEv
+            ushort ivOrEv = rbPartyEv.Checked
+                ? (ushort)Math.Max(0, cmbPartyEv.SelectedIndex)
+                : (ushort)nudPartyIv.Value;
+
+            if (entry is TrainerPartyEntry00 p00) p00._PartyIvOrEv = ivOrEv;
+            else if (entry is TrainerPartyEntry01 p01) p01._PartyIvOrEv = ivOrEv;
+            else if (entry is TrainerPartyEntry02 p02) p02._PartyIvOrEv = ivOrEv;
+            else if (entry is TrainerPartyEntry03 p03) p03._PartyIvOrEv = ivOrEv;
+
+            UpdatePartyBinaryState(false);
+        }
+
+        private void cmbPartyData_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            _isUpdatingUI = true;
+            UpdatePartyUIForIndex(cmbPartyData.SelectedIndex);
+            _isUpdatingUI = false;
+        }
+
+        private void ItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            UpdateItemImages();
         }
 
         private void UpdateItemImages()
@@ -289,95 +537,6 @@ namespace PochiPochiEditorGabu._Trainer
             }
         }
 
-        private void ItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_isUpdatingUI) return;
-            UpdateItemImages();
-        }
-
-        private void UpdateTrainerSprite()
-        {
-            Bitmap sprite = null;
-
-            if (nudSpriteIdx.Value >= 0 && nudSpriteIdx.Value <= nudSpriteIdx.Maximum)
-            {
-                int idx = (int)nudSpriteIdx.Value;
-                sprite = GetTrainerSprite(idx, true);
-            }
-
-            picTrainerSprite.Image?.Dispose();
-            picTrainerSprite.Image = null;
-            picTrainerSprite.Image = sprite;
-        }
-
-        private void nudTrainerSpriteIdx_ValueChanged(object sender, EventArgs e)
-        {
-            if (_isUpdatingUI) return;
-            UpdateTrainerSprite();
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private void RestoreData(int idx)
-        {
-            // name
-            string name = _trainerListManager.Original[idx]._Name;
-            lstTrainerData.Items[_currentTrainerIdx] = $"{_currentTrainerIdx:X4} - {name}";
-        }
-
-        private void SaveCurrentData(int idx)
-        {
-            // trainer
-
-            // name
-            _trainerListManager.Save(idx);
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            // something
-            _uiStateManager.UpdateInitialValues();
-        }
-
-        private void PokemonEditor_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (btnSave.Enabled)
-            {
-                _isUpdatingUI = true;
-
-                ControlHelper.HandleUnsavedChanges(
-                    () =>
-                    {
-                        // something
-                    },
-                    () =>
-                    {
-                        // unnecessary
-                    },
-                    () =>
-                    {
-                        e.Cancel = true;
-                    }
-                );
-
-                _isUpdatingUI = false;
-            }
-        }
-
         private Bitmap GetItemSprite(int idx, bool showBackColor)
         {
             uint? imgAddr = _itemSpriteManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
@@ -402,6 +561,21 @@ namespace PochiPochiEditorGabu._Trainer
             }
         }
 
+        private void UpdateTrainerSprite()
+        {
+            Bitmap sprite = null;
+
+            if (nudSpriteIdx.Value >= 0 && nudSpriteIdx.Value <= nudSpriteIdx.Maximum)
+            {
+                int idx = (int)nudSpriteIdx.Value;
+                sprite = GetTrainerSprite(idx, true);
+            }
+
+            picTrainerSprite.Image?.Dispose();
+            picTrainerSprite.Image = null;
+            picTrainerSprite.Image = sprite;
+        }
+
         private Bitmap GetTrainerSprite(int idx, bool showBackColor)
         {
             uint? imgAddr = _trainerImgManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
@@ -423,6 +597,88 @@ namespace PochiPochiEditorGabu._Trainer
             catch
             {
                 return null;
+            }
+        }
+
+        private void nudTrainerSpriteIdx_ValueChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            UpdateTrainerSprite();
+        }
+
+        private void RestoreData(int idx)
+        {
+            // name
+            string name = _trainerListManager.Original[idx]._Name;
+            lstTrainerData.Items[_currentTrainerIdx] = $"{_currentTrainerIdx:X4} - {name}";
+        }
+
+        private void SaveCurrentData(int idx)
+        {
+            // trainer including name
+            _trainerListManager.Save(idx);
+
+            // party data
+            if (_currentPartyEntries != null && _currentPartyEntries.Count > 0)
+            {
+                uint? partyAddrOffset = _trainerListManager.Working[idx].pPartyAddr;
+                if (partyAddrOffset.HasValue && partyAddrOffset.Value != 0)
+                {
+                    int actualPartyAddr = (int)(partyAddrOffset.Value - GbaConstants.BaseAddr);
+                    byte dataType = _trainerListManager.Working[idx].DataType;
+
+                    if (dataType == 0)
+                        IoHelper.WriteStructures(
+                            _romData, 
+                            actualPartyAddr, 
+                            _currentPartyEntries.Cast<TrainerPartyEntry00>(), 
+                            _tblReader, null, false);
+                    else if (dataType == 1)
+                        IoHelper.WriteStructures(
+                            _romData, 
+                            actualPartyAddr, 
+                            _currentPartyEntries.Cast<TrainerPartyEntry01>(), 
+                            _tblReader, null, false);
+                    else if (dataType == 2)
+                        IoHelper.WriteStructures(
+                            _romData, 
+                            actualPartyAddr,
+                            _currentPartyEntries.Cast<TrainerPartyEntry02>(), 
+                            _tblReader, null, false);
+                    else if (dataType == 3)
+                        IoHelper.WriteStructures(
+                            _romData, 
+                            actualPartyAddr, 
+                            _currentPartyEntries.Cast<TrainerPartyEntry03>(),
+                            _tblReader, null, false);
+                }
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveCurrentData(_currentTrainerIdx);
+            _uiStateManager.UpdateInitialValues();
+        }
+
+        private void PokemonEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    () =>
+                    {
+                        SaveCurrentData(_currentTrainerIdx);
+                    },
+                    () =>
+                    {
+                        // unnecessary
+                    },
+                    () =>
+                    {
+                        e.Cancel = true;
+                    }
+                );
             }
         }
     }
