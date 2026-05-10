@@ -49,7 +49,6 @@ namespace PochiPochiEditorGabu
             this.btnIngameTrade = new System.Windows.Forms.Button();
             this.btnTrainerSprite = new System.Windows.Forms.Button();
             this.btnItem = new System.Windows.Forms.Button();
-            this.btnMoveData = new System.Windows.Forms.Button();
             this.btnEggMove = new System.Windows.Forms.Button();
             this.btnPokedexSearch = new System.Windows.Forms.Button();
             this.btnPokedexOrder = new System.Windows.Forms.Button();
@@ -136,7 +135,6 @@ namespace PochiPochiEditorGabu
             this.grpSelectEditor.Controls.Add(this.btnIngameTrade);
             this.grpSelectEditor.Controls.Add(this.btnTrainerSprite);
             this.grpSelectEditor.Controls.Add(this.btnItem);
-            this.grpSelectEditor.Controls.Add(this.btnMoveData);
             this.grpSelectEditor.Controls.Add(this.btnEggMove);
             this.grpSelectEditor.Controls.Add(this.btnPokedexSearch);
             this.grpSelectEditor.Controls.Add(this.btnPokedexOrder);
@@ -153,7 +151,7 @@ namespace PochiPochiEditorGabu
             // 
             // btnTownMap
             // 
-            this.btnTownMap.Location = new System.Drawing.Point(268, 168);
+            this.btnTownMap.Location = new System.Drawing.Point(268, 196);
             this.btnTownMap.Margin = new System.Windows.Forms.Padding(0);
             this.btnTownMap.Name = "btnTownMap";
             this.btnTownMap.Size = new System.Drawing.Size(114, 23);
@@ -168,7 +166,7 @@ namespace PochiPochiEditorGabu
             this.btnWildEncounter.Name = "btnWildEncounter";
             this.btnWildEncounter.Size = new System.Drawing.Size(114, 23);
             this.btnWildEncounter.TabIndex = 0;
-            this.btnWildEncounter.Text = "野生設定";
+            this.btnWildEncounter.Text = "野生出現";
             this.btnWildEncounter.UseVisualStyleBackColor = true;
             // 
             // btnTileset
@@ -280,16 +278,6 @@ namespace PochiPochiEditorGabu
             this.btnItem.TabIndex = 0;
             this.btnItem.Text = "アイテム";
             this.btnItem.UseVisualStyleBackColor = true;
-            // 
-            // btnMoveData
-            // 
-            this.btnMoveData.Location = new System.Drawing.Point(20, 140);
-            this.btnMoveData.Margin = new System.Windows.Forms.Padding(0);
-            this.btnMoveData.Name = "btnMoveData";
-            this.btnMoveData.Size = new System.Drawing.Size(114, 23);
-            this.btnMoveData.TabIndex = 0;
-            this.btnMoveData.Text = "技データ";
-            this.btnMoveData.UseVisualStyleBackColor = true;
             // 
             // btnEggMove
             // 
@@ -510,7 +498,6 @@ namespace PochiPochiEditorGabu
         private System.Windows.Forms.Label lblFsfStartAddr;
         private System.Windows.Forms.PictureBox picFormPokemon;
         private System.Windows.Forms.Button btnFameChecker;
-        private System.Windows.Forms.Button btnMoveData;
     }
 }
 

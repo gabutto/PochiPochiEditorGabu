@@ -350,7 +350,6 @@ namespace PochiPochiEditorGabu.Managers
         public ushort _Padding3;
     }
 
-
     public class PokemonCryData1Entry
     {
         public byte _Type;
@@ -421,20 +420,10 @@ namespace PochiPochiEditorGabu.Managers
         public string _MoveName = string.Empty;
     }
 
-
-
-
-
-
     public class EggMoveEntry
     {
         public ushort _MoveIdx;
     }
-
-
-
-
-
 
     public class ItemSpriteEntry
     {
@@ -534,5 +523,79 @@ namespace PochiPochiEditorGabu.Managers
     public class TrainerSpriteAnimationPointerEntry
     {
         public uint pAnimPtrAddr;
+    }
+
+    public class TrainerListEntry
+    {
+        public byte DataType;
+        public byte ClassIdx;
+        public byte EncounterMusicIdx;
+        public byte SpriteIdx;
+        [DynamicString("TrainerNameEntryLength")]
+        public string _Name = string.Empty;
+        public ushort HoldItem1;
+        public ushort HoldItem2;
+        public ushort HoldItem3;
+        public ushort HoldItem4;
+        [DataBindingHelper.BitControlNames(
+            "DoubleBattle", "", "", "", "", "", "", "")]
+        public byte bIsDoubleBattle;
+        public byte _Padding1;
+        [DataBindingHelper.BitControlNames(
+            "Ai0", "Ai1", "Ai2", "Ai3", "Ai4", "Ai5", "Ai6", "Ai7")]
+        public byte bAiFlags1;
+        [DataBindingHelper.BitControlNames(
+            "Ai8", "Ai9", "Ai10", "Ai11", "Ai12", "Ai13", "Ai14", "Ai15")]
+        public byte bAiFlags2;
+        [DataBindingHelper.BitControlNames(
+            "Ai16", "Ai17", "Ai18", "Ai19", "Ai20", "Ai21", "Ai22", "Ai23")]
+        public byte bAiFlags3;
+        [DataBindingHelper.BitControlNames(
+            "Ai24", "Ai25", "Ai26", "Ai27", "Ai28", "Ai29", "Ai30", "Ai31")]
+        public byte bAiFlags4;
+        public byte PartyCount;
+        public byte _Padding2;
+        public ushort _Unknown1;
+        public uint pPartyAddr;
+    }
+
+    public class TrainerPartyEntry00
+    {
+        public ushort _PartyIvOrEv;
+        public ushort PartyLevel;
+        public ushort PartyPokemon;
+        public ushort _Padding1;
+    }
+
+    public class TrainerPartyEntry01
+    {
+        public ushort _PartyIvOrEv;
+        public ushort PartyLevel;
+        public ushort PartyPokemon;
+        public ushort PartyMove1;
+        public ushort PartyMove2;
+        public ushort PartyMove3;
+        public ushort PartyMove4;
+        public ushort _Padding1;
+    }
+
+    public class TrainerPartyEntry02
+    {
+        public ushort _PartyIvOrEv;
+        public ushort PartyLevel;
+        public ushort PartyPokemon;
+        public ushort PartyItem;
+    }
+
+    public class TrainerPartyEntry03
+    {
+        public ushort _PartyIvOrEv;
+        public ushort PartyLevel;
+        public ushort PartyPokemon;
+        public ushort PartyItem;
+        public ushort PartyMove1;
+        public ushort PartyMove2;
+        public ushort PartyMove3;
+        public ushort PartyMove4;
     }
 }

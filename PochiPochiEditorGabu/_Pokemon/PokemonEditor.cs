@@ -635,8 +635,6 @@ namespace PochiPochiEditorGabu._Pokemon
 
             if (btnSave.Enabled)
             {
-                _isUpdatingUI = true;
-
                 ControlHelper.HandleUnsavedChanges(
                     () =>
                     {
@@ -655,8 +653,6 @@ namespace PochiPochiEditorGabu._Pokemon
                         cmbPokemonName.SelectedIndex = _currentPokemonIdx;
                     }
                 );
-
-                _isUpdatingUI = false;
             }
             else
             {
@@ -1566,6 +1562,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 (Combo: cmbStatsHoldItem1, Pic: picStatsHoldItem1),
                 (Combo: cmbStatsHoldItem2, Pic: picStatsHoldItem2) 
             };
+
             foreach (var item in itemControls)
             {
                 Bitmap sprite = null;
@@ -2810,8 +2807,6 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             if (btnSave.Enabled)
             {
-                _isUpdatingUI = true;
-
                 ControlHelper.HandleUnsavedChanges(
                     () =>
                     {
@@ -2826,8 +2821,6 @@ namespace PochiPochiEditorGabu._Pokemon
                         e.Cancel = true;
                     }
                 );
-
-                _isUpdatingUI = false;
             }
         }
 

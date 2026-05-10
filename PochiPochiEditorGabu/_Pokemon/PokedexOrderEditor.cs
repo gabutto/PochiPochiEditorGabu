@@ -299,8 +299,6 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             if (btnSave.Enabled)
             {
-                _isUpdatingUI = true;
-
                 DialogResult result = ControlHelper.HandleUnsavedChanges(
                     () =>
                     {
@@ -315,8 +313,6 @@ namespace PochiPochiEditorGabu._Pokemon
                         e.Cancel = true;
                     }
                 );
-
-                _isUpdatingUI = false;
             }
         }
 

@@ -136,8 +136,6 @@ namespace PochiPochiEditorGabu._Trainer
 
             if (btnSave.Enabled)
             {
-                _isUpdatingUI = true;
-
                 ControlHelper.HandleUnsavedChanges(
                     () =>
                     {
@@ -156,8 +154,6 @@ namespace PochiPochiEditorGabu._Trainer
                     }
 
                 );
-
-                _isUpdatingUI = false;
             }
             else
             {
@@ -331,8 +327,6 @@ namespace PochiPochiEditorGabu._Trainer
         {
             if (btnSave.Enabled)
             {
-                _isUpdatingUI = true;
-
                 ControlHelper.HandleUnsavedChanges(
                     () =>
                     {
@@ -347,8 +341,6 @@ namespace PochiPochiEditorGabu._Trainer
                         e.Cancel = true;
                     }
                 );
-
-                _isUpdatingUI = false;
             }
         }
     }

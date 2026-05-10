@@ -85,7 +85,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 pic.Click += PicPokemon_Click;
                 pic.Paint += PicPokemon_Paint;
             }
-            cmbPokemonName.SelectedIndexChanged += CmbPokemonName_SelectedIndexChanged;
+            cmbPokemonName.SelectedIndexChanged += cmbPokemonName_SelectedIndexChanged;
 
             // ui state
             btnSave.Enabled = false;
@@ -95,7 +95,7 @@ namespace PochiPochiEditorGabu._Pokemon
             // event handler
             btnSave.Click += btnSave_Click;
             this.FormClosing += PokedexHabitatEditor_FormClosing;
-            cmbArea.SelectedIndexChanged += CmbArea_SelectedIndexChanged;
+            cmbArea.SelectedIndexChanged += cmbArea_SelectedIndexChanged;
             lstPage.SelectedIndexChanged += (s, e) => LoadPageToUI(lstPage.SelectedIndex);
             btnCreateNewAreaData.Click += btnCreateNewAreaData_Click;
             btnCreateNewPageData.Click += btnCreateNewPageData_Click;
@@ -214,7 +214,7 @@ namespace PochiPochiEditorGabu._Pokemon
             _isUpdatingUI = false;
         }
 
-        private void CmbArea_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbArea_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI) return;
 
@@ -280,7 +280,7 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
-        private void CmbPokemonName_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbPokemonName_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI || _selectedPicIndex == -1) return;
 
@@ -478,8 +478,6 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             if (btnSave.Enabled)
             {
-                _isUpdatingUI = true;
-
                 ControlHelper.HandleUnsavedChanges(
                     () =>
                     {
@@ -494,8 +492,6 @@ namespace PochiPochiEditorGabu._Pokemon
                         e.Cancel = true;
                     }
                 );
-
-                _isUpdatingUI = false;
             }
         }
 

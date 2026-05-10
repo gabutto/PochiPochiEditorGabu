@@ -122,6 +122,12 @@
     <Compile Include="_Trainer\TrainerClassEditor.Designer.cs">
       <DependentUpon>TrainerClassEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="_Trainer\TrainerListEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_Trainer\TrainerListEditor.Designer.cs">
+      <DependentUpon>TrainerListEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="_Trainer\TrainerSpriteEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -166,6 +172,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="_Trainer\TrainerClassEditor.resx">
       <DependentUpon>TrainerClassEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_Trainer\TrainerListEditor.resx">
+      <DependentUpon>TrainerListEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="_Trainer\TrainerSpriteEditor.resx">
       <DependentUpon>TrainerSpriteEditor.cs</DependentUpon>
@@ -257,6 +266,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="txt\PokemonStatsGrowthRate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="txt\TrainerDataType.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="txt\TrainerEvTable.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
