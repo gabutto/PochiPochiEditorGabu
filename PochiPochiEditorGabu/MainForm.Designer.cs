@@ -43,7 +43,7 @@ namespace PochiPochiEditorGabu
             this.btnOverworldSprite = new System.Windows.Forms.Button();
             this.btnMap = new System.Windows.Forms.Button();
             this.btnFameChecker = new System.Windows.Forms.Button();
-            this.btnMail = new System.Windows.Forms.Button();
+            this.btnMailData = new System.Windows.Forms.Button();
             this.btnTrainerList = new System.Windows.Forms.Button();
             this.btnTrainerClass = new System.Windows.Forms.Button();
             this.btnIngameTrade = new System.Windows.Forms.Button();
@@ -129,7 +129,7 @@ namespace PochiPochiEditorGabu
             this.grpSelectEditor.Controls.Add(this.btnOverworldSprite);
             this.grpSelectEditor.Controls.Add(this.btnMap);
             this.grpSelectEditor.Controls.Add(this.btnFameChecker);
-            this.grpSelectEditor.Controls.Add(this.btnMail);
+            this.grpSelectEditor.Controls.Add(this.btnMailData);
             this.grpSelectEditor.Controls.Add(this.btnTrainerList);
             this.grpSelectEditor.Controls.Add(this.btnTrainerClass);
             this.grpSelectEditor.Controls.Add(this.btnIngameTrade);
@@ -219,15 +219,15 @@ namespace PochiPochiEditorGabu
             this.btnFameChecker.Text = "ボイスチェッカー";
             this.btnFameChecker.UseVisualStyleBackColor = true;
             // 
-            // btnMail
+            // btnMailData
             // 
-            this.btnMail.Location = new System.Drawing.Point(144, 168);
-            this.btnMail.Margin = new System.Windows.Forms.Padding(0);
-            this.btnMail.Name = "btnMail";
-            this.btnMail.Size = new System.Drawing.Size(114, 23);
-            this.btnMail.TabIndex = 0;
-            this.btnMail.Text = "メール";
-            this.btnMail.UseVisualStyleBackColor = true;
+            this.btnMailData.Location = new System.Drawing.Point(144, 168);
+            this.btnMailData.Margin = new System.Windows.Forms.Padding(0);
+            this.btnMailData.Name = "btnMailData";
+            this.btnMailData.Size = new System.Drawing.Size(114, 23);
+            this.btnMailData.TabIndex = 0;
+            this.btnMailData.Text = "メール内容";
+            this.btnMailData.UseVisualStyleBackColor = true;
             // 
             // btnTrainerList
             // 
@@ -476,7 +476,7 @@ namespace PochiPochiEditorGabu
         private System.Windows.Forms.Button btnBattleBackground;
         private System.Windows.Forms.Button btnOverworldSprite;
         private System.Windows.Forms.Button btnMap;
-        private System.Windows.Forms.Button btnMail;
+        private System.Windows.Forms.Button btnMailData;
         private System.Windows.Forms.Button btnTrainerList;
         private System.Windows.Forms.Button btnTrainerClass;
         private System.Windows.Forms.Button btnIngameTrade;

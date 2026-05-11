@@ -129,7 +129,6 @@ namespace PochiPochiEditorGabu._Trainer
                 if (_isUpdatingUI) return;
                 UpdateCurrentPartyEntryFromUI();
             };
-
             cmbPartyPokemon.SelectedIndexChanged += partyDataChangedHandler;
             nudPartyLevel.ValueChanged += partyDataChangedHandler;
             nudPartyIv.ValueChanged += partyDataChangedHandler;
@@ -139,6 +138,8 @@ namespace PochiPochiEditorGabu._Trainer
             cmbPartyMove2.SelectedIndexChanged += partyDataChangedHandler;
             cmbPartyMove3.SelectedIndexChanged += partyDataChangedHandler;
             cmbPartyMove4.SelectedIndexChanged += partyDataChangedHandler;
+
+            btnCreateNewPartyData.Click += btnCreateNewPartyData_Click;
         }
 
         private void InitializeControls()
@@ -462,48 +463,7 @@ namespace PochiPochiEditorGabu._Trainer
 
         private void UpdatePartyBinaryState(bool isInitial)
         {
-            byte[] partyBinary = null;
-
-            if (_currentPartyEntries != null && _currentPartyEntries.Count > 0)
-            {
-                Type entryType = _currentPartyEntries[0].GetType();
-                int entrySize = GetPartyEntrySize(entryType);
-                int totalSize = entrySize * _currentPartyEntries.Count;
-                partyBinary = new byte[totalSize];
-
-                if (entryType == typeof(TrainerPartyEntry00))
-                {
-                    IoHelper.WriteStructures(
-                        partyBinary, 
-                        0, 
-                        _currentPartyEntries.Cast<TrainerPartyEntry00>(), 
-                        _tblReader, null, false);
-                }
-                else if (entryType == typeof(TrainerPartyEntry01))
-                {
-                    IoHelper.WriteStructures(
-                        partyBinary, 
-                        0, 
-                        _currentPartyEntries.Cast<TrainerPartyEntry01>(),
-                        _tblReader, null, false);
-                }
-                else if (entryType == typeof(TrainerPartyEntry02))
-                {
-                    IoHelper.WriteStructures(
-                        partyBinary,
-                        0, 
-                        _currentPartyEntries.Cast<TrainerPartyEntry02>(),
-                        _tblReader, null, false);
-                }
-                else if (entryType == typeof(TrainerPartyEntry03))
-                {
-                    IoHelper.WriteStructures(
-                        partyBinary, 
-                        0, 
-                        _currentPartyEntries.Cast<TrainerPartyEntry03>(), 
-                        _tblReader, null, false);
-                }
-            }
+            byte[] partyBinary = GetPartyBinary();
 
             if (isInitial)
             {
@@ -511,6 +471,45 @@ namespace PochiPochiEditorGabu._Trainer
             }
 
             _uiStateManager.UpdateBinary(PartyBinaryKey, partyBinary);
+
+            var reservedInfo = _reservationManager.GetReservation(txtPartyAddr);
+            if (reservedInfo != null && partyBinary != null)
+            {
+                reservedInfo.Data = partyBinary;
+            }
+        }
+
+        private byte[] GetPartyBinary()
+        {
+            if (_currentPartyEntries == null || _currentPartyEntries.Count == 0) return null;
+
+            Type entryType = _currentPartyEntries[0].GetType();
+            int entrySize = GetPartyEntrySize(entryType);
+            int totalSize = entrySize * _currentPartyEntries.Count;
+            byte[] partyBinary = new byte[totalSize];
+
+            if (entryType == typeof(TrainerPartyEntry00))
+            {
+                IoHelper.WriteStructures(
+                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry00>(), _tblReader, null, false);
+            }
+            else if (entryType == typeof(TrainerPartyEntry01))
+            {
+                IoHelper.WriteStructures(
+                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry01>(), _tblReader, null, false);
+            }
+            else if (entryType == typeof(TrainerPartyEntry02))
+            {
+                IoHelper.WriteStructures(
+                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry02>(), _tblReader, null, false);
+            }
+            else if (entryType == typeof(TrainerPartyEntry03))
+            {
+                IoHelper.WriteStructures(
+                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry03>(), _tblReader, null, false);
+            }
+
+            return partyBinary;
         }
 
         private int GetPartyEntrySize(Type type)
@@ -565,6 +564,83 @@ namespace PochiPochiEditorGabu._Trainer
             if (_isUpdatingUI) return;
             _isUpdatingUI = true;
             UpdatePartyUIForIndex(cmbPartyData.SelectedIndex);
+            _isUpdatingUI = false;
+        }
+
+        private void btnCreateNewPartyData_Click(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+
+            using (var popup = new QuickInputPopup())
+            {
+                string[] comboItems = cmbDataType.Items
+                    .Cast<KeyValuePair<int, string>>()
+                    .Select(x => x.Value)
+                    .ToArray();
+
+                popup.Setup(
+                    defaultAddress: txtPartyAddr.Text,
+                    nudMin: 1,
+                    nudMax: 6,
+                    defaultNudValue: 1,
+                    comboItems: comboItems,
+                    defaultComboIndex: cmbDataType.SelectedIndex >= 0 ? cmbDataType.SelectedIndex : 0
+                );
+
+                if (popup.ShowDialog() == DialogResult.OK)
+                {
+                    if (ControlHelper.TryParseAddress(popup.ResultAddress, out uint newAddress))
+                    {
+                        CreateNewPartyData(newAddress, popup.ResultEntryCount, (byte)popup.ResultDataTypeIndex);
+                    }
+                }
+            }
+        }
+
+        private void CreateNewPartyData(uint address, int count, byte dataType)
+        {
+            _isUpdatingUI = true;
+            _currentPartyEntries = new List<object>();
+
+            for (int i = 0; i < count; i++)
+            {
+                switch (dataType)
+                {
+                    case 0: _currentPartyEntries.Add(new TrainerPartyEntry00()); break;
+                    case 1: _currentPartyEntries.Add(new TrainerPartyEntry01()); break;
+                    case 2: _currentPartyEntries.Add(new TrainerPartyEntry02()); break;
+                    case 3: _currentPartyEntries.Add(new TrainerPartyEntry03()); break;
+                }
+            }
+
+            _trainerListManager.Working[_currentTrainerIdx].pPartyAddr = address + GbaConstants.BaseAddr;
+            _trainerListManager.Working[_currentTrainerIdx].DataType = dataType;
+            _trainerListManager.Working[_currentTrainerIdx].PartyCount = (byte)count;
+
+            txtPartyAddr.Text = address.ToString("X8");
+            cmbDataType.SelectedIndex = dataType;
+            nudPartyCount.Value = count;
+
+            byte[] partyBinary = GetPartyBinary();
+            _reservationManager.SetReservation(txtPartyAddr, address, partyBinary ?? new byte[0]);
+
+            cmbPartyData.Items.Clear();
+            for (int i = 0; i < count; i++)
+            {
+                cmbPartyData.Items.Add($"{i + 1}体目");
+            }
+
+            if (count > 0)
+            {
+                cmbPartyData.SelectedIndex = 0;
+                UpdatePartyUIForIndex(0);
+            }
+            else
+            {
+                ClearPartyUI();
+            }
+
+            UpdatePartyBinaryState(false);
             _isUpdatingUI = false;
         }
 
@@ -729,6 +805,15 @@ namespace PochiPochiEditorGabu._Trainer
 
         private void SaveCurrentData(int idx)
         {
+            // reserve
+            var reservedInfo = _reservationManager.GetReservation(txtPartyAddr);
+            if (reservedInfo != null)
+            {
+                _trainerListManager.Working[idx].pPartyAddr = reservedInfo.Address + GbaConstants.BaseAddr;
+                _trainerListManager.Working[idx].DataType = (byte)cmbDataType.SelectedIndex;
+                _trainerListManager.Working[idx].PartyCount = (byte)nudPartyCount.Value;
+            }
+
             // trainer including name
             _trainerListManager.Save(idx);
 
@@ -743,30 +828,32 @@ namespace PochiPochiEditorGabu._Trainer
 
                     if (dataType == 0)
                         IoHelper.WriteStructures(
-                            _romData, 
-                            actualPartyAddr, 
-                            _currentPartyEntries.Cast<TrainerPartyEntry00>(), 
+                            _romData,
+                            actualPartyAddr,
+                            _currentPartyEntries.Cast<TrainerPartyEntry00>(),
                             _tblReader, null, false);
                     else if (dataType == 1)
                         IoHelper.WriteStructures(
-                            _romData, 
-                            actualPartyAddr, 
-                            _currentPartyEntries.Cast<TrainerPartyEntry01>(), 
+                            _romData,
+                            actualPartyAddr,
+                            _currentPartyEntries.Cast<TrainerPartyEntry01>(),
                             _tblReader, null, false);
                     else if (dataType == 2)
                         IoHelper.WriteStructures(
-                            _romData, 
+                            _romData,
                             actualPartyAddr,
-                            _currentPartyEntries.Cast<TrainerPartyEntry02>(), 
+                            _currentPartyEntries.Cast<TrainerPartyEntry02>(),
                             _tblReader, null, false);
                     else if (dataType == 3)
                         IoHelper.WriteStructures(
-                            _romData, 
-                            actualPartyAddr, 
+                            _romData,
+                            actualPartyAddr,
                             _currentPartyEntries.Cast<TrainerPartyEntry03>(),
                             _tblReader, null, false);
                 }
             }
+
+            _reservationManager.ClearAllReservations();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
