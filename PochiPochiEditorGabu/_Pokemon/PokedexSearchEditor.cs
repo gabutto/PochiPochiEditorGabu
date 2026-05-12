@@ -118,7 +118,7 @@ namespace PochiPochiEditorGabu._Pokemon
         private void InitializeEventHandlers()
         {
             btnSave.Click += btnSave_Click;
-            this.FormClosing += PokedexHabitatEditor_FormClosing;
+            this.FormClosing += PokedexSearchEditor_FormClosing;
 
             lstSortAiueo.SelectedIndexChanged +=
                 (s, e) => LoadSortAiueoToUI(lstSortAiueo.SelectedIndex);
@@ -415,7 +415,7 @@ namespace PochiPochiEditorGabu._Pokemon
             _uiStateManager.UpdateInitialValues();
         }
 
-        private void PokedexHabitatEditor_FormClosing(object sender, FormClosingEventArgs e)
+        private void PokedexSearchEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (btnSave.Enabled)
             {

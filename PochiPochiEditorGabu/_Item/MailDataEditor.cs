@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 using PochiPochiEditorGabu.Constants;
@@ -32,7 +27,8 @@ namespace PochiPochiEditorGabu._Item
 
         private bool _isUpdatingUI = false;
         private int _currentMailIdx = 0;
-        ushort[] _currentwordValues = null;
+        private ushort[] _currentwordValues = null;
+
         private Dictionary<int, ComboBox> _wordGroupComboBoxMap;
 
         private class WordItem
@@ -85,13 +81,18 @@ namespace PochiPochiEditorGabu._Item
 
         private void InitializeEventHandlers()
         {
+            btnSave.Click += btnSave_Click;
+            this.FormClosing += MailDataEditor_FormClosing;
 
+            nudDataIdx.ValueChanged += nudDataIdx_ValueChanged;
+            nudDataWordCount.ValueChanged += nudDataWordCount_ValueChanged;
+            btnRepalceWord.Click += btnRepalceWord_Click;
         }
 
         private void InitializeControls()
         {
-            int spriteCount = _config.GetInt("MailDataCount");
-            nudDataIdx.Maximum = spriteCount - 1;
+            int mailCount = _config.GetInt("MailDataCount");
+            nudDataIdx.Maximum = mailCount - 1;
 
             ControlHelper.AttachNumericUpDownNavigators(nudDataIdx, btnDataIdxPrev, btnDataIdxNext);
             AttachEnterEventsInGroup(grpDataWords, "rbDataWord", "txtDataWord");
@@ -183,49 +184,53 @@ namespace PochiPochiEditorGabu._Item
                     wordIdx = i;
                 }
 
-                var item = new WordItem
+                cmb.Items.Add(new WordItem
                 {
                     Text = text,
                     Index = wordIdx
-                };
-                cmb.Items.Add(item);
+                });
             }
 
             cmb.EndUpdate();
-            cmb.SelectedIndex = 0;
+            if (cmb.Items.Count > 0)
+            {
+                cmb.SelectedIndex = 0;
+            }
         }
 
         private void NamesToComboBox(ComboBox cmb, int grpIdx, Func<int, string> nameResolver)
         {
             uint? tableAddr = _wordGroupManager.Original[grpIdx].pWordTextEntry - GbaConstants.BaseAddr;
             int entryCount = _wordGroupManager.Original[grpIdx]._Count1;
-            EntryManager<WordNameEntry> _wordNameManager = new EntryManager<WordNameEntry>(_romData, _tblReader);
-            _wordNameManager.Load(tableAddr, entryCount);
+            EntryManager<WordNameEntry> wordNameManager = new EntryManager<WordNameEntry>(_romData, _tblReader);
+            wordNameManager.Load(tableAddr, entryCount);
 
             cmb.BeginUpdate();
             cmb.Items.Clear();
 
             for (int i = 0; i < entryCount; i++)
             {
-                int idx = _wordNameManager.Original[i]._Idx;
-                string name = nameResolver(idx);
-
-                var item = new WordItem
+                int idx = wordNameManager.Original[i]._Idx;
+                cmb.Items.Add(new WordItem
                 {
-                    Text = name,
+                    Text = nameResolver(idx),
                     Index = idx
-                };
-                cmb.Items.Add(item);
+                });
             }
 
             cmb.EndUpdate();
-            cmb.SelectedIndex = 0;
+            if (cmb.Items.Count > 0)
+            {
+                cmb.SelectedIndex = 0;
+            }
         }
 
         private void InitializeUIStates()
         {
             btnSave.Enabled = false;
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
+
+            _uiStateManager.AddControls(nudDataIdx, nudDataWordCount);
         }
 
         private void LoadMailData(int idx)
@@ -315,6 +320,53 @@ namespace PochiPochiEditorGabu._Item
             }
 
             return string.Empty;
+        }
+
+        private void nudDataIdx_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void nudDataWordCount_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnRepalceWord_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SaveCurrentMailData(int idx)
+        {
+
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveCurrentMailData(_currentMailIdx);
+            _uiStateManager.UpdateInitialValues();
+        }
+
+        private void MailDataEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    () =>
+                    {
+                        SaveCurrentMailData(_currentMailIdx);
+                    },
+                    () =>
+                    {
+                        // unnecessary
+                    },
+                    () =>
+                    {
+                        e.Cancel = true;
+                    }
+                );
+            }
         }
     }
 }

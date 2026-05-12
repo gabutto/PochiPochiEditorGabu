@@ -106,7 +106,7 @@ namespace PochiPochiEditorGabu._Trainer
         private void InitializeEventHandlers()
         {
             btnSave.Click += btnSave_Click;
-            this.FormClosing += PokemonEditor_FormClosing;
+            this.FormClosing += TrainerListEditor_FormClosing;
 
             lstTrainerData.SelectedIndexChanged += lstTrainerData_SelectedIndexChanged;
             txtName.TextChanged += txtName_TextChanged;
@@ -862,7 +862,7 @@ namespace PochiPochiEditorGabu._Trainer
             _uiStateManager.UpdateInitialValues();
         }
 
-        private void PokemonEditor_FormClosing(object sender, FormClosingEventArgs e)
+        private void TrainerListEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (btnSave.Enabled)
             {

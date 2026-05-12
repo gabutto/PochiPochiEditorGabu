@@ -42,7 +42,6 @@ namespace PochiPochiEditorGabu
             this.btnBattleBackground = new System.Windows.Forms.Button();
             this.btnOverworldSprite = new System.Windows.Forms.Button();
             this.btnMap = new System.Windows.Forms.Button();
-            this.btnFameChecker = new System.Windows.Forms.Button();
             this.btnMailData = new System.Windows.Forms.Button();
             this.btnTrainerList = new System.Windows.Forms.Button();
             this.btnTrainerClass = new System.Windows.Forms.Button();
@@ -128,7 +127,6 @@ namespace PochiPochiEditorGabu
             this.grpSelectEditor.Controls.Add(this.btnBattleBackground);
             this.grpSelectEditor.Controls.Add(this.btnOverworldSprite);
             this.grpSelectEditor.Controls.Add(this.btnMap);
-            this.grpSelectEditor.Controls.Add(this.btnFameChecker);
             this.grpSelectEditor.Controls.Add(this.btnMailData);
             this.grpSelectEditor.Controls.Add(this.btnTrainerList);
             this.grpSelectEditor.Controls.Add(this.btnTrainerClass);
@@ -208,16 +206,6 @@ namespace PochiPochiEditorGabu
             this.btnMap.TabIndex = 0;
             this.btnMap.Text = "マップ";
             this.btnMap.UseVisualStyleBackColor = true;
-            // 
-            // btnFameChecker
-            // 
-            this.btnFameChecker.Location = new System.Drawing.Point(144, 196);
-            this.btnFameChecker.Margin = new System.Windows.Forms.Padding(0);
-            this.btnFameChecker.Name = "btnFameChecker";
-            this.btnFameChecker.Size = new System.Drawing.Size(114, 23);
-            this.btnFameChecker.TabIndex = 0;
-            this.btnFameChecker.Text = "ボイスチェッカー";
-            this.btnFameChecker.UseVisualStyleBackColor = true;
             // 
             // btnMailData
             // 
@@ -497,7 +485,6 @@ namespace PochiPochiEditorGabu
         private System.Windows.Forms.Label lblFsfResultAddr;
         private System.Windows.Forms.Label lblFsfStartAddr;
         private System.Windows.Forms.PictureBox picFormPokemon;
-        private System.Windows.Forms.Button btnFameChecker;
     }
 }
 

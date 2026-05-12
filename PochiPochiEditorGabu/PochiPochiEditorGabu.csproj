@@ -122,6 +122,12 @@
     <Compile Include="_Pokemon\PokemonEditor.Designer.cs">
       <DependentUpon>PokemonEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="_Trainer\IngameTradeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="_Trainer\IngameTradeEditor.Designer.cs">
+      <DependentUpon>IngameTradeEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="_Trainer\TrainerClassEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -178,6 +184,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="_Pokemon\PokemonEditor.resx">
       <DependentUpon>PokemonEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="_Trainer\IngameTradeEditor.resx">
+      <DependentUpon>IngameTradeEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="_Trainer\TrainerClassEditor.resx">
       <DependentUpon>TrainerClassEditor.cs</DependentUpon>

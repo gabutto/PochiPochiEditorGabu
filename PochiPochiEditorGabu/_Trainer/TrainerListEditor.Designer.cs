@@ -153,6 +153,7 @@ namespace PochiPochiEditorGabu._Trainer
             this.lstTrainerData.ItemHeight = 12;
             this.lstTrainerData.Location = new System.Drawing.Point(20, 56);
             this.lstTrainerData.Name = "lstTrainerData";
+            this.lstTrainerData.ScrollAlwaysVisible = true;
             this.lstTrainerData.Size = new System.Drawing.Size(160, 364);
             this.lstTrainerData.TabIndex = 1;
             // 
