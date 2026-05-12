@@ -598,4 +598,49 @@ namespace PochiPochiEditorGabu.Managers
         public ushort PartyMove3;
         public ushort PartyMove4;
     }
+
+
+
+
+
+    public class MailDataWordEntry
+    {
+        public ushort _Word1;
+        public ushort _Word2;
+        public ushort _Word3;
+        public ushort _Word4;
+        public ushort _Word5;
+        public ushort _Word6;
+        public ushort _Word7;
+        public ushort _Word8;
+        public ushort _Word9;
+        public ushort _Word10;
+    }
+
+    public class WordGroupEntry
+    {
+        public uint pWordTextEntry;
+        public byte _Count1;
+        public byte _Padding1;
+        public byte _Count2;
+        public byte _Padding2;
+    }
+
+    public class WordTextEntry
+    {
+        public uint pTextAddr;
+        public byte _Idx;
+        public byte _Padding1;
+        public byte _Padding2;
+        public byte _Padding3;
+        public byte _Unknow1;
+        public byte _Padding4;
+        public byte _Padding5;
+        public byte _Padding6;
+    }
+
+    public class WordNameEntry
+    {
+        public ushort _Idx;
+    }
 }

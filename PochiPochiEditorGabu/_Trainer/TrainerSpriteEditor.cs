@@ -83,8 +83,8 @@ namespace PochiPochiEditorGabu._Trainer
             ControlHelper.AttachAddressAutoFormat(txtSpriteImgAddr, txtSpritePalAddr);
             ControlHelper.AttachExternalBorder(picSprite);
             ControlHelper.AttachNumericUpDownNavigators(nudSprite, btnSpritePrev, btnSpriteNext);
-            ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteImgAddr, txtSpriteImgAddr);
-            ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpritePalAddr, txtSpritePalAddr);
+            ControlHelper.AttachEnterEvent(rbSpriteImgAddr, txtSpriteImgAddr);
+            ControlHelper.AttachEnterEvent(rbSpritePalAddr, txtSpritePalAddr);
         }
 
         private void InitializeUIStates()

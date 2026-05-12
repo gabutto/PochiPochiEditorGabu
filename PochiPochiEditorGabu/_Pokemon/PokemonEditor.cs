@@ -517,10 +517,10 @@ namespace PochiPochiEditorGabu._Pokemon
                 picEvoToIcon,
                 picDexSizeCompPreview,
                 pnlCryWave);
-            ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
-            ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
-            ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
-            ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteShinyPalAddr, txtSpriteShinyPalAddr);
+            ControlHelper.AttachEnterEvent(rbSpriteFrontImgAddr, txtSpriteFrontImgAddr);
+            ControlHelper.AttachEnterEvent(rbSpriteBackImgAddr, txtSpriteBackImgAddr);
+            ControlHelper.AttachEnterEvent(rbSpriteNormalPalAddr, txtSpriteNormalPalAddr);
+            ControlHelper.AttachEnterEvent(rbSpriteShinyPalAddr, txtSpriteShinyPalAddr);
             ControlHelper.LoadComboBoxFromTextFile(cmbStatsGrowthRate, "txt/PokemonStatsGrowthRate.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbStatsColor, "txt/PokemonStatsColor.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbStatsFlip, "txt/PokemonStatsFlip.txt");

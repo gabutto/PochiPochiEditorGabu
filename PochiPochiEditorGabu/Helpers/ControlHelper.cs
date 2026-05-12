@@ -232,9 +232,9 @@ namespace PochiPochiEditorGabu.Helpers
             UpdateButtons();
         }
 
-        public static void AttachRadioButtonToTextBoxFocus(RadioButton rb, TextBox txt)
+        public static void AttachEnterEvent(RadioButton rb, Control ctrl)
         {
-            txt.Enter += (sender, e) => rb.Checked = true;
+            ctrl.Enter += (sender, e) => rb.Checked = true;
         }
 
         public static void SetupComboBoxItems(ComboBox cmb, int defaultIndex, params string[] items)

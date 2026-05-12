@@ -101,8 +101,8 @@ namespace PochiPochiEditorGabu._Item
                 txtItemEffectAddr,
                 txtFieldUseAddr, txtBattleUseAddr);
             ControlHelper.AttachExternalBorder(picSprite);
-            ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpriteImgAddr, txtSpriteImgAddr);
-            ControlHelper.AttachRadioButtonToTextBoxFocus(rbSpritePalAddr, txtSpritePalAddr);
+            ControlHelper.AttachEnterEvent(rbSpriteImgAddr, txtSpriteImgAddr);
+            ControlHelper.AttachEnterEvent(rbSpritePalAddr, txtSpritePalAddr);
 
             ControlHelper.LoadComboBoxFromTextFile(cmbHoldEffectIdx, "txt/ItemDataHoldEffectIdx.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbCanHold, "txt/ItemDataCanHold.txt");

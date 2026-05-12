@@ -32,47 +32,48 @@ namespace PochiPochiEditorGabu._Item
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MailDataEditor));
             this.btnSave = new System.Windows.Forms.Button();
             this.grpSelectMail = new System.Windows.Forms.GroupBox();
-            this.lblDataIdx = new System.Windows.Forms.Label();
-            this.nudDataIdx = new System.Windows.Forms.NumericUpDown();
-            this.btnDataIdxPrev = new System.Windows.Forms.Button();
-            this.btnDataIdxNext = new System.Windows.Forms.Button();
             this.nudDataWordCount = new System.Windows.Forms.NumericUpDown();
             this.lblDataWordCount = new System.Windows.Forms.Label();
+            this.btnDataIdxNext = new System.Windows.Forms.Button();
+            this.btnDataIdxPrev = new System.Windows.Forms.Button();
+            this.nudDataIdx = new System.Windows.Forms.NumericUpDown();
+            this.lblDataIdx = new System.Windows.Forms.Label();
             this.grpDataWords = new System.Windows.Forms.GroupBox();
-            this.rbDataWord1 = new System.Windows.Forms.RadioButton();
-            this.txtDataWord1 = new System.Windows.Forms.TextBox();
-            this.rbDataWord2 = new System.Windows.Forms.RadioButton();
-            this.txtDataWord2 = new System.Windows.Forms.TextBox();
-            this.rbDataWord3 = new System.Windows.Forms.RadioButton();
-            this.txtDataWord3 = new System.Windows.Forms.TextBox();
-            this.rbDataWord4 = new System.Windows.Forms.RadioButton();
-            this.txtDataWord4 = new System.Windows.Forms.TextBox();
-            this.rbDataWord5 = new System.Windows.Forms.RadioButton();
-            this.rbDataWord6 = new System.Windows.Forms.RadioButton();
-            this.txtDataWord5 = new System.Windows.Forms.TextBox();
-            this.txtDataWord6 = new System.Windows.Forms.TextBox();
             this.txtDataWord9 = new System.Windows.Forms.TextBox();
             this.txtDataWord8 = new System.Windows.Forms.TextBox();
             this.rbDataWord9 = new System.Windows.Forms.RadioButton();
             this.rbDataWord8 = new System.Windows.Forms.RadioButton();
             this.txtDataWord7 = new System.Windows.Forms.TextBox();
             this.rbDataWord7 = new System.Windows.Forms.RadioButton();
+            this.txtDataWord6 = new System.Windows.Forms.TextBox();
+            this.txtDataWord3 = new System.Windows.Forms.TextBox();
+            this.txtDataWord5 = new System.Windows.Forms.TextBox();
+            this.txtDataWord2 = new System.Windows.Forms.TextBox();
+            this.rbDataWord6 = new System.Windows.Forms.RadioButton();
+            this.rbDataWord3 = new System.Windows.Forms.RadioButton();
+            this.rbDataWord5 = new System.Windows.Forms.RadioButton();
+            this.rbDataWord2 = new System.Windows.Forms.RadioButton();
+            this.txtDataWord4 = new System.Windows.Forms.TextBox();
+            this.txtDataWord1 = new System.Windows.Forms.TextBox();
+            this.rbDataWord4 = new System.Windows.Forms.RadioButton();
+            this.rbDataWord1 = new System.Windows.Forms.RadioButton();
             this.grpSelectWord = new System.Windows.Forms.GroupBox();
-            this.btnRepalceWord = new System.Windows.Forms.Button();
-            this.rbWordPokemon1 = new System.Windows.Forms.RadioButton();
-            this.cmbWordPokemon1 = new System.Windows.Forms.ComboBox();
-            this.cmbWordPokemon2 = new System.Windows.Forms.ComboBox();
-            this.rbWordPokemon2 = new System.Windows.Forms.RadioButton();
-            this.rbWordMove1 = new System.Windows.Forms.RadioButton();
-            this.cmbWordMove1 = new System.Windows.Forms.ComboBox();
-            this.rbWordMove2 = new System.Windows.Forms.RadioButton();
-            this.cmbWordMove2 = new System.Windows.Forms.ComboBox();
-            this.rbWordStatus = new System.Windows.Forms.RadioButton();
-            this.cmbWordStatus = new System.Windows.Forms.ComboBox();
-            this.rbWordTrainer = new System.Windows.Forms.RadioButton();
-            this.rbWordBattle = new System.Windows.Forms.RadioButton();
-            this.cmbWordTrainer = new System.Windows.Forms.ComboBox();
-            this.cmbWordBattle = new System.Windows.Forms.ComboBox();
+            this.cmbWordTrendy = new System.Windows.Forms.ComboBox();
+            this.rbWordTrendy = new System.Windows.Forms.RadioButton();
+            this.cmbWordEvent = new System.Windows.Forms.ComboBox();
+            this.cmbWordTime = new System.Windows.Forms.ComboBox();
+            this.cmbWordMisc = new System.Windows.Forms.ComboBox();
+            this.cmbWordLifestyle = new System.Windows.Forms.ComboBox();
+            this.rbWordEvent = new System.Windows.Forms.RadioButton();
+            this.rbWordTime = new System.Windows.Forms.RadioButton();
+            this.rbWordMisc = new System.Windows.Forms.RadioButton();
+            this.cmbWordAdjective = new System.Windows.Forms.ComboBox();
+            this.rbWordLifestyle = new System.Windows.Forms.RadioButton();
+            this.cmbWordHobby = new System.Windows.Forms.ComboBox();
+            this.rbWordAdjective = new System.Windows.Forms.RadioButton();
+            this.cmbWordAction = new System.Windows.Forms.ComboBox();
+            this.rbWordHobby = new System.Windows.Forms.RadioButton();
+            this.rbWordAction = new System.Windows.Forms.RadioButton();
             this.cmbWordCondition = new System.Windows.Forms.ComboBox();
             this.cmbWordSpeech = new System.Windows.Forms.ComboBox();
             this.cmbWordEnding = new System.Windows.Forms.ComboBox();
@@ -87,25 +88,24 @@ namespace PochiPochiEditorGabu._Item
             this.cmbWordGreeting = new System.Windows.Forms.ComboBox();
             this.rbWordVoice = new System.Windows.Forms.RadioButton();
             this.rbWordGreeting = new System.Windows.Forms.RadioButton();
-            this.cmbWordEvent = new System.Windows.Forms.ComboBox();
-            this.cmbWordTime = new System.Windows.Forms.ComboBox();
-            this.cmbWordMisc = new System.Windows.Forms.ComboBox();
-            this.cmbWordLifeStyle = new System.Windows.Forms.ComboBox();
-            this.rbWordEvent = new System.Windows.Forms.RadioButton();
-            this.rbWordTime = new System.Windows.Forms.RadioButton();
-            this.rbWordMisc = new System.Windows.Forms.RadioButton();
-            this.cmbWordAdjective = new System.Windows.Forms.ComboBox();
-            this.rbWordLifeStyle = new System.Windows.Forms.RadioButton();
-            this.cmbWordHobby = new System.Windows.Forms.ComboBox();
-            this.rbWordAdjective = new System.Windows.Forms.RadioButton();
-            this.cmbWordAction = new System.Windows.Forms.ComboBox();
-            this.rbWordHobby = new System.Windows.Forms.RadioButton();
-            this.rbWordAction = new System.Windows.Forms.RadioButton();
-            this.cmbWordTrendy = new System.Windows.Forms.ComboBox();
-            this.rbWordTrendy = new System.Windows.Forms.RadioButton();
+            this.cmbWordBattle = new System.Windows.Forms.ComboBox();
+            this.cmbWordMove2 = new System.Windows.Forms.ComboBox();
+            this.cmbWordTrainer = new System.Windows.Forms.ComboBox();
+            this.cmbWordPokemon2 = new System.Windows.Forms.ComboBox();
+            this.rbWordBattle = new System.Windows.Forms.RadioButton();
+            this.rbWordMove2 = new System.Windows.Forms.RadioButton();
+            this.rbWordTrainer = new System.Windows.Forms.RadioButton();
+            this.cmbWordStatus = new System.Windows.Forms.ComboBox();
+            this.rbWordPokemon2 = new System.Windows.Forms.RadioButton();
+            this.cmbWordMove1 = new System.Windows.Forms.ComboBox();
+            this.rbWordStatus = new System.Windows.Forms.RadioButton();
+            this.cmbWordPokemon1 = new System.Windows.Forms.ComboBox();
+            this.rbWordMove1 = new System.Windows.Forms.RadioButton();
+            this.rbWordPokemon1 = new System.Windows.Forms.RadioButton();
+            this.btnRepalceWord = new System.Windows.Forms.Button();
             this.grpSelectMail.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDataIdx)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDataWordCount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIdx)).BeginInit();
             this.grpDataWords.SuspendLayout();
             this.grpSelectWord.SuspendLayout();
             this.SuspendLayout();
@@ -137,49 +137,6 @@ namespace PochiPochiEditorGabu._Item
             this.grpSelectMail.TabStop = false;
             this.grpSelectMail.Text = "メールを選択";
             // 
-            // lblDataIdx
-            // 
-            this.lblDataIdx.AutoSize = true;
-            this.lblDataIdx.Location = new System.Drawing.Point(20, 28);
-            this.lblDataIdx.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataIdx.Name = "lblDataIdx";
-            this.lblDataIdx.Size = new System.Drawing.Size(74, 12);
-            this.lblDataIdx.TabIndex = 0;
-            this.lblDataIdx.Text = "メール内容ID :";
-            // 
-            // nudDataIdx
-            // 
-            this.nudDataIdx.Location = new System.Drawing.Point(20, 48);
-            this.nudDataIdx.Margin = new System.Windows.Forms.Padding(0);
-            this.nudDataIdx.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.nudDataIdx.Name = "nudDataIdx";
-            this.nudDataIdx.Size = new System.Drawing.Size(72, 19);
-            this.nudDataIdx.TabIndex = 1;
-            // 
-            // btnDataIdxPrev
-            // 
-            this.btnDataIdxPrev.Location = new System.Drawing.Point(20, 72);
-            this.btnDataIdxPrev.Margin = new System.Windows.Forms.Padding(0);
-            this.btnDataIdxPrev.Name = "btnDataIdxPrev";
-            this.btnDataIdxPrev.Size = new System.Drawing.Size(34, 23);
-            this.btnDataIdxPrev.TabIndex = 2;
-            this.btnDataIdxPrev.Text = "<";
-            this.btnDataIdxPrev.UseVisualStyleBackColor = true;
-            // 
-            // btnDataIdxNext
-            // 
-            this.btnDataIdxNext.Location = new System.Drawing.Point(58, 72);
-            this.btnDataIdxNext.Margin = new System.Windows.Forms.Padding(0);
-            this.btnDataIdxNext.Name = "btnDataIdxNext";
-            this.btnDataIdxNext.Size = new System.Drawing.Size(34, 23);
-            this.btnDataIdxNext.TabIndex = 2;
-            this.btnDataIdxNext.Text = ">";
-            this.btnDataIdxNext.UseVisualStyleBackColor = true;
-            // 
             // nudDataWordCount
             // 
             this.nudDataWordCount.Location = new System.Drawing.Point(20, 132);
@@ -202,6 +159,49 @@ namespace PochiPochiEditorGabu._Item
             this.lblDataWordCount.Size = new System.Drawing.Size(47, 12);
             this.lblDataWordCount.TabIndex = 3;
             this.lblDataWordCount.Text = "言葉数 :";
+            // 
+            // btnDataIdxNext
+            // 
+            this.btnDataIdxNext.Location = new System.Drawing.Point(58, 72);
+            this.btnDataIdxNext.Margin = new System.Windows.Forms.Padding(0);
+            this.btnDataIdxNext.Name = "btnDataIdxNext";
+            this.btnDataIdxNext.Size = new System.Drawing.Size(34, 23);
+            this.btnDataIdxNext.TabIndex = 2;
+            this.btnDataIdxNext.Text = ">";
+            this.btnDataIdxNext.UseVisualStyleBackColor = true;
+            // 
+            // btnDataIdxPrev
+            // 
+            this.btnDataIdxPrev.Location = new System.Drawing.Point(20, 72);
+            this.btnDataIdxPrev.Margin = new System.Windows.Forms.Padding(0);
+            this.btnDataIdxPrev.Name = "btnDataIdxPrev";
+            this.btnDataIdxPrev.Size = new System.Drawing.Size(34, 23);
+            this.btnDataIdxPrev.TabIndex = 2;
+            this.btnDataIdxPrev.Text = "<";
+            this.btnDataIdxPrev.UseVisualStyleBackColor = true;
+            // 
+            // nudDataIdx
+            // 
+            this.nudDataIdx.Location = new System.Drawing.Point(20, 48);
+            this.nudDataIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataIdx.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.nudDataIdx.Name = "nudDataIdx";
+            this.nudDataIdx.Size = new System.Drawing.Size(72, 19);
+            this.nudDataIdx.TabIndex = 1;
+            // 
+            // lblDataIdx
+            // 
+            this.lblDataIdx.AutoSize = true;
+            this.lblDataIdx.Location = new System.Drawing.Point(20, 28);
+            this.lblDataIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataIdx.Name = "lblDataIdx";
+            this.lblDataIdx.Size = new System.Drawing.Size(74, 12);
+            this.lblDataIdx.TabIndex = 0;
+            this.lblDataIdx.Text = "メール内容ID :";
             // 
             // grpDataWords
             // 
@@ -231,127 +231,6 @@ namespace PochiPochiEditorGabu._Item
             this.grpDataWords.TabIndex = 2;
             this.grpDataWords.TabStop = false;
             this.grpDataWords.Text = "メール内容";
-            // 
-            // rbDataWord1
-            // 
-            this.rbDataWord1.AutoSize = true;
-            this.rbDataWord1.Checked = true;
-            this.rbDataWord1.Location = new System.Drawing.Point(20, 32);
-            this.rbDataWord1.Margin = new System.Windows.Forms.Padding(0);
-            this.rbDataWord1.Name = "rbDataWord1";
-            this.rbDataWord1.Size = new System.Drawing.Size(35, 16);
-            this.rbDataWord1.TabIndex = 0;
-            this.rbDataWord1.Text = "1 :";
-            this.rbDataWord1.UseVisualStyleBackColor = true;
-            // 
-            // txtDataWord1
-            // 
-            this.txtDataWord1.Location = new System.Drawing.Point(60, 30);
-            this.txtDataWord1.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataWord1.Name = "txtDataWord1";
-            this.txtDataWord1.ReadOnly = true;
-            this.txtDataWord1.Size = new System.Drawing.Size(120, 19);
-            this.txtDataWord1.TabIndex = 1;
-            // 
-            // rbDataWord2
-            // 
-            this.rbDataWord2.AutoSize = true;
-            this.rbDataWord2.Location = new System.Drawing.Point(196, 32);
-            this.rbDataWord2.Margin = new System.Windows.Forms.Padding(0);
-            this.rbDataWord2.Name = "rbDataWord2";
-            this.rbDataWord2.Size = new System.Drawing.Size(35, 16);
-            this.rbDataWord2.TabIndex = 0;
-            this.rbDataWord2.Text = "2 :";
-            this.rbDataWord2.UseVisualStyleBackColor = true;
-            // 
-            // txtDataWord2
-            // 
-            this.txtDataWord2.Location = new System.Drawing.Point(236, 30);
-            this.txtDataWord2.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataWord2.Name = "txtDataWord2";
-            this.txtDataWord2.ReadOnly = true;
-            this.txtDataWord2.Size = new System.Drawing.Size(120, 19);
-            this.txtDataWord2.TabIndex = 1;
-            // 
-            // rbDataWord3
-            // 
-            this.rbDataWord3.AutoSize = true;
-            this.rbDataWord3.Location = new System.Drawing.Point(372, 32);
-            this.rbDataWord3.Margin = new System.Windows.Forms.Padding(0);
-            this.rbDataWord3.Name = "rbDataWord3";
-            this.rbDataWord3.Size = new System.Drawing.Size(35, 16);
-            this.rbDataWord3.TabIndex = 0;
-            this.rbDataWord3.Text = "3 :";
-            this.rbDataWord3.UseVisualStyleBackColor = true;
-            // 
-            // txtDataWord3
-            // 
-            this.txtDataWord3.Location = new System.Drawing.Point(412, 30);
-            this.txtDataWord3.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataWord3.Name = "txtDataWord3";
-            this.txtDataWord3.ReadOnly = true;
-            this.txtDataWord3.Size = new System.Drawing.Size(120, 19);
-            this.txtDataWord3.TabIndex = 1;
-            // 
-            // rbDataWord4
-            // 
-            this.rbDataWord4.AutoSize = true;
-            this.rbDataWord4.Location = new System.Drawing.Point(20, 66);
-            this.rbDataWord4.Margin = new System.Windows.Forms.Padding(0);
-            this.rbDataWord4.Name = "rbDataWord4";
-            this.rbDataWord4.Size = new System.Drawing.Size(35, 16);
-            this.rbDataWord4.TabIndex = 0;
-            this.rbDataWord4.Text = "4 :";
-            this.rbDataWord4.UseVisualStyleBackColor = true;
-            // 
-            // txtDataWord4
-            // 
-            this.txtDataWord4.Location = new System.Drawing.Point(60, 64);
-            this.txtDataWord4.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataWord4.Name = "txtDataWord4";
-            this.txtDataWord4.ReadOnly = true;
-            this.txtDataWord4.Size = new System.Drawing.Size(120, 19);
-            this.txtDataWord4.TabIndex = 1;
-            // 
-            // rbDataWord5
-            // 
-            this.rbDataWord5.AutoSize = true;
-            this.rbDataWord5.Location = new System.Drawing.Point(196, 66);
-            this.rbDataWord5.Margin = new System.Windows.Forms.Padding(0);
-            this.rbDataWord5.Name = "rbDataWord5";
-            this.rbDataWord5.Size = new System.Drawing.Size(35, 16);
-            this.rbDataWord5.TabIndex = 0;
-            this.rbDataWord5.Text = "5 :";
-            this.rbDataWord5.UseVisualStyleBackColor = true;
-            // 
-            // rbDataWord6
-            // 
-            this.rbDataWord6.AutoSize = true;
-            this.rbDataWord6.Location = new System.Drawing.Point(372, 66);
-            this.rbDataWord6.Margin = new System.Windows.Forms.Padding(0);
-            this.rbDataWord6.Name = "rbDataWord6";
-            this.rbDataWord6.Size = new System.Drawing.Size(35, 16);
-            this.rbDataWord6.TabIndex = 0;
-            this.rbDataWord6.Text = "6 :";
-            this.rbDataWord6.UseVisualStyleBackColor = true;
-            // 
-            // txtDataWord5
-            // 
-            this.txtDataWord5.Location = new System.Drawing.Point(236, 64);
-            this.txtDataWord5.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataWord5.Name = "txtDataWord5";
-            this.txtDataWord5.ReadOnly = true;
-            this.txtDataWord5.Size = new System.Drawing.Size(120, 19);
-            this.txtDataWord5.TabIndex = 1;
-            // 
-            // txtDataWord6
-            // 
-            this.txtDataWord6.Location = new System.Drawing.Point(412, 64);
-            this.txtDataWord6.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataWord6.Name = "txtDataWord6";
-            this.txtDataWord6.ReadOnly = true;
-            this.txtDataWord6.Size = new System.Drawing.Size(120, 19);
-            this.txtDataWord6.TabIndex = 1;
             // 
             // txtDataWord9
             // 
@@ -413,6 +292,126 @@ namespace PochiPochiEditorGabu._Item
             this.rbDataWord7.Text = "7 :";
             this.rbDataWord7.UseVisualStyleBackColor = true;
             // 
+            // txtDataWord6
+            // 
+            this.txtDataWord6.Location = new System.Drawing.Point(412, 64);
+            this.txtDataWord6.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataWord6.Name = "txtDataWord6";
+            this.txtDataWord6.ReadOnly = true;
+            this.txtDataWord6.Size = new System.Drawing.Size(120, 19);
+            this.txtDataWord6.TabIndex = 1;
+            // 
+            // txtDataWord3
+            // 
+            this.txtDataWord3.Location = new System.Drawing.Point(412, 30);
+            this.txtDataWord3.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataWord3.Name = "txtDataWord3";
+            this.txtDataWord3.ReadOnly = true;
+            this.txtDataWord3.Size = new System.Drawing.Size(120, 19);
+            this.txtDataWord3.TabIndex = 1;
+            // 
+            // txtDataWord5
+            // 
+            this.txtDataWord5.Location = new System.Drawing.Point(236, 64);
+            this.txtDataWord5.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataWord5.Name = "txtDataWord5";
+            this.txtDataWord5.ReadOnly = true;
+            this.txtDataWord5.Size = new System.Drawing.Size(120, 19);
+            this.txtDataWord5.TabIndex = 1;
+            // 
+            // txtDataWord2
+            // 
+            this.txtDataWord2.Location = new System.Drawing.Point(236, 30);
+            this.txtDataWord2.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataWord2.Name = "txtDataWord2";
+            this.txtDataWord2.ReadOnly = true;
+            this.txtDataWord2.Size = new System.Drawing.Size(120, 19);
+            this.txtDataWord2.TabIndex = 1;
+            // 
+            // rbDataWord6
+            // 
+            this.rbDataWord6.AutoSize = true;
+            this.rbDataWord6.Location = new System.Drawing.Point(372, 66);
+            this.rbDataWord6.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataWord6.Name = "rbDataWord6";
+            this.rbDataWord6.Size = new System.Drawing.Size(35, 16);
+            this.rbDataWord6.TabIndex = 0;
+            this.rbDataWord6.Text = "6 :";
+            this.rbDataWord6.UseVisualStyleBackColor = true;
+            // 
+            // rbDataWord3
+            // 
+            this.rbDataWord3.AutoSize = true;
+            this.rbDataWord3.Location = new System.Drawing.Point(372, 32);
+            this.rbDataWord3.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataWord3.Name = "rbDataWord3";
+            this.rbDataWord3.Size = new System.Drawing.Size(35, 16);
+            this.rbDataWord3.TabIndex = 0;
+            this.rbDataWord3.Text = "3 :";
+            this.rbDataWord3.UseVisualStyleBackColor = true;
+            // 
+            // rbDataWord5
+            // 
+            this.rbDataWord5.AutoSize = true;
+            this.rbDataWord5.Location = new System.Drawing.Point(196, 66);
+            this.rbDataWord5.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataWord5.Name = "rbDataWord5";
+            this.rbDataWord5.Size = new System.Drawing.Size(35, 16);
+            this.rbDataWord5.TabIndex = 0;
+            this.rbDataWord5.Text = "5 :";
+            this.rbDataWord5.UseVisualStyleBackColor = true;
+            // 
+            // rbDataWord2
+            // 
+            this.rbDataWord2.AutoSize = true;
+            this.rbDataWord2.Location = new System.Drawing.Point(196, 32);
+            this.rbDataWord2.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataWord2.Name = "rbDataWord2";
+            this.rbDataWord2.Size = new System.Drawing.Size(35, 16);
+            this.rbDataWord2.TabIndex = 0;
+            this.rbDataWord2.Text = "2 :";
+            this.rbDataWord2.UseVisualStyleBackColor = true;
+            // 
+            // txtDataWord4
+            // 
+            this.txtDataWord4.Location = new System.Drawing.Point(60, 64);
+            this.txtDataWord4.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataWord4.Name = "txtDataWord4";
+            this.txtDataWord4.ReadOnly = true;
+            this.txtDataWord4.Size = new System.Drawing.Size(120, 19);
+            this.txtDataWord4.TabIndex = 1;
+            // 
+            // txtDataWord1
+            // 
+            this.txtDataWord1.Location = new System.Drawing.Point(60, 30);
+            this.txtDataWord1.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataWord1.Name = "txtDataWord1";
+            this.txtDataWord1.ReadOnly = true;
+            this.txtDataWord1.Size = new System.Drawing.Size(120, 19);
+            this.txtDataWord1.TabIndex = 1;
+            // 
+            // rbDataWord4
+            // 
+            this.rbDataWord4.AutoSize = true;
+            this.rbDataWord4.Location = new System.Drawing.Point(20, 66);
+            this.rbDataWord4.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataWord4.Name = "rbDataWord4";
+            this.rbDataWord4.Size = new System.Drawing.Size(35, 16);
+            this.rbDataWord4.TabIndex = 0;
+            this.rbDataWord4.Text = "4 :";
+            this.rbDataWord4.UseVisualStyleBackColor = true;
+            // 
+            // rbDataWord1
+            // 
+            this.rbDataWord1.AutoSize = true;
+            this.rbDataWord1.Location = new System.Drawing.Point(20, 32);
+            this.rbDataWord1.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataWord1.Name = "rbDataWord1";
+            this.rbDataWord1.Size = new System.Drawing.Size(35, 16);
+            this.rbDataWord1.TabIndex = 0;
+            this.rbDataWord1.Text = "1 :";
+            this.rbDataWord1.UseVisualStyleBackColor = true;
+            // 
             // grpSelectWord
             // 
             this.grpSelectWord.Controls.Add(this.cmbWordTrendy);
@@ -420,12 +419,12 @@ namespace PochiPochiEditorGabu._Item
             this.grpSelectWord.Controls.Add(this.cmbWordEvent);
             this.grpSelectWord.Controls.Add(this.cmbWordTime);
             this.grpSelectWord.Controls.Add(this.cmbWordMisc);
-            this.grpSelectWord.Controls.Add(this.cmbWordLifeStyle);
+            this.grpSelectWord.Controls.Add(this.cmbWordLifestyle);
             this.grpSelectWord.Controls.Add(this.rbWordEvent);
             this.grpSelectWord.Controls.Add(this.rbWordTime);
             this.grpSelectWord.Controls.Add(this.rbWordMisc);
             this.grpSelectWord.Controls.Add(this.cmbWordAdjective);
-            this.grpSelectWord.Controls.Add(this.rbWordLifeStyle);
+            this.grpSelectWord.Controls.Add(this.rbWordLifestyle);
             this.grpSelectWord.Controls.Add(this.cmbWordHobby);
             this.grpSelectWord.Controls.Add(this.rbWordAdjective);
             this.grpSelectWord.Controls.Add(this.cmbWordAction);
@@ -468,157 +467,165 @@ namespace PochiPochiEditorGabu._Item
             this.grpSelectWord.TabStop = false;
             this.grpSelectWord.Text = "言葉を選択";
             // 
-            // btnRepalceWord
+            // cmbWordTrendy
             // 
-            this.btnRepalceWord.Location = new System.Drawing.Point(168, 200);
-            this.btnRepalceWord.Margin = new System.Windows.Forms.Padding(0);
-            this.btnRepalceWord.Name = "btnRepalceWord";
-            this.btnRepalceWord.Size = new System.Drawing.Size(80, 23);
-            this.btnRepalceWord.TabIndex = 4;
-            this.btnRepalceWord.Text = "↑代入";
-            this.btnRepalceWord.UseVisualStyleBackColor = true;
+            this.cmbWordTrendy.FormattingEnabled = true;
+            this.cmbWordTrendy.Location = new System.Drawing.Point(564, 240);
+            this.cmbWordTrendy.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordTrendy.Name = "cmbWordTrendy";
+            this.cmbWordTrendy.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordTrendy.TabIndex = 33;
             // 
-            // rbWordPokemon1
+            // rbWordTrendy
             // 
-            this.rbWordPokemon1.AutoSize = true;
-            this.rbWordPokemon1.Checked = true;
-            this.rbWordPokemon1.Location = new System.Drawing.Point(20, 32);
-            this.rbWordPokemon1.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordPokemon1.Name = "rbWordPokemon1";
-            this.rbWordPokemon1.Size = new System.Drawing.Size(72, 16);
-            this.rbWordPokemon1.TabIndex = 0;
-            this.rbWordPokemon1.TabStop = true;
-            this.rbWordPokemon1.Text = "ポケモン1 :";
-            this.rbWordPokemon1.UseVisualStyleBackColor = true;
+            this.rbWordTrendy.AutoSize = true;
+            this.rbWordTrendy.Location = new System.Drawing.Point(476, 242);
+            this.rbWordTrendy.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordTrendy.Name = "rbWordTrendy";
+            this.rbWordTrendy.Size = new System.Drawing.Size(83, 16);
+            this.rbWordTrendy.TabIndex = 32;
+            this.rbWordTrendy.Text = "ナウイことば :";
+            this.rbWordTrendy.UseVisualStyleBackColor = true;
             // 
-            // cmbWordPokemon1
+            // cmbWordEvent
             // 
-            this.cmbWordPokemon1.FormattingEnabled = true;
-            this.cmbWordPokemon1.Location = new System.Drawing.Point(108, 30);
-            this.cmbWordPokemon1.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordPokemon1.Name = "cmbWordPokemon1";
-            this.cmbWordPokemon1.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordPokemon1.TabIndex = 1;
+            this.cmbWordEvent.FormattingEnabled = true;
+            this.cmbWordEvent.Location = new System.Drawing.Point(564, 210);
+            this.cmbWordEvent.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordEvent.Name = "cmbWordEvent";
+            this.cmbWordEvent.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordEvent.TabIndex = 28;
             // 
-            // cmbWordPokemon2
+            // cmbWordTime
             // 
-            this.cmbWordPokemon2.FormattingEnabled = true;
-            this.cmbWordPokemon2.Location = new System.Drawing.Point(108, 60);
-            this.cmbWordPokemon2.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordPokemon2.Name = "cmbWordPokemon2";
-            this.cmbWordPokemon2.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordPokemon2.TabIndex = 3;
+            this.cmbWordTime.FormattingEnabled = true;
+            this.cmbWordTime.Location = new System.Drawing.Point(564, 120);
+            this.cmbWordTime.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordTime.Name = "cmbWordTime";
+            this.cmbWordTime.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordTime.TabIndex = 29;
             // 
-            // rbWordPokemon2
+            // cmbWordMisc
             // 
-            this.rbWordPokemon2.AutoSize = true;
-            this.rbWordPokemon2.Location = new System.Drawing.Point(20, 62);
-            this.rbWordPokemon2.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordPokemon2.Name = "rbWordPokemon2";
-            this.rbWordPokemon2.Size = new System.Drawing.Size(72, 16);
-            this.rbWordPokemon2.TabIndex = 2;
-            this.rbWordPokemon2.Text = "ポケモン2 :";
-            this.rbWordPokemon2.UseVisualStyleBackColor = true;
+            this.cmbWordMisc.FormattingEnabled = true;
+            this.cmbWordMisc.Location = new System.Drawing.Point(564, 150);
+            this.cmbWordMisc.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordMisc.Name = "cmbWordMisc";
+            this.cmbWordMisc.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordMisc.TabIndex = 30;
             // 
-            // rbWordMove1
+            // cmbWordLifestyle
             // 
-            this.rbWordMove1.AutoSize = true;
-            this.rbWordMove1.Location = new System.Drawing.Point(20, 92);
-            this.rbWordMove1.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordMove1.Name = "rbWordMove1";
-            this.rbWordMove1.Size = new System.Drawing.Size(54, 16);
-            this.rbWordMove1.TabIndex = 0;
-            this.rbWordMove1.Text = "わざ1 :";
-            this.rbWordMove1.UseVisualStyleBackColor = true;
+            this.cmbWordLifestyle.FormattingEnabled = true;
+            this.cmbWordLifestyle.Location = new System.Drawing.Point(564, 60);
+            this.cmbWordLifestyle.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordLifestyle.Name = "cmbWordLifestyle";
+            this.cmbWordLifestyle.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordLifestyle.TabIndex = 31;
             // 
-            // cmbWordMove1
+            // rbWordEvent
             // 
-            this.cmbWordMove1.FormattingEnabled = true;
-            this.cmbWordMove1.Location = new System.Drawing.Point(108, 90);
-            this.cmbWordMove1.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordMove1.Name = "cmbWordMove1";
-            this.cmbWordMove1.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordMove1.TabIndex = 1;
+            this.rbWordEvent.AutoSize = true;
+            this.rbWordEvent.Location = new System.Drawing.Point(476, 212);
+            this.rbWordEvent.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordEvent.Name = "rbWordEvent";
+            this.rbWordEvent.Size = new System.Drawing.Size(65, 16);
+            this.rbWordEvent.TabIndex = 24;
+            this.rbWordEvent.Text = "イベント :";
+            this.rbWordEvent.UseVisualStyleBackColor = true;
             // 
-            // rbWordMove2
+            // rbWordTime
             // 
-            this.rbWordMove2.AutoSize = true;
-            this.rbWordMove2.Location = new System.Drawing.Point(20, 122);
-            this.rbWordMove2.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordMove2.Name = "rbWordMove2";
-            this.rbWordMove2.Size = new System.Drawing.Size(54, 16);
-            this.rbWordMove2.TabIndex = 2;
-            this.rbWordMove2.Text = "わざ2 :";
-            this.rbWordMove2.UseVisualStyleBackColor = true;
+            this.rbWordTime.AutoSize = true;
+            this.rbWordTime.Location = new System.Drawing.Point(476, 122);
+            this.rbWordTime.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordTime.Name = "rbWordTime";
+            this.rbWordTime.Size = new System.Drawing.Size(58, 16);
+            this.rbWordTime.TabIndex = 25;
+            this.rbWordTime.Text = "じかん :";
+            this.rbWordTime.UseVisualStyleBackColor = true;
             // 
-            // cmbWordMove2
+            // rbWordMisc
             // 
-            this.cmbWordMove2.FormattingEnabled = true;
-            this.cmbWordMove2.Location = new System.Drawing.Point(108, 120);
-            this.cmbWordMove2.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordMove2.Name = "cmbWordMove2";
-            this.cmbWordMove2.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordMove2.TabIndex = 3;
+            this.rbWordMisc.AutoSize = true;
+            this.rbWordMisc.Location = new System.Drawing.Point(476, 152);
+            this.rbWordMisc.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordMisc.Name = "rbWordMisc";
+            this.rbWordMisc.Size = new System.Drawing.Size(69, 16);
+            this.rbWordMisc.TabIndex = 26;
+            this.rbWordMisc.Text = "あれこれ :";
+            this.rbWordMisc.UseVisualStyleBackColor = true;
             // 
-            // rbWordStatus
+            // cmbWordAdjective
             // 
-            this.rbWordStatus.AutoSize = true;
-            this.rbWordStatus.Location = new System.Drawing.Point(20, 182);
-            this.rbWordStatus.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordStatus.Name = "rbWordStatus";
-            this.rbWordStatus.Size = new System.Drawing.Size(74, 16);
-            this.rbWordStatus.TabIndex = 0;
-            this.rbWordStatus.Text = "ステータス :";
-            this.rbWordStatus.UseVisualStyleBackColor = true;
+            this.cmbWordAdjective.FormattingEnabled = true;
+            this.cmbWordAdjective.Location = new System.Drawing.Point(564, 180);
+            this.cmbWordAdjective.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordAdjective.Name = "cmbWordAdjective";
+            this.cmbWordAdjective.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordAdjective.TabIndex = 21;
             // 
-            // cmbWordStatus
+            // rbWordLifestyle
             // 
-            this.cmbWordStatus.FormattingEnabled = true;
-            this.cmbWordStatus.Location = new System.Drawing.Point(108, 180);
-            this.cmbWordStatus.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordStatus.Name = "cmbWordStatus";
-            this.cmbWordStatus.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordStatus.TabIndex = 1;
+            this.rbWordLifestyle.AutoSize = true;
+            this.rbWordLifestyle.Location = new System.Drawing.Point(476, 62);
+            this.rbWordLifestyle.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordLifestyle.Name = "rbWordLifestyle";
+            this.rbWordLifestyle.Size = new System.Drawing.Size(68, 16);
+            this.rbWordLifestyle.TabIndex = 27;
+            this.rbWordLifestyle.Text = "せいかつ :";
+            this.rbWordLifestyle.UseVisualStyleBackColor = true;
             // 
-            // rbWordTrainer
+            // cmbWordHobby
             // 
-            this.rbWordTrainer.AutoSize = true;
-            this.rbWordTrainer.Location = new System.Drawing.Point(20, 152);
-            this.rbWordTrainer.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordTrainer.Name = "rbWordTrainer";
-            this.rbWordTrainer.Size = new System.Drawing.Size(76, 16);
-            this.rbWordTrainer.TabIndex = 2;
-            this.rbWordTrainer.Text = "トレーナー :";
-            this.rbWordTrainer.UseVisualStyleBackColor = true;
+            this.cmbWordHobby.FormattingEnabled = true;
+            this.cmbWordHobby.Location = new System.Drawing.Point(564, 90);
+            this.cmbWordHobby.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordHobby.Name = "cmbWordHobby";
+            this.cmbWordHobby.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordHobby.TabIndex = 22;
             // 
-            // rbWordBattle
+            // rbWordAdjective
             // 
-            this.rbWordBattle.AutoSize = true;
-            this.rbWordBattle.Location = new System.Drawing.Point(20, 212);
-            this.rbWordBattle.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordBattle.Name = "rbWordBattle";
-            this.rbWordBattle.Size = new System.Drawing.Size(57, 16);
-            this.rbWordBattle.TabIndex = 2;
-            this.rbWordBattle.Text = "バトル :";
-            this.rbWordBattle.UseVisualStyleBackColor = true;
+            this.rbWordAdjective.AutoSize = true;
+            this.rbWordAdjective.Location = new System.Drawing.Point(476, 182);
+            this.rbWordAdjective.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordAdjective.Name = "rbWordAdjective";
+            this.rbWordAdjective.Size = new System.Drawing.Size(71, 16);
+            this.rbWordAdjective.TabIndex = 18;
+            this.rbWordAdjective.Text = "くりかえし :";
+            this.rbWordAdjective.UseVisualStyleBackColor = true;
             // 
-            // cmbWordTrainer
+            // cmbWordAction
             // 
-            this.cmbWordTrainer.FormattingEnabled = true;
-            this.cmbWordTrainer.Location = new System.Drawing.Point(108, 150);
-            this.cmbWordTrainer.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordTrainer.Name = "cmbWordTrainer";
-            this.cmbWordTrainer.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordTrainer.TabIndex = 3;
+            this.cmbWordAction.FormattingEnabled = true;
+            this.cmbWordAction.Location = new System.Drawing.Point(564, 30);
+            this.cmbWordAction.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordAction.Name = "cmbWordAction";
+            this.cmbWordAction.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordAction.TabIndex = 23;
             // 
-            // cmbWordBattle
+            // rbWordHobby
             // 
-            this.cmbWordBattle.FormattingEnabled = true;
-            this.cmbWordBattle.Location = new System.Drawing.Point(108, 210);
-            this.cmbWordBattle.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordBattle.Name = "cmbWordBattle";
-            this.cmbWordBattle.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordBattle.TabIndex = 3;
+            this.rbWordHobby.AutoSize = true;
+            this.rbWordHobby.Location = new System.Drawing.Point(476, 92);
+            this.rbWordHobby.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordHobby.Name = "rbWordHobby";
+            this.rbWordHobby.Size = new System.Drawing.Size(57, 16);
+            this.rbWordHobby.TabIndex = 19;
+            this.rbWordHobby.Text = "しゅみ :";
+            this.rbWordHobby.UseVisualStyleBackColor = true;
+            // 
+            // rbWordAction
+            // 
+            this.rbWordAction.AutoSize = true;
+            this.rbWordAction.Location = new System.Drawing.Point(476, 32);
+            this.rbWordAction.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordAction.Name = "rbWordAction";
+            this.rbWordAction.Size = new System.Drawing.Size(60, 16);
+            this.rbWordAction.TabIndex = 20;
+            this.rbWordAction.Text = "こうどう :";
+            this.rbWordAction.UseVisualStyleBackColor = true;
             // 
             // cmbWordCondition
             // 
@@ -760,165 +767,157 @@ namespace PochiPochiEditorGabu._Item
             this.rbWordGreeting.Text = "あいさつ :";
             this.rbWordGreeting.UseVisualStyleBackColor = true;
             // 
-            // cmbWordEvent
+            // cmbWordBattle
             // 
-            this.cmbWordEvent.FormattingEnabled = true;
-            this.cmbWordEvent.Location = new System.Drawing.Point(564, 210);
-            this.cmbWordEvent.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordEvent.Name = "cmbWordEvent";
-            this.cmbWordEvent.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordEvent.TabIndex = 28;
+            this.cmbWordBattle.FormattingEnabled = true;
+            this.cmbWordBattle.Location = new System.Drawing.Point(108, 210);
+            this.cmbWordBattle.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordBattle.Name = "cmbWordBattle";
+            this.cmbWordBattle.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordBattle.TabIndex = 3;
             // 
-            // cmbWordTime
+            // cmbWordMove2
             // 
-            this.cmbWordTime.FormattingEnabled = true;
-            this.cmbWordTime.Location = new System.Drawing.Point(564, 120);
-            this.cmbWordTime.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordTime.Name = "cmbWordTime";
-            this.cmbWordTime.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordTime.TabIndex = 29;
+            this.cmbWordMove2.FormattingEnabled = true;
+            this.cmbWordMove2.Location = new System.Drawing.Point(108, 120);
+            this.cmbWordMove2.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordMove2.Name = "cmbWordMove2";
+            this.cmbWordMove2.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordMove2.TabIndex = 3;
             // 
-            // cmbWordMisc
+            // cmbWordTrainer
             // 
-            this.cmbWordMisc.FormattingEnabled = true;
-            this.cmbWordMisc.Location = new System.Drawing.Point(564, 150);
-            this.cmbWordMisc.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordMisc.Name = "cmbWordMisc";
-            this.cmbWordMisc.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordMisc.TabIndex = 30;
+            this.cmbWordTrainer.FormattingEnabled = true;
+            this.cmbWordTrainer.Location = new System.Drawing.Point(108, 150);
+            this.cmbWordTrainer.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordTrainer.Name = "cmbWordTrainer";
+            this.cmbWordTrainer.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordTrainer.TabIndex = 3;
             // 
-            // cmbWordLifeStyle
+            // cmbWordPokemon2
             // 
-            this.cmbWordLifeStyle.FormattingEnabled = true;
-            this.cmbWordLifeStyle.Location = new System.Drawing.Point(564, 60);
-            this.cmbWordLifeStyle.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordLifeStyle.Name = "cmbWordLifeStyle";
-            this.cmbWordLifeStyle.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordLifeStyle.TabIndex = 31;
+            this.cmbWordPokemon2.FormattingEnabled = true;
+            this.cmbWordPokemon2.Location = new System.Drawing.Point(108, 60);
+            this.cmbWordPokemon2.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordPokemon2.Name = "cmbWordPokemon2";
+            this.cmbWordPokemon2.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordPokemon2.TabIndex = 3;
             // 
-            // rbWordEvent
+            // rbWordBattle
             // 
-            this.rbWordEvent.AutoSize = true;
-            this.rbWordEvent.Location = new System.Drawing.Point(476, 212);
-            this.rbWordEvent.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordEvent.Name = "rbWordEvent";
-            this.rbWordEvent.Size = new System.Drawing.Size(65, 16);
-            this.rbWordEvent.TabIndex = 24;
-            this.rbWordEvent.Text = "イベント :";
-            this.rbWordEvent.UseVisualStyleBackColor = true;
+            this.rbWordBattle.AutoSize = true;
+            this.rbWordBattle.Location = new System.Drawing.Point(20, 212);
+            this.rbWordBattle.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordBattle.Name = "rbWordBattle";
+            this.rbWordBattle.Size = new System.Drawing.Size(57, 16);
+            this.rbWordBattle.TabIndex = 2;
+            this.rbWordBattle.Text = "バトル :";
+            this.rbWordBattle.UseVisualStyleBackColor = true;
             // 
-            // rbWordTime
+            // rbWordMove2
             // 
-            this.rbWordTime.AutoSize = true;
-            this.rbWordTime.Location = new System.Drawing.Point(476, 122);
-            this.rbWordTime.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordTime.Name = "rbWordTime";
-            this.rbWordTime.Size = new System.Drawing.Size(58, 16);
-            this.rbWordTime.TabIndex = 25;
-            this.rbWordTime.Text = "じかん :";
-            this.rbWordTime.UseVisualStyleBackColor = true;
+            this.rbWordMove2.AutoSize = true;
+            this.rbWordMove2.Location = new System.Drawing.Point(20, 122);
+            this.rbWordMove2.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordMove2.Name = "rbWordMove2";
+            this.rbWordMove2.Size = new System.Drawing.Size(54, 16);
+            this.rbWordMove2.TabIndex = 2;
+            this.rbWordMove2.Text = "わざ2 :";
+            this.rbWordMove2.UseVisualStyleBackColor = true;
             // 
-            // rbWordMisc
+            // rbWordTrainer
             // 
-            this.rbWordMisc.AutoSize = true;
-            this.rbWordMisc.Location = new System.Drawing.Point(476, 152);
-            this.rbWordMisc.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordMisc.Name = "rbWordMisc";
-            this.rbWordMisc.Size = new System.Drawing.Size(69, 16);
-            this.rbWordMisc.TabIndex = 26;
-            this.rbWordMisc.Text = "あれこれ :";
-            this.rbWordMisc.UseVisualStyleBackColor = true;
+            this.rbWordTrainer.AutoSize = true;
+            this.rbWordTrainer.Location = new System.Drawing.Point(20, 152);
+            this.rbWordTrainer.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordTrainer.Name = "rbWordTrainer";
+            this.rbWordTrainer.Size = new System.Drawing.Size(76, 16);
+            this.rbWordTrainer.TabIndex = 2;
+            this.rbWordTrainer.Text = "トレーナー :";
+            this.rbWordTrainer.UseVisualStyleBackColor = true;
             // 
-            // cmbWordAdjective
+            // cmbWordStatus
             // 
-            this.cmbWordAdjective.FormattingEnabled = true;
-            this.cmbWordAdjective.Location = new System.Drawing.Point(564, 180);
-            this.cmbWordAdjective.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordAdjective.Name = "cmbWordAdjective";
-            this.cmbWordAdjective.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordAdjective.TabIndex = 21;
+            this.cmbWordStatus.FormattingEnabled = true;
+            this.cmbWordStatus.Location = new System.Drawing.Point(108, 180);
+            this.cmbWordStatus.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordStatus.Name = "cmbWordStatus";
+            this.cmbWordStatus.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordStatus.TabIndex = 1;
             // 
-            // rbWordLifeStyle
+            // rbWordPokemon2
             // 
-            this.rbWordLifeStyle.AutoSize = true;
-            this.rbWordLifeStyle.Location = new System.Drawing.Point(476, 62);
-            this.rbWordLifeStyle.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordLifeStyle.Name = "rbWordLifeStyle";
-            this.rbWordLifeStyle.Size = new System.Drawing.Size(68, 16);
-            this.rbWordLifeStyle.TabIndex = 27;
-            this.rbWordLifeStyle.Text = "せいかつ :";
-            this.rbWordLifeStyle.UseVisualStyleBackColor = true;
+            this.rbWordPokemon2.AutoSize = true;
+            this.rbWordPokemon2.Location = new System.Drawing.Point(20, 62);
+            this.rbWordPokemon2.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordPokemon2.Name = "rbWordPokemon2";
+            this.rbWordPokemon2.Size = new System.Drawing.Size(72, 16);
+            this.rbWordPokemon2.TabIndex = 2;
+            this.rbWordPokemon2.Text = "ポケモン2 :";
+            this.rbWordPokemon2.UseVisualStyleBackColor = true;
             // 
-            // cmbWordHobby
+            // cmbWordMove1
             // 
-            this.cmbWordHobby.FormattingEnabled = true;
-            this.cmbWordHobby.Location = new System.Drawing.Point(564, 90);
-            this.cmbWordHobby.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordHobby.Name = "cmbWordHobby";
-            this.cmbWordHobby.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordHobby.TabIndex = 22;
+            this.cmbWordMove1.FormattingEnabled = true;
+            this.cmbWordMove1.Location = new System.Drawing.Point(108, 90);
+            this.cmbWordMove1.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordMove1.Name = "cmbWordMove1";
+            this.cmbWordMove1.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordMove1.TabIndex = 1;
             // 
-            // rbWordAdjective
+            // rbWordStatus
             // 
-            this.rbWordAdjective.AutoSize = true;
-            this.rbWordAdjective.Location = new System.Drawing.Point(476, 182);
-            this.rbWordAdjective.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordAdjective.Name = "rbWordAdjective";
-            this.rbWordAdjective.Size = new System.Drawing.Size(71, 16);
-            this.rbWordAdjective.TabIndex = 18;
-            this.rbWordAdjective.Text = "くりかえし :";
-            this.rbWordAdjective.UseVisualStyleBackColor = true;
+            this.rbWordStatus.AutoSize = true;
+            this.rbWordStatus.Location = new System.Drawing.Point(20, 182);
+            this.rbWordStatus.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordStatus.Name = "rbWordStatus";
+            this.rbWordStatus.Size = new System.Drawing.Size(74, 16);
+            this.rbWordStatus.TabIndex = 0;
+            this.rbWordStatus.Text = "ステータス :";
+            this.rbWordStatus.UseVisualStyleBackColor = true;
             // 
-            // cmbWordAction
+            // cmbWordPokemon1
             // 
-            this.cmbWordAction.FormattingEnabled = true;
-            this.cmbWordAction.Location = new System.Drawing.Point(564, 30);
-            this.cmbWordAction.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordAction.Name = "cmbWordAction";
-            this.cmbWordAction.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordAction.TabIndex = 23;
+            this.cmbWordPokemon1.FormattingEnabled = true;
+            this.cmbWordPokemon1.Location = new System.Drawing.Point(108, 30);
+            this.cmbWordPokemon1.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbWordPokemon1.Name = "cmbWordPokemon1";
+            this.cmbWordPokemon1.Size = new System.Drawing.Size(120, 20);
+            this.cmbWordPokemon1.TabIndex = 1;
             // 
-            // rbWordHobby
+            // rbWordMove1
             // 
-            this.rbWordHobby.AutoSize = true;
-            this.rbWordHobby.Location = new System.Drawing.Point(476, 92);
-            this.rbWordHobby.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordHobby.Name = "rbWordHobby";
-            this.rbWordHobby.Size = new System.Drawing.Size(57, 16);
-            this.rbWordHobby.TabIndex = 19;
-            this.rbWordHobby.Text = "しゅみ :";
-            this.rbWordHobby.UseVisualStyleBackColor = true;
+            this.rbWordMove1.AutoSize = true;
+            this.rbWordMove1.Location = new System.Drawing.Point(20, 92);
+            this.rbWordMove1.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordMove1.Name = "rbWordMove1";
+            this.rbWordMove1.Size = new System.Drawing.Size(54, 16);
+            this.rbWordMove1.TabIndex = 0;
+            this.rbWordMove1.Text = "わざ1 :";
+            this.rbWordMove1.UseVisualStyleBackColor = true;
             // 
-            // rbWordAction
+            // rbWordPokemon1
             // 
-            this.rbWordAction.AutoSize = true;
-            this.rbWordAction.Location = new System.Drawing.Point(476, 32);
-            this.rbWordAction.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordAction.Name = "rbWordAction";
-            this.rbWordAction.Size = new System.Drawing.Size(60, 16);
-            this.rbWordAction.TabIndex = 20;
-            this.rbWordAction.Text = "こうどう :";
-            this.rbWordAction.UseVisualStyleBackColor = true;
+            this.rbWordPokemon1.AutoSize = true;
+            this.rbWordPokemon1.Checked = true;
+            this.rbWordPokemon1.Location = new System.Drawing.Point(20, 32);
+            this.rbWordPokemon1.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWordPokemon1.Name = "rbWordPokemon1";
+            this.rbWordPokemon1.Size = new System.Drawing.Size(72, 16);
+            this.rbWordPokemon1.TabIndex = 0;
+            this.rbWordPokemon1.TabStop = true;
+            this.rbWordPokemon1.Text = "ポケモン1 :";
+            this.rbWordPokemon1.UseVisualStyleBackColor = true;
             // 
-            // cmbWordTrendy
+            // btnRepalceWord
             // 
-            this.cmbWordTrendy.FormattingEnabled = true;
-            this.cmbWordTrendy.Location = new System.Drawing.Point(564, 240);
-            this.cmbWordTrendy.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbWordTrendy.Name = "cmbWordTrendy";
-            this.cmbWordTrendy.Size = new System.Drawing.Size(120, 20);
-            this.cmbWordTrendy.TabIndex = 33;
-            // 
-            // rbWordTrendy
-            // 
-            this.rbWordTrendy.AutoSize = true;
-            this.rbWordTrendy.Location = new System.Drawing.Point(476, 242);
-            this.rbWordTrendy.Margin = new System.Windows.Forms.Padding(0);
-            this.rbWordTrendy.Name = "rbWordTrendy";
-            this.rbWordTrendy.Size = new System.Drawing.Size(83, 16);
-            this.rbWordTrendy.TabIndex = 32;
-            this.rbWordTrendy.Text = "ナウイことば :";
-            this.rbWordTrendy.UseVisualStyleBackColor = true;
+            this.btnRepalceWord.Location = new System.Drawing.Point(168, 200);
+            this.btnRepalceWord.Margin = new System.Windows.Forms.Padding(0);
+            this.btnRepalceWord.Name = "btnRepalceWord";
+            this.btnRepalceWord.Size = new System.Drawing.Size(80, 23);
+            this.btnRepalceWord.TabIndex = 4;
+            this.btnRepalceWord.Text = "↑代入";
+            this.btnRepalceWord.UseVisualStyleBackColor = true;
             // 
             // MailDataEditor
             // 
@@ -936,8 +935,8 @@ namespace PochiPochiEditorGabu._Item
             this.Text = "メール内容";
             this.grpSelectMail.ResumeLayout(false);
             this.grpSelectMail.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDataIdx)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDataWordCount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIdx)).EndInit();
             this.grpDataWords.ResumeLayout(false);
             this.grpDataWords.PerformLayout();
             this.grpSelectWord.ResumeLayout(false);
@@ -1010,12 +1009,12 @@ namespace PochiPochiEditorGabu._Item
         private System.Windows.Forms.ComboBox cmbWordEvent;
         private System.Windows.Forms.ComboBox cmbWordTime;
         private System.Windows.Forms.ComboBox cmbWordMisc;
-        private System.Windows.Forms.ComboBox cmbWordLifeStyle;
+        private System.Windows.Forms.ComboBox cmbWordLifestyle;
         private System.Windows.Forms.RadioButton rbWordEvent;
         private System.Windows.Forms.RadioButton rbWordTime;
         private System.Windows.Forms.RadioButton rbWordMisc;
         private System.Windows.Forms.ComboBox cmbWordAdjective;
-        private System.Windows.Forms.RadioButton rbWordLifeStyle;
+        private System.Windows.Forms.RadioButton rbWordLifestyle;
         private System.Windows.Forms.ComboBox cmbWordHobby;
         private System.Windows.Forms.RadioButton rbWordAdjective;
         private System.Windows.Forms.ComboBox cmbWordAction;

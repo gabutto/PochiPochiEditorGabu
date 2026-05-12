@@ -97,5 +97,28 @@
         public const string RomFileTitle = "ROMを選択";
         public const string ImageImportFilter = "画像ファイル (*.png;*.bmp)|*.png;*.bmp";
         public const string ImageExportFilter = "PNG画像 (*.png)|*.png|BMP画像 (*.bmp)|*.bmp";
+
+        public const int WordGroupPokemon2 = 0x0;
+        public const int WordGroupTrainer = 0x1;
+        public const int WordGroupStatus = 0x2;
+        public const int WordGroupBattle = 0x3;
+        public const int WordGroupGreeting = 0x4;
+        public const int WordGroupPeople = 0x5;
+        public const int WordGroupVoice = 0x6;
+        public const int WordGroupSpeech = 0x7;
+        public const int WordGroupEnding = 0x8;
+        public const int WordGroupFeeling = 0x9;
+        public const int WordGroupCondition = 0xA;
+        public const int WordGroupAction = 0xB;
+        public const int WordGroupLifestyle = 0xC;
+        public const int WordGroupHobby = 0xD;
+        public const int WordGroupTime = 0xE;
+        public const int WordGroupMisc = 0xF;
+        public const int WordGroupAdjective = 0x10;
+        public const int WordGroupEvent = 0x11;
+        public const int WordGroupMove1 = 0x12;
+        public const int WordGroupMove2 = 0x13;
+        public const int WordGroupTrendy = 0x14;
+        public const int WordGroupPokemon1 = 0x15;
     }
 }
