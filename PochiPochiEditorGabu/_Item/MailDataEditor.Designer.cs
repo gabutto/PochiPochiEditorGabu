@@ -103,6 +103,8 @@ namespace PochiPochiEditorGabu._Item
             this.rbWordMove1 = new System.Windows.Forms.RadioButton();
             this.rbWordPokemon1 = new System.Windows.Forms.RadioButton();
             this.btnRepalceWord = new System.Windows.Forms.Button();
+            this.txtDataWord10 = new System.Windows.Forms.TextBox();
+            this.rbDataWord10 = new System.Windows.Forms.RadioButton();
             this.grpSelectMail.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDataWordCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDataIdx)).BeginInit();
@@ -205,6 +207,8 @@ namespace PochiPochiEditorGabu._Item
             // 
             // grpDataWords
             // 
+            this.grpDataWords.Controls.Add(this.txtDataWord10);
+            this.grpDataWords.Controls.Add(this.rbDataWord10);
             this.grpDataWords.Controls.Add(this.txtDataWord9);
             this.grpDataWords.Controls.Add(this.txtDataWord8);
             this.grpDataWords.Controls.Add(this.rbDataWord9);
@@ -227,14 +231,14 @@ namespace PochiPochiEditorGabu._Item
             this.grpDataWords.Margin = new System.Windows.Forms.Padding(0);
             this.grpDataWords.Name = "grpDataWords";
             this.grpDataWords.Padding = new System.Windows.Forms.Padding(0);
-            this.grpDataWords.Size = new System.Drawing.Size(556, 138);
+            this.grpDataWords.Size = new System.Drawing.Size(734, 138);
             this.grpDataWords.TabIndex = 2;
             this.grpDataWords.TabStop = false;
             this.grpDataWords.Text = "メール内容";
             // 
             // txtDataWord9
             // 
-            this.txtDataWord9.Location = new System.Drawing.Point(412, 97);
+            this.txtDataWord9.Location = new System.Drawing.Point(412, 98);
             this.txtDataWord9.Margin = new System.Windows.Forms.Padding(0);
             this.txtDataWord9.Name = "txtDataWord9";
             this.txtDataWord9.ReadOnly = true;
@@ -243,7 +247,7 @@ namespace PochiPochiEditorGabu._Item
             // 
             // txtDataWord8
             // 
-            this.txtDataWord8.Location = new System.Drawing.Point(236, 97);
+            this.txtDataWord8.Location = new System.Drawing.Point(236, 98);
             this.txtDataWord8.Margin = new System.Windows.Forms.Padding(0);
             this.txtDataWord8.Name = "txtDataWord8";
             this.txtDataWord8.ReadOnly = true;
@@ -253,7 +257,7 @@ namespace PochiPochiEditorGabu._Item
             // rbDataWord9
             // 
             this.rbDataWord9.AutoSize = true;
-            this.rbDataWord9.Location = new System.Drawing.Point(372, 99);
+            this.rbDataWord9.Location = new System.Drawing.Point(372, 100);
             this.rbDataWord9.Margin = new System.Windows.Forms.Padding(0);
             this.rbDataWord9.Name = "rbDataWord9";
             this.rbDataWord9.Size = new System.Drawing.Size(35, 16);
@@ -264,7 +268,7 @@ namespace PochiPochiEditorGabu._Item
             // rbDataWord8
             // 
             this.rbDataWord8.AutoSize = true;
-            this.rbDataWord8.Location = new System.Drawing.Point(196, 99);
+            this.rbDataWord8.Location = new System.Drawing.Point(196, 100);
             this.rbDataWord8.Margin = new System.Windows.Forms.Padding(0);
             this.rbDataWord8.Name = "rbDataWord8";
             this.rbDataWord8.Size = new System.Drawing.Size(35, 16);
@@ -274,7 +278,7 @@ namespace PochiPochiEditorGabu._Item
             // 
             // txtDataWord7
             // 
-            this.txtDataWord7.Location = new System.Drawing.Point(60, 97);
+            this.txtDataWord7.Location = new System.Drawing.Point(60, 98);
             this.txtDataWord7.Margin = new System.Windows.Forms.Padding(0);
             this.txtDataWord7.Name = "txtDataWord7";
             this.txtDataWord7.ReadOnly = true;
@@ -284,7 +288,7 @@ namespace PochiPochiEditorGabu._Item
             // rbDataWord7
             // 
             this.rbDataWord7.AutoSize = true;
-            this.rbDataWord7.Location = new System.Drawing.Point(20, 99);
+            this.rbDataWord7.Location = new System.Drawing.Point(20, 100);
             this.rbDataWord7.Margin = new System.Windows.Forms.Padding(0);
             this.rbDataWord7.Name = "rbDataWord7";
             this.rbDataWord7.Size = new System.Drawing.Size(35, 16);
@@ -919,11 +923,31 @@ namespace PochiPochiEditorGabu._Item
             this.btnRepalceWord.Text = "↑代入";
             this.btnRepalceWord.UseVisualStyleBackColor = true;
             // 
+            // txtDataWord10
+            // 
+            this.txtDataWord10.Location = new System.Drawing.Point(592, 98);
+            this.txtDataWord10.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataWord10.Name = "txtDataWord10";
+            this.txtDataWord10.ReadOnly = true;
+            this.txtDataWord10.Size = new System.Drawing.Size(120, 19);
+            this.txtDataWord10.TabIndex = 9;
+            // 
+            // rbDataWord10
+            // 
+            this.rbDataWord10.AutoSize = true;
+            this.rbDataWord10.Location = new System.Drawing.Point(548, 100);
+            this.rbDataWord10.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataWord10.Name = "rbDataWord10";
+            this.rbDataWord10.Size = new System.Drawing.Size(41, 16);
+            this.rbDataWord10.TabIndex = 8;
+            this.rbDataWord10.Text = "10 :";
+            this.rbDataWord10.UseVisualStyleBackColor = true;
+            // 
             // MailDataEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(880, 535);
+            this.ClientSize = new System.Drawing.Size(908, 535);
             this.Controls.Add(this.btnRepalceWord);
             this.Controls.Add(this.grpSelectWord);
             this.Controls.Add(this.grpDataWords);
@@ -1020,5 +1044,7 @@ namespace PochiPochiEditorGabu._Item
         private System.Windows.Forms.ComboBox cmbWordAction;
         private System.Windows.Forms.RadioButton rbWordHobby;
         private System.Windows.Forms.RadioButton rbWordAction;
+        private System.Windows.Forms.TextBox txtDataWord10;
+        private System.Windows.Forms.RadioButton rbDataWord10;
     }
 }
