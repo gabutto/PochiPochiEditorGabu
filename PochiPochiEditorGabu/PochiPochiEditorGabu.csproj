@@ -238,12 +238,10 @@
     <Content Include="img\poochyena_image.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="img\screenshot1.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="img\poochyena_icon.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="img\screenshot1.png" />
     <Content Include="img\screenshot2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
