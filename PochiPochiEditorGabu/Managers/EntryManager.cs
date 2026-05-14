@@ -599,9 +599,54 @@ namespace PochiPochiEditorGabu.Managers
         public ushort PartyMove4;
     }
 
+    public class TradeDataEntry
+    {
+        [DynamicString(
+            "IngameTradePokemonNameEntryLength",
+            "IngameTradePokemonNameMaxLength")]
+        public string _DataName = string.Empty;
+        public ushort Pokemon2;
+        public byte DataIvHp;
+        public byte DataIvAtk;
+        public byte DataIvDef;
+        public byte DataIvSpeed;
+        public byte DataIvSpAtk;
+        public byte DataIvSpdef;
+        public byte _DataAbilityValue;
+        public byte _Padding1;
+        public byte _Padding2;
+        public byte _Padding3;
+        public ushort TrainerIdx1;
+        public ushort TrainerIdx2;
+        public byte DataCondiCool;
+        public byte DataCondiBeauty;
+        public byte DataCondiCute;
+        public byte DataCondiSmart;
+        public byte DataCondiTough;
+        public byte _Padding4;
+        public byte _Padding5;
+        public byte _Padding6;
+        public uint DataPidHex;
+        public ushort DataItem;
+        public byte DataMailIdx;
+        [DynamicString(
+            "IngameTradeTrainerNameEntryLength",
+            "IngameTradeTrainerNameMaxLength")]
+        public string _TrainerName = string.Empty;
+        public byte _Padding7;
+        public byte _Padding8;
+        public byte _Padding9;
+        public byte _TrainerGender;
+        public byte DataSheen;
+        public ushort Pokemon1;
+        public byte Unknown1;
+        public byte Unknown2;
+    }
 
-
-
+    public class PokemonNatureEntry
+    {
+        public uint pTextAddr;
+    }
 
     public class MailDataWordEntry
     {

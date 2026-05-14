@@ -12,6 +12,13 @@ namespace PochiPochiEditorGabu.Managers
         private readonly Dictionary<Control, object> _initialValues = new Dictionary<Control, object>();
         private readonly Dictionary<object, byte[]> _initialBinaryValues = new Dictionary<object, byte[]>();
         private readonly Dictionary<object, byte[]> _currentBinaryValues = new Dictionary<object, byte[]>();
+        private readonly List<RadioButtonGroup> _radioGroups = new List<RadioButtonGroup>();
+
+        private class RadioButtonGroup
+        {
+            public RadioButton[] Buttons { get; set; }
+            public RadioButton InitialChecked { get; set; }
+        }
 
         public UIStateManager(Action<bool> stateChangedCallback)
         {
@@ -114,9 +121,16 @@ namespace PochiPochiEditorGabu.Managers
                 _initialValues[ctrl] = GetControlValue(ctrl);
             }
 
+            // binary
             foreach (var key in _initialBinaryValues.Keys.ToList())
             {
                 _initialBinaryValues[key] = _currentBinaryValues[key]?.ToArray();
+            }
+
+            // radio button
+            foreach (var group in _radioGroups)
+            {
+                group.InitialChecked = group.Buttons.FirstOrDefault(rb => rb.Checked);
             }
 
             EvaluateState();
@@ -136,9 +150,24 @@ namespace PochiPochiEditorGabu.Managers
                 }
             }
 
+            // binary
             if (!hasChanges)
             {
                 hasChanges = _initialBinaryValues.Keys.Any(HasBinaryChanges);
+            }
+
+            // radio button
+            if (!hasChanges)
+            {
+                foreach (var group in _radioGroups)
+                {
+                    var currentChecked = group.Buttons.FirstOrDefault(rb => rb.Checked);
+                    if (currentChecked != group.InitialChecked)
+                    {
+                        hasChanges = true;
+                        break;
+                    }
+                }
             }
 
             _stateChangedCallback?.Invoke(hasChanges);
@@ -180,6 +209,30 @@ namespace PochiPochiEditorGabu.Managers
                     chk.CheckedChanged += (s, e) => EvaluateState();
                     break;
             }
+        }
+
+        public void AddRadioButtons(params RadioButton[][] groups)
+        {
+            foreach (var group in groups)
+            {
+                var radioGroup = new RadioButtonGroup
+                {
+                    Buttons = group,
+                    InitialChecked = group.FirstOrDefault(rb => rb.Checked)
+                };
+
+                _radioGroups.Add(radioGroup);
+
+                foreach (var rb in group)
+                {
+                    rb.CheckedChanged += OnRadioButtonCheckedChanged;
+                }
+            }
+        }
+
+        private void OnRadioButtonCheckedChanged(object sender, EventArgs e)
+        {
+            EvaluateState();
         }
     }
 }

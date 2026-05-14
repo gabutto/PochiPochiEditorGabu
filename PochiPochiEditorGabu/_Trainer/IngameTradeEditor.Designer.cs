@@ -48,58 +48,61 @@ namespace PochiPochiEditorGabu._Trainer
             this.lblUnknown2 = new System.Windows.Forms.Label();
             this.lblUnknown1 = new System.Windows.Forms.Label();
             this.grpPokemon1 = new System.Windows.Forms.GroupBox();
-            this.picPokemon1 = new System.Windows.Forms.PictureBox();
             this.cmbPokemon1 = new System.Windows.Forms.ComboBox();
+            this.picPokemon1 = new System.Windows.Forms.PictureBox();
             this.grpPokemon2 = new System.Windows.Forms.GroupBox();
             this.cmbPokemon2 = new System.Windows.Forms.ComboBox();
             this.picPokemon2 = new System.Windows.Forms.PictureBox();
             this.grpData = new System.Windows.Forms.GroupBox();
-            this.lblDataName = new System.Windows.Forms.Label();
-            this.txtDataName = new System.Windows.Forms.TextBox();
-            this.lblDataItem = new System.Windows.Forms.Label();
-            this.cmbDataItem = new System.Windows.Forms.ComboBox();
-            this.picDataItem = new System.Windows.Forms.PictureBox();
-            this.lblDataMailIdx = new System.Windows.Forms.Label();
-            this.nudDataMailIdx = new System.Windows.Forms.NumericUpDown();
+            this.grpDataCondiSheen = new System.Windows.Forms.GroupBox();
+            this.nudDataSheen = new System.Windows.Forms.NumericUpDown();
+            this.nudDataCondiTough = new System.Windows.Forms.NumericUpDown();
+            this.nudDataCondiSmart = new System.Windows.Forms.NumericUpDown();
+            this.nudDataCondiCute = new System.Windows.Forms.NumericUpDown();
+            this.nudDataCondiBeauty = new System.Windows.Forms.NumericUpDown();
+            this.nudDataCondiCool = new System.Windows.Forms.NumericUpDown();
+            this.lblDataSheen = new System.Windows.Forms.Label();
+            this.lblDataCondiTough = new System.Windows.Forms.Label();
+            this.lblDataCondiSmart = new System.Windows.Forms.Label();
+            this.lblDataCondiCute = new System.Windows.Forms.Label();
+            this.lblDataCondiBeauty = new System.Windows.Forms.Label();
+            this.lblDataCondiCool = new System.Windows.Forms.Label();
+            this.grpDataIv = new System.Windows.Forms.GroupBox();
+            this.nudDataIvSpeed = new System.Windows.Forms.NumericUpDown();
+            this.nudDataIvSpDef = new System.Windows.Forms.NumericUpDown();
+            this.nudDataIvSpAtk = new System.Windows.Forms.NumericUpDown();
+            this.nudDataIvDef = new System.Windows.Forms.NumericUpDown();
+            this.nudDataIvAtk = new System.Windows.Forms.NumericUpDown();
+            this.nudDataIvHp = new System.Windows.Forms.NumericUpDown();
+            this.lblDataIvSpeed = new System.Windows.Forms.Label();
+            this.lblDataIvSpDef = new System.Windows.Forms.Label();
+            this.lblDataIvSpAtk = new System.Windows.Forms.Label();
+            this.lblDataIvDef = new System.Windows.Forms.Label();
+            this.lblDataIvAtk = new System.Windows.Forms.Label();
+            this.lblDataIvHp = new System.Windows.Forms.Label();
             this.grpDataPid = new System.Windows.Forms.GroupBox();
-            this.txtDataPidHex = new System.Windows.Forms.TextBox();
-            this.lblDataPidHex = new System.Windows.Forms.Label();
-            this.lblDataPid = new System.Windows.Forms.Label();
-            this.txtDataPid = new System.Windows.Forms.TextBox();
-            this.lblDataNature = new System.Windows.Forms.Label();
-            this.cmbDataNature = new System.Windows.Forms.ComboBox();
-            this.lblDataGender = new System.Windows.Forms.Label();
-            this.lblDataAbility = new System.Windows.Forms.Label();
-            this.cmbDataAbility = new System.Windows.Forms.ComboBox();
+            this.rbDataGenderUnknown = new System.Windows.Forms.RadioButton();
             this.rbDataGenderFemale = new System.Windows.Forms.RadioButton();
             this.rbDataGenderMale = new System.Windows.Forms.RadioButton();
-            this.rbDataGenderUnknown = new System.Windows.Forms.RadioButton();
-            this.grpDataIv = new System.Windows.Forms.GroupBox();
-            this.lblDataIvHp = new System.Windows.Forms.Label();
-            this.nudDataIvHp = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
-            this.numericUpDown5 = new System.Windows.Forms.NumericUpDown();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.numericUpDown6 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown7 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown8 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown9 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown10 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown11 = new System.Windows.Forms.NumericUpDown();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
+            this.cmbDataAbility = new System.Windows.Forms.ComboBox();
+            this.cmbDataNature = new System.Windows.Forms.ComboBox();
+            this.lblDataAbility = new System.Windows.Forms.Label();
+            this.lblDataGender = new System.Windows.Forms.Label();
+            this.lblDataNature = new System.Windows.Forms.Label();
+            this.txtDataPid = new System.Windows.Forms.TextBox();
+            this.txtDataPidHex = new System.Windows.Forms.TextBox();
+            this.lblDataPid = new System.Windows.Forms.Label();
+            this.lblDataPidHex = new System.Windows.Forms.Label();
+            this.nudDataMailIdx = new System.Windows.Forms.NumericUpDown();
+            this.lblDataMailIdx = new System.Windows.Forms.Label();
+            this.picDataItem = new System.Windows.Forms.PictureBox();
+            this.cmbDataItem = new System.Windows.Forms.ComboBox();
+            this.txtDataName = new System.Windows.Forms.TextBox();
+            this.lblDataItem = new System.Windows.Forms.Label();
+            this.lblDataName = new System.Windows.Forms.Label();
+            this.grpDataAbility = new System.Windows.Forms.GroupBox();
+            this.rbDataAbility2 = new System.Windows.Forms.RadioButton();
+            this.rbDataAbility1 = new System.Windows.Forms.RadioButton();
             this.grpTrainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudTrainerIdx2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTrainerIdx1)).BeginInit();
@@ -111,23 +114,24 @@ namespace PochiPochiEditorGabu._Trainer
             this.grpPokemon2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picPokemon2)).BeginInit();
             this.grpData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picDataItem)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDataMailIdx)).BeginInit();
-            this.grpDataPid.SuspendLayout();
+            this.grpDataCondiSheen.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataSheen)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiTough)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiSmart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiCute)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiBeauty)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiCool)).BeginInit();
             this.grpDataIv.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvSpeed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvSpDef)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvSpAtk)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvDef)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvAtk)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDataIvHp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown9)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown10)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown11)).BeginInit();
+            this.grpDataPid.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataMailIdx)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picDataItem)).BeginInit();
+            this.grpDataAbility.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSave
@@ -343,15 +347,6 @@ namespace PochiPochiEditorGabu._Trainer
             this.grpPokemon1.TabStop = false;
             this.grpPokemon1.Text = "ポケモン（自分）";
             // 
-            // picPokemon1
-            // 
-            this.picPokemon1.Location = new System.Drawing.Point(20, 26);
-            this.picPokemon1.Margin = new System.Windows.Forms.Padding(0);
-            this.picPokemon1.Name = "picPokemon1";
-            this.picPokemon1.Size = new System.Drawing.Size(32, 32);
-            this.picPokemon1.TabIndex = 0;
-            this.picPokemon1.TabStop = false;
-            // 
             // cmbPokemon1
             // 
             this.cmbPokemon1.FormattingEnabled = true;
@@ -360,6 +355,15 @@ namespace PochiPochiEditorGabu._Trainer
             this.cmbPokemon1.Name = "cmbPokemon1";
             this.cmbPokemon1.Size = new System.Drawing.Size(120, 20);
             this.cmbPokemon1.TabIndex = 1;
+            // 
+            // picPokemon1
+            // 
+            this.picPokemon1.Location = new System.Drawing.Point(20, 26);
+            this.picPokemon1.Margin = new System.Windows.Forms.Padding(0);
+            this.picPokemon1.Name = "picPokemon1";
+            this.picPokemon1.Size = new System.Drawing.Size(32, 32);
+            this.picPokemon1.TabIndex = 0;
+            this.picPokemon1.TabStop = false;
             // 
             // grpPokemon2
             // 
@@ -394,7 +398,8 @@ namespace PochiPochiEditorGabu._Trainer
             // 
             // grpData
             // 
-            this.grpData.Controls.Add(this.groupBox1);
+            this.grpData.Controls.Add(this.grpDataAbility);
+            this.grpData.Controls.Add(this.grpDataCondiSheen);
             this.grpData.Controls.Add(this.grpDataIv);
             this.grpData.Controls.Add(this.grpDataPid);
             this.grpData.Controls.Add(this.nudDataMailIdx);
@@ -413,74 +418,327 @@ namespace PochiPochiEditorGabu._Trainer
             this.grpData.TabStop = false;
             this.grpData.Text = "ポケモン（相手）詳細設定";
             // 
-            // lblDataName
+            // grpDataCondiSheen
             // 
-            this.lblDataName.AutoSize = true;
-            this.lblDataName.Location = new System.Drawing.Point(20, 28);
-            this.lblDataName.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataName.Name = "lblDataName";
-            this.lblDataName.Size = new System.Drawing.Size(65, 12);
-            this.lblDataName.TabIndex = 0;
-            this.lblDataName.Text = "ニックネーム :";
+            this.grpDataCondiSheen.Controls.Add(this.nudDataSheen);
+            this.grpDataCondiSheen.Controls.Add(this.nudDataCondiTough);
+            this.grpDataCondiSheen.Controls.Add(this.nudDataCondiSmart);
+            this.grpDataCondiSheen.Controls.Add(this.nudDataCondiCute);
+            this.grpDataCondiSheen.Controls.Add(this.nudDataCondiBeauty);
+            this.grpDataCondiSheen.Controls.Add(this.nudDataCondiCool);
+            this.grpDataCondiSheen.Controls.Add(this.lblDataSheen);
+            this.grpDataCondiSheen.Controls.Add(this.lblDataCondiTough);
+            this.grpDataCondiSheen.Controls.Add(this.lblDataCondiSmart);
+            this.grpDataCondiSheen.Controls.Add(this.lblDataCondiCute);
+            this.grpDataCondiSheen.Controls.Add(this.lblDataCondiBeauty);
+            this.grpDataCondiSheen.Controls.Add(this.lblDataCondiCool);
+            this.grpDataCondiSheen.Location = new System.Drawing.Point(408, 20);
+            this.grpDataCondiSheen.Margin = new System.Windows.Forms.Padding(0);
+            this.grpDataCondiSheen.Name = "grpDataCondiSheen";
+            this.grpDataCondiSheen.Padding = new System.Windows.Forms.Padding(0);
+            this.grpDataCondiSheen.Size = new System.Drawing.Size(152, 180);
+            this.grpDataCondiSheen.TabIndex = 10;
+            this.grpDataCondiSheen.TabStop = false;
+            this.grpDataCondiSheen.Text = "コンディション/けづや";
             // 
-            // txtDataName
+            // nudDataSheen
             // 
-            this.txtDataName.Location = new System.Drawing.Point(108, 24);
-            this.txtDataName.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataName.Name = "txtDataName";
-            this.txtDataName.Size = new System.Drawing.Size(120, 19);
-            this.txtDataName.TabIndex = 1;
-            // 
-            // lblDataItem
-            // 
-            this.lblDataItem.AutoSize = true;
-            this.lblDataItem.Location = new System.Drawing.Point(20, 52);
-            this.lblDataItem.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataItem.Name = "lblDataItem";
-            this.lblDataItem.Size = new System.Drawing.Size(48, 12);
-            this.lblDataItem.TabIndex = 0;
-            this.lblDataItem.Text = "アイテム :";
-            // 
-            // cmbDataItem
-            // 
-            this.cmbDataItem.FormattingEnabled = true;
-            this.cmbDataItem.Location = new System.Drawing.Point(108, 48);
-            this.cmbDataItem.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbDataItem.Name = "cmbDataItem";
-            this.cmbDataItem.Size = new System.Drawing.Size(120, 20);
-            this.cmbDataItem.TabIndex = 2;
-            // 
-            // picDataItem
-            // 
-            this.picDataItem.Location = new System.Drawing.Point(74, 46);
-            this.picDataItem.Margin = new System.Windows.Forms.Padding(0);
-            this.picDataItem.Name = "picDataItem";
-            this.picDataItem.Size = new System.Drawing.Size(24, 24);
-            this.picDataItem.TabIndex = 3;
-            this.picDataItem.TabStop = false;
-            // 
-            // lblDataMailIdx
-            // 
-            this.lblDataMailIdx.AutoSize = true;
-            this.lblDataMailIdx.Location = new System.Drawing.Point(20, 76);
-            this.lblDataMailIdx.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataMailIdx.Name = "lblDataMailIdx";
-            this.lblDataMailIdx.Size = new System.Drawing.Size(74, 12);
-            this.lblDataMailIdx.TabIndex = 4;
-            this.lblDataMailIdx.Text = "メール内容ID :";
-            // 
-            // nudDataMailIdx
-            // 
-            this.nudDataMailIdx.Location = new System.Drawing.Point(108, 72);
-            this.nudDataMailIdx.Margin = new System.Windows.Forms.Padding(0);
-            this.nudDataMailIdx.Maximum = new decimal(new int[] {
-            255,
+            this.nudDataSheen.Location = new System.Drawing.Point(76, 144);
+            this.nudDataSheen.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataSheen.Maximum = new decimal(new int[] {
+            31,
             0,
             0,
             0});
-            this.nudDataMailIdx.Name = "nudDataMailIdx";
-            this.nudDataMailIdx.Size = new System.Drawing.Size(56, 19);
-            this.nudDataMailIdx.TabIndex = 7;
+            this.nudDataSheen.Name = "nudDataSheen";
+            this.nudDataSheen.Size = new System.Drawing.Size(56, 19);
+            this.nudDataSheen.TabIndex = 1;
+            // 
+            // nudDataCondiTough
+            // 
+            this.nudDataCondiTough.Location = new System.Drawing.Point(76, 120);
+            this.nudDataCondiTough.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataCondiTough.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataCondiTough.Name = "nudDataCondiTough";
+            this.nudDataCondiTough.Size = new System.Drawing.Size(56, 19);
+            this.nudDataCondiTough.TabIndex = 1;
+            // 
+            // nudDataCondiSmart
+            // 
+            this.nudDataCondiSmart.Location = new System.Drawing.Point(76, 96);
+            this.nudDataCondiSmart.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataCondiSmart.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataCondiSmart.Name = "nudDataCondiSmart";
+            this.nudDataCondiSmart.Size = new System.Drawing.Size(56, 19);
+            this.nudDataCondiSmart.TabIndex = 1;
+            // 
+            // nudDataCondiCute
+            // 
+            this.nudDataCondiCute.Location = new System.Drawing.Point(76, 72);
+            this.nudDataCondiCute.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataCondiCute.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataCondiCute.Name = "nudDataCondiCute";
+            this.nudDataCondiCute.Size = new System.Drawing.Size(56, 19);
+            this.nudDataCondiCute.TabIndex = 1;
+            // 
+            // nudDataCondiBeauty
+            // 
+            this.nudDataCondiBeauty.Location = new System.Drawing.Point(76, 48);
+            this.nudDataCondiBeauty.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataCondiBeauty.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataCondiBeauty.Name = "nudDataCondiBeauty";
+            this.nudDataCondiBeauty.Size = new System.Drawing.Size(56, 19);
+            this.nudDataCondiBeauty.TabIndex = 1;
+            // 
+            // nudDataCondiCool
+            // 
+            this.nudDataCondiCool.Location = new System.Drawing.Point(76, 24);
+            this.nudDataCondiCool.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataCondiCool.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataCondiCool.Name = "nudDataCondiCool";
+            this.nudDataCondiCool.Size = new System.Drawing.Size(56, 19);
+            this.nudDataCondiCool.TabIndex = 1;
+            // 
+            // lblDataSheen
+            // 
+            this.lblDataSheen.AutoSize = true;
+            this.lblDataSheen.Location = new System.Drawing.Point(16, 148);
+            this.lblDataSheen.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataSheen.Name = "lblDataSheen";
+            this.lblDataSheen.Size = new System.Drawing.Size(41, 12);
+            this.lblDataSheen.TabIndex = 0;
+            this.lblDataSheen.Text = "けづや :";
+            // 
+            // lblDataCondiTough
+            // 
+            this.lblDataCondiTough.AutoSize = true;
+            this.lblDataCondiTough.Location = new System.Drawing.Point(16, 124);
+            this.lblDataCondiTough.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataCondiTough.Name = "lblDataCondiTough";
+            this.lblDataCondiTough.Size = new System.Drawing.Size(52, 12);
+            this.lblDataCondiTough.TabIndex = 0;
+            this.lblDataCondiTough.Text = "たくましさ :";
+            // 
+            // lblDataCondiSmart
+            // 
+            this.lblDataCondiSmart.AutoSize = true;
+            this.lblDataCondiSmart.Location = new System.Drawing.Point(16, 100);
+            this.lblDataCondiSmart.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataCondiSmart.Name = "lblDataCondiSmart";
+            this.lblDataCondiSmart.Size = new System.Drawing.Size(46, 12);
+            this.lblDataCondiSmart.TabIndex = 0;
+            this.lblDataCondiSmart.Text = "かしこさ :";
+            // 
+            // lblDataCondiCute
+            // 
+            this.lblDataCondiCute.AutoSize = true;
+            this.lblDataCondiCute.Location = new System.Drawing.Point(16, 76);
+            this.lblDataCondiCute.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataCondiCute.Name = "lblDataCondiCute";
+            this.lblDataCondiCute.Size = new System.Drawing.Size(49, 12);
+            this.lblDataCondiCute.TabIndex = 0;
+            this.lblDataCondiCute.Text = "かわいさ :";
+            // 
+            // lblDataCondiBeauty
+            // 
+            this.lblDataCondiBeauty.AutoSize = true;
+            this.lblDataCondiBeauty.Location = new System.Drawing.Point(16, 52);
+            this.lblDataCondiBeauty.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataCondiBeauty.Name = "lblDataCondiBeauty";
+            this.lblDataCondiBeauty.Size = new System.Drawing.Size(50, 12);
+            this.lblDataCondiBeauty.TabIndex = 0;
+            this.lblDataCondiBeauty.Text = "うつくしさ :";
+            // 
+            // lblDataCondiCool
+            // 
+            this.lblDataCondiCool.AutoSize = true;
+            this.lblDataCondiCool.Location = new System.Drawing.Point(16, 28);
+            this.lblDataCondiCool.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataCondiCool.Name = "lblDataCondiCool";
+            this.lblDataCondiCool.Size = new System.Drawing.Size(54, 12);
+            this.lblDataCondiCool.TabIndex = 0;
+            this.lblDataCondiCool.Text = "かっこよさ :";
+            // 
+            // grpDataIv
+            // 
+            this.grpDataIv.Controls.Add(this.nudDataIvSpeed);
+            this.grpDataIv.Controls.Add(this.nudDataIvSpDef);
+            this.grpDataIv.Controls.Add(this.nudDataIvSpAtk);
+            this.grpDataIv.Controls.Add(this.nudDataIvDef);
+            this.grpDataIv.Controls.Add(this.nudDataIvAtk);
+            this.grpDataIv.Controls.Add(this.nudDataIvHp);
+            this.grpDataIv.Controls.Add(this.lblDataIvSpeed);
+            this.grpDataIv.Controls.Add(this.lblDataIvSpDef);
+            this.grpDataIv.Controls.Add(this.lblDataIvSpAtk);
+            this.grpDataIv.Controls.Add(this.lblDataIvDef);
+            this.grpDataIv.Controls.Add(this.lblDataIvAtk);
+            this.grpDataIv.Controls.Add(this.lblDataIvHp);
+            this.grpDataIv.Location = new System.Drawing.Point(246, 20);
+            this.grpDataIv.Margin = new System.Windows.Forms.Padding(0);
+            this.grpDataIv.Name = "grpDataIv";
+            this.grpDataIv.Padding = new System.Windows.Forms.Padding(0);
+            this.grpDataIv.Size = new System.Drawing.Size(144, 180);
+            this.grpDataIv.TabIndex = 9;
+            this.grpDataIv.TabStop = false;
+            this.grpDataIv.Text = "個体値";
+            // 
+            // nudDataIvSpeed
+            // 
+            this.nudDataIvSpeed.Location = new System.Drawing.Point(68, 144);
+            this.nudDataIvSpeed.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataIvSpeed.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataIvSpeed.Name = "nudDataIvSpeed";
+            this.nudDataIvSpeed.Size = new System.Drawing.Size(56, 19);
+            this.nudDataIvSpeed.TabIndex = 1;
+            // 
+            // nudDataIvSpDef
+            // 
+            this.nudDataIvSpDef.Location = new System.Drawing.Point(68, 120);
+            this.nudDataIvSpDef.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataIvSpDef.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataIvSpDef.Name = "nudDataIvSpDef";
+            this.nudDataIvSpDef.Size = new System.Drawing.Size(56, 19);
+            this.nudDataIvSpDef.TabIndex = 1;
+            // 
+            // nudDataIvSpAtk
+            // 
+            this.nudDataIvSpAtk.Location = new System.Drawing.Point(68, 96);
+            this.nudDataIvSpAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataIvSpAtk.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataIvSpAtk.Name = "nudDataIvSpAtk";
+            this.nudDataIvSpAtk.Size = new System.Drawing.Size(56, 19);
+            this.nudDataIvSpAtk.TabIndex = 1;
+            // 
+            // nudDataIvDef
+            // 
+            this.nudDataIvDef.Location = new System.Drawing.Point(68, 72);
+            this.nudDataIvDef.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataIvDef.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataIvDef.Name = "nudDataIvDef";
+            this.nudDataIvDef.Size = new System.Drawing.Size(56, 19);
+            this.nudDataIvDef.TabIndex = 1;
+            // 
+            // nudDataIvAtk
+            // 
+            this.nudDataIvAtk.Location = new System.Drawing.Point(68, 48);
+            this.nudDataIvAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataIvAtk.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataIvAtk.Name = "nudDataIvAtk";
+            this.nudDataIvAtk.Size = new System.Drawing.Size(56, 19);
+            this.nudDataIvAtk.TabIndex = 1;
+            // 
+            // nudDataIvHp
+            // 
+            this.nudDataIvHp.Location = new System.Drawing.Point(68, 24);
+            this.nudDataIvHp.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataIvHp.Maximum = new decimal(new int[] {
+            31,
+            0,
+            0,
+            0});
+            this.nudDataIvHp.Name = "nudDataIvHp";
+            this.nudDataIvHp.Size = new System.Drawing.Size(56, 19);
+            this.nudDataIvHp.TabIndex = 1;
+            // 
+            // lblDataIvSpeed
+            // 
+            this.lblDataIvSpeed.AutoSize = true;
+            this.lblDataIvSpeed.Location = new System.Drawing.Point(16, 148);
+            this.lblDataIvSpeed.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataIvSpeed.Name = "lblDataIvSpeed";
+            this.lblDataIvSpeed.Size = new System.Drawing.Size(49, 12);
+            this.lblDataIvSpeed.TabIndex = 0;
+            this.lblDataIvSpeed.Text = "すばやさ :";
+            // 
+            // lblDataIvSpDef
+            // 
+            this.lblDataIvSpDef.AutoSize = true;
+            this.lblDataIvSpDef.Location = new System.Drawing.Point(16, 124);
+            this.lblDataIvSpDef.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataIvSpDef.Name = "lblDataIvSpDef";
+            this.lblDataIvSpDef.Size = new System.Drawing.Size(42, 12);
+            this.lblDataIvSpDef.TabIndex = 0;
+            this.lblDataIvSpDef.Text = "とくぼう :";
+            // 
+            // lblDataIvSpAtk
+            // 
+            this.lblDataIvSpAtk.AutoSize = true;
+            this.lblDataIvSpAtk.Location = new System.Drawing.Point(16, 100);
+            this.lblDataIvSpAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataIvSpAtk.Name = "lblDataIvSpAtk";
+            this.lblDataIvSpAtk.Size = new System.Drawing.Size(40, 12);
+            this.lblDataIvSpAtk.TabIndex = 0;
+            this.lblDataIvSpAtk.Text = "とくこう :";
+            // 
+            // lblDataIvDef
+            // 
+            this.lblDataIvDef.AutoSize = true;
+            this.lblDataIvDef.Location = new System.Drawing.Point(16, 76);
+            this.lblDataIvDef.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataIvDef.Name = "lblDataIvDef";
+            this.lblDataIvDef.Size = new System.Drawing.Size(45, 12);
+            this.lblDataIvDef.TabIndex = 0;
+            this.lblDataIvDef.Text = "ぼうぎょ :";
+            // 
+            // lblDataIvAtk
+            // 
+            this.lblDataIvAtk.AutoSize = true;
+            this.lblDataIvAtk.Location = new System.Drawing.Point(16, 52);
+            this.lblDataIvAtk.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataIvAtk.Name = "lblDataIvAtk";
+            this.lblDataIvAtk.Size = new System.Drawing.Size(45, 12);
+            this.lblDataIvAtk.TabIndex = 0;
+            this.lblDataIvAtk.Text = "こうげき :";
+            // 
+            // lblDataIvHp
+            // 
+            this.lblDataIvHp.AutoSize = true;
+            this.lblDataIvHp.Location = new System.Drawing.Point(16, 28);
+            this.lblDataIvHp.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataIvHp.Name = "lblDataIvHp";
+            this.lblDataIvHp.Size = new System.Drawing.Size(26, 12);
+            this.lblDataIvHp.TabIndex = 0;
+            this.lblDataIvHp.Text = "HP :";
             // 
             // grpDataPid
             // 
@@ -505,93 +763,18 @@ namespace PochiPochiEditorGabu._Trainer
             this.grpDataPid.TabStop = false;
             this.grpDataPid.Text = "性格値";
             // 
-            // txtDataPidHex
+            // rbDataGenderUnknown
             // 
-            this.txtDataPidHex.Location = new System.Drawing.Point(66, 24);
-            this.txtDataPidHex.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataPidHex.Name = "txtDataPidHex";
-            this.txtDataPidHex.ReadOnly = true;
-            this.txtDataPidHex.Size = new System.Drawing.Size(120, 19);
-            this.txtDataPidHex.TabIndex = 3;
-            // 
-            // lblDataPidHex
-            // 
-            this.lblDataPidHex.AutoSize = true;
-            this.lblDataPidHex.Location = new System.Drawing.Point(14, 28);
-            this.lblDataPidHex.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataPidHex.Name = "lblDataPidHex";
-            this.lblDataPidHex.Size = new System.Drawing.Size(47, 12);
-            this.lblDataPidHex.TabIndex = 2;
-            this.lblDataPidHex.Text = "16進数 :";
-            // 
-            // lblDataPid
-            // 
-            this.lblDataPid.AutoSize = true;
-            this.lblDataPid.Location = new System.Drawing.Point(14, 52);
-            this.lblDataPid.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataPid.Name = "lblDataPid";
-            this.lblDataPid.Size = new System.Drawing.Size(47, 12);
-            this.lblDataPid.TabIndex = 2;
-            this.lblDataPid.Text = "10進数 :";
-            // 
-            // txtDataPid
-            // 
-            this.txtDataPid.Location = new System.Drawing.Point(66, 48);
-            this.txtDataPid.Margin = new System.Windows.Forms.Padding(0);
-            this.txtDataPid.Name = "txtDataPid";
-            this.txtDataPid.Size = new System.Drawing.Size(120, 19);
-            this.txtDataPid.TabIndex = 3;
-            // 
-            // lblDataNature
-            // 
-            this.lblDataNature.AutoSize = true;
-            this.lblDataNature.Location = new System.Drawing.Point(14, 84);
-            this.lblDataNature.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataNature.Name = "lblDataNature";
-            this.lblDataNature.Size = new System.Drawing.Size(35, 12);
-            this.lblDataNature.TabIndex = 4;
-            this.lblDataNature.Text = "性格 :";
-            // 
-            // cmbDataNature
-            // 
-            this.cmbDataNature.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDataNature.Enabled = false;
-            this.cmbDataNature.FormattingEnabled = true;
-            this.cmbDataNature.Location = new System.Drawing.Point(66, 80);
-            this.cmbDataNature.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbDataNature.Name = "cmbDataNature";
-            this.cmbDataNature.Size = new System.Drawing.Size(120, 20);
-            this.cmbDataNature.TabIndex = 5;
-            // 
-            // lblDataGender
-            // 
-            this.lblDataGender.AutoSize = true;
-            this.lblDataGender.Location = new System.Drawing.Point(14, 108);
-            this.lblDataGender.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataGender.Name = "lblDataGender";
-            this.lblDataGender.Size = new System.Drawing.Size(35, 12);
-            this.lblDataGender.TabIndex = 4;
-            this.lblDataGender.Text = "性別 :";
-            // 
-            // lblDataAbility
-            // 
-            this.lblDataAbility.AutoSize = true;
-            this.lblDataAbility.Location = new System.Drawing.Point(14, 132);
-            this.lblDataAbility.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataAbility.Name = "lblDataAbility";
-            this.lblDataAbility.Size = new System.Drawing.Size(35, 12);
-            this.lblDataAbility.TabIndex = 4;
-            this.lblDataAbility.Text = "特性 :";
-            // 
-            // cmbDataAbility
-            // 
-            this.cmbDataAbility.Enabled = false;
-            this.cmbDataAbility.FormattingEnabled = true;
-            this.cmbDataAbility.Location = new System.Drawing.Point(66, 128);
-            this.cmbDataAbility.Margin = new System.Windows.Forms.Padding(0);
-            this.cmbDataAbility.Name = "cmbDataAbility";
-            this.cmbDataAbility.Size = new System.Drawing.Size(120, 20);
-            this.cmbDataAbility.TabIndex = 5;
+            this.rbDataGenderUnknown.AutoSize = true;
+            this.rbDataGenderUnknown.Enabled = false;
+            this.rbDataGenderUnknown.Location = new System.Drawing.Point(142, 106);
+            this.rbDataGenderUnknown.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataGenderUnknown.Name = "rbDataGenderUnknown";
+            this.rbDataGenderUnknown.Size = new System.Drawing.Size(35, 16);
+            this.rbDataGenderUnknown.TabIndex = 6;
+            this.rbDataGenderUnknown.TabStop = true;
+            this.rbDataGenderUnknown.Text = "？";
+            this.rbDataGenderUnknown.UseVisualStyleBackColor = true;
             // 
             // rbDataGenderFemale
             // 
@@ -619,340 +802,199 @@ namespace PochiPochiEditorGabu._Trainer
             this.rbDataGenderMale.Text = "♂";
             this.rbDataGenderMale.UseVisualStyleBackColor = true;
             // 
-            // rbDataGenderUnknown
+            // cmbDataAbility
             // 
-            this.rbDataGenderUnknown.AutoSize = true;
-            this.rbDataGenderUnknown.Enabled = false;
-            this.rbDataGenderUnknown.Location = new System.Drawing.Point(142, 106);
-            this.rbDataGenderUnknown.Margin = new System.Windows.Forms.Padding(0);
-            this.rbDataGenderUnknown.Name = "rbDataGenderUnknown";
-            this.rbDataGenderUnknown.Size = new System.Drawing.Size(35, 16);
-            this.rbDataGenderUnknown.TabIndex = 6;
-            this.rbDataGenderUnknown.TabStop = true;
-            this.rbDataGenderUnknown.Text = "？";
-            this.rbDataGenderUnknown.UseVisualStyleBackColor = true;
+            this.cmbDataAbility.Enabled = false;
+            this.cmbDataAbility.FormattingEnabled = true;
+            this.cmbDataAbility.Location = new System.Drawing.Point(66, 128);
+            this.cmbDataAbility.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbDataAbility.Name = "cmbDataAbility";
+            this.cmbDataAbility.Size = new System.Drawing.Size(120, 20);
+            this.cmbDataAbility.TabIndex = 5;
             // 
-            // grpDataIv
+            // cmbDataNature
             // 
-            this.grpDataIv.Controls.Add(this.numericUpDown5);
-            this.grpDataIv.Controls.Add(this.numericUpDown4);
-            this.grpDataIv.Controls.Add(this.numericUpDown3);
-            this.grpDataIv.Controls.Add(this.numericUpDown2);
-            this.grpDataIv.Controls.Add(this.numericUpDown1);
-            this.grpDataIv.Controls.Add(this.nudDataIvHp);
-            this.grpDataIv.Controls.Add(this.label5);
-            this.grpDataIv.Controls.Add(this.label4);
-            this.grpDataIv.Controls.Add(this.label3);
-            this.grpDataIv.Controls.Add(this.label2);
-            this.grpDataIv.Controls.Add(this.label1);
-            this.grpDataIv.Controls.Add(this.lblDataIvHp);
-            this.grpDataIv.Location = new System.Drawing.Point(246, 90);
-            this.grpDataIv.Margin = new System.Windows.Forms.Padding(0);
-            this.grpDataIv.Name = "grpDataIv";
-            this.grpDataIv.Padding = new System.Windows.Forms.Padding(0);
-            this.grpDataIv.Size = new System.Drawing.Size(144, 180);
-            this.grpDataIv.TabIndex = 9;
-            this.grpDataIv.TabStop = false;
-            this.grpDataIv.Text = "個体値";
+            this.cmbDataNature.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDataNature.Enabled = false;
+            this.cmbDataNature.FormattingEnabled = true;
+            this.cmbDataNature.Location = new System.Drawing.Point(66, 80);
+            this.cmbDataNature.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbDataNature.Name = "cmbDataNature";
+            this.cmbDataNature.Size = new System.Drawing.Size(120, 20);
+            this.cmbDataNature.TabIndex = 5;
             // 
-            // lblDataIvHp
+            // lblDataAbility
             // 
-            this.lblDataIvHp.AutoSize = true;
-            this.lblDataIvHp.Location = new System.Drawing.Point(16, 28);
-            this.lblDataIvHp.Margin = new System.Windows.Forms.Padding(0);
-            this.lblDataIvHp.Name = "lblDataIvHp";
-            this.lblDataIvHp.Size = new System.Drawing.Size(26, 12);
-            this.lblDataIvHp.TabIndex = 0;
-            this.lblDataIvHp.Text = "HP :";
+            this.lblDataAbility.AutoSize = true;
+            this.lblDataAbility.Location = new System.Drawing.Point(14, 132);
+            this.lblDataAbility.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataAbility.Name = "lblDataAbility";
+            this.lblDataAbility.Size = new System.Drawing.Size(35, 12);
+            this.lblDataAbility.TabIndex = 4;
+            this.lblDataAbility.Text = "特性 :";
             // 
-            // nudDataIvHp
+            // lblDataGender
             // 
-            this.nudDataIvHp.Location = new System.Drawing.Point(68, 24);
-            this.nudDataIvHp.Margin = new System.Windows.Forms.Padding(0);
-            this.nudDataIvHp.Maximum = new decimal(new int[] {
-            31,
+            this.lblDataGender.AutoSize = true;
+            this.lblDataGender.Location = new System.Drawing.Point(14, 108);
+            this.lblDataGender.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataGender.Name = "lblDataGender";
+            this.lblDataGender.Size = new System.Drawing.Size(35, 12);
+            this.lblDataGender.TabIndex = 4;
+            this.lblDataGender.Text = "性別 :";
+            // 
+            // lblDataNature
+            // 
+            this.lblDataNature.AutoSize = true;
+            this.lblDataNature.Location = new System.Drawing.Point(14, 84);
+            this.lblDataNature.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataNature.Name = "lblDataNature";
+            this.lblDataNature.Size = new System.Drawing.Size(35, 12);
+            this.lblDataNature.TabIndex = 4;
+            this.lblDataNature.Text = "性格 :";
+            // 
+            // txtDataPid
+            // 
+            this.txtDataPid.Location = new System.Drawing.Point(66, 48);
+            this.txtDataPid.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataPid.Name = "txtDataPid";
+            this.txtDataPid.Size = new System.Drawing.Size(120, 19);
+            this.txtDataPid.TabIndex = 3;
+            // 
+            // txtDataPidHex
+            // 
+            this.txtDataPidHex.Location = new System.Drawing.Point(66, 24);
+            this.txtDataPidHex.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataPidHex.Name = "txtDataPidHex";
+            this.txtDataPidHex.ReadOnly = true;
+            this.txtDataPidHex.Size = new System.Drawing.Size(120, 19);
+            this.txtDataPidHex.TabIndex = 3;
+            // 
+            // lblDataPid
+            // 
+            this.lblDataPid.AutoSize = true;
+            this.lblDataPid.Location = new System.Drawing.Point(14, 52);
+            this.lblDataPid.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataPid.Name = "lblDataPid";
+            this.lblDataPid.Size = new System.Drawing.Size(47, 12);
+            this.lblDataPid.TabIndex = 2;
+            this.lblDataPid.Text = "10進数 :";
+            // 
+            // lblDataPidHex
+            // 
+            this.lblDataPidHex.AutoSize = true;
+            this.lblDataPidHex.Location = new System.Drawing.Point(14, 28);
+            this.lblDataPidHex.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataPidHex.Name = "lblDataPidHex";
+            this.lblDataPidHex.Size = new System.Drawing.Size(47, 12);
+            this.lblDataPidHex.TabIndex = 2;
+            this.lblDataPidHex.Text = "16進数 :";
+            // 
+            // nudDataMailIdx
+            // 
+            this.nudDataMailIdx.Location = new System.Drawing.Point(108, 72);
+            this.nudDataMailIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.nudDataMailIdx.Maximum = new decimal(new int[] {
+            255,
             0,
             0,
             0});
-            this.nudDataIvHp.Name = "nudDataIvHp";
-            this.nudDataIvHp.Size = new System.Drawing.Size(56, 19);
-            this.nudDataIvHp.TabIndex = 1;
+            this.nudDataMailIdx.Name = "nudDataMailIdx";
+            this.nudDataMailIdx.Size = new System.Drawing.Size(56, 19);
+            this.nudDataMailIdx.TabIndex = 7;
             // 
-            // label1
+            // lblDataMailIdx
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 52);
-            this.label1.Margin = new System.Windows.Forms.Padding(0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 12);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "こうげき :";
+            this.lblDataMailIdx.AutoSize = true;
+            this.lblDataMailIdx.Location = new System.Drawing.Point(20, 76);
+            this.lblDataMailIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataMailIdx.Name = "lblDataMailIdx";
+            this.lblDataMailIdx.Size = new System.Drawing.Size(74, 12);
+            this.lblDataMailIdx.TabIndex = 4;
+            this.lblDataMailIdx.Text = "メール内容ID :";
             // 
-            // numericUpDown1
+            // picDataItem
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(68, 48);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown1.TabIndex = 1;
+            this.picDataItem.Location = new System.Drawing.Point(74, 46);
+            this.picDataItem.Margin = new System.Windows.Forms.Padding(0);
+            this.picDataItem.Name = "picDataItem";
+            this.picDataItem.Size = new System.Drawing.Size(24, 24);
+            this.picDataItem.TabIndex = 3;
+            this.picDataItem.TabStop = false;
             // 
-            // label2
+            // cmbDataItem
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 76);
-            this.label2.Margin = new System.Windows.Forms.Padding(0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 12);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "ぼうぎょ :";
+            this.cmbDataItem.FormattingEnabled = true;
+            this.cmbDataItem.Location = new System.Drawing.Point(108, 48);
+            this.cmbDataItem.Margin = new System.Windows.Forms.Padding(0);
+            this.cmbDataItem.Name = "cmbDataItem";
+            this.cmbDataItem.Size = new System.Drawing.Size(120, 20);
+            this.cmbDataItem.TabIndex = 2;
             // 
-            // numericUpDown2
+            // txtDataName
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(68, 72);
-            this.numericUpDown2.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown2.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown2.TabIndex = 1;
+            this.txtDataName.Location = new System.Drawing.Point(108, 24);
+            this.txtDataName.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDataName.Name = "txtDataName";
+            this.txtDataName.Size = new System.Drawing.Size(120, 19);
+            this.txtDataName.TabIndex = 1;
             // 
-            // label3
+            // lblDataItem
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 100);
-            this.label3.Margin = new System.Windows.Forms.Padding(0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 12);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "とくこう :";
+            this.lblDataItem.AutoSize = true;
+            this.lblDataItem.Location = new System.Drawing.Point(20, 52);
+            this.lblDataItem.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataItem.Name = "lblDataItem";
+            this.lblDataItem.Size = new System.Drawing.Size(48, 12);
+            this.lblDataItem.TabIndex = 0;
+            this.lblDataItem.Text = "アイテム :";
             // 
-            // numericUpDown3
+            // lblDataName
             // 
-            this.numericUpDown3.Location = new System.Drawing.Point(68, 96);
-            this.numericUpDown3.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown3.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown3.TabIndex = 1;
+            this.lblDataName.AutoSize = true;
+            this.lblDataName.Location = new System.Drawing.Point(20, 28);
+            this.lblDataName.Margin = new System.Windows.Forms.Padding(0);
+            this.lblDataName.Name = "lblDataName";
+            this.lblDataName.Size = new System.Drawing.Size(65, 12);
+            this.lblDataName.TabIndex = 0;
+            this.lblDataName.Text = "ニックネーム :";
             // 
-            // label4
+            // grpDataAbility
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(16, 124);
-            this.label4.Margin = new System.Windows.Forms.Padding(0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(42, 12);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "とくぼう :";
+            this.grpDataAbility.Controls.Add(this.rbDataAbility2);
+            this.grpDataAbility.Controls.Add(this.rbDataAbility1);
+            this.grpDataAbility.Location = new System.Drawing.Point(246, 210);
+            this.grpDataAbility.Margin = new System.Windows.Forms.Padding(0);
+            this.grpDataAbility.Name = "grpDataAbility";
+            this.grpDataAbility.Padding = new System.Windows.Forms.Padding(0);
+            this.grpDataAbility.Size = new System.Drawing.Size(144, 60);
+            this.grpDataAbility.TabIndex = 11;
+            this.grpDataAbility.TabStop = false;
+            this.grpDataAbility.Text = "特性固定";
             // 
-            // numericUpDown4
+            // rbDataAbility2
             // 
-            this.numericUpDown4.Location = new System.Drawing.Point(68, 120);
-            this.numericUpDown4.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown4.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown4.TabIndex = 1;
+            this.rbDataAbility2.AutoSize = true;
+            this.rbDataAbility2.Location = new System.Drawing.Point(76, 26);
+            this.rbDataAbility2.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataAbility2.Name = "rbDataAbility2";
+            this.rbDataAbility2.Size = new System.Drawing.Size(53, 16);
+            this.rbDataAbility2.TabIndex = 4;
+            this.rbDataAbility2.TabStop = true;
+            this.rbDataAbility2.Text = "特性2";
+            this.rbDataAbility2.UseVisualStyleBackColor = true;
             // 
-            // label5
+            // rbDataAbility1
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(16, 148);
-            this.label5.Margin = new System.Windows.Forms.Padding(0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(49, 12);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "すばやさ :";
-            // 
-            // numericUpDown5
-            // 
-            this.numericUpDown5.Location = new System.Drawing.Point(68, 144);
-            this.numericUpDown5.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown5.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown5.Name = "numericUpDown5";
-            this.numericUpDown5.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown5.TabIndex = 1;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.numericUpDown6);
-            this.groupBox1.Controls.Add(this.numericUpDown7);
-            this.groupBox1.Controls.Add(this.numericUpDown8);
-            this.groupBox1.Controls.Add(this.numericUpDown9);
-            this.groupBox1.Controls.Add(this.numericUpDown10);
-            this.groupBox1.Controls.Add(this.numericUpDown11);
-            this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.label7);
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Location = new System.Drawing.Point(408, 90);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(0);
-            this.groupBox1.Size = new System.Drawing.Size(152, 180);
-            this.groupBox1.TabIndex = 10;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "コンディション/けづや";
-            // 
-            // numericUpDown6
-            // 
-            this.numericUpDown6.Location = new System.Drawing.Point(76, 144);
-            this.numericUpDown6.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown6.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown6.Name = "numericUpDown6";
-            this.numericUpDown6.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown6.TabIndex = 1;
-            // 
-            // numericUpDown7
-            // 
-            this.numericUpDown7.Location = new System.Drawing.Point(76, 120);
-            this.numericUpDown7.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown7.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown7.Name = "numericUpDown7";
-            this.numericUpDown7.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown7.TabIndex = 1;
-            // 
-            // numericUpDown8
-            // 
-            this.numericUpDown8.Location = new System.Drawing.Point(76, 96);
-            this.numericUpDown8.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown8.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown8.Name = "numericUpDown8";
-            this.numericUpDown8.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown8.TabIndex = 1;
-            // 
-            // numericUpDown9
-            // 
-            this.numericUpDown9.Location = new System.Drawing.Point(76, 72);
-            this.numericUpDown9.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown9.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown9.Name = "numericUpDown9";
-            this.numericUpDown9.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown9.TabIndex = 1;
-            // 
-            // numericUpDown10
-            // 
-            this.numericUpDown10.Location = new System.Drawing.Point(76, 48);
-            this.numericUpDown10.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown10.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown10.Name = "numericUpDown10";
-            this.numericUpDown10.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown10.TabIndex = 1;
-            // 
-            // numericUpDown11
-            // 
-            this.numericUpDown11.Location = new System.Drawing.Point(76, 24);
-            this.numericUpDown11.Margin = new System.Windows.Forms.Padding(0);
-            this.numericUpDown11.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.numericUpDown11.Name = "numericUpDown11";
-            this.numericUpDown11.Size = new System.Drawing.Size(56, 19);
-            this.numericUpDown11.TabIndex = 1;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(16, 148);
-            this.label6.Margin = new System.Windows.Forms.Padding(0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(41, 12);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "けづや :";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 124);
-            this.label7.Margin = new System.Windows.Forms.Padding(0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(52, 12);
-            this.label7.TabIndex = 0;
-            this.label7.Text = "たくましさ :";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(16, 100);
-            this.label8.Margin = new System.Windows.Forms.Padding(0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(46, 12);
-            this.label8.TabIndex = 0;
-            this.label8.Text = "かしこさ :";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(16, 76);
-            this.label9.Margin = new System.Windows.Forms.Padding(0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(49, 12);
-            this.label9.TabIndex = 0;
-            this.label9.Text = "かわいさ :";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(16, 52);
-            this.label10.Margin = new System.Windows.Forms.Padding(0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(50, 12);
-            this.label10.TabIndex = 0;
-            this.label10.Text = "うつくしさ :";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(16, 28);
-            this.label11.Margin = new System.Windows.Forms.Padding(0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(54, 12);
-            this.label11.TabIndex = 0;
-            this.label11.Text = "かっこよさ :";
+            this.rbDataAbility1.AutoSize = true;
+            this.rbDataAbility1.Location = new System.Drawing.Point(16, 26);
+            this.rbDataAbility1.Margin = new System.Windows.Forms.Padding(0);
+            this.rbDataAbility1.Name = "rbDataAbility1";
+            this.rbDataAbility1.Size = new System.Drawing.Size(53, 16);
+            this.rbDataAbility1.TabIndex = 5;
+            this.rbDataAbility1.TabStop = true;
+            this.rbDataAbility1.Text = "特性1";
+            this.rbDataAbility1.UseVisualStyleBackColor = true;
             // 
             // IngameTradeEditor
             // 
@@ -984,26 +1026,28 @@ namespace PochiPochiEditorGabu._Trainer
             ((System.ComponentModel.ISupportInitialize)(this.picPokemon2)).EndInit();
             this.grpData.ResumeLayout(false);
             this.grpData.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picDataItem)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDataMailIdx)).EndInit();
-            this.grpDataPid.ResumeLayout(false);
-            this.grpDataPid.PerformLayout();
+            this.grpDataCondiSheen.ResumeLayout(false);
+            this.grpDataCondiSheen.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataSheen)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiTough)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiSmart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiCute)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiBeauty)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataCondiCool)).EndInit();
             this.grpDataIv.ResumeLayout(false);
             this.grpDataIv.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvSpeed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvSpDef)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvSpAtk)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvDef)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataIvAtk)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDataIvHp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown9)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown10)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown11)).EndInit();
+            this.grpDataPid.ResumeLayout(false);
+            this.grpDataPid.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDataMailIdx)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picDataItem)).EndInit();
+            this.grpDataAbility.ResumeLayout(false);
+            this.grpDataAbility.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1057,28 +1101,31 @@ namespace PochiPochiEditorGabu._Trainer
         private System.Windows.Forms.GroupBox grpDataIv;
         private System.Windows.Forms.NumericUpDown nudDataIvHp;
         private System.Windows.Forms.Label lblDataIvHp;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.NumericUpDown numericUpDown6;
-        private System.Windows.Forms.NumericUpDown numericUpDown7;
-        private System.Windows.Forms.NumericUpDown numericUpDown8;
-        private System.Windows.Forms.NumericUpDown numericUpDown9;
-        private System.Windows.Forms.NumericUpDown numericUpDown10;
-        private System.Windows.Forms.NumericUpDown numericUpDown11;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.NumericUpDown numericUpDown5;
-        private System.Windows.Forms.NumericUpDown numericUpDown4;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.GroupBox grpDataCondiSheen;
+        private System.Windows.Forms.NumericUpDown nudDataSheen;
+        private System.Windows.Forms.NumericUpDown nudDataCondiTough;
+        private System.Windows.Forms.NumericUpDown nudDataCondiSmart;
+        private System.Windows.Forms.NumericUpDown nudDataCondiCute;
+        private System.Windows.Forms.NumericUpDown nudDataCondiBeauty;
+        private System.Windows.Forms.NumericUpDown nudDataCondiCool;
+        private System.Windows.Forms.Label lblDataSheen;
+        private System.Windows.Forms.Label lblDataCondiTough;
+        private System.Windows.Forms.Label lblDataCondiSmart;
+        private System.Windows.Forms.Label lblDataCondiCute;
+        private System.Windows.Forms.Label lblDataCondiBeauty;
+        private System.Windows.Forms.Label lblDataCondiCool;
+        private System.Windows.Forms.NumericUpDown nudDataIvSpeed;
+        private System.Windows.Forms.NumericUpDown nudDataIvSpDef;
+        private System.Windows.Forms.NumericUpDown nudDataIvSpAtk;
+        private System.Windows.Forms.NumericUpDown nudDataIvDef;
+        private System.Windows.Forms.NumericUpDown nudDataIvAtk;
+        private System.Windows.Forms.Label lblDataIvSpeed;
+        private System.Windows.Forms.Label lblDataIvSpDef;
+        private System.Windows.Forms.Label lblDataIvSpAtk;
+        private System.Windows.Forms.Label lblDataIvDef;
+        private System.Windows.Forms.Label lblDataIvAtk;
+        private System.Windows.Forms.GroupBox grpDataAbility;
+        private System.Windows.Forms.RadioButton rbDataAbility2;
+        private System.Windows.Forms.RadioButton rbDataAbility1;
     }
 }
