@@ -288,7 +288,7 @@ namespace PochiPochiEditorGabu.Managers
         public ushort StatsAbility1;
         public byte StatsRunRate;
         [DataBindingHelper.NibbleControlNames("StatsFlip", "StatsColor")]
-        public byte StatsUnknownValue;
+        public byte nStatsUnknownValue;
         public ushort StatsAbility2;
         public ushort StatsAbilityHidden;
         public ushort StatsExp;
@@ -687,5 +687,44 @@ namespace PochiPochiEditorGabu.Managers
     public class WordNameEntry
     {
         public ushort _Idx;
+    }
+
+
+
+
+
+
+
+
+
+    public class OverworldDataEntry
+    {
+        public ushort _Padding1;
+        public ushort _PalIdx1;
+        public ushort _PalIdx2;
+        public ushort DataLength;
+        public ushort _ImgWidth;
+        public ushort _ImgHeight;
+        public byte _PalSlotAndUnknownFlags;
+        public byte DataFootprint;
+        public byte DataUnknownValue;
+        public byte _Padding2;
+        public uint pDataLoadAddr;
+        public uint pDataSizeAddr;
+        public uint pDataAnimAddr;
+        public uint pDataImgTableAddr;
+        public uint pDataMemoryAddr;
+    }
+
+    public class OverworldPaletteEntry
+    {
+        public uint pPalAddr;
+        public ushort _Idx;
+        public ushort _Padding1;
+    }
+
+    public class OverworldFontEntry
+    {
+        public byte _Idx;
     }
 }

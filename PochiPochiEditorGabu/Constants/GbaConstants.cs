@@ -120,5 +120,9 @@
         public const int WordGroupMove2 = 0x13;
         public const int WordGroupTrendy = 0x14;
         public const int WordGroupPokemon1 = 0x15;
+
+        public const byte OverworldSpriteUnknownFlag1Mask = 0x10;
+        public const byte OverworldSpriteUnknownFlag2Mask = 0x40;
+        public const byte OverworldSpriteUnknownFlag3Mask = 0x80;
     }
 }
