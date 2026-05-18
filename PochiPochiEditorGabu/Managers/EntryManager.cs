@@ -727,4 +727,11 @@ namespace PochiPochiEditorGabu.Managers
     {
         public byte _Idx;
     }
+
+    public class OverworldSpriteImageEntry
+    {
+        public uint pImgAddr;
+        public ushort _Size;
+        public ushort _Padding1;
+    }
 }

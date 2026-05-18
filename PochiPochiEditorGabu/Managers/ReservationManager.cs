@@ -41,7 +41,7 @@ namespace PochiPochiEditorGabu.Managers
             {
                 if (redraw)
                 {
-                    textBox.BackColor = SystemColors.Window;
+                    textBox.BackColor = textBox.ReadOnly ? SystemColors.Control : SystemColors.Window;
                 }
                 textBox.TextChanged -= TextBox_TextChanged;
             }

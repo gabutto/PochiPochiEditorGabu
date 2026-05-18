@@ -97,6 +97,7 @@
         public const string RomFileTitle = "ROMを選択";
         public const string ImageImportFilter = "画像ファイル (*.png;*.bmp)|*.png;*.bmp";
         public const string ImageExportFilter = "PNG画像 (*.png)|*.png|BMP画像 (*.bmp)|*.bmp";
+        public const string BinImportExportFilter = "BINファイル (*.bin)|*.bin";
 
         public const int WordGroupPokemon2 = 0x0;
         public const int WordGroupTrainer = 0x1;

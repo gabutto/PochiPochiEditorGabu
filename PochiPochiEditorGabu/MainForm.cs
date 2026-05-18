@@ -52,6 +52,8 @@ namespace PochiPochiEditorGabu
             {
                 btn.Click += EditorButton_Click;
             }
+
+            this.FormClosing += MainForm_FormClosing;
         }
 
         private void InitializeControls()
@@ -259,6 +261,15 @@ namespace PochiPochiEditorGabu
 
             _reservationManager.ClearAllReservations();
             UpdataUIStates();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_editorForm != null && !_editorForm.IsDisposed)
+            {
+                e.Cancel = true;
+                MessageBox.Show("編集画面を閉じてください。", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
     }
 }

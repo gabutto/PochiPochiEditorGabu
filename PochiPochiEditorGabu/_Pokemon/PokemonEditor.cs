@@ -2424,7 +2424,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
             using (var sfd = new SaveFileDialog())
             {
-                sfd.Filter = "BINファイル (*.bin)|*.bin";
+                sfd.Filter = GbaConstants.BinImportExportFilter;
                 sfd.FileName = $"pokedex_{((int)nudSpecies.Value):D4}.bin";
 
                 if (sfd.ShowDialog() == DialogResult.OK)
@@ -2474,7 +2474,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
             using (var ofd = new OpenFileDialog())
             {
-                ofd.Filter = "BINファイル (*.bin)|*.bin";
+                ofd.Filter = GbaConstants.BinImportExportFilter;
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {

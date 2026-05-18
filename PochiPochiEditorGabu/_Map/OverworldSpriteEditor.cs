@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 using PochiPochiEditorGabu.Constants;
@@ -31,6 +30,11 @@ namespace PochiPochiEditorGabu._Map
         private EntryManager<OverworldPaletteEntry> _palManager;
         private EntryManager<OverworldFontEntry> _fontManager;
 
+        private BindingList<PaletteComboItem> _paletteComboSource;
+        private PaletteComboItem _temporaryPalette = new PaletteComboItem();
+        private List<Bitmap> _loadedSpriteFrames = new List<Bitmap>();
+        private List<uint> _loadedSpriteAddresses = new List<uint>();
+
         private bool _isUpdatingUI = false;
         private bool _isMultipleTable = false;
         private int _currentDataTableIdx = 0;
@@ -41,6 +45,7 @@ namespace PochiPochiEditorGabu._Map
             public ushort PalIdx { get; set; }
             public int? TableIdx { get; set; } // dummy = null, temporary = -1
             public bool IsTemporary { get; set; }
+            public byte[] TemporaryData { get; set; }
             public uint PalAddr { get; set; }
             public string DisplayText => $"{PalIdx:X4}" + (IsTemporary ? "*" : "");
         }
@@ -81,6 +86,8 @@ namespace PochiPochiEditorGabu._Map
             InitializeControls();
             InitializeUIStates();
 
+            BackUpCurrentTableData();
+            LoadDataEntryListBox();
             LoadDataEntryToUI(_currentDataEntryIdx);
         }
 
@@ -90,8 +97,6 @@ namespace PochiPochiEditorGabu._Map
                 _config.GetBool("EnableMultipleOverworldSpriteDataTable");
             _tableParsingHelper = new TableParsingHelper(_romData);
             _dataPointers = new Dictionary<int, IReadOnlyList<PointerEntry>>();
-            string validationPattern = 
-                "FF FF ?? 11 ?? 11 ?? ?? ?? 00 ?? 00 ?? ?? ?? 00 PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP";
 
             // data
             if (_isMultipleTable) // multiple
@@ -110,21 +115,28 @@ namespace PochiPochiEditorGabu._Map
                     IReadOnlyList<PointerEntry> dataPointer = _tableParsingHelper.ParsePointerEntries(
                         (int)dataGroupAddr.TargetOffset,
                         "PP PP PP PP",
-                        _config.GetInt("MultipleOverworldSpriteDataEntryMaxCount"));
+                        null,
+                        null,
+                        true);
 
                     // valid?
                     var validPointers = new List<PointerEntry>();
+                    string validationPattern =
+                        "FF FF ?? 11 ?? 11 ?? ?? ?? 00 ?? 00 ?? ?? ?? 00 PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP PP";
                     foreach (var ptr in dataPointer)
                     {
-                        var validationResult = 
-                            _tableParsingHelper.ParseDataEntries(
-                                (int)ptr.TargetOffset, 
-                                validationPattern, 
-                                1);
-
-                        if (validationResult.Count == 0)
+                        if (ptr.TargetOffset != 0)
                         {
-                            break;
+                            var validationResult =
+                                _tableParsingHelper.ParseDataEntries(
+                                    (int)ptr.TargetOffset,
+                                    validationPattern,
+                                    1);
+
+                            if (validationResult.Count == 0)
+                            {
+                                break;
+                            }
                         }
 
                         validPointers.Add(ptr);
@@ -142,14 +154,12 @@ namespace PochiPochiEditorGabu._Map
                     (int)dataPointersAddr,
                     "PP PP PP PP",
                     entryCount,
-                    knownCount: entryCount);
+                    null,
+                    true);
 
                 // to index 0
                 _dataPointers.Add(0, dataPointer);
             }
-
-            // _currentDataTableIdx = 0
-            LoadCurrentTableData();
 
             // pal
             uint? palTableAddr = _config.GetAddr("OverworldSpritePaletteTableAddress");
@@ -168,8 +178,21 @@ namespace PochiPochiEditorGabu._Map
 
         private void InitializeEventHandlers()
         {
+            btnSave.Click += btnSave_Click;
+            this.FormClosing += OverworldSpriteEditor_FormClosing;
+
             nudDataTableIdx.ValueChanged += nudDataTableIdx_ValueChanged;
             lstDataEntry.SelectedIndexChanged += lstDataEntry_SelectedIndexChanged;
+
+            cmbDataPalIdx1.SelectedIndexChanged += cmbDataPalIdx1_SelectedIndexChanged;
+            nudSpriteFrameCount.ValueChanged += nudSpriteFrameCount_ValueChanged;
+
+            cmbPalIdx.SelectedIndexChanged += cmbPalIdx_SelectedIndexChanged;
+            btnCreateNewPalIdx.Click += btnCreateNewPalIdx_Click;
+
+            btnImportDataEntry.Click += btnImportDataEntry_Click;
+            btnExportDataEntry.Click += btnExportDataEntry_Click;
+            btnCreateNewDataEntry.Click += btnCreateNewDataEntry_Click;
         }
 
         private void InitializeControls()
@@ -184,10 +207,14 @@ namespace PochiPochiEditorGabu._Map
             cmbCreateNewImgTableSize.DataSource = new List<DataSizeComboItem>(_dataSizePresets);
             cmbCreateNewImgTableSize.DisplayMember = nameof(DataSizeComboItem.DisplayText);
 
+            // picSpritePreviewFrame
+            picSpritePreviewFrame.SizeMode = PictureBoxSizeMode.CenterImage;
+            picSpritePreviewFrame.BackColor = Color.White;
+
             ControlHelper.AttachAddressAutoFormat(
                 txtDataEntryAddr,
                 txtDataLoadAddr, txtDataSizeAddr, txtDataAnimAddr, txtDataImgTableAddr, txtDataMemoryAddr,
-                txtSpriteFrameAddr);
+                txtSpriteFrameAddr, txtCreateNewDataEntryAddr);
             ControlHelper.AttachExternalBorder(
                 picSpritePreviewFrame,
                 picPalPreview);
@@ -198,53 +225,44 @@ namespace PochiPochiEditorGabu._Map
             ControlHelper.LoadComboBoxFromTextFile(cmbDataFootprint, "txt/OverworldSpriteFootprint.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbFontIdx, "txt/OverworldSpriteFont.txt");
 
-            UpdateDataEntryListBox();
-            UpdatePaletteComboBox();
+            InitializePaletteComboBox();
         }
 
         private void InitializeUIStates()
         {
             btnSave.Enabled = false;
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
+
+            _uiStateManager.AddControls(
+                txtDataEntryAddr);
+            _uiStateManager.AddControlsRecursive(
+                grpDataEntry);
+            _uiStateManager.AddBinaries(
+                (_temporaryPalette, null),
+                ("NewDataEntry", null));
         }
 
-        private void UpdateDataEntryListBox()
-        {
-            _isUpdatingUI = true;
-            lstDataEntry.BeginUpdate();
-            lstDataEntry.Items.Clear();
-
-            int entryCount = _dataPointers[_currentDataTableIdx].Count;
-
-            for (int i = 0; i < entryCount; i++)
-            {
-                lstDataEntry.Items.Add($"No. {i:D4}");
-            }
-
-            lstDataEntry.EndUpdate();
-            _isUpdatingUI = false;
-
-            if (lstDataEntry.Items.Count > 0)
-            {
-                lstDataEntry.SelectedIndex = 0;
-            }
-        }
-
-        private void UpdatePaletteComboBox()
+        private void InitializePaletteComboBox()
         {
             var items = new List<PaletteComboItem>();
-            for (int i = 0; i < _palManager.Working.Count; i++)
+
+            for (int i = 0; i < _palManager.Original.Count; i++)
             {
+                var palEntry = _palManager.Original[i];
+
                 items.Add(new PaletteComboItem
                 {
-                    PalIdx = _palManager.Working[i]._Idx,
+                    PalIdx = _palManager.Original[i]._Idx,
                     TableIdx = i,
                     IsTemporary = false,
-                    PalAddr = _palManager.Working[i].pPalAddr
+                    TemporaryData = null,
+                    PalAddr = palEntry.pPalAddr == 0
+                        ? 0
+                        : palEntry.pPalAddr - GbaConstants.BaseAddr
                 });
             }
 
-            // 11FF dummy
+            // 11FF 
             if (!items.Any(x => x.PalIdx == 0x11FF))
             {
                 items.Add(new PaletteComboItem
@@ -252,58 +270,75 @@ namespace PochiPochiEditorGabu._Map
                     PalIdx = 0x11FF,
                     TableIdx = null,
                     IsTemporary = true,
+                    TemporaryData = null,
                     PalAddr = 0 // null pointer
                 });
             }
 
-            /*
-            
-            // ② 一時的に追加されたパレットをリストに追加（将来の実装向け）
-            // ※ReservationManagerを使ってtxtCreateNewPalIdxが予約された際に、
-            // _temporaryPalettesにそのIDを追加し、このメソッドを呼ぶ設計にします。
-            foreach (var tempIdx in _temporaryPalettes)
-            {
-                // 既に同名のIDが存在しないかチェックするのも良いでしょう
-                if (!items.Any(x => x.PalIdx == tempIdx))
-                {
-                    items.Add(new PaletteComboItem
-                    {
-                        PalIdx = tempIdx,
-                        OriginalTableIndex = -1, // 元テーブルには存在しないため -1
-                        IsTemporary = true
-                    });
-                }
-            }
-
-            */
-
+            // sort
             var sortedItems = items.OrderBy(x => x.PalIdx).ToList();
+            _paletteComboSource = new BindingList<PaletteComboItem>(sortedItems);
 
             foreach (var cmb in new[] {
-                cmbPalIdx,
                 cmbDataPalIdx1,
-                cmbDataPalIdx2 })
+                cmbDataPalIdx2,
+                cmbPalIdx })
             {
-                cmb.BeginUpdate();
+                var bindingSource = new BindingSource();
+                bindingSource.DataSource = _paletteComboSource;
 
-                ushort? currentSelectedIdx = (cmb.SelectedItem as PaletteComboItem)?.PalIdx;
                 cmb.DisplayMember = nameof(PaletteComboItem.DisplayText);
                 cmb.ValueMember = nameof(PaletteComboItem.TableIdx);
-                cmb.DataSource = sortedItems.ToList();
-
-                // cursor
-                if (currentSelectedIdx.HasValue)
-                {
-                    var itemToSelect = (cmb.DataSource as List<PaletteComboItem>)
-                        .FirstOrDefault(x => x.PalIdx == currentSelectedIdx.Value);
-                    if (itemToSelect != null)
-                    {
-                        cmb.SelectedItem = itemToSelect;
-                    }
-                }
-
-                cmb.EndUpdate();
+                cmb.DataSource = bindingSource;
             }
+        }
+
+        private void BackUpCurrentTableData()
+        {
+            _originalDataEntries = new List<OverworldDataEntry>();
+            _workingDataEntries = new List<OverworldDataEntry>();
+
+            for (int i = 0; i < _dataPointers[_currentDataTableIdx].Count; i++)
+            {
+                uint entryAddr = _dataPointers[_currentDataTableIdx][i].TargetOffset;
+
+                if (entryAddr == 0) // null pointer
+                {
+                    _originalDataEntries.Add(new OverworldDataEntry());
+                    _workingDataEntries.Add(new OverworldDataEntry());
+                }
+                else
+                {
+                    var manager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+                    manager.Load(entryAddr, 1);
+
+                    _originalDataEntries.Add(manager.Original[0]);
+                    _workingDataEntries.Add(manager.Working[0]);
+                }
+            }
+        }
+
+        private void LoadDataEntryListBox()
+        {
+            _isUpdatingUI = true;
+            lstDataEntry.BeginUpdate();
+            lstDataEntry.Items.Clear();
+
+            int entryCount = _originalDataEntries.Count;
+
+            for (int i = 0; i < entryCount; i++)
+            {
+                lstDataEntry.Items.Add($"No. {i:D4}");
+            }
+
+            lstDataEntry.EndUpdate();
+
+            if (lstDataEntry.Items.Count > 0)
+            {
+                lstDataEntry.SelectedIndex = 0;
+            }
+
+            _isUpdatingUI = false;
         }
 
         private void LoadDataEntryToUI(int idx)
@@ -312,7 +347,42 @@ namespace PochiPochiEditorGabu._Map
             _reservationManager.ClearAllReservations();
 
             _currentDataEntryIdx = idx;
-            var currentEntry = _workingDataEntries[idx];
+            uint entryAddr = _dataPointers[_currentDataTableIdx][idx].TargetOffset;
+
+            var excludeControls = new[] { "cmbDataSize" };
+
+            if (entryAddr == 0)
+            {
+                grpDataEntry.SetControlsEnabled(false, excludeControls);
+                grpDataEntry.ResetControls(excludeControls);
+
+                grpSpritePreview.SetControlsEnabled(false);
+                grpSpritePreview.ResetControls();
+
+                grpCreateNewImgTable.SetControlsEnabled(false);
+                grpCreateNewImgTable.ResetControls();
+
+                // ui
+                txtDataEntryAddr.Text = "null";
+                btnImportDataEntry.Enabled = false;
+                btnExportDataEntry.Enabled = false;
+
+                txtDataImgTableAddr.Text = string.Empty;
+                LoadSpriteFrames();
+
+                _isUpdatingUI = false;
+                _uiStateManager.UpdateInitialValues();
+                return;
+            }
+
+            // valid
+            grpDataEntry.SetControlsEnabled(true, excludeControls);
+            grpCreateNewImgTable.SetControlsEnabled(true);
+
+            btnImportDataEntry.Enabled = true;
+            btnExportDataEntry.Enabled = true;
+
+            var currentEntry = _originalDataEntries[idx];
             DataBindingHelper.BindObjectToControls(this, currentEntry);
 
             // pal
@@ -343,27 +413,13 @@ namespace PochiPochiEditorGabu._Map
             }
 
             // ui
-            uint entryAddr = _dataPointers[_currentDataTableIdx][idx].TargetOffset;
             txtDataEntryAddr.Text = entryAddr.ToString("X8");
+
+            // frame sprite
+            LoadSpriteFrames();
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
-        }
-
-        private void LoadCurrentTableData()
-        {
-            _originalDataEntries = new List<OverworldDataEntry>();
-            _workingDataEntries = new List<OverworldDataEntry>();
-
-            for (int i = 0; i < _dataPointers[_currentDataTableIdx].Count; i++)
-            {
-                uint entryAddr = _dataPointers[_currentDataTableIdx][i].TargetOffset;
-                var manager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
-                manager.Load(entryAddr, 1);
-
-                _originalDataEntries.Add(manager.Original[0]);
-                _workingDataEntries.Add(manager.Working[0]);
-            }
         }
 
         private void LoadToPalComboBox(ComboBox cmb, ushort palIdx)
@@ -410,44 +466,427 @@ namespace PochiPochiEditorGabu._Map
             }
         }
 
+        private void LoadSpriteFrames()
+        {
+            _loadedSpriteFrames.Clear();
+            _loadedSpriteAddresses.Clear();
+            picSpritePreviewFrame.Image = null;
 
+            bool isImgTableValid = !string.IsNullOrWhiteSpace(txtDataImgTableAddr.Text) &&
+                                   !txtDataImgTableAddr.Text.Equals("null");
 
+            grpSpritePreview.SetControlsEnabled(isImgTableValid);
 
+            if (!isImgTableValid)
+            {
+                grpSpritePreview.ResetControls();
+                _isUpdatingUI = true;
+                nudSpriteFrameCount.Maximum = 0;
+                nudSpriteFrameMaxCount.Value = 0;
+                _isUpdatingUI = false;
+                return;
+            }
 
+            if (!ControlHelper.TryParseAddress(txtDataImgTableAddr.Text, out uint imgTableOffset)) return;
+            var selectedSize = cmbDataSize.SelectedItem as DataSizeComboItem;
 
+            int expectedVramSize = selectedSize.VramSize;
+            int expectedWidth = selectedSize.Width;
+            int expectedHeight = selectedSize.Height;
+            Color[] currentPalette = GetCurrentPalette(cmbDataPalIdx1);
 
+            // to distinguish entries
+            var pointerTargets = new HashSet<uint>();
+            foreach (var entry in _workingDataEntries)
+            {
+                pointerTargets.Add(entry.pDataImgTableAddr - GbaConstants.BaseAddr);
+            }
 
+            var tableEntries = _tableParsingHelper.ParsePointerEntries(
+                (int)imgTableOffset,
+                "PP PP PP PP sX sX 00 00",
+                null,
+                pointerTargets);
 
+            foreach (var entry in tableEntries)
+            {
+                if (entry.ParamX != expectedVramSize)
+                {
+                    break;
+                }
 
+                byte[] imageData = new byte[expectedVramSize];
+                Array.Copy(_romData, entry.TargetOffset, imageData, 0, expectedVramSize);
+                Bitmap bmp = ImageManager.CreateSprite(
+                    imageData,
+                    currentPalette,
+                    expectedWidth,
+                    expectedHeight,
+                    true);
+                Bitmap scaledBmp = ImageManager.ScalePixelArt(bmp, 2);
 
+                _loadedSpriteFrames.Add(scaledBmp);
+                _loadedSpriteAddresses.Add(entry.TargetOffset);
+            }
 
+            _isUpdatingUI = true;
+            nudSpriteFrameCount.Maximum = _loadedSpriteFrames.Count > 0 ? _loadedSpriteFrames.Count - 1 : 0;
+            nudSpriteFrameMaxCount.Value = _loadedSpriteFrames.Count;
+            _isUpdatingUI = false;
 
+            UpdateSpritePreview();
+        }
 
+        private Color[] GetCurrentPalette(ComboBox cmb)
+        {
+            var selectedPal = cmb.SelectedItem as PaletteComboItem;
+            if (selectedPal == null) return new Color[GbaConstants.PalColorCount];
 
+            // temporary
+            if (selectedPal.IsTemporary && selectedPal.TemporaryData != null)
+            {
+                return ImageManager.DecompressPalette(selectedPal.TemporaryData, 0, false);
+            }
 
+            if (selectedPal.PalAddr == 0)
+            {
+                return new Color[GbaConstants.PalColorCount];
+            }
 
+            return ImageManager.DecompressPalette(_romData, selectedPal.PalAddr, false);
+        }
 
+        private void UpdateSpritePreview()
+        {
+            if (_loadedSpriteFrames.Count == 0) return;
+            int frameIdx = (int)nudSpriteFrameCount.Value;
+            picSpritePreviewFrame.Image = _loadedSpriteFrames[frameIdx];
+            txtSpriteFrameAddr.Text = _loadedSpriteAddresses[frameIdx].ToString("X8");
+        }
 
+        private void nudSpriteFrameCount_ValueChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            UpdateSpritePreview();
+        }
 
+        private void cmbDataPalIdx1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            LoadSpriteFrames();
+        }
 
+        private void UpdatePalPreview()
+        {
+            var item = cmbPalIdx.SelectedItem as PaletteComboItem;
 
+            if (item == null)
+            {
+                picPalPreview.Image = null;
+                txtPalAddr.Text = string.Empty;
+                return;
+            }
 
+            uint palAddr = item.PalAddr;
+            txtPalAddr.Text = palAddr == 0
+                ? "null"
+                : palAddr.ToString("X8");
 
+            Color[] colors = null;
 
+            if (item.IsTemporary && item.TemporaryData != null)
+            {
+                colors = ImageManager.DecompressPalette(item.TemporaryData, 0, false);
+            }
+            else if (palAddr != 0)
+            {
+                try
+                {
+                    colors = ImageManager.DecompressPalette(_romData, palAddr, false);
+                }
+                catch
+                {
+                    //
+                }
+            }
 
+            if (colors == null)
+            {
+                picPalPreview.Image = null;
+                return;
+            }
 
+            int boxSize = 10;
+            Bitmap bmp = new Bitmap(picPalPreview.Width, picPalPreview.Height);
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                for (int i = 0; i < GbaConstants.PalColorCount; i++)
+                {
+                    int x = (i % (GbaConstants.PalColorCount / 2)) * boxSize;
+                    int y = (i / (GbaConstants.PalColorCount / 2)) * boxSize;
+                    using (var b = new SolidBrush(colors[i]))
+                    {
+                        g.FillRectangle(b, x, y, boxSize, boxSize);
+                    }
+                }
+            }
 
+            picPalPreview.Image?.Dispose();
+            picPalPreview.Image = bmp;
+            picPalPreview.Refresh();
+        }
 
+        private void cmbPalIdx_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            UpdatePalPreview();
+        }
+
+        private void btnCreateNewPalIdx_Click(object sender, EventArgs e)
+        {
+            DiscardTemporaryPalette();
+            if (!ControlHelper.ValidateAndFormatInputTextBox(txtCreateNewPalAddr, out uint? palAddr)) return;
+
+            if (!ushort.TryParse(
+                txtCreateNewPalIdx.Text,
+                System.Globalization.NumberStyles.HexNumber,
+                null,
+                out ushort targetPalIdx) ||
+                targetPalIdx < 0x1100 || targetPalIdx > 0x11FF)
+            {
+                MessageBox.Show(
+                    "パレットIDは0x1100 から0x11FFの範囲である必要があります。",
+                    "",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (_palManager.Working.Any(x => x._Idx == targetPalIdx))
+            {
+                MessageBox.Show(
+                    "指定されたパレットIDは既に存在します。",
+                    "",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = GbaConstants.ImageImportFilter;
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    using (Bitmap bmp = new Bitmap(ofd.FileName))
+                    {
+                        if (bmp.PixelFormat != PixelFormat.Format4bppIndexed)
+                        {
+                            MessageBox.Show(
+                                "4bpp(16色)のインデックスカラー画像を使用してください。",
+                                "",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        Color[] colors = new Color[GbaConstants.PalColorCount];
+                        var pal = bmp.Palette;
+                        for (int i = 0; i < GbaConstants.PalColorCount; i++)
+                        {
+                            if (i < pal.Entries.Length)
+                                colors[i] = pal.Entries[i];
+                            else
+                                colors[i] = Color.Black;
+                        }
+
+                        byte[] palData = ImageManager.CompressPalette(colors, false);
+
+                        _temporaryPalette.PalIdx = targetPalIdx;
+                        _temporaryPalette.TableIdx = -1;
+                        _temporaryPalette.IsTemporary = true;
+                        _temporaryPalette.TemporaryData = palData;
+                        _temporaryPalette.PalAddr = (uint)palAddr;
+
+                        _paletteComboSource.Add(_temporaryPalette);
+                        cmbPalIdx.SelectedItem = _temporaryPalette;
+
+                        _uiStateManager.UpdateBinary(_temporaryPalette, palData);
+                        _reservationManager.SetReservation(txtCreateNewPalAddr, palAddr.Value, palData);
+                    }
+                }
+            }
+        }
+
+        private void btnImportDataEntry_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = GbaConstants.BinImportExportFilter;
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    byte[] buffer = File.ReadAllBytes(ofd.FileName);
+                    var entryManager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+                    int expectedSize = entryManager.GetEntrySize();
+
+                    var importedEntries = IoHelper.ReadStructures<OverworldDataEntry>(buffer, 0, 1, _tblReader);
+                    if (importedEntries.Count > 0)
+                    {
+                        var importedEntry = importedEntries[0];
+
+                        _isUpdatingUI = true;
+
+                        DataBindingHelper.BindObjectToControls(this, importedEntry);
+
+                        LoadToPalComboBox(cmbDataPalIdx1, importedEntry._PalIdx1);
+                        LoadToPalComboBox(cmbDataPalIdx2, importedEntry._PalIdx2);
+
+                        LoadToSizeComboBox(importedEntry._ImgWidth, importedEntry._ImgHeight);
+
+                        byte paletteSlotAndUnknown = importedEntry._PalSlotAndUnknownFlags;
+                        nudDataPalSlot.Value = paletteSlotAndUnknown & GbaConstants.NibbleMask;
+                        chkUnknownFlag1.Checked = (paletteSlotAndUnknown & GbaConstants.OverworldSpriteUnknownFlag1Mask) != 0;
+                        chkUnknownFlag2.Checked = (paletteSlotAndUnknown & GbaConstants.OverworldSpriteUnknownFlag2Mask) != 0;
+                        chkUnknownFlag3.Checked = (paletteSlotAndUnknown & GbaConstants.OverworldSpriteUnknownFlag3Mask) != 0;
+
+                        _isUpdatingUI = false;
+
+                        LoadSpriteFrames();
+                    }
+                }
+            }
+        }
+
+        private void btnExportDataEntry_Click(object sender, EventArgs e)
+        {
+            var currentEntry = CloneHelper.Clone(_workingDataEntries[_currentDataEntryIdx]);
+            DataBindingHelper.BindControlsToObject(this, currentEntry);
+
+            var pal1Item = cmbDataPalIdx1.SelectedItem as PaletteComboItem;
+            var pal2Item = cmbDataPalIdx2.SelectedItem as PaletteComboItem;
+            currentEntry._PalIdx1 = pal1Item?.PalIdx ?? 0;
+            currentEntry._PalIdx2 = pal2Item?.PalIdx ?? 0;
+
+            var sizeItem = cmbDataSize.SelectedItem as DataSizeComboItem;
+            if (sizeItem != null)
+            {
+                currentEntry._ImgWidth = (ushort)sizeItem.Width;
+                currentEntry._ImgHeight = (ushort)sizeItem.Height;
+            }
+
+            byte palSlot = (byte)((int)nudDataPalSlot.Value & GbaConstants.NibbleMask);
+            byte unknownFlags = 0;
+            if (chkUnknownFlag1.Checked) unknownFlags |= GbaConstants.OverworldSpriteUnknownFlag1Mask;
+            if (chkUnknownFlag2.Checked) unknownFlags |= GbaConstants.OverworldSpriteUnknownFlag2Mask;
+            if (chkUnknownFlag3.Checked) unknownFlags |= GbaConstants.OverworldSpriteUnknownFlag3Mask;
+            currentEntry._PalSlotAndUnknownFlags = (byte)(palSlot | unknownFlags);
+
+            currentEntry._Padding1 = 0xFFFF;
+            currentEntry._Padding2 = 0x00;
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = GbaConstants.BinImportExportFilter;
+                sfd.FileName = $"overworld_{_currentDataEntryIdx:D4}.bin";
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    var entryManager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+                    int size = entryManager.GetEntrySize();
+                    byte[] buffer = new byte[size];
+
+                    IoHelper.WriteStructures(
+                        buffer,
+                        0,
+                        new List<OverworldDataEntry> { currentEntry },
+                        _tblReader,
+                        null,
+                        false);
+
+                    File.WriteAllBytes(sfd.FileName, buffer);
+                }
+            }
+        }
+
+        private void btnCreateNewDataEntry_Click(object sender, EventArgs e)
+        {
+            if (!ControlHelper.ValidateAndFormatInputTextBox(txtCreateNewDataEntryAddr, out uint? addr)) return;
+
+            // get size
+            var entryManager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+            byte[] entryData = new byte[entryManager.GetEntrySize()];
+
+            _uiStateManager.UpdateBinary(txtDataEntryAddr, entryData);
+            _reservationManager.SetReservation(txtDataEntryAddr, addr.Value, entryData);
+
+            _isUpdatingUI = true;
+
+            var excludeControls = new[] { "cmbDataSize" };
+            grpDataEntry.SetControlsEnabled(true, excludeControls);
+            grpDataEntry.ResetControls(excludeControls);
+
+            grpCreateNewImgTable.SetControlsEnabled(true);
+            grpCreateNewImgTable.ResetControls();
+
+            if (cmbDataPalIdx1.Items.Count > 0) cmbDataPalIdx1.SelectedIndex = 0;
+            if (cmbDataPalIdx2.Items.Count > 0) cmbDataPalIdx2.SelectedIndex = 0;
+            if (cmbDataFootprint.Items.Count > 0) cmbDataFootprint.SelectedIndex = 0;
+            if (cmbFontIdx.Items.Count > 0) cmbFontIdx.SelectedIndex = 0;
+            if (cmbDataSize.Items.Count > 0) cmbDataSize.SelectedIndex = 0;
+
+            txtDataLoadAddr.Text = "null";
+            txtDataSizeAddr.Text = "null";
+            txtDataAnimAddr.Text = "null";
+            txtDataImgTableAddr.Text = "null";
+            txtDataMemoryAddr.Text = "null";
+
+            btnImportDataEntry.Enabled = true;
+            btnExportDataEntry.Enabled = true;
+
+            _isUpdatingUI = false;
+
+            LoadSpriteFrames();
+        }
 
         private void nudDataTableIdx_ValueChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI) return;
 
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    () =>
+                    {
+                        SaveCurrentData(_currentDataEntryIdx);
+                        ChangeDataTable();
+                    },
+                    () =>
+                    {
+                        DiscardTemporaryPalette();
+                        ChangeDataTable();
+                    },
+                    () =>
+                    {
+                        _isUpdatingUI = true;
+                        nudDataTableIdx.Value = _currentDataTableIdx;
+                        _isUpdatingUI = false;
+                    }
+                );
+            }
+            else
+            {
+                ChangeDataTable();
+            }
+        }
+
+        private void ChangeDataTable()
+        {
             _currentDataTableIdx = (int)nudDataTableIdx.Value;
             nudDataEntryCount.Value = _dataPointers[_currentDataTableIdx].Count;
 
-            LoadCurrentTableData();
-            UpdateDataEntryListBox();
+            BackUpCurrentTableData();
+            LoadDataEntryListBox();
+            ResetControls();
+            LoadDataEntryToUI(0);
         }
 
         private void lstDataEntry_SelectedIndexChanged(object sender, EventArgs e)
@@ -462,19 +901,21 @@ namespace PochiPochiEditorGabu._Map
                 ControlHelper.HandleUnsavedChanges(
                     () =>
                     {
-                        SaveCurrentAllData(_currentDataEntryIdx);
+                        SaveCurrentData(_currentDataEntryIdx);
                         ResetControls();
                         LoadDataEntryToUI(newentryIndex);
                     },
                     () =>
                     {
-                        RestoreData(_currentDataEntryIdx);
+                        DiscardTemporaryPalette();
                         ResetControls();
                         LoadDataEntryToUI(newentryIndex);
                     },
                     () =>
                     {
+                        _isUpdatingUI = true;
                         lstDataEntry.SelectedIndex = _currentDataEntryIdx;
+                        _isUpdatingUI = false;
                     }
                 );
             }
@@ -487,17 +928,167 @@ namespace PochiPochiEditorGabu._Map
 
         private void ResetControls()
         {
-
+            txtCreateNewDataEntryAddr.Text = string.Empty;
+            txtCreateNewImgTableAddr.Text = string.Empty;
+            txtCreateNewPalIdx.Text = string.Empty;
+            txtCreateNewPalAddr.Text = string.Empty;
+            nudSpriteFrameCount.Value = nudSpriteFrameCount.Minimum;
         }
 
-        private void RestoreData(int idx)
+        private void SaveCurrentData(int idx)
         {
+            uint entryAddr = _dataPointers[_currentDataTableIdx][idx].TargetOffset;
 
+            // new area
+            var reservedDataEntry = _reservationManager.GetReservation(txtDataEntryAddr);
+            if (reservedDataEntry != null)
+            {
+                entryAddr = reservedDataEntry.Address;
+                uint gbaAddr = entryAddr + GbaConstants.BaseAddr;
+                uint ptrOffset = _dataPointers[_currentDataTableIdx][idx].EntryOffset;
+                Array.Copy(BitConverter.GetBytes(gbaAddr), 0, _romData, ptrOffset, GbaConstants.PtrSize);
+
+                _dataPointers[_currentDataTableIdx][idx].TargetOffset = entryAddr;
+                _reservationManager.ClearReservation(txtDataEntryAddr);
+            }
+
+            if (entryAddr == 0) return;
+
+            var currentEntry = _workingDataEntries[idx];
+            DataBindingHelper.BindControlsToObject(this, currentEntry);
+
+            // padding
+            currentEntry._Padding1 = 0xFFFF;
+            currentEntry._Padding2 = 0x00;
+
+            // pal
+            var pal1Item = cmbDataPalIdx1.SelectedItem as PaletteComboItem;
+            var pal2Item = cmbDataPalIdx2.SelectedItem as PaletteComboItem;
+            currentEntry._PalIdx1 = pal1Item?.PalIdx ?? 0;
+            currentEntry._PalIdx2 = pal2Item?.PalIdx ?? 0;
+
+            // size
+            var sizeItem = cmbDataSize.SelectedItem as DataSizeComboItem;
+            if (sizeItem != null)
+            {
+                currentEntry._ImgWidth = (ushort)sizeItem.Width;
+                currentEntry._ImgHeight = (ushort)sizeItem.Height;
+            }
+
+            // pal slot and unknown flag
+            byte palSlot = (byte)((int)nudDataPalSlot.Value & GbaConstants.NibbleMask);
+            byte unknownFlags = 0;
+            if (chkUnknownFlag1.Checked) unknownFlags |= GbaConstants.OverworldSpriteUnknownFlag1Mask;
+            if (chkUnknownFlag2.Checked) unknownFlags |= GbaConstants.OverworldSpriteUnknownFlag2Mask;
+            if (chkUnknownFlag3.Checked) unknownFlags |= GbaConstants.OverworldSpriteUnknownFlag3Mask;
+            currentEntry._PalSlotAndUnknownFlags = (byte)(palSlot | unknownFlags);
+
+            // wirte data entry
+            var entryManager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+            entryManager.Load(entryAddr, 1);
+            entryManager.Working[0] = currentEntry;
+            entryManager.Save(0, false);
+            _originalDataEntries[idx] = CloneHelper.Clone(currentEntry);
+
+            // font
+            int fontByteIndex = idx / 2;
+            if (fontByteIndex < _fontManager.Working.Count)
+            {
+                byte fontData = _fontManager.Working[fontByteIndex]._Idx;
+                int selectedFontId = (int)(cmbFontIdx.SelectedValue ?? 0);
+
+                if (idx % 2 == 0)
+                {
+                    fontData = (byte)((fontData & (GbaConstants.NibbleMask << 4)) | (selectedFontId & GbaConstants.NibbleMask));
+                }
+                else
+                {
+                    fontData = (byte)((fontData & GbaConstants.NibbleMask) | ((selectedFontId & GbaConstants.NibbleMask) << 4));
+                }
+
+                _fontManager.Working[fontByteIndex]._Idx = fontData;
+                _fontManager.Save(fontByteIndex, false);
+            }
+
+            // temporary pal
+            HandleTemporaryPaletteSave();
         }
 
-        private void SaveCurrentAllData(int idx)
+        private void HandleTemporaryPaletteSave()
         {
+            // TableIdx = -1
+            if (_temporaryPalette.IsTemporary && _temporaryPalette.TableIdx == -1 && _temporaryPalette.TemporaryData != null)
+            {
+                Array.Copy(_temporaryPalette.TemporaryData, 0, _romData, _temporaryPalette.PalAddr, _temporaryPalette.TemporaryData.Length);
 
+                var newPalEntry = new OverworldPaletteEntry
+                {
+                    _Idx = _temporaryPalette.PalIdx,
+                    pPalAddr = _temporaryPalette.PalAddr + GbaConstants.BaseAddr,
+                    _Padding1 = GbaConstants.PaddingByte
+                };
+
+                _palManager.Working.Add(newPalEntry);
+                _palManager.Original.Add(new OverworldPaletteEntry());
+                _palManager.Save(_palManager.Working.Count - 1, false);
+                _palManager.Count = _palManager.Working.Count;
+
+                _reservationManager.ClearReservation(txtCreateNewPalAddr);
+                ResetTemporaryPalette();
+
+                // reset cmb
+                _isUpdatingUI = true;
+                InitializePaletteComboBox();
+                LoadToPalComboBox(cmbDataPalIdx1, _workingDataEntries[_currentDataEntryIdx]._PalIdx1);
+                LoadToPalComboBox(cmbDataPalIdx2, _workingDataEntries[_currentDataEntryIdx]._PalIdx2);
+                _isUpdatingUI = false;
+            }
+        }
+
+        private void DiscardTemporaryPalette()
+        {
+            if (_temporaryPalette.IsTemporary && _temporaryPalette.TableIdx == -1)
+            {
+                _paletteComboSource.Remove(_temporaryPalette);
+                _reservationManager.ClearReservation(txtCreateNewPalAddr);
+                _uiStateManager.UpdateBinary(_temporaryPalette, null);
+                ResetTemporaryPalette();
+            }
+        }
+
+        private void ResetTemporaryPalette()
+        {
+            _temporaryPalette.TableIdx = null;
+            _temporaryPalette.TemporaryData = null;
+            _temporaryPalette.PalAddr = 0;
+            _temporaryPalette.PalIdx = 0x11FF;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveCurrentData(_currentDataEntryIdx);
+            _uiStateManager.UpdateInitialValues();
+        }
+
+        private void OverworldSpriteEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (btnSave.Enabled)
+            {
+                ControlHelper.HandleUnsavedChanges(
+                    () =>
+                    {
+                        SaveCurrentData(_currentDataEntryIdx);
+                    },
+                    () =>
+                    {
+                        // unnecessary
+                    },
+                    () =>
+                    {
+                        e.Cancel = true;
+                    }
+                );
+            }
         }
     }
 }

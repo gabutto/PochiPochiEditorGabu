@@ -40,10 +40,8 @@ namespace PochiPochiEditorGabu._Map
             this.btnImportDataEntry = new System.Windows.Forms.Button();
             this.btnExportDataEntry = new System.Windows.Forms.Button();
             this.lblNote1 = new System.Windows.Forms.Label();
-            this.btnCreateNewDataEntry = new System.Windows.Forms.Button();
-            this.txtCreateNewDataEntryAddr = new System.Windows.Forms.TextBox();
-            this.lblCreateNewDataEntryAddr = new System.Windows.Forms.Label();
             this.grpDataEntry = new System.Windows.Forms.GroupBox();
+            this.lblNote3 = new System.Windows.Forms.Label();
             this.cmbFontIdx = new System.Windows.Forms.ComboBox();
             this.txtDataMemoryAddr = new System.Windows.Forms.TextBox();
             this.lblFontIdx = new System.Windows.Forms.Label();
@@ -77,7 +75,6 @@ namespace PochiPochiEditorGabu._Map
             this.lblDataEntryAddr = new System.Windows.Forms.Label();
             this.txtDataEntryAddr = new System.Windows.Forms.TextBox();
             this.grpSpritePreview = new System.Windows.Forms.GroupBox();
-            this.lblNote2 = new System.Windows.Forms.Label();
             this.lblSpriteFrameMaxCount = new System.Windows.Forms.Label();
             this.nudSpriteFrameMaxCount = new System.Windows.Forms.NumericUpDown();
             this.btnSpriteFrameCountNext = new System.Windows.Forms.Button();
@@ -97,9 +94,9 @@ namespace PochiPochiEditorGabu._Map
             this.lblCreateNewImgTableAddr = new System.Windows.Forms.Label();
             this.grpPalIdxTable = new System.Windows.Forms.GroupBox();
             this.grpCreateNewPal = new System.Windows.Forms.GroupBox();
+            this.lblCreateNewPalIdx = new System.Windows.Forms.Label();
             this.btnCreateNewPalIdx = new System.Windows.Forms.Button();
             this.txtCreateNewPalIdx = new System.Windows.Forms.TextBox();
-            this.lblCreateNewPalIdx = new System.Windows.Forms.Label();
             this.lblCreateNewPalAddr = new System.Windows.Forms.Label();
             this.txtCreateNewPalAddr = new System.Windows.Forms.TextBox();
             this.picPalPreview = new System.Windows.Forms.PictureBox();
@@ -107,7 +104,10 @@ namespace PochiPochiEditorGabu._Map
             this.cmbPalIdx = new System.Windows.Forms.ComboBox();
             this.lblPalIdx = new System.Windows.Forms.Label();
             this.lblDataEntryCount = new System.Windows.Forms.Label();
-            this.lblNote3 = new System.Windows.Forms.Label();
+            this.txtDesc2 = new System.Windows.Forms.TextBox();
+            this.lblCreateNewDataEntryAddr = new System.Windows.Forms.Label();
+            this.txtCreateNewDataEntryAddr = new System.Windows.Forms.TextBox();
+            this.btnCreateNewDataEntry = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudDataTableIdx)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDataEntryCount)).BeginInit();
             this.grpDataEntry.SuspendLayout();
@@ -230,39 +230,11 @@ namespace PochiPochiEditorGabu._Map
             // lblNote1
             // 
             this.lblNote1.AutoSize = true;
-            this.lblNote1.Location = new System.Drawing.Point(130, 226);
+            this.lblNote1.Location = new System.Drawing.Point(124, 226);
             this.lblNote1.Name = "lblNote1";
-            this.lblNote1.Size = new System.Drawing.Size(119, 12);
+            this.lblNote1.Size = new System.Drawing.Size(130, 12);
             this.lblNote1.TabIndex = 13;
-            this.lblNote1.Text = "※画像データを含まない";
-            // 
-            // btnCreateNewDataEntry
-            // 
-            this.btnCreateNewDataEntry.Location = new System.Drawing.Point(130, 406);
-            this.btnCreateNewDataEntry.Margin = new System.Windows.Forms.Padding(0);
-            this.btnCreateNewDataEntry.Name = "btnCreateNewDataEntry";
-            this.btnCreateNewDataEntry.Size = new System.Drawing.Size(116, 23);
-            this.btnCreateNewDataEntry.TabIndex = 14;
-            this.btnCreateNewDataEntry.Text = "新規データを生成";
-            this.btnCreateNewDataEntry.UseVisualStyleBackColor = true;
-            // 
-            // txtCreateNewDataEntryAddr
-            // 
-            this.txtCreateNewDataEntryAddr.Location = new System.Drawing.Point(130, 382);
-            this.txtCreateNewDataEntryAddr.Margin = new System.Windows.Forms.Padding(0);
-            this.txtCreateNewDataEntryAddr.Name = "txtCreateNewDataEntryAddr";
-            this.txtCreateNewDataEntryAddr.Size = new System.Drawing.Size(116, 19);
-            this.txtCreateNewDataEntryAddr.TabIndex = 15;
-            // 
-            // lblCreateNewDataEntryAddr
-            // 
-            this.lblCreateNewDataEntryAddr.AutoSize = true;
-            this.lblCreateNewDataEntryAddr.Location = new System.Drawing.Point(130, 364);
-            this.lblCreateNewDataEntryAddr.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCreateNewDataEntryAddr.Name = "lblCreateNewDataEntryAddr";
-            this.lblCreateNewDataEntryAddr.Size = new System.Drawing.Size(92, 12);
-            this.lblCreateNewDataEntryAddr.TabIndex = 16;
-            this.lblCreateNewDataEntryAddr.Text = "空き領域アドレス :";
+            this.lblNote1.Text = "※フォント・画像を含まない";
             // 
             // grpDataEntry
             // 
@@ -304,6 +276,15 @@ namespace PochiPochiEditorGabu._Map
             this.grpDataEntry.TabIndex = 17;
             this.grpDataEntry.TabStop = false;
             this.grpDataEntry.Text = "データ詳細";
+            // 
+            // lblNote3
+            // 
+            this.lblNote3.AutoSize = true;
+            this.lblNote3.Location = new System.Drawing.Point(200, 344);
+            this.lblNote3.Name = "lblNote3";
+            this.lblNote3.Size = new System.Drawing.Size(41, 12);
+            this.lblNote3.TabIndex = 18;
+            this.lblNote3.Text = "※共通";
             // 
             // cmbFontIdx
             // 
@@ -631,7 +612,6 @@ namespace PochiPochiEditorGabu._Map
             // 
             // grpSpritePreview
             // 
-            this.grpSpritePreview.Controls.Add(this.lblNote2);
             this.grpSpritePreview.Controls.Add(this.lblSpriteFrameMaxCount);
             this.grpSpritePreview.Controls.Add(this.nudSpriteFrameMaxCount);
             this.grpSpritePreview.Controls.Add(this.btnSpriteFrameCountNext);
@@ -645,34 +625,29 @@ namespace PochiPochiEditorGabu._Map
             this.grpSpritePreview.Margin = new System.Windows.Forms.Padding(0);
             this.grpSpritePreview.Name = "grpSpritePreview";
             this.grpSpritePreview.Padding = new System.Windows.Forms.Padding(0);
-            this.grpSpritePreview.Size = new System.Drawing.Size(388, 226);
+            this.grpSpritePreview.Size = new System.Drawing.Size(388, 202);
             this.grpSpritePreview.TabIndex = 21;
             this.grpSpritePreview.TabStop = false;
             this.grpSpritePreview.Text = "プレビュー";
             // 
-            // lblNote2
-            // 
-            this.lblNote2.AutoSize = true;
-            this.lblNote2.Location = new System.Drawing.Point(20, 194);
-            this.lblNote2.Margin = new System.Windows.Forms.Padding(0);
-            this.lblNote2.Name = "lblNote2";
-            this.lblNote2.Size = new System.Drawing.Size(333, 12);
-            this.lblNote2.TabIndex = 14;
-            this.lblNote2.Text = "※フレーム数が元から定義されていないので、各自で調整してください。";
-            // 
             // lblSpriteFrameMaxCount
             // 
             this.lblSpriteFrameMaxCount.AutoSize = true;
-            this.lblSpriteFrameMaxCount.Location = new System.Drawing.Point(20, 170);
+            this.lblSpriteFrameMaxCount.Location = new System.Drawing.Point(134, 168);
             this.lblSpriteFrameMaxCount.Margin = new System.Windows.Forms.Padding(0);
             this.lblSpriteFrameMaxCount.Name = "lblSpriteFrameMaxCount";
-            this.lblSpriteFrameMaxCount.Size = new System.Drawing.Size(178, 12);
+            this.lblSpriteFrameMaxCount.Size = new System.Drawing.Size(72, 12);
             this.lblSpriteFrameMaxCount.TabIndex = 6;
-            this.lblSpriteFrameMaxCount.Text = "フレーム最大読み込み数（表示用） :";
+            this.lblSpriteFrameMaxCount.Text = "フレーム総数 :";
             // 
             // nudSpriteFrameMaxCount
             // 
-            this.nudSpriteFrameMaxCount.Location = new System.Drawing.Point(212, 166);
+            this.nudSpriteFrameMaxCount.Increment = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudSpriteFrameMaxCount.Location = new System.Drawing.Point(212, 164);
             this.nudSpriteFrameMaxCount.Margin = new System.Windows.Forms.Padding(0);
             this.nudSpriteFrameMaxCount.Maximum = new decimal(new int[] {
             255,
@@ -680,6 +655,7 @@ namespace PochiPochiEditorGabu._Map
             0,
             0});
             this.nudSpriteFrameMaxCount.Name = "nudSpriteFrameMaxCount";
+            this.nudSpriteFrameMaxCount.ReadOnly = true;
             this.nudSpriteFrameMaxCount.Size = new System.Drawing.Size(64, 19);
             this.nudSpriteFrameMaxCount.TabIndex = 5;
             // 
@@ -828,9 +804,9 @@ namespace PochiPochiEditorGabu._Map
             this.lblCreateNewImgTableCount.Location = new System.Drawing.Point(20, 54);
             this.lblCreateNewImgTableCount.Margin = new System.Windows.Forms.Padding(0);
             this.lblCreateNewImgTableCount.Name = "lblCreateNewImgTableCount";
-            this.lblCreateNewImgTableCount.Size = new System.Drawing.Size(66, 12);
+            this.lblCreateNewImgTableCount.Size = new System.Drawing.Size(72, 12);
             this.lblCreateNewImgTableCount.TabIndex = 17;
-            this.lblCreateNewImgTableCount.Text = "エントリー数 :";
+            this.lblCreateNewImgTableCount.Text = "フレーム総数 :";
             // 
             // lblCreateNewImgTableAddr
             // 
@@ -860,9 +836,9 @@ namespace PochiPochiEditorGabu._Map
             // 
             // grpCreateNewPal
             // 
+            this.grpCreateNewPal.Controls.Add(this.lblCreateNewPalIdx);
             this.grpCreateNewPal.Controls.Add(this.btnCreateNewPalIdx);
             this.grpCreateNewPal.Controls.Add(this.txtCreateNewPalIdx);
-            this.grpCreateNewPal.Controls.Add(this.lblCreateNewPalIdx);
             this.grpCreateNewPal.Controls.Add(this.lblCreateNewPalAddr);
             this.grpCreateNewPal.Controls.Add(this.txtCreateNewPalAddr);
             this.grpCreateNewPal.Location = new System.Drawing.Point(208, 20);
@@ -872,7 +848,17 @@ namespace PochiPochiEditorGabu._Map
             this.grpCreateNewPal.Size = new System.Drawing.Size(336, 88);
             this.grpCreateNewPal.TabIndex = 20;
             this.grpCreateNewPal.TabStop = false;
-            this.grpCreateNewPal.Text = "新規パレットを追加";
+            this.grpCreateNewPal.Text = "新規パレットIDを追加";
+            // 
+            // lblCreateNewPalIdx
+            // 
+            this.lblCreateNewPalIdx.AutoSize = true;
+            this.lblCreateNewPalIdx.Location = new System.Drawing.Point(20, 28);
+            this.lblCreateNewPalIdx.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCreateNewPalIdx.Name = "lblCreateNewPalIdx";
+            this.lblCreateNewPalIdx.Size = new System.Drawing.Size(80, 12);
+            this.lblCreateNewPalIdx.TabIndex = 23;
+            this.lblCreateNewPalIdx.Text = "新規パレットID :";
             // 
             // btnCreateNewPalIdx
             // 
@@ -892,20 +878,10 @@ namespace PochiPochiEditorGabu._Map
             this.txtCreateNewPalIdx.Size = new System.Drawing.Size(80, 19);
             this.txtCreateNewPalIdx.TabIndex = 21;
             // 
-            // lblCreateNewPalIdx
-            // 
-            this.lblCreateNewPalIdx.AutoSize = true;
-            this.lblCreateNewPalIdx.Location = new System.Drawing.Point(17, 25);
-            this.lblCreateNewPalIdx.Margin = new System.Windows.Forms.Padding(0);
-            this.lblCreateNewPalIdx.Name = "lblCreateNewPalIdx";
-            this.lblCreateNewPalIdx.Size = new System.Drawing.Size(80, 12);
-            this.lblCreateNewPalIdx.TabIndex = 20;
-            this.lblCreateNewPalIdx.Text = "新規パレットID :";
-            // 
             // lblCreateNewPalAddr
             // 
             this.lblCreateNewPalAddr.AutoSize = true;
-            this.lblCreateNewPalAddr.Location = new System.Drawing.Point(17, 51);
+            this.lblCreateNewPalAddr.Location = new System.Drawing.Point(20, 54);
             this.lblCreateNewPalAddr.Margin = new System.Windows.Forms.Padding(0);
             this.lblCreateNewPalAddr.Name = "lblCreateNewPalAddr";
             this.lblCreateNewPalAddr.Size = new System.Drawing.Size(92, 12);
@@ -945,7 +921,7 @@ namespace PochiPochiEditorGabu._Map
             this.cmbPalIdx.Location = new System.Drawing.Point(108, 28);
             this.cmbPalIdx.Margin = new System.Windows.Forms.Padding(0);
             this.cmbPalIdx.Name = "cmbPalIdx";
-            this.cmbPalIdx.Size = new System.Drawing.Size(64, 20);
+            this.cmbPalIdx.Size = new System.Drawing.Size(80, 20);
             this.cmbPalIdx.TabIndex = 1;
             // 
             // lblPalIdx
@@ -968,20 +944,51 @@ namespace PochiPochiEditorGabu._Map
             this.lblDataEntryCount.TabIndex = 24;
             this.lblDataEntryCount.Text = "読み込み数 :";
             // 
-            // lblNote3
+            // txtDesc2
             // 
-            this.lblNote3.AutoSize = true;
-            this.lblNote3.Location = new System.Drawing.Point(200, 344);
-            this.lblNote3.Name = "lblNote3";
-            this.lblNote3.Size = new System.Drawing.Size(41, 12);
-            this.lblNote3.TabIndex = 18;
-            this.lblNote3.Text = "※共通";
+            this.txtDesc2.Location = new System.Drawing.Point(20, 442);
+            this.txtDesc2.Margin = new System.Windows.Forms.Padding(0);
+            this.txtDesc2.Multiline = true;
+            this.txtDesc2.Name = "txtDesc2";
+            this.txtDesc2.ReadOnly = true;
+            this.txtDesc2.Size = new System.Drawing.Size(226, 42);
+            this.txtDesc2.TabIndex = 25;
+            this.txtDesc2.Text = "新規エントリーを追加する場合は、テーブルを\r\n移動・拡張して、末尾にnullポインタ\r\n[00 00 00 00]　を追加する必要があります。";
+            // 
+            // lblCreateNewDataEntryAddr
+            // 
+            this.lblCreateNewDataEntryAddr.AutoSize = true;
+            this.lblCreateNewDataEntryAddr.Location = new System.Drawing.Point(130, 364);
+            this.lblCreateNewDataEntryAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.lblCreateNewDataEntryAddr.Name = "lblCreateNewDataEntryAddr";
+            this.lblCreateNewDataEntryAddr.Size = new System.Drawing.Size(92, 12);
+            this.lblCreateNewDataEntryAddr.TabIndex = 16;
+            this.lblCreateNewDataEntryAddr.Text = "空き領域アドレス :";
+            // 
+            // txtCreateNewDataEntryAddr
+            // 
+            this.txtCreateNewDataEntryAddr.Location = new System.Drawing.Point(130, 382);
+            this.txtCreateNewDataEntryAddr.Margin = new System.Windows.Forms.Padding(0);
+            this.txtCreateNewDataEntryAddr.Name = "txtCreateNewDataEntryAddr";
+            this.txtCreateNewDataEntryAddr.Size = new System.Drawing.Size(116, 19);
+            this.txtCreateNewDataEntryAddr.TabIndex = 15;
+            // 
+            // btnCreateNewDataEntry
+            // 
+            this.btnCreateNewDataEntry.Location = new System.Drawing.Point(130, 406);
+            this.btnCreateNewDataEntry.Margin = new System.Windows.Forms.Padding(0);
+            this.btnCreateNewDataEntry.Name = "btnCreateNewDataEntry";
+            this.btnCreateNewDataEntry.Size = new System.Drawing.Size(116, 23);
+            this.btnCreateNewDataEntry.TabIndex = 14;
+            this.btnCreateNewDataEntry.Text = "新規データを生成";
+            this.btnCreateNewDataEntry.UseVisualStyleBackColor = true;
             // 
             // OverworldSpriteEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(956, 585);
+            this.ClientSize = new System.Drawing.Size(956, 587);
+            this.Controls.Add(this.txtDesc2);
             this.Controls.Add(this.lblDataEntryCount);
             this.Controls.Add(this.grpPalIdxTable);
             this.Controls.Add(this.grpCreateNewImgTable);
@@ -1043,9 +1050,6 @@ namespace PochiPochiEditorGabu._Map
         private System.Windows.Forms.Button btnImportDataEntry;
         private System.Windows.Forms.Button btnExportDataEntry;
         private System.Windows.Forms.Label lblNote1;
-        private System.Windows.Forms.Button btnCreateNewDataEntry;
-        private System.Windows.Forms.TextBox txtCreateNewDataEntryAddr;
-        private System.Windows.Forms.Label lblCreateNewDataEntryAddr;
         private System.Windows.Forms.GroupBox grpDataEntry;
         private System.Windows.Forms.TextBox txtDesc1;
         private System.Windows.Forms.Label lblDataEntryAddr;
@@ -1095,21 +1099,24 @@ namespace PochiPochiEditorGabu._Map
         private System.Windows.Forms.Button btnCreateNewImgTable;
         private System.Windows.Forms.GroupBox grpPalIdxTable;
         private System.Windows.Forms.PictureBox picPalPreview;
-        private System.Windows.Forms.TextBox txtPalAddr;
         private System.Windows.Forms.ComboBox cmbPalIdx;
         private System.Windows.Forms.Label lblPalIdx;
         private System.Windows.Forms.GroupBox grpCreateNewPal;
         private System.Windows.Forms.Button btnCreateNewPalIdx;
         private System.Windows.Forms.TextBox txtCreateNewPalIdx;
-        private System.Windows.Forms.Label lblCreateNewPalIdx;
         private System.Windows.Forms.Label lblCreateNewPalAddr;
         private System.Windows.Forms.TextBox txtCreateNewPalAddr;
         private System.Windows.Forms.ComboBox cmbFontIdx;
         private System.Windows.Forms.Label lblFontIdx;
         private System.Windows.Forms.Label lblDataEntryCount;
-        private System.Windows.Forms.Label lblNote2;
-        private System.Windows.Forms.Label lblSpriteFrameMaxCount;
-        private System.Windows.Forms.NumericUpDown nudSpriteFrameMaxCount;
         private System.Windows.Forms.Label lblNote3;
+        private System.Windows.Forms.NumericUpDown nudSpriteFrameMaxCount;
+        private System.Windows.Forms.Label lblSpriteFrameMaxCount;
+        private System.Windows.Forms.TextBox txtDesc2;
+        private System.Windows.Forms.TextBox txtPalAddr;
+        private System.Windows.Forms.Label lblCreateNewPalIdx;
+        private System.Windows.Forms.Label lblCreateNewDataEntryAddr;
+        private System.Windows.Forms.TextBox txtCreateNewDataEntryAddr;
+        private System.Windows.Forms.Button btnCreateNewDataEntry;
     }
 }

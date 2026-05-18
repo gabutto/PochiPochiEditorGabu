@@ -251,7 +251,7 @@ namespace PochiPochiEditorGabu._Pokemon
             this.btnCreateNewPageData.Location = new System.Drawing.Point(156, 76);
             this.btnCreateNewPageData.Margin = new System.Windows.Forms.Padding(0);
             this.btnCreateNewPageData.Name = "btnCreateNewPageData";
-            this.btnCreateNewPageData.Size = new System.Drawing.Size(138, 23);
+            this.btnCreateNewPageData.Size = new System.Drawing.Size(146, 23);
             this.btnCreateNewPageData.TabIndex = 9;
             this.btnCreateNewPageData.Text = "ポケモン数を変更";
             this.btnCreateNewPageData.UseVisualStyleBackColor = true;
@@ -263,7 +263,7 @@ namespace PochiPochiEditorGabu._Pokemon
             0,
             0,
             0});
-            this.nudPokemonCount.Location = new System.Drawing.Point(216, 52);
+            this.nudPokemonCount.Location = new System.Drawing.Point(224, 52);
             this.nudPokemonCount.Maximum = new decimal(new int[] {
             4,
             0,
@@ -276,7 +276,7 @@ namespace PochiPochiEditorGabu._Pokemon
             // 
             // txtPageAddr
             // 
-            this.txtPageAddr.Location = new System.Drawing.Point(216, 28);
+            this.txtPageAddr.Location = new System.Drawing.Point(224, 28);
             this.txtPageAddr.Margin = new System.Windows.Forms.Padding(0);
             this.txtPageAddr.Name = "txtPageAddr";
             this.txtPageAddr.ReadOnly = true;
@@ -289,9 +289,9 @@ namespace PochiPochiEditorGabu._Pokemon
             this.lblPokemonCount.Location = new System.Drawing.Point(156, 56);
             this.lblPokemonCount.Margin = new System.Windows.Forms.Padding(0);
             this.lblPokemonCount.Name = "lblPokemonCount";
-            this.lblPokemonCount.Size = new System.Drawing.Size(53, 12);
+            this.lblPokemonCount.Size = new System.Drawing.Size(60, 12);
             this.lblPokemonCount.TabIndex = 5;
-            this.lblPokemonCount.Text = "ページ数 :";
+            this.lblPokemonCount.Text = "ポケモン数 :";
             // 
             // lblPageAddr
             // 

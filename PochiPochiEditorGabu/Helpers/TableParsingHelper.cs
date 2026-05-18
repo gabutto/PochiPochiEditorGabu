@@ -39,37 +39,50 @@ namespace PochiPochiEditorGabu.Helpers
         public IReadOnlyList<PointerEntry> ParsePointerEntries(
             int startOffset,
             string patternString,
-            int maxEntries,
-            int? knownCount = null)
+            int? maxEntries = null,
+            HashSet<uint> referencePointers = null,
+            bool allowNullPointer = false)
         {
             var result = new List<PointerEntry>();
-            int limit = knownCount ?? maxEntries;
             PatternDefinition pattern = ParsePattern(patternString);
+            int cursor = startOffset;
+            int count = 0;
 
-            for (int i = 0; i < limit; i++)
+            while (cursor <= _data.Length - pattern.Length)
             {
-                int cursor = startOffset + (i * pattern.Length);
+                if (maxEntries.HasValue && count >= maxEntries.Value)
+                {
+                    break;
+                }
+
+                // exclude entry0
+                if (count > 0 && referencePointers != null && referencePointers.Contains((uint)cursor))
+                {
+                    break;
+                }
 
                 if (!TryMatchPattern(
                     cursor,
                     pattern,
                     out uint targetOffset,
-                    out uint px,
-                    out uint py,
-                    out uint pz))
+                    out uint px, out uint py, out uint pz,
+                    allowNullPointer))
                 {
                     break;
                 }
 
                 result.Add(new PointerEntry
                 {
-                    Index = i,
+                    Index = count,
                     EntryOffset = (uint)cursor,
                     TargetOffset = targetOffset,
                     ParamX = px,
                     ParamY = py,
                     ParamZ = pz
                 });
+
+                cursor += pattern.Length;
+                count++;
             }
 
             return result;
@@ -78,11 +91,11 @@ namespace PochiPochiEditorGabu.Helpers
         public IReadOnlyList<DataEntry> ParseDataEntries(
             int startOffset,
             string patternString,
-            int? maxEntries = null)
+            int? maxEntries = null,
+            bool allowNullPointer = false)
         {
             var result = new List<DataEntry>();
             PatternDefinition pattern = ParsePattern(patternString);
-
             int cursor = startOffset;
             int count = 0;
 
@@ -97,9 +110,8 @@ namespace PochiPochiEditorGabu.Helpers
                     cursor,
                     pattern,
                     out _,
-                    out uint px,
-                    out uint py,
-                    out uint pz))
+                    out uint px, out uint py, out uint pz,
+                    allowNullPointer))
                 {
                     break;
                 }
@@ -121,12 +133,8 @@ namespace PochiPochiEditorGabu.Helpers
 
         private PatternDefinition ParsePattern(string patternStr)
         {
-            string[] parts = patternStr.Split(
-                new char[] { ' ' },
-                StringSplitOptions.RemoveEmptyEntries);
-
+            string[] parts = patternStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             var patternBytes = new PatternByte[parts.Length];
-
             var def = new PatternDefinition
             {
                 Length = parts.Length,
@@ -142,31 +150,20 @@ namespace PochiPochiEditorGabu.Helpers
 
                 if (token == "??")
                 {
-                    patternBytes[i] = new PatternByte
-                    {
-                        MatchType = ByteMatchType.Wildcard
-                    };
+                    patternBytes[i] = new PatternByte { MatchType = ByteMatchType.Wildcard };
                 }
                 else if (token == "PP")
                 {
-                    patternBytes[i] = new PatternByte
-                    {
-                        MatchType = ByteMatchType.Pointer
-                    };
-
+                    patternBytes[i] = new PatternByte { MatchType = ByteMatchType.Pointer };
                     if (def.PointerOffset == -1)
                     {
                         def.PointerOffset = i;
                     }
-
                     ppCount++;
                 }
-                else if (token.Length == 2 &&
-                         IsParamToken(token, out char type, out int paramIndex))
+                else if (token.Length == 2 && IsParamToken(token, out char type, out int paramIndex))
                 {
-                    int size =
-                        type == 'b' ? 1 :
-                        type == 's' ? 2 : 4;
+                    int size = type == 'b' ? 1 : (type == 's' ? 2 : 4);
 
                     if (!def.Params[paramIndex].IsUsed)
                     {
@@ -175,10 +172,7 @@ namespace PochiPochiEditorGabu.Helpers
                         def.Params[paramIndex].Size = size;
                     }
 
-                    patternBytes[i] = new PatternByte
-                    {
-                        MatchType = ByteMatchType.Parameter
-                    };
+                    patternBytes[i] = new PatternByte { MatchType = ByteMatchType.Parameter };
                 }
                 else
                 {
@@ -191,27 +185,20 @@ namespace PochiPochiEditorGabu.Helpers
             }
 
             def.HasPointer = ppCount == _ptrSize;
-
             return def;
         }
 
-        private bool IsParamToken(
-            string token,
-            out char type,
-            out int paramIndex)
+        private bool IsParamToken(string token, out char type, out int paramIndex)
         {
             type = token[0];
             char id = token[1];
-
             paramIndex = -1;
 
-            if ((type == 'b' || type == 's' || type == 'i') &&
-                (id == 'X' || id == 'Y' || id == 'Z'))
+            if ((type == 'b' || type == 's' || type == 'i') && (id == 'X' || id == 'Y' || id == 'Z'))
             {
-                paramIndex = id - 'X';
+                paramIndex = id - 'X'; // X=0, Y=1, Z=2
                 return true;
             }
-
             return false;
         }
 
@@ -221,17 +208,16 @@ namespace PochiPochiEditorGabu.Helpers
             out uint targetOffset,
             out uint paramX,
             out uint paramY,
-            out uint paramZ)
+            out uint paramZ,
+            bool allowNullPointer)
         {
             targetOffset = 0;
-            paramX = 0;
-            paramY = 0;
-            paramZ = 0;
+            paramX = 0; paramY = 0; paramZ = 0;
 
+            // fixed byte
             for (int i = 0; i < pattern.Length; i++)
             {
                 PatternByte pByte = pattern.Bytes[i];
-
                 if (pByte.MatchType == ByteMatchType.Exact)
                 {
                     if (_data[cursor + i] != pByte.Value)
@@ -241,54 +227,36 @@ namespace PochiPochiEditorGabu.Helpers
                 }
             }
 
+            // pp
             if (pattern.HasPointer)
             {
-                uint rawAddr =
-                    ReadUInt32LE(cursor + pattern.PointerOffset);
-
-                if (!IsValidPointer(rawAddr, out targetOffset))
+                uint rawAddr = ReadUInt32LE(cursor + pattern.PointerOffset);
+                if (!IsValidPointer(rawAddr, out targetOffset, allowNullPointer))
                 {
                     return false;
                 }
             }
 
-            if (pattern.Params[0].IsUsed)
-            {
-                paramX = ReadParam(
-                    cursor + pattern.Params[0].Offset,
-                    pattern.Params[0].Size);
-            }
-
-            if (pattern.Params[1].IsUsed)
-            {
-                paramY = ReadParam(
-                    cursor + pattern.Params[1].Offset,
-                    pattern.Params[1].Size);
-            }
-
-            if (pattern.Params[2].IsUsed)
-            {
-                paramZ = ReadParam(
-                    cursor + pattern.Params[2].Offset,
-                    pattern.Params[2].Size);
-            }
+            if (pattern.Params[0].IsUsed) paramX = ReadParam(cursor + pattern.Params[0].Offset, pattern.Params[0].Size);
+            if (pattern.Params[1].IsUsed) paramY = ReadParam(cursor + pattern.Params[1].Offset, pattern.Params[1].Size);
+            if (pattern.Params[2].IsUsed) paramZ = ReadParam(cursor + pattern.Params[2].Offset, pattern.Params[2].Size);
 
             return true;
         }
 
         private uint ReadParam(int offset, int size)
         {
-            if (size == sizeof(byte))
+            if (size == 1)
             {
                 return _data[offset];
             }
 
-            if (size == sizeof(ushort))
+            if (size == 2)
             {
                 return (uint)ReadUShort16LE(offset);
             }
 
-            if (size == sizeof(uint))
+            if (size == 4)
             {
                 return ReadUInt32LE(offset);
             }
@@ -296,11 +264,14 @@ namespace PochiPochiEditorGabu.Helpers
             return 0;
         }
 
-        private bool IsValidPointer(
-            uint rawAddr,
-            out uint targetOffset)
+        private bool IsValidPointer(uint rawAddr, out uint targetOffset, bool allowNulloPointer)
         {
             targetOffset = 0;
+
+            if (rawAddr == 0 && allowNulloPointer)
+            {
+                return true;
+            }
 
             if (rawAddr < _baseAddr)
             {
@@ -308,38 +279,33 @@ namespace PochiPochiEditorGabu.Helpers
             }
 
             byte msb = (byte)(rawAddr >> 24);
-
             if (msb != 0x08 && msb != 0x09)
             {
                 return false;
             }
 
             uint offset = rawAddr - _baseAddr;
-
             if (offset >= _data.Length)
             {
                 return false;
             }
 
             targetOffset = offset;
-
             return true;
         }
 
         private ushort ReadUShort16LE(int offset)
         {
-            return (ushort)(
-                _data[offset] |
-                (_data[offset + 1] << 8));
+            return (ushort)(_data[offset] |
+                           (_data[offset + 1] << 8));
         }
 
         private uint ReadUInt32LE(int offset)
         {
-            return (uint)(
-                _data[offset] |
-                (_data[offset + 1] << 8) |
-                (_data[offset + 2] << 16) |
-                (_data[offset + 3] << 24));
+            return (uint)(_data[offset] |
+                         (_data[offset + 1] << 8) |
+                         (_data[offset + 2] << 16) |
+                         (_data[offset + 3] << 24));
         }
 
         private enum ByteMatchType
@@ -370,8 +336,8 @@ namespace PochiPochiEditorGabu.Helpers
             public int PointerOffset { get; set; }
             public bool HasPointer { get; set; }
 
-            public ParamDefinition[] Params { get; set; }
-                = new ParamDefinition[3];
+            // Params[0] = X, Params[1] = Y, Params[2] = Z
+            public ParamDefinition[] Params { get; set; } = new ParamDefinition[3];
         }
     }
 }
