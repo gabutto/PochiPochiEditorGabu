@@ -253,44 +253,47 @@ namespace PochiPochiEditorGabu.Helpers
         }
 
         /// <summary>
-        /// nud に「&lt;」「&gt;」ボタンを連動させる
+        /// nud の「<」「>」ボタンの有効・無効を強制更新
+        /// </summary>
+        public static void UpdateNumericUpDownNavigators(
+            NumericUpDown nud,
+            Button btnPrev,
+            Button btnNext)
+        {
+            if (btnPrev != null)
+            {
+                bool canGoPrev = nud.Value > nud.Minimum;
+                if (!canGoPrev && btnPrev.Focused)
+                {
+                    nud.Focus();
+                }
+                btnPrev.Enabled = canGoPrev;
+            }
+
+            if (btnNext != null)
+            {
+                bool canGoNext = nud.Value < nud.Maximum;
+                if (!canGoNext && btnNext.Focused)
+                {
+                    nud.Focus();
+                }
+                btnNext.Enabled = canGoNext;
+            }
+        }
+
+        /// <summary>
+        /// nud に「<」「>」ボタンを連動させる
         /// </summary>
         public static void AttachNumericUpDownNavigators(
             NumericUpDown nud,
             Button btnPrev,
             Button btnNext)
         {
-            void UpdateButtons()
-            {
-                if (btnPrev != null)
-                {
-                    bool canGoPrev = nud.Value > nud.Minimum;
-                    if (!canGoPrev && btnPrev.Focused)
-                    {
-                        nud.Focus();
-                    }
-                    btnPrev.Enabled = canGoPrev;
-                }
-
-                if (btnNext != null)
-                {
-                    bool canGoNext = nud.Value < nud.Maximum;
-                    if (!canGoNext && btnNext.Focused)
-                    {
-                        nud.Focus();
-                    }
-                    btnNext.Enabled = canGoNext;
-                }
-            }
-
             if (btnPrev != null)
             {
                 btnPrev.Click += (sender, e) =>
                 {
-                    if (nud.Value > nud.Minimum)
-                    {
-                        nud.Value--;
-                    }
+                    if (nud.Value > nud.Minimum) nud.Value--;
                 };
             }
 
@@ -298,15 +301,12 @@ namespace PochiPochiEditorGabu.Helpers
             {
                 btnNext.Click += (sender, e) =>
                 {
-                    if (nud.Value < nud.Maximum)
-                    {
-                        nud.Value++;
-                    }
+                    if (nud.Value < nud.Maximum) nud.Value++;
                 };
             }
 
-            nud.ValueChanged += (sender, e) => UpdateButtons();
-            UpdateButtons();
+            nud.ValueChanged += (sender, e) => UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
+            UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
         }
 
         /// <summary>

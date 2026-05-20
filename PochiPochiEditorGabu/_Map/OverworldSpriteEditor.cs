@@ -427,6 +427,7 @@ namespace PochiPochiEditorGabu._Map
 
             // frame sprite
             LoadSpriteFrames();
+            _uiStateManager.UpdateBinary("ImportedSprites", GetCurrentSpritesBinaryData());
 
             _isUpdatingUI = false;
             _uiStateManager.UpdateInitialValues();
@@ -592,6 +593,8 @@ namespace PochiPochiEditorGabu._Map
             nudSpriteFrameCount.Maximum = _loadedSpriteFrames.Count > 0 ? _loadedSpriteFrames.Count - 1 : 0;
             nudSpriteFrameMaxCount.Value = _loadedSpriteFrames.Count;
             _isUpdatingUI = false;
+
+            ControlHelper.UpdateNumericUpDownNavigators(nudSpriteFrameCount, btnSpriteFrameCountPrev, btnSpriteFrameCountNext);
 
             UpdateSpritePreview();
         }
@@ -1019,11 +1022,10 @@ namespace PochiPochiEditorGabu._Map
                                 _temporarySpriteFrames[_loadedSpriteAddresses[i]] = framesData[i];
                             }
                         }
-
-                        _uiStateManager.UpdateBinary("ImportedSprites", new byte[] { 1 });
                     }
 
-                    LoadSpriteFrames();
+LoadSpriteFrames();
+                    _uiStateManager.UpdateBinary("ImportedSprites", GetCurrentSpritesBinaryData());
                 }
             }
         }
@@ -1137,6 +1139,47 @@ namespace PochiPochiEditorGabu._Map
                     ImageManager.ExportIndexedImage(exportBmp, sfd.FileName);
                 }
             }
+        }
+
+        private byte[] GetCurrentSpritesBinaryData()
+        {
+            if (!(cmbDataSize.SelectedItem is DataSizeComboItem sizeItem)) return null;
+
+            int frameCount = (int)nudSpriteFrameMaxCount.Value;
+            if (frameCount <= 0) return null;
+
+            int vramSize = sizeItem.VramSize;
+            byte[] combinedData = new byte[frameCount * vramSize];
+            var reservedImgTable = _reservationManager.GetReservation(txtDataImgTableAddr);
+
+            if (reservedImgTable != null)
+            {
+                var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _tblReader);
+                int headerSize = frameCount * imgEntryManager.GetEntrySize();
+                if (reservedImgTable.Data.Length >= headerSize + (frameCount * vramSize))
+                {
+                    Array.Copy(reservedImgTable.Data, headerSize, combinedData, 0, frameCount * vramSize);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < frameCount; i++)
+                {
+                    if (i >= _loadedSpriteAddresses.Count) continue;
+
+                    uint addr = _loadedSpriteAddresses[i];
+                    if (_temporarySpriteFrames.TryGetValue(addr, out byte[] tempData))
+                    {
+                        Array.Copy(tempData, 0, combinedData, i * vramSize, vramSize);
+                    }
+                    else
+                    {
+                        Array.Copy(_romData, addr, combinedData, i * vramSize, vramSize);
+                    }
+                }
+            }
+
+            return combinedData;
         }
 
         private void nudDataTableIdx_ValueChanged(object sender, EventArgs e)
