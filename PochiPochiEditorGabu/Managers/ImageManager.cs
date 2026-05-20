@@ -25,25 +25,20 @@ namespace PochiPochiEditorGabu.Managers
         {
             int header = BitConverter.ToInt32(romData, (int)address);
             int decompressedSize = header >> GbaConstants.BitsPerByte;
-            byte[] result = new byte[decompressedSize];
+            var result = new byte[decompressedSize];
 
             int srcPos = (int)address + Lz77HeaderSize;
             int dstPos = 0;
 
             while (dstPos < decompressedSize)
             {
-                byte flagByte = romData[srcPos];
-                srcPos++;
+                byte flagByte = romData[srcPos++];
 
                 for (int i = 0; i < GbaConstants.BitsPerByte; i++)
                 {
-                    if (dstPos >= decompressedSize)
-                    {
-                        break;
-                    }
+                    if (dstPos >= decompressedSize) break;
 
-                    int bitShift = (GbaConstants.BitsPerByte - 1) - i;
-                    bool isCompressed = (flagByte & (1 << bitShift)) != 0;
+                    bool isCompressed = (flagByte & (1 << (GbaConstants.BitsPerByte - 1 - i))) != 0;
 
                     if (isCompressed)
                     {
@@ -57,21 +52,14 @@ namespace PochiPochiEditorGabu.Managers
 
                         for (int j = 0; j < length; j++)
                         {
-                            if (dstPos >= decompressedSize)
-                            {
-                                break;
-                            }
+                            if (dstPos >= decompressedSize) break;
 
-                            result[dstPos] = result[copySrc];
-                            dstPos++;
-                            copySrc++;
+                            result[dstPos++] = result[copySrc++];
                         }
                     }
                     else
                     {
-                        result[dstPos] = romData[srcPos];
-                        srcPos++;
-                        dstPos++;
+                        result[dstPos++] = romData[srcPos++];
                     }
                 }
             }
@@ -81,56 +69,45 @@ namespace PochiPochiEditorGabu.Managers
 
         public static byte[] CompressLZ77(byte[] imageData)
         {
-            List<byte> result = new List<byte>(imageData.Length / GbaConstants.PixelsPerByte4Bpp);
             int length = imageData.Length;
+            var result = new List<byte>(length / GbaConstants.PixelsPerByte4Bpp);
 
             result.Add((byte)Lz77HeaderIdentifier);
-
             for (int i = 0; i < Lz77HeaderSize - 1; i++)
             {
-                int shiftAmount = i * GbaConstants.BitsPerByte;
-                result.Add((byte)((length >> shiftAmount) & GbaConstants.Mask8Bits));
+                result.Add((byte)((length >> (i * GbaConstants.BitsPerByte)) & GbaConstants.Mask8Bits));
             }
 
             int pos = 0;
             while (pos < length)
             {
                 int flagPos = result.Count;
-                result.Add(0);
                 byte flag = 0;
+                result.Add(0);
 
                 for (int i = 0; i < GbaConstants.BitsPerByte; i++)
                 {
-                    if (pos >= length)
-                    {
-                        break;
-                    }
+                    if (pos >= length) break;
 
-                    int bestDistance = 0;
-                    int bestLength = 0;
-                    FindLongestMatch(imageData, pos, ref bestDistance, ref bestLength);
+                    var (bestDistance, bestLength) = FindLongestMatch(imageData, pos);
 
                     if (bestLength >= Lz77MinMatchLength)
                     {
-                        flag = (byte)(flag | (1 << ((GbaConstants.BitsPerByte - 1) - i)));
+                        flag |= (byte)(1 << (GbaConstants.BitsPerByte - 1 - i));
 
                         int offsetVal = bestDistance - 1;
                         int lenVal = bestLength - Lz77MinMatchLength;
 
-                        byte byte0 = (byte)(
+                        result.Add((byte)(
                             ((lenVal & GbaConstants.NibbleMask) << GbaConstants.NibbleShift) |
-                            ((offsetVal >> GbaConstants.BitsPerByte) & GbaConstants.NibbleMask));
-                        byte byte1 = (byte)(offsetVal & GbaConstants.Mask8Bits);
-
-                        result.Add(byte0);
-                        result.Add(byte1);
+                            ((offsetVal >> GbaConstants.BitsPerByte) & GbaConstants.NibbleMask)));
+                        result.Add((byte)(offsetVal & GbaConstants.Mask8Bits));
 
                         pos += bestLength;
                     }
                     else
                     {
-                        result.Add(imageData[pos]);
-                        pos++;
+                        result.Add(imageData[pos++]);
                     }
                 }
 
@@ -145,18 +122,18 @@ namespace PochiPochiEditorGabu.Managers
             return result.ToArray();
         }
 
-        private static void FindLongestMatch(byte[] data, int pos, ref int bestDistance, ref int bestLength)
+        private static (int distance, int length) FindLongestMatch(byte[] data, int pos)
         {
-            bestLength = 0;
-            bestDistance = 0;
-
             int maxDist = Math.Min(pos, Lz77MaxDistance);
             int maxLen = Math.Min(data.Length - pos, Lz77MaxLength);
 
             if (maxDist < Lz77MinSafeDistance || maxLen < Lz77MinMatchLength)
             {
-                return;
+                return (0, 0);
             }
+
+            int bestLength = 0;
+            int bestDistance = 0;
 
             for (int dist = Lz77MinSafeDistance; dist <= maxDist; dist++)
             {
@@ -170,13 +147,12 @@ namespace PochiPochiEditorGabu.Managers
                 {
                     bestLength = len;
                     bestDistance = dist;
-                    if (bestLength == Lz77MaxLength)
-                    {
-                        break;
-                    }
 
+                    if (bestLength == Lz77MaxLength) break;
                 }
             }
+
+            return (bestDistance, bestLength);
         }
 
         public static Color[] DecompressPalette(byte[] romData, uint address, bool isCompressed)
@@ -189,21 +165,16 @@ namespace PochiPochiEditorGabu.Managers
             else
             {
                 paletteData = new byte[GbaConstants.PalColorCount * GbaConstants.BytesPerColor];
-                Array.Copy(romData, address, paletteData, 0, GbaConstants.PalColorCount * GbaConstants.BytesPerColor);
+                Array.Copy(romData, address, paletteData, 0, paletteData.Length);
             }
 
-            Color[] colors = new Color[GbaConstants.PalColorCount];
+            var colors = new Color[GbaConstants.PalColorCount];
             for (int i = 0; i < GbaConstants.PalColorCount; i++)
             {
                 int byteIndex = i * GbaConstants.BytesPerColor;
-                if (byteIndex + 1 >= paletteData.Length)
-                {
-                    break;
-                }
+                if (byteIndex + 1 >= paletteData.Length) break;
 
-                int highByte = paletteData[byteIndex + 1];
-                int lowByte = paletteData[byteIndex];
-                int temp = (highByte << GbaConstants.BitsPerByte) + lowByte;
+                int temp = (paletteData[byteIndex + 1] << GbaConstants.BitsPerByte) | paletteData[byteIndex];
 
                 int r = ((temp & GbaConstants.RedMask) >> GbaConstants.RedShift) * GbaConstants.ColorChannelMulti;
                 int g = ((temp & GbaConstants.GreenMask) >> GbaConstants.GreenShift) * GbaConstants.ColorChannelMulti;
@@ -217,9 +188,10 @@ namespace PochiPochiEditorGabu.Managers
 
         public static byte[] CompressPalette(Color[] colors, bool isCompressed)
         {
-            byte[] paletteData = new byte[GbaConstants.PalColorCount * GbaConstants.BytesPerColor];
+            var paletteData = new byte[GbaConstants.PalColorCount * GbaConstants.BytesPerColor];
+            int count = Math.Min(GbaConstants.PalColorCount, colors.Length);
 
-            for (int i = 0; i < Math.Min(GbaConstants.PalColorCount, colors.Length); i++)
+            for (int i = 0; i < count; i++)
             {
                 Color c = colors[i];
                 int r = c.R / GbaConstants.ColorChannelMulti;
@@ -231,44 +203,31 @@ namespace PochiPochiEditorGabu.Managers
                 paletteData[i * GbaConstants.BytesPerColor + 1] = (byte)((gbaColor >> GbaConstants.BitsPerByte) & GbaConstants.Mask8Bits);
             }
 
-            if (isCompressed)
-            {
-                return CompressLZ77(paletteData);
-            }
-            else
-            {
-                return paletteData;
-            }
+            return isCompressed ? CompressLZ77(paletteData) : paletteData;
         }
 
         public static Bitmap CreateSprite(byte[] imageData, Color[] palette, int width, int height, bool showBackColor)
         {
-            Bitmap bmp = new Bitmap(width, height, PixelFormat.Format4bppIndexed);
-            int dataIndex = 0;
+            var bmp = new Bitmap(width, height, PixelFormat.Format4bppIndexed);
 
             ColorPalette bmpPalette = bmp.Palette;
-            for (int i = 0; i < Math.Min(palette.Length, GbaConstants.PalColorCount); i++)
+            int paletteCount = Math.Min(palette.Length, GbaConstants.PalColorCount);
+            for (int i = 0; i < paletteCount; i++)
             {
-                if (i == 0 && !showBackColor)
-                {
-                    bmpPalette.Entries[i] = Color.FromArgb(0, palette[0].R, palette[0].G, palette[0].B);
-                }
-                else
-                {
-                    bmpPalette.Entries[i] = Color.FromArgb(255, palette[i].R, palette[i].G, palette[i].B);
-                }
+                Color c = palette[i];
+                bmpPalette.Entries[i] = (i == 0 && !showBackColor)
+                    ? Color.FromArgb(0, c.R, c.G, c.B)
+                    : Color.FromArgb(255, c.R, c.G, c.B);
             }
-
-            for (int i = palette.Length; i < GbaConstants.PalColorCount; i++)
+            for (int i = paletteCount; i < GbaConstants.PalColorCount; i++)
             {
                 bmpPalette.Entries[i] = Color.Black;
             }
-
             bmp.Palette = bmpPalette;
 
             BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format4bppIndexed);
-            int byteCount = bmpData.Stride * height;
-            byte[] pixels = new byte[byteCount];
+            var pixels = new byte[bmpData.Stride * height];
+            int dataIndex = 0;
 
             for (int yTile = 0; yTile < height; yTile += GbaConstants.TileSize)
             {
@@ -278,27 +237,20 @@ namespace PochiPochiEditorGabu.Managers
                     {
                         for (int xPixel = 0; xPixel < GbaConstants.TileSize; xPixel += GbaConstants.PixelsPerByte4Bpp)
                         {
-                            if (dataIndex >= imageData.Length)
-                            {
-                                break;
-                            }
+                            if (dataIndex >= imageData.Length) break;
 
-                            byte temp = imageData[dataIndex];
+                            byte temp = imageData[dataIndex++];
                             int leftIndex = temp & GbaConstants.NibbleMask;
                             int rightIndex = (temp >> GbaConstants.NibbleShift) & GbaConstants.NibbleMask;
 
-                            int imgX = xTile + xPixel;
-                            int imgY = yTile + yPixel;
-                            int byteIndex = imgY * bmpData.Stride + (imgX / GbaConstants.PixelsPerByte4Bpp);
-
+                            int byteIndex = (yTile + yPixel) * bmpData.Stride + ((xTile + xPixel) / GbaConstants.PixelsPerByte4Bpp);
                             pixels[byteIndex] = (byte)((leftIndex << GbaConstants.Bpp4) | rightIndex);
-                            dataIndex++;
                         }
                     }
                 }
             }
 
-            Marshal.Copy(pixels, 0, bmpData.Scan0, byteCount);
+            Marshal.Copy(pixels, 0, bmpData.Scan0, pixels.Length);
             bmp.UnlockBits(bmpData);
             return bmp;
         }
@@ -326,35 +278,29 @@ namespace PochiPochiEditorGabu.Managers
             if (bmp.PixelFormat != PixelFormat.Format4bppIndexed)
             {
                 MessageBox.Show(
-                    "4bpp(16色)のインデックスカラー画像を使用してください。", 
+                    "4bpp(16色)のインデックスカラー画像を使用してください。",
                     "",
-                    MessageBoxButtons.OK, 
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return false;
             }
 
             ColorPalette pal = bmp.Palette;
-            Color[] colors = new Color[GbaConstants.PalColorCount];
+            var colors = new Color[GbaConstants.PalColorCount];
             for (int i = 0; i < GbaConstants.PalColorCount; i++)
             {
-                if (i < pal.Entries.Length)
-                {
-                    colors[i] = Color.FromArgb(255, pal.Entries[i].R, pal.Entries[i].G, pal.Entries[i].B);
-                }
-                else
-                {
-                    colors[i] = Color.FromArgb(255, 0, 0, 0);
-                }
+                colors[i] = (i < pal.Entries.Length)
+                    ? Color.FromArgb(255, pal.Entries[i].R, pal.Entries[i].G, pal.Entries[i].B)
+                    : Color.FromArgb(255, 0, 0, 0);
             }
             palette = colors;
 
             BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format4bppIndexed);
-            int byteCount = bmpData.Stride * bmp.Height;
-            byte[] pixels = new byte[byteCount];
-            Marshal.Copy(bmpData.Scan0, pixels, 0, byteCount);
+            var pixels = new byte[bmpData.Stride * bmp.Height];
+            Marshal.Copy(bmpData.Scan0, pixels, 0, pixels.Length);
             bmp.UnlockBits(bmpData);
 
-            List<byte> dataList = new List<byte>();
+            var dataList = new List<byte>();
             for (int yTile = 0; yTile < expectedHeight; yTile += GbaConstants.TileSize)
             {
                 for (int xTile = 0; xTile < expectedWidth; xTile += GbaConstants.TileSize)
@@ -363,14 +309,11 @@ namespace PochiPochiEditorGabu.Managers
                     {
                         for (int xPixel = 0; xPixel < GbaConstants.TileSize; xPixel += GbaConstants.PixelsPerByte4Bpp)
                         {
-                            int imgX = xTile + xPixel;
-                            int imgY = yTile + yPixel;
-                            int byteIndex = imgY * bmpData.Stride + (imgX / GbaConstants.PixelsPerByte4Bpp);
+                            int byteIndex = (yTile + yPixel) * bmpData.Stride + ((xTile + xPixel) / GbaConstants.PixelsPerByte4Bpp);
                             byte pixelByte = pixels[byteIndex];
 
                             int p1 = (pixelByte >> GbaConstants.Bpp4) & GbaConstants.NibbleMask;
                             int p2 = pixelByte & GbaConstants.NibbleMask;
-
                             dataList.Add((byte)((p2 << GbaConstants.NibbleShift) | p1));
                         }
                     }
@@ -385,22 +328,20 @@ namespace PochiPochiEditorGabu.Managers
         {
             if (bmp == null) return;
 
-            using (Bitmap exportBmp = (Bitmap)bmp.Clone())
+            using (var exportBmp = (Bitmap)bmp.Clone())
             {
                 ColorPalette pal = exportBmp.Palette;
                 for (int i = 0; i < pal.Entries.Length; i++)
-                    pal.Entries[i] = Color.FromArgb(255, pal.Entries[i].R, pal.Entries[i].G, pal.Entries[i].B);
+                {
+                    Color e = pal.Entries[i];
+                    pal.Entries[i] = Color.FromArgb(255, e.R, e.G, e.B);
+                }
                 exportBmp.Palette = pal;
 
-                string ext = Path.GetExtension(filePath).ToLower();
-                if (ext == ".bmp")
-                {
-                    exportBmp.Save(filePath, ImageFormat.Bmp);
-                }
-                else
-                {
-                    exportBmp.Save(filePath, ImageFormat.Png);
-                }
+                var format = Path.GetExtension(filePath).ToLower() == ".bmp"
+                    ? ImageFormat.Bmp
+                    : ImageFormat.Png;
+                exportBmp.Save(filePath, format);
             }
         }
 
@@ -408,7 +349,7 @@ namespace PochiPochiEditorGabu.Managers
         {
             int newWidth = originalBmp.Width * scaleFactor;
             int newHeight = originalBmp.Height * scaleFactor;
-            Bitmap scaledBmp = new Bitmap(newWidth, newHeight);
+            var scaledBmp = new Bitmap(newWidth, newHeight);
 
             using (Graphics g = Graphics.FromImage(scaledBmp))
             {
@@ -422,11 +363,11 @@ namespace PochiPochiEditorGabu.Managers
 
         public static Bitmap[] CreatePokemonIconFrames(byte[] imageData, Color[] palette, bool showBackColor)
         {
-            Bitmap[] frames = new Bitmap[GbaConstants.IconFrameCounts];
+            var frames = new Bitmap[GbaConstants.IconFrameCounts];
 
             for (int i = 0; i < GbaConstants.IconFrameCounts; i++)
             {
-                byte[] frameData = new byte[GbaConstants.IconBytesPerFrame];
+                var frameData = new byte[GbaConstants.IconBytesPerFrame];
                 Array.Copy(imageData, i * GbaConstants.IconBytesPerFrame, frameData, 0, GbaConstants.IconBytesPerFrame);
                 frames[i] = CreateSprite(frameData, palette, GbaConstants.IconFrameSize, GbaConstants.IconFrameSize, showBackColor);
             }
@@ -436,65 +377,66 @@ namespace PochiPochiEditorGabu.Managers
 
         public class PokemonIconAnimator
         {
-            private Timer animTimer;
-            private PictureBox targetBox;
-            private Bitmap[] frames;
-            private int currentFrame;
+            private readonly Timer _animTimer;
+            private readonly PictureBox _targetBox;
+            private Bitmap[] _frames;
+            private int _currentFrame;
 
             public PokemonIconAnimator(PictureBox targetPictureBox, int intervalMs = 416)
             {
-                targetBox = targetPictureBox;
-                animTimer = new Timer { Interval = intervalMs };
-                animTimer.Tick += AnimTimer_Tick;
+                _targetBox = targetPictureBox;
+                _animTimer = new Timer { Interval = intervalMs };
+                _animTimer.Tick += AnimTimer_Tick;
             }
 
             public void SetFrames(Bitmap[] newFrames)
             {
-                frames = newFrames;
-                currentFrame = 0;
-                if (frames != null && frames.Length > 0)
+                _frames = newFrames;
+                _currentFrame = 0;
+
+                if (_frames != null && _frames.Length > 0)
                 {
-                    targetBox.Image = frames[0];
+                    _targetBox.Image = _frames[0];
                 }
             }
 
             public void StartAnimation()
             {
-                if (frames != null && frames.Length == 2)
+                if (_frames != null && _frames.Length == 2)
                 {
-                    animTimer.Start();
+                    _animTimer.Start();
                 }
             }
 
             public void StopAnimation()
             {
-                animTimer.Stop();
-                if (frames != null && frames.Length > 0)
+                _animTimer.Stop();
+
+                if (_frames != null && _frames.Length > 0)
                 {
-                    currentFrame = 0;
-                    targetBox.Image = frames[0];
+                    _currentFrame = 0;
+                    _targetBox.Image = _frames[0];
                 }
             }
 
             private void AnimTimer_Tick(object sender, EventArgs e)
             {
-                if (frames == null || frames.Length < 2) return;
+                if (_frames == null || _frames.Length < 2) return;
 
-                currentFrame = (currentFrame + 1) % frames.Length;
-                targetBox.Image = frames[currentFrame];
+                _currentFrame = (_currentFrame + 1) % _frames.Length;
+                _targetBox.Image = _frames[_currentFrame];
             }
         }
 
         public static Bitmap DecodeFootprint(byte[] bits, Color[] palette)
         {
-            Bitmap bmpTiles = new Bitmap(GbaConstants.FootprintSize, GbaConstants.FootprintSize, PixelFormat.Format32bppArgb);
+            var bmp = new Bitmap(GbaConstants.FootprintSize, GbaConstants.FootprintSize, PixelFormat.Format32bppArgb);
             Color color0 = palette[0];
             Color color1 = palette[1];
 
-            Rectangle rect = new Rectangle(0, 0, GbaConstants.FootprintSize, GbaConstants.FootprintSize);
-            BitmapData bmpData = bmpTiles.LockBits(rect, ImageLockMode.WriteOnly, bmpTiles.PixelFormat);
-            int bytes = Math.Abs(bmpData.Stride) * bmpTiles.Height;
-            byte[] rgbValues = new byte[bytes];
+            var rect = new Rectangle(0, 0, GbaConstants.FootprintSize, GbaConstants.FootprintSize);
+            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, bmp.PixelFormat);
+            var rgbValues = new byte[Math.Abs(bmpData.Stride) * bmp.Height];
 
             int byteTrack = 0;
             for (int block = 0; block < GbaConstants.FootprintBlockCount; block++)
@@ -504,33 +446,26 @@ namespace PochiPochiEditorGabu.Managers
 
                 for (int y = 0; y < GbaConstants.FootprintTileSize; y++)
                 {
-                    if (byteTrack >= bits.Length)
-                    {
-                        break;
-                    }
+                    if (byteTrack >= bits.Length) break;
 
-                    byte currentByte = bits[byteTrack];
+                    byte currentByte = bits[byteTrack++];
+
                     for (int x = 0; x < GbaConstants.FootprintTileSize; x++)
                     {
-                        bool isForeground = (currentByte & (1 << x)) != 0;
-                        Color pixelColor = isForeground ? color1 : color0;
-
-                        int pixelX = startX + x;
-                        int pixelY = startY + y;
-                        int index = (pixelY * bmpData.Stride) + (pixelX * GbaConstants.ArgbByteCount);
+                        Color pixelColor = (currentByte & (1 << x)) != 0 ? color1 : color0;
+                        int index = ((startY + y) * bmpData.Stride) + ((startX + x) * GbaConstants.ArgbByteCount);
 
                         rgbValues[index + 0] = pixelColor.B;
                         rgbValues[index + 1] = pixelColor.G;
                         rgbValues[index + 2] = pixelColor.R;
                         rgbValues[index + 3] = pixelColor.A;
                     }
-                    byteTrack++;
                 }
             }
 
-            Marshal.Copy(rgbValues, 0, bmpData.Scan0, bytes);
-            bmpTiles.UnlockBits(bmpData);
-            return bmpTiles;
+            Marshal.Copy(rgbValues, 0, bmpData.Scan0, rgbValues.Length);
+            bmp.UnlockBits(bmpData);
+            return bmp;
         }
 
         public static bool ExtractFootprint(Bitmap bmp, out byte[] footprintData)
@@ -550,21 +485,20 @@ namespace PochiPochiEditorGabu.Managers
             if (bmp.PixelFormat != PixelFormat.Format1bppIndexed)
             {
                 MessageBox.Show(
-                    "1bpp(2色)のインデックスカラー画像を使用してください。", 
+                    "1bpp(2色)のインデックスカラー画像を使用してください。",
                     "",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return false;
             }
 
-            int dataSize = GbaConstants.FootprintDataSize;
-            byte[] data = new byte[dataSize];
-
             BitmapData bmpData = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format1bppIndexed);
             int stride = Math.Abs(bmpData.Stride);
-            byte[] pixels = new byte[stride * bmp.Height];
+            var pixels = new byte[stride * bmp.Height];
             Marshal.Copy(bmpData.Scan0, pixels, 0, pixels.Length);
             bmp.UnlockBits(bmpData);
+
+            var data = new byte[GbaConstants.FootprintDataSize];
 
             for (int yBlock = 0; yBlock < GbaConstants.FootprintBlockDim; yBlock++)
             {
@@ -573,26 +507,25 @@ namespace PochiPochiEditorGabu.Managers
                     int startX = xBlock * GbaConstants.FootprintTileSize;
                     int startY = yBlock * GbaConstants.FootprintTileSize;
                     int blockIndex = yBlock * GbaConstants.FootprintBlockDim + xBlock;
-                    int baseByteIndex = blockIndex * GbaConstants.FootprintTileSize;
+                    int baseByteIdx = blockIndex * GbaConstants.FootprintTileSize;
 
                     for (int y = 0; y < GbaConstants.FootprintTileSize; y++)
                     {
                         byte byteValue = 0;
-                        int imgY = startY + y;
-                        int rowOffset = imgY * stride;
+                        int rowOffset = (startY + y) * stride;
 
                         for (int x = 0; x < GbaConstants.FootprintTileSize; x++)
                         {
                             int imgX = startX + x;
-                            int byteIndex = rowOffset + (imgX / GbaConstants.BitsPerByte);
                             int bitIndex = (GbaConstants.BitsPerByte - 1) - (imgX % GbaConstants.BitsPerByte);
-                            bool isSet = (pixels[byteIndex] & (1 << bitIndex)) != 0;
+                            bool isSet = (pixels[rowOffset + (imgX / GbaConstants.BitsPerByte)] & (1 << bitIndex)) != 0;
+
                             if (isSet)
                             {
                                 byteValue |= (byte)(1 << x);
                             }
                         }
-                        data[baseByteIndex + y] = byteValue;
+                        data[baseByteIdx + y] = byteValue;
                     }
                 }
             }
@@ -605,7 +538,7 @@ namespace PochiPochiEditorGabu.Managers
         {
             if (footPrintData == null) return null;
 
-            Bitmap bmp = new Bitmap(GbaConstants.FootprintSize, GbaConstants.FootprintSize, PixelFormat.Format1bppIndexed);
+            var bmp = new Bitmap(GbaConstants.FootprintSize, GbaConstants.FootprintSize, PixelFormat.Format1bppIndexed);
             ColorPalette pal = bmp.Palette;
             pal.Entries[0] = Color.FromArgb(248, 248, 248);
             pal.Entries[1] = Color.FromArgb(0, 0, 0);
@@ -615,7 +548,7 @@ namespace PochiPochiEditorGabu.Managers
             try
             {
                 int stride = Math.Abs(bmpData.Stride);
-                byte[] pixels = new byte[stride * bmp.Height];
+                var pixels = new byte[stride * bmp.Height];
 
                 for (int yBlock = 0; yBlock < GbaConstants.FootprintBlockDim; yBlock++)
                 {
@@ -624,24 +557,20 @@ namespace PochiPochiEditorGabu.Managers
                         int startX = xBlock * GbaConstants.FootprintTileSize;
                         int startY = yBlock * GbaConstants.FootprintTileSize;
                         int blockIndex = yBlock * GbaConstants.FootprintBlockDim + xBlock;
-                        int baseByteIndex = blockIndex * GbaConstants.FootprintTileSize;
+                        int baseByteIdx = blockIndex * GbaConstants.FootprintTileSize;
 
                         for (int y = 0; y < GbaConstants.FootprintTileSize; y++)
                         {
-                            byte byteValue = footPrintData[baseByteIndex + y];
-                            int imgY = startY + y;
-                            int rowOffset = imgY * stride;
+                            byte byteValue = footPrintData[baseByteIdx + y];
+                            int rowOffset = (startY + y) * stride;
 
                             for (int x = 0; x < GbaConstants.FootprintTileSize; x++)
                             {
+                                if ((byteValue & (1 << x)) == 0) continue;
+
                                 int imgX = startX + x;
-                                bool isSet = (byteValue & (1 << x)) != 0;
-                                if (isSet)
-                                {
-                                    int byteIndex = rowOffset + (imgX / GbaConstants.BitsPerByte);
-                                    int bitIndex = (GbaConstants.BitsPerByte - 1) - (imgX % GbaConstants.BitsPerByte);
-                                    pixels[byteIndex] |= (byte)(1 << bitIndex);
-                                }
+                                int bitIndex = (GbaConstants.BitsPerByte - 1) - (imgX % GbaConstants.BitsPerByte);
+                                pixels[rowOffset + (imgX / GbaConstants.BitsPerByte)] |= (byte)(1 << bitIndex);
                             }
                         }
                     }

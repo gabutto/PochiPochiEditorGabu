@@ -37,23 +37,27 @@ namespace PochiPochiEditorGabu.Managers
         private const int BlockSampleCount = CryBlockCompressedDataSize * NibblesPerByte;
         private const int BlockTotalSize = CryBlockCompressedDataSize + 1;
 
+        // ルックアップテーブル
+        private static readonly sbyte[] CryLookupTable =
+            { 0, 1, 4, 9, 16, 25, 36, 49, -64, -49, -36, -25, -16, -9, -4, -1 };
+
         public Cry LoadCryFromAddress(uint cryAddress, byte[] romData)
         {
-            var cry = new Cry();
+            int size = BitConverter.ToInt32(romData, (int)cryAddress + 12) + CrySizeAdjustment;
 
-            cry.Compressed = BitConverter.ToInt16(romData, (int)cryAddress) == CryCompressedFlag;
-            cry.Looped = BitConverter.ToInt16(romData, (int)cryAddress + 2) == CryLoopedFlag;
-            cry.SampleRate = BitConverter.ToInt32(romData, (int)cryAddress + 4) >> CrySampleRateShift;
-            cry.LoopStart = BitConverter.ToInt32(romData, (int)cryAddress + 8);
-            cry.Size = BitConverter.ToInt32(romData, (int)cryAddress + 12) + CrySizeAdjustment;
-            cry.Data = DecompressCryData(romData, (int)cryAddress + 16, cry.Size);
-
-            return cry;
+            return new Cry
+            {
+                Compressed = BitConverter.ToInt16(romData, (int)cryAddress) == CryCompressedFlag,
+                Looped = BitConverter.ToInt16(romData, (int)cryAddress + 2) == CryLoopedFlag,
+                SampleRate = BitConverter.ToInt32(romData, (int)cryAddress + 4) >> CrySampleRateShift,
+                LoopStart = BitConverter.ToInt32(romData, (int)cryAddress + 8),
+                Size = size,
+                Data = DecompressCryData(romData, (int)cryAddress + 16, size),
+            };
         }
 
         public sbyte[] DecompressCryData(byte[] romData, int startOffset, int expectedSize)
         {
-            sbyte[] lookup = { 0, 1, 4, 9, 16, 25, 36, 49, -64, -49, -36, -25, -16, -9, -4, -1 };
             var data = new List<sbyte>(expectedSize);
             int offset = startOffset;
             int alignment = 0;
@@ -66,7 +70,7 @@ namespace PochiPochiEditorGabu.Managers
                     if (offset < romData.Length)
                     {
                         byte byteValue = romData[offset++];
-                        pcmLevel = (sbyte)(byteValue <= 127 ? byteValue : byteValue - 256);
+                        pcmLevel = unchecked((sbyte)byteValue);
                         data.Add(pcmLevel);
                         alignment = CryBlockCompressedDataSize;
                     }
@@ -76,20 +80,27 @@ namespace PochiPochiEditorGabu.Managers
                     }
                 }
 
-                if (offset >= romData.Length || data.Count >= expectedSize) break;
+                if (offset >= romData.Length || data.Count >= expectedSize)
+                {
+                    break;
+                }
 
                 byte input = romData[offset++];
 
                 if (alignment < CryBlockCompressedDataSize)
                 {
                     int upperNibble = input >> GbaConstants.NibbleShift;
-                    pcmLevel = SafeAddSByte(pcmLevel, lookup[upperNibble]);
+                    pcmLevel = SafeAddSByte(pcmLevel, CryLookupTable[upperNibble]);
                     data.Add(pcmLevel);
-                    if (data.Count >= expectedSize) break;
+
+                    if (data.Count >= expectedSize)
+                    {
+                        break;
+                    }
                 }
 
                 int lowerNibble = input & GbaConstants.NibbleMask;
-                pcmLevel = SafeAddSByte(pcmLevel, lookup[lowerNibble]);
+                pcmLevel = SafeAddSByte(pcmLevel, CryLookupTable[lowerNibble]);
                 data.Add(pcmLevel);
 
                 alignment--;
@@ -101,16 +112,18 @@ namespace PochiPochiEditorGabu.Managers
         public sbyte SafeAddSByte(sbyte a, sbyte b)
         {
             int result = a + b;
-            return (sbyte)(result > 127 ? 127 : (result < -128 ? -128 : result));
+            return (sbyte)(result > sbyte.MaxValue 
+                ? sbyte.MaxValue 
+                : result < sbyte.MinValue ? sbyte.MinValue : result);
         }
 
         public byte[] CompressCryData(sbyte[] data)
         {
-            sbyte[] lookup = { 0, 1, 4, 9, 16, 25, 36, 49, -64, -49, -36, -25, -16, -9, -4, -1 };
-
             int blockCount = (data.Length + (BlockSampleCount - 1)) / BlockSampleCount;
             int remainder = data.Length % BlockSampleCount;
-            int lastBlockSize = remainder == 0 ? BlockTotalSize : 1 + (remainder / NibblesPerByte) + (remainder % NibblesPerByte);
+            int lastBlockSize = remainder == 0
+                ? BlockTotalSize
+                : 1 + (remainder / NibblesPerByte) + (remainder % NibblesPerByte);
 
             byte[][] blocks = new byte[blockCount][];
 
@@ -140,17 +153,21 @@ namespace PochiPochiEditorGabu.Managers
                     int lookupI = -1;
                     int bestDiff = int.MaxValue;
 
-                    for (int x = 0; x < lookup.Length; x++)
+                    for (int x = 0; x < CryLookupTable.Length; x++)
                     {
-                        int newPcm = pcm + lookup[x];
+                        int newPcm = pcm + CryLookupTable[x];
                         if (newPcm <= sbyte.MaxValue && newPcm >= sbyte.MinValue)
                         {
-                            int currentDiff = Math.Abs(lookup[x] - diff);
+                            int currentDiff = Math.Abs(CryLookupTable[x] - diff);
                             if (currentDiff < bestDiff)
                             {
                                 lookupI = x;
                                 bestDiff = currentDiff;
-                                if (bestDiff == 0) break;
+
+                                if (bestDiff == 0)
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -165,7 +182,7 @@ namespace PochiPochiEditorGabu.Managers
                         k++;
                     }
 
-                    pcm = (sbyte)(pcm + lookup[lookupI]);
+                    pcm = (sbyte)(pcm + CryLookupTable[lookupI]);
                     j++;
                 }
             }
@@ -181,28 +198,27 @@ namespace PochiPochiEditorGabu.Managers
 
         public void EncodeToWavStream(Cry cry, Stream stream)
         {
-            using (BinaryWriter writer = new BinaryWriter(stream, Encoding.ASCII, true))
+            using (var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: true))
             {
-                // RIFF header
+                // RIFF
                 writer.Write(Encoding.ASCII.GetBytes("RIFF"));
                 writer.Write(0);
                 writer.Write(Encoding.ASCII.GetBytes("WAVE"));
 
-                // fmt chunk
+                // fmt
                 writer.Write(Encoding.ASCII.GetBytes("fmt "));
-                writer.Write(WavFmtChunkSize);           // chunk size
-                writer.Write(WavFormatPcm);              // pcm
-                writer.Write(WavMonoChannels);           // mono
-                writer.Write(cry.SampleRate);            // sample rate
-                writer.Write(cry.SampleRate);            // byte rate
-                writer.Write(WavBlockAlign);             // block align
-                writer.Write(WavBitsPerSample);          // bits per sample
+                writer.Write(WavFmtChunkSize);
+                writer.Write(WavFormatPcm);
+                writer.Write(WavMonoChannels);
+                writer.Write(cry.SampleRate);
+                writer.Write(cry.SampleRate);
+                writer.Write(WavBlockAlign);
+                writer.Write(WavBitsPerSample);
 
-                // data chunk
+                // データ
                 writer.Write(Encoding.ASCII.GetBytes("data"));
-                writer.Write(cry.Data.Length);           // data size
+                writer.Write(cry.Data.Length);
 
-                // unsigned 8-bit
                 foreach (sbyte sample in cry.Data)
                 {
                     writer.Write((byte)(sample + 128));
@@ -230,7 +246,7 @@ namespace PochiPochiEditorGabu.Managers
         {
             var cry = new Cry();
 
-            using (BinaryReader reader = new BinaryReader(File.OpenRead(filename)))
+            using (var reader = new BinaryReader(File.OpenRead(filename)))
             {
                 Cry ShowErrorAndReturnNull(string msg)
                 {
@@ -239,42 +255,60 @@ namespace PochiPochiEditorGabu.Managers
                 }
 
                 if (Encoding.ASCII.GetString(reader.ReadBytes(4)) != "RIFF")
+                {
                     return ShowErrorAndReturnNull("WAVEファイルではありません");
+                }
 
                 int fileSize = reader.ReadInt32();
                 if (fileSize + 8 != reader.BaseStream.Length)
+                {
                     return ShowErrorAndReturnNull("ファイルサイズが不正です");
+                }
 
                 if (Encoding.ASCII.GetString(reader.ReadBytes(4)) != "WAVE")
+                {
                     return ShowErrorAndReturnNull("WAVEファイルではありません");
+                }
 
                 if (Encoding.ASCII.GetString(reader.ReadBytes(4)) != "fmt ")
+                {
                     return ShowErrorAndReturnNull("fmtチャンクが見つかりません");
+                }
 
                 int fmtChunkSize = reader.ReadInt32();
-                if (fmtChunkSize != 16)
+                if (fmtChunkSize != WavFmtChunkSize)
+                {
                     return ShowErrorAndReturnNull("不正なfmtチャンクです");
+                }
 
-                if (reader.ReadInt16() != 1)
+                if (reader.ReadInt16() != WavFormatPcm)
+                {
                     return ShowErrorAndReturnNull("PCM形式のWAVEファイルのみ対応しています");
+                }
 
-                if (reader.ReadInt16() != 1)
+                if (reader.ReadInt16() != WavMonoChannels)
+                {
                     return ShowErrorAndReturnNull("モノラルのWAVEファイルのみ対応しています");
+                }
 
                 cry.SampleRate = reader.ReadInt32();
-                reader.ReadInt32(); // byte rate
+                reader.ReadInt32();
+                reader.ReadInt16();
 
-                reader.ReadInt16(); // block align
-                if (reader.ReadInt16() != 8)
+                if (reader.ReadInt16() != WavBitsPerSample)
+                {
                     return ShowErrorAndReturnNull("8ビットのWAVEファイルのみ対応しています");
+                }
 
                 if (Encoding.ASCII.GetString(reader.ReadBytes(4)) != "data")
+                {
                     return ShowErrorAndReturnNull("dataチャンクが見つかりません");
+                }
 
                 int dataSize = reader.ReadInt32();
-                cry.Data = new sbyte[dataSize];
-
                 byte[] rawData = reader.ReadBytes(dataSize);
+
+                cry.Data = new sbyte[dataSize];
                 for (int i = 0; i < dataSize; i++)
                 {
                     cry.Data[i] = (sbyte)(rawData[i] - 128);

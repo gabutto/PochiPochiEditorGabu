@@ -128,11 +128,11 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private void InitializeManagers()
         {
-            // name
+            // ポケモン名
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
                 _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
-            // sprite
+            // ポケモン画像
             _spriteFrontImgManager = EntryManager<PokemonSpriteFrontImageEntry>.Create(
                 _romData, _tblReader, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
             _spriteBackImgManager = EntryManager<PokemonSpriteBackImageEntry>.Create(
@@ -142,7 +142,7 @@ namespace PochiPochiEditorGabu._Pokemon
             _spriteShinyPalManager = EntryManager<PokemonSpriteShinyPaletteEntry>.Create(
                 _romData, _tblReader, _config, "PokemonSpriteShinyPaletteTableAddress", "PokemonSpriteCount");
 
-            // icon
+            // アイコン
             _iconImgManager = EntryManager<PokemonIconImageEntry>.Create(
                 _romData, _tblReader, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
             _iconPalIdxManager = EntryManager<PokemonIconPaletteIndexEntry>.Create(
@@ -150,11 +150,11 @@ namespace PochiPochiEditorGabu._Pokemon
             _iconPalAddrManager = EntryManager<PokemonIconPaletteAddressEntry>.Create(
                 _romData, _tblReader, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
 
-            // footprint
+            // 足跡
             _footprintImgManager = EntryManager<PokemonFootPrintImageEntry>.Create(
                 _romData, _tblReader, _config, "PokemonFootprintTableAddress", "PokemonFootprintCount");
 
-            // coordinate
+            // 表示位置
             _coordBattleAllyManager = EntryManager<PokemonCoordBattleAllyEntry>.Create(
                 _romData, _tblReader, _config, "PokemonCoordinateBattleAllyTableAddress", "PokemonCoordinateBattleCount");
             _coordBattleEnemyManager = EntryManager<PokemonCoordBattleEnemyEntry>.Create(
@@ -164,7 +164,7 @@ namespace PochiPochiEditorGabu._Pokemon
             _coordItemUseManager = EntryManager<PokemonCoordItemUseEntry>.Create(
                 _romData, _tblReader, _config, "PokemonCoordinateItemUseTableAddress", "PokemonCoordinateItemUseCount");
 
-            // stats
+            // 基本情報
             if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
             {
                 _statsExpansionManager = EntryManager<PokemonStatsExpansionEntry>.Create(
@@ -176,7 +176,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
 
-            // evolution
+            // 進化
             uint? evoTableAddr = _config.GetAddr("PokemonEvolutionTableAddress");
             int evoSlotCount = _config.GetInt("PokemonEvolutionSlotCount");
             int evoEntryCount = _config.GetInt("PokemonEvolutionEntryCount");
@@ -185,33 +185,39 @@ namespace PochiPochiEditorGabu._Pokemon
             for (int i = 0; i < evoEntryCount; i++)
             {
                 int start = i * evoSlotCount;
-                var originalSlots = _evoManager.Original.Skip(start).Take(evoSlotCount).ToArray();
-                var workingSlots = _evoManager.Working.Skip(start).Take(evoSlotCount).ToArray();
+                var originalSlots = _evoManager.Original
+                    .Skip(start)
+                    .Take(evoSlotCount)
+                    .ToArray();
+                var workingSlots = _evoManager.Working
+                    .Skip(start)
+                    .Take(evoSlotCount)
+                    .ToArray();
                 _originalEvoSlots.Add(originalSlots);
                 _workingEvoSlots.Add(workingSlots);
             }
 
-            // learnset
+            // レベル技
             _learnsetManager = EntryManager<PokemonLearnsetEntry>.Create(
                 _romData, _tblReader, _config, "PokemonLearnsetTableAddress", "PokemonLearnsetEntryCount");
 
-            // tm hm
+            // 技マシン
             _tmHmListManager = EntryManager<TmHmMoveEntry>.Create(
                 _romData, _tblReader, _config, "TmHmListTableAddress", "TmHmCount");
 
-            // tutor
+            // 教え技
             _tutorListManager = EntryManager<TutorMoveEntry>.Create( 
                 _romData, _tblReader, _config, "TutorListTableAddress", "TutorCount");
 
-            // order
+            // 図鑑番号
             _orderManager = EntryManager<PokedexOrderEntry>.Create(
                 _romData, _tblReader, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
 
-            // pokedex
+            // 図鑑情報
             _dexManager = EntryManager<PokedexEntry>.Create(
                 _romData, _tblReader, _config, "PokedexTableAddress", "PokedexCount");
 
-            // cry
+            // 鳴き声
             _cryData1Manager = EntryManager<PokemonCryData1Entry>.Create(
                 _romData, _tblReader, _config, "CryData1TableAddress", "CryDataCount");
             _cryData2Manager = EntryManager<PokemonCryData2Entry>.Create(
@@ -219,38 +225,38 @@ namespace PochiPochiEditorGabu._Pokemon
             _cryDataExtendManager = EntryManager<PokemonCryExtendEntry>.Create(
                 _romData, _tblReader, _config, "ExtendCryTableAddress", "ExtendCryCount");
 
-            // battel music
+            // 戦闘BGM
             if (_config.GetBool("EnablePokemonBattleMusic"))
             {
                 _battleMusicManager = EntryManager<PokemonBattleMusicEntry>.Create(
                 _romData, _tblReader, _config, "PokemonBattleMusicTableAddress", "PokemonBattleMusicCount");
             }
 
-            // ability name
+            // 特性名
             _abilityNameManager = EntryManager<AbilityNameEntry>.Create(
                 _romData, _tblReader, _config, "AbilityNameTableAddress", "AbilityNameCount");
 
-            // item sprite
+            // アイテム画像
             _itemSpriteManager = EntryManager<ItemSpriteEntry>.Create(
                 _romData, _tblReader, _config, "ItemSpriteTableAddress", "ItemDataCount");
 
-            // item name
+            // アイテム名
             _itemDataManager = EntryManager<ItemDataEntry>.Create(
                 _romData, _tblReader, _config, "ItemDataTableAddress", "ItemDataCount");
 
-            // type name
+            // タイプ名
             _typeNameManager = EntryManager<TypeNameEntry>.Create(
                 _romData, _tblReader, _config, "TypeNameTableAddress", "TypeNameCount");
 
-            // move name
+            // 技名
             _moveNameManager = EntryManager<MoveNameEntry>.Create(
                 _romData, _tblReader, _config, "MoveNameTableAddress", "MoveNameCount");
 
-            // trainer img
+            // トレーナー画像
             _trainerImgManager = EntryManager<TrainerSpriteImageEntry>.Create(
                 _romData, _tblReader, _config, "TrainerSpriteImageTableAddress", "TrainerSpriteCount");
 
-            //trainer pal
+            // トレーナーパレット
             _trainerPalManager = EntryManager<TrainerSpritePaletteEntry>.Create(
                 _romData, _tblReader, _config, "TrainerSpritePaletteTableAddress", "TrainerSpriteCount");
         }
@@ -442,7 +448,7 @@ namespace PochiPochiEditorGabu._Pokemon
             }
             clbTmHm.EndUpdate();
 
-            // pokemon name for cmb
+            // コンボボックス（ポケモン名）
             var pokemonNames = _pokemonNameManager.Original
                              .Select(entry => entry._PokemonName)
                              .ToArray();
@@ -450,7 +456,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbEvoToPokemon.Items.AddRange(pokemonNames);
             cmbEvoInputAssistPokemon.Items.AddRange(pokemonNames);
 
-            // ability for cmb
+            // コンボボックス（特性名）
             var abilityNames = _abilityNameManager.Original
                              .Select(entry => entry._AbilityName)
                              .ToArray();
@@ -458,7 +464,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbStatsAbility2.Items.AddRange(abilityNames);
             cmbStatsAbilityHidden.Items.AddRange(abilityNames);
 
-            // item for cmb
+            // コンボボックス（アイテム名）
             var itemNames = _itemDataManager.Original
                              .Select(entry => entry._ItemName)
                              .ToArray();
@@ -466,7 +472,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbStatsHoldItem2.Items.AddRange(itemNames);
             cmbEvoInputAssistItem.Items.AddRange(itemNames);
 
-            // type for cmb
+            // コンボボックス（タイプ名）
             var typeNames = _typeNameManager.Original
                              .Select(entry => entry._TypeName)
                              .ToArray();
@@ -474,7 +480,7 @@ namespace PochiPochiEditorGabu._Pokemon
             cmbStatsType2.Items.AddRange(typeNames);
             cmbEvoInputAssistType.Items.AddRange(typeNames);
 
-            // move for cmb
+            // コンボボックス（技名）
             var moveNames = _moveNameManager.Original
                              .Select(entry => entry._MoveName)
                              .ToArray();
@@ -584,8 +590,8 @@ namespace PochiPochiEditorGabu._Pokemon
             nudSpecies.Value = idx;
             txtSpeciesHex.Text = idx.ToString("X4");
 
-            // Load pokemon name
-            txtPokemonRename.Text = _pokemonNameManager.Working[idx]._PokemonName;
+            // ポケモン名
+            txtPokemonRename.Text = _pokemonNameManager.Original[idx]._PokemonName;
         }
 
         private void txtPokemonRename_TextChanged(object sender, EventArgs e)
@@ -636,19 +642,19 @@ namespace PochiPochiEditorGabu._Pokemon
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentAllData(_currentPokemonIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         RestoreData(_currentPokemonIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         cmbPokemonName.SelectedIndex = _currentPokemonIdx;
                     }
@@ -695,7 +701,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 pic.Image = null;
             }
 
-            // palette
+            // パレット
             Color[] paletteNormal = null;
             Color[] paletteShiny = null;
 
@@ -729,7 +735,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 //
             }
 
-            // front image
+            // 正面画像
             if (isImageFrontValid)
             {
                 try
@@ -751,7 +757,7 @@ namespace PochiPochiEditorGabu._Pokemon
                             imageFrontData, paletteNormal, GbaConstants.SpriteSize, GbaConstants.SpriteSize, true);
                         picSpriteFrontNormal.Refresh();
 
-                        // for coodinate preview
+                        // 表示位置画像用
                         _battleEnemyImage?.Dispose();
                         _battleEnemyImage = ImageManager.CreateSprite(
                             imageFrontData, paletteNormal, GbaConstants.SpriteSize, GbaConstants.SpriteSize, false);
@@ -770,7 +776,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 }
             }
 
-            // back image
+            // 背面画像
             if (isImageBackValid)
             {
                 try
@@ -792,7 +798,7 @@ namespace PochiPochiEditorGabu._Pokemon
                             imageBackData, paletteNormal, GbaConstants.SpriteSize, GbaConstants.SpriteSize, true);
                         picSpriteBackNormal.Refresh();
 
-                        // for coodinate preview
+                        // 表示位置用
                         _battleAllyImage?.Dispose();
                         _battleAllyImage = ImageManager.CreateSprite(
                             imageBackData, paletteNormal, GbaConstants.SpriteSize, GbaConstants.SpriteSize, false);
@@ -949,7 +955,7 @@ namespace PochiPochiEditorGabu._Pokemon
             picIcon.Image?.Dispose();
             picIcon.Image = null;
 
-            // cache
+            // キャッシュ
             _currentIconFrame?.Dispose();
             _currentIconFrame = null;
 
@@ -959,10 +965,10 @@ namespace PochiPochiEditorGabu._Pokemon
 
             if (frames != null)
             {
-                // cache
+                // キャッシュ
                 _currentIconFrame = (Bitmap)frames[0].Clone();
 
-                // preview
+                // プレビュー
                 var fullIcon = new Bitmap(
                     GbaConstants.IconFrameSize, 
                     GbaConstants.IconFrameSize * GbaConstants.IconFrameCounts);
@@ -973,7 +979,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 }
                 picIcon.Image = fullIcon;
 
-                // animation
+                // アニメ
                 Bitmap[] scaledFrames = new Bitmap[GbaConstants.IconFrameCounts];
                 scaledFrames[0] = ImageManager.ScalePixelArt(frames[0]);
                 scaledFrames[1] = ImageManager.ScalePixelArt(frames[1]);
@@ -994,7 +1000,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 return false;
             }
 
-            // image data
+            // 画像データ
             int dataSize = GbaConstants.IconBytesPerFrame * GbaConstants.IconFrameCounts;
             var res = _reservationManager.GetReservation(txtIconImgAddr);
 
@@ -1008,7 +1014,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 Array.Copy(_romData, imageAddress, imageData, 0, dataSize);
             }
 
-            // palette data
+            // パレットデータ
             int paletteIndex = cmbIconPalIdx.SelectedIndex;
             var entry = _iconPalAddrManager.Working[paletteIndex];
             uint palettePtr = entry._IconPaletteAddr;
@@ -1145,7 +1151,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 e.Graphics.DrawImage(bmp, 0, 0, pnlFootprintCanvas.Width, pnlFootprintCanvas.Height);
             }
 
-            // 16x16 grid
+            // 16x16 グリッド
             int cellSize = GbaConstants.FootprintCanvasScale;
             for (int i = 0; i <= GbaConstants.FootprintSize; i++)
             {
@@ -1312,17 +1318,17 @@ namespace PochiPochiEditorGabu._Pokemon
                 g.PixelOffsetMode = PixelOffsetMode.Half;
                 g.InterpolationMode = InterpolationMode.NearestNeighbor;
 
-                // background
+                // 背景
                 g.DrawImage(_battleBaackgroundImage, 0, 0, picCoordBattleDisplay.Width, picCoordBattleDisplay.Height);
 
-                // shadow
+                // 影
                 if (nudCoordBattleEnemyShadowY.Value != 0)
                 {
                     g.DrawImage(_battleShadowImage, GbaConstants.BattleEnemyShadowX, GbaConstants.BattleEnemyShadowY,
                                 _battleShadowImage.Width, _battleShadowImage.Height);
                 }
 
-                // ally
+                // 味方
                 if (_battleAllyImage != null)
                 {
                     int yPosition = GbaConstants.BattleAllyY + (int)nudCoordBattleAllyPokemon.Value;
@@ -1330,7 +1336,7 @@ namespace PochiPochiEditorGabu._Pokemon
                                 _battleAllyImage.Width, _battleAllyImage.Height);
                 }
 
-                // enemy
+                // 敵
                 if (_battleEnemyImage != null)
                 {
                     int yPosition = GbaConstants.BattleEnemyY + (int)nudCoordBattleEnemyPokemon.Value;
@@ -1343,16 +1349,16 @@ namespace PochiPochiEditorGabu._Pokemon
                                 _battleEnemyImage.Width, _battleEnemyImage.Height);
                 }
 
-                // bubble
+                // 吹き出し
                 if (chkShowBattleBubble.Checked)
                 {
-                    // ally
+                    // 味方
                     int allyX = GbaConstants.BattleAllyBubbleX + ((int)nudCoordBattleAllyBubbleX.Value * GbaConstants.BattleBubbleMultiplier);
                     int allyY = GbaConstants.BattleAllyBubbleY - ((int)nudCoordBattleAllyBubbleY.Value * GbaConstants.BattleBubbleMultiplier)
                                 + (int)nudCoordBattleAllyPokemon.Value;
                     g.DrawImage(_battleBubbleImage, allyX, allyY, _battleBubbleImage.Width, _battleBubbleImage.Height);
 
-                    // enemy
+                    // 敵
                     int enemyX = GbaConstants.BattleEnemyBubbleX - ((int)nudCoordBattleEnemyBubbleX.Value * GbaConstants.BattleBubbleMultiplier);
                     int enemyY = GbaConstants.BattleEnemyBubbleY - ((int)nudCoordBattleEnemyBubbleY.Value * GbaConstants.BattleBubbleMultiplier)
                                  + (int)nudCoordBattleEnemyPokemon.Value - (int)nudCoordBattleEnemyShadowY.Value;
@@ -1360,7 +1366,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 }
             }
 
-            // discard
+            // 破棄
             picCoordBattleDisplay.Image?.Dispose();
             picCoordBattleDisplay.Image = null;
 
@@ -1467,7 +1473,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
                 if (rbCoordItemUse2Normal.Checked)
                 {
-                    // normal
+                    // 通常
                     g.DrawImage(_battleEnemyImage, GbaConstants.ItemUseAnimPokeX, GbaConstants.ItemUseAnimPokeY);
 
                     using (Bitmap itemImage = GetItemSprite(GbaConstants.ItemUse2PreviewItemIdx, false))
@@ -1482,7 +1488,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 }
                 else
                 {
-                    // zoom, magic number
+                    // ズーム（マジックナンバー計算）
                     using (Bitmap scaledPokemon = ImageManager.ScalePixelArt(_battleEnemyImage, 2))
                     using (Bitmap scaledItem = GetItemSprite(GbaConstants.ItemUse2PreviewItemIdx, false))
                     {
@@ -1710,13 +1716,11 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private Bitmap GetPokemonIcon(int idx, bool showBackColor)
         {
-            // cache?
             if (idx == _currentPokemonIdx && _currentIconFrame != null)
             {
                 return (Bitmap)_currentIconFrame.Clone();
             }
 
-            // normal
             uint? imageAddress = _iconImgManager.Original[idx].pIconImgAddr - GbaConstants.BaseAddr;
             if (!imageAddress.HasValue) return null;
 
@@ -1958,7 +1962,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 }
             }
 
-            // terminate
+            // 終端
             if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableLearnsetExpansion"))
             {
                 data.AddRange(BitConverter.GetBytes((ushort)GbaConstants.LearnsetTerminator2Byte));
@@ -1969,7 +1973,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 data.AddRange(BitConverter.GetBytes((ushort)GbaConstants.LearnsetTerminator2Byte));
             }
 
-            // alignment
+            // 調整
             if (align)
             {
                 while (data.Count % GbaConstants.PtrSize != 0)
@@ -2311,7 +2315,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 g.DrawImage(_dexSizeCompBackgroundImage, 0, 0,
                             GbaConstants.PokedexSizeComparisonBaseWidth, GbaConstants.PokedexSizeComparisonBaseHeight);
 
-                // pokemon
+                // ポケモン
                 if (_battleEnemyImage != null)
                 {
                     try
@@ -2348,7 +2352,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     }
                 }
 
-                // trainer
+                // トレーナー
                 try
                 {
                     int trainerId = (int)nudDexSizeCompTrainerSpriteIdx.Value;
@@ -2808,15 +2812,15 @@ namespace PochiPochiEditorGabu._Pokemon
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentAllData(_currentPokemonIdx);
                     },
-                    () =>
+                    discardAction: () =>
                     {
-                        // unnecessary
+                        // 
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         e.Cancel = true;
                     }
@@ -3001,7 +3005,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 DataBindingHelper.BindControlsToObject(this, _dexManager.Working[_currentdexOrder]);
                 _dexManager.Save(_currentdexOrder, false, GbaConstants.PaddingByte, GbaConstants.PaddingByte);
 
-                // desc
+                // 説明文
                 if (!ControlHelper.TryParseAddress(txtDexDescAddr.Text, out uint address)) return;
                 if (_uiStateManager.HasBinaryChanges(txtDexDescString) && _currentDexDescData != null)
                 {
@@ -3038,7 +3042,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 }
             }
 
-            // reserve
+            // 予約
             var res = _reservationManager.GetReservation(txtCryDataAddr);
             if (res != null && res.Data != null)
             {

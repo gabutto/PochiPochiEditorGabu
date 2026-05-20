@@ -15,7 +15,7 @@ namespace PochiPochiEditorGabu._Trainer
         protected TblFileReader _tblReader;
         protected ReservationManager _reservationManager;
 
-        private UIStateManager _uiStateManager = null;
+        private UIStateManager _uiStateManager;
 
         private EntryManager<TrainerClassNameEntry> _nameManager;
         private EntryManager<TrainerClassPrizeMultiplierEntry> _prizeMultiManager;
@@ -94,10 +94,7 @@ namespace PochiPochiEditorGabu._Trainer
                              .Select(entry => entry._ClassName)
                              .ToArray();
             cmbClassName.Items.AddRange(classNames);
-        }
 
-        private void InitializeUIStates()
-        {
             if (_config.GetBool("IsAppliedCFRU"))
             {
                 if (!_config.GetBool("EnableTrainerClassEncounterMusic"))
@@ -128,10 +125,15 @@ namespace PochiPochiEditorGabu._Trainer
             {
                 ControlHelper.SetControlsEnabled(grpClassDataExtra, false);
             }
+        }
 
+        private void InitializeUIStates()
+        {
             btnSave.Enabled = false;
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
-            _uiStateManager.AddControlsRecursive(grpClassData, grpClassDataExtra);
+            _uiStateManager.AddControlsRecursive(
+                grpClassData, 
+                grpClassDataExtra);
         }
 
         private void LoadDataToUI(int idx)
@@ -142,10 +144,10 @@ namespace PochiPochiEditorGabu._Trainer
             cmbClassName.SelectedIndex = idx;
             nudClassName.Value = idx;
 
-            // Load class name
+            // 肩書き名
             txtClassName.Text = _nameManager.Working[idx]._ClassName;
 
-            // Load class prize multi
+            // 賞金倍率
             var prizeEntry = _prizeMultiManager.Working.FirstOrDefault(e => e._ClassNameIndex == idx);
             if (prizeEntry == null)
             {
@@ -153,7 +155,7 @@ namespace PochiPochiEditorGabu._Trainer
             }
             nudPrizeMulti.Value = prizeEntry?._PrizeMultiplier ?? nudPrizeMulti.Minimum;
 
-            // extra data
+            // 追加データ
             if (_config.GetBool("IsAppliedCFRU"))
             {
                 if (_config.GetBool("EnableTrainerClassEncounterMusic"))
@@ -191,17 +193,17 @@ namespace PochiPochiEditorGabu._Trainer
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentClassNameIdx);
                         LoadDataToUI(newIndex);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         RestoreData(_currentClassNameIdx);
                         LoadDataToUI(newIndex);
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         cmbClassName.SelectedIndex = _currentClassNameIdx;
                     }
@@ -256,11 +258,11 @@ namespace PochiPochiEditorGabu._Trainer
 
         private void SaveCurrentData(int idx)
         {
-            // name
+            // 肩書き名
             _nameManager.Working[idx]._ClassName = cmbClassName.Items[idx].ToString();
             _nameManager.Save(idx);
 
-            // prize multi
+            // 賞金倍率
             var prizeEntry = _prizeMultiManager.Working.FirstOrDefault(e => e._ClassNameIndex == idx);
             int prizeEntryIndex = -1;
 
@@ -277,7 +279,7 @@ namespace PochiPochiEditorGabu._Trainer
             prizeEntry._PrizeMultiplier = (byte)nudPrizeMulti.Value;
             _prizeMultiManager.Save(prizeEntryIndex);
 
-            // extra data
+            // 追加データ
             if (_config.GetBool("IsAppliedCFRU"))
             {
                 if (_config.GetBool("EnableTrainerClassEncounterMusic"))
@@ -323,7 +325,7 @@ namespace PochiPochiEditorGabu._Trainer
                     },
                     () =>
                     {
-                        // unnecessary
+                        //
                     },
                     () =>
                     {

@@ -16,7 +16,7 @@ namespace PochiPochiEditorGabu._Trainer
         protected TblFileReader _tblReader;
         protected ReservationManager _reservationManager;
 
-        private UIStateManager _uiStateManager = null;
+        private UIStateManager _uiStateManager;
 
         private EntryManager<TrainerSpriteImageEntry> _imgManager;
         private EntryManager<TrainerSpritePaletteEntry> _palManager;
@@ -67,12 +67,6 @@ namespace PochiPochiEditorGabu._Trainer
             btnSpriteExport.Click += btnSpriteExport_Click;
             btnSave.Click += btnSave_Click;
             this.FormClosing += TrainerSpriteEditor_FormClosing;
-        }
-
-        private void SpriteAddress_TextChanged(object sender, EventArgs e)
-        {
-            if (_isUpdatingUI) return;
-            DisplayTrainerSprite();
         }
 
         private void InitializeControls()
@@ -137,18 +131,18 @@ namespace PochiPochiEditorGabu._Trainer
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentSpriteIdx);
                         ControlHelper.ResetControls(grpImportExport);
                         LoadDataToUI(newIndex);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         ControlHelper.ResetControls(grpImportExport);
                         LoadDataToUI(newIndex);
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         nudSprite.Value = _currentSpriteIdx;
                     }
@@ -215,6 +209,12 @@ namespace PochiPochiEditorGabu._Trainer
                 picSprite.Image?.Dispose();
                 picSprite.Image = null;
             }
+        }
+
+        private void SpriteAddress_TextChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            DisplayTrainerSprite();
         }
 
         private void btnSpriteImport_Click(object sender, EventArgs e)
@@ -328,15 +328,15 @@ namespace PochiPochiEditorGabu._Trainer
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentSpriteIdx);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         // unnecessary
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         e.Cancel = true;
                     }
