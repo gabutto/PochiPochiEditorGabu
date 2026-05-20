@@ -16,10 +16,10 @@ namespace PochiPochiEditorGabu.Helpers
         /// </summary>
         public static bool TryReadGbaPointer(uint ptrAddr, byte[] data, out uint? actualAddr)
         {
-            uint rawPtr = (uint)data[ptrAddr] |
-                         ((uint)data[ptrAddr + 1] << 8) |
-                         ((uint)data[ptrAddr + 2] << 16) |
-                         ((uint)data[ptrAddr + 3] << 24);
+            uint rawPtr = (uint)data[ptrAddr]
+                        | ((uint)data[ptrAddr + 1] << 8)
+                        | ((uint)data[ptrAddr + 2] << 16)
+                        | ((uint)data[ptrAddr + 3] << 24);
 
             if (rawPtr == 0)
             {
@@ -47,33 +47,37 @@ namespace PochiPochiEditorGabu.Helpers
             TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null) where T : new()
         {
-            var list = new List<T>();
-
+            var list = new List<T>(count);
             if (addr == null) return list;
-            int currentOffset = (int)addr.Value;
 
-            GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            bool TryGetLength(string key, out int length)
+            {
+                length = 0;
+                return key != null && dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
+            }
+
+            int currentOffset = (int)addr.Value;
+            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
             try
             {
                 IntPtr basePtr = handle.AddrOfPinnedObject();
 
-                var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
-                                      .OrderBy(f => f.MetadataToken)
-                                      .ToArray();
+                FieldInfo[] fields = typeof(T)
+                    .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                    .OrderBy(f => f.MetadataToken)
+                    .ToArray();
 
                 for (int i = 0; i < count; i++)
                 {
-                    T item = new T();
+                    var item = new T();
+
                     foreach (var field in fields)
                     {
                         if (field.FieldType == typeof(string))
                         {
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                            int length = (attr != null && dynamicLengths != null && dynamicLengths.ContainsKey(attr.EntryLength))
-                                ? dynamicLengths[attr.EntryLength] : 0;
-
-                            if (length > 0)
+                            if (TryGetLength(attr?.EntryLength, out int length) && length > 0)
                             {
                                 string strVal = tblReader.BytesToString(data, currentOffset, length);
                                 field.SetValue(item, strVal);
@@ -88,6 +92,7 @@ namespace PochiPochiEditorGabu.Helpers
                             currentOffset += typeSize;
                         }
                     }
+
                     list.Add(item);
                 }
             }
@@ -101,6 +106,7 @@ namespace PochiPochiEditorGabu.Helpers
 
         /// <summary>
         /// 構造体の書き込み
+        ///
         /// paddingByte1は最大文字数まで埋める
         /// paddingByte2はデータ長まで埋める
         /// </summary>
@@ -114,16 +120,25 @@ namespace PochiPochiEditorGabu.Helpers
             byte paddingByte1 = GbaConstants.FreeSpaceByte,
             byte paddingByte2 = GbaConstants.PaddingByte)
         {
-            GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
+            if (address == null) return;
+
+            bool TryGetLength(string key, out int length)
+            {
+                length = 0;
+                return key != null && dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
+            }
+
+            var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
             try
             {
                 IntPtr basePtr = handle.AddrOfPinnedObject();
-                int currentOffset = (int)address;
+                int currentOffset = (int)address.Value;
 
-                var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
-                                      .OrderBy(f => f.MetadataToken)
-                                      .ToArray();
+                FieldInfo[] fields = typeof(T)
+                    .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                    .OrderBy(f => f.MetadataToken)
+                    .ToArray();
 
                 foreach (var item in items)
                 {
@@ -134,56 +149,43 @@ namespace PochiPochiEditorGabu.Helpers
                         if (field.FieldType == typeof(string))
                         {
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                            int entryLength = (
-                                attr != null && 
-                                dynamicLengths != null && 
-                                dynamicLengths.ContainsKey(attr.EntryLength))
-                                ? dynamicLengths[attr.EntryLength] : 0;
 
-                            int allowedLength = (
-                                attr != null && 
-                                !string.IsNullOrEmpty(attr.AllowedLength) && 
-                                dynamicLengths != null && 
-                                dynamicLengths.ContainsKey(attr.AllowedLength))
-                                ? dynamicLengths[attr.AllowedLength] : -1;
-
-                            if (entryLength > 0)
+                            if (!TryGetLength(attr?.EntryLength, out int entryLength) || entryLength <= 0)
                             {
-                                string strVal = (field.GetValue(item) as string) ?? string.Empty;
-
-                                if (allowedLength > 0)
-                                {
-                                    byte[] rawBytes = tblReader.StringToBytes(strVal, false, -1);
-                                    List<byte> finalBytes = new List<byte>(rawBytes);
-
-                                    // paddingByte1
-                                    if (appendTerminator)
-                                    {
-                                        finalBytes.Add(GbaConstants.FreeSpaceByte);
-
-                                        while (finalBytes.Count < allowedLength)
-                                        {
-                                            finalBytes.Add(paddingByte1);
-                                        }
-                                    }
-
-                                    // paddingByte2
-                                    while (finalBytes.Count < entryLength)
-                                    {
-                                        finalBytes.Add(paddingByte2);
-                                    }
-
-                                    byte[] result = finalBytes.Take(entryLength).ToArray();
-                                    Array.Copy(result, 0, data, currentOffset, entryLength);
-                                }
-                                else
-                                {
-                                    byte[] result = tblReader.StringToBytes(strVal, appendTerminator, entryLength, paddingByte2);
-                                    Array.Copy(result, 0, data, currentOffset, entryLength);
-                                }
-
-                                currentOffset += entryLength;
+                                continue;
                             }
+
+                            string strVal = field.GetValue(item) is string s ? s : string.Empty;
+
+                            if (TryGetLength(attr?.AllowedLength, out int allowedLength) && allowedLength > 0)
+                            {
+                                byte[] rawBytes = tblReader.StringToBytes(strVal, false, -1);
+                                var finalBytes = new List<byte>(rawBytes);
+
+                                if (appendTerminator)
+                                {
+                                    finalBytes.Add(GbaConstants.FreeSpaceByte);
+
+                                    while (finalBytes.Count < allowedLength)
+                                    {
+                                        finalBytes.Add(paddingByte1);
+                                    }
+                                }
+
+                                while (finalBytes.Count < entryLength)
+                                {
+                                    finalBytes.Add(paddingByte2);
+                                }
+                               
+                                Array.Copy(finalBytes.ToArray(), 0, data, currentOffset, entryLength);
+                            }
+                            else
+                            {
+                                byte[] result = tblReader.StringToBytes(strVal, appendTerminator, entryLength, paddingByte2);
+                                Array.Copy(result, 0, data, currentOffset, entryLength);
+                            }
+
+                            currentOffset += entryLength;
                         }
                         else if (field.FieldType.IsValueType)
                         {
@@ -193,6 +195,7 @@ namespace PochiPochiEditorGabu.Helpers
                             {
                                 Marshal.StructureToPtr(value, basePtr + currentOffset, false);
                             }
+                            
                             currentOffset += typeSize;
                         }
                     }

@@ -10,8 +10,17 @@ namespace PochiPochiEditorGabu.Helpers
 {
     public static class ControlHelper
     {
+        private static readonly HashSet<Type> ContainerTypes = new HashSet<Type>
+        {
+            typeof(Panel),
+            typeof(GroupBox),
+            typeof(TabControl),
+            typeof(TabPage),
+        };
+
         /// <summary>
         /// 再帰的コントロールの有効化・無効化（コンテナ系対象外）
+        ///
         /// var excludeNames = new[] { "btnTest1", "btnTest2" };
         /// var excludeTypes = new[] { typeof(TextBox), typeof(ComboBox) };
         /// </summary>
@@ -21,17 +30,10 @@ namespace PochiPochiEditorGabu.Helpers
             IEnumerable<string> excludeNames = null,
             IEnumerable<Type> excludeTypes = null)
         {
-            var nameSet = excludeNames != null
-                ? new HashSet<string>(excludeNames)
-                : null;
-            var typeSet = excludeTypes != null
-                ? new HashSet<Type>(excludeTypes)
-                : null;
-
             ExecuteRecursive(
                 container,
-                nameSet,
-                typeSet,
+                ToHashSet(excludeNames),
+                ToHashSet(excludeTypes),
                 ctrl => ctrl.Enabled = enabled);
         }
 
@@ -43,38 +45,33 @@ namespace PochiPochiEditorGabu.Helpers
             IEnumerable<string> excludeNames = null,
             IEnumerable<Type> excludeTypes = null)
         {
-            var nameSet = excludeNames != null
-                ? new HashSet<string>(excludeNames)
-                : null;
-            var typeSet = excludeTypes != null
-                ? new HashSet<Type>(excludeTypes)
-                : null;
-
             ExecuteRecursive(
                 container,
-                nameSet,
-                typeSet,
-                ctrl =>
-                {
-                    switch (ctrl)
-                    {
-                        case TextBox textBox:
-                            textBox.Text = string.Empty;
-                            break;
-                        case NumericUpDown nud:
-                            nud.Value = Math.Max(nud.Minimum, 0);
-                            break;
-                        case ComboBox comboBox:
-                            comboBox.SelectedIndex = -1;
-                            break;
-                        case CheckBox checkBox:
-                            checkBox.Checked = false;
-                            break;
-                        case RadioButton radioButton:
-                            radioButton.Checked = false;
-                            break;
-                    }
-                });
+                ToHashSet(excludeNames),
+                ToHashSet(excludeTypes),
+                ResetControl);
+        }
+
+        private static void ResetControl(Control ctrl)
+        {
+            switch (ctrl)
+            {
+                case TextBox textBox:
+                    textBox.Text = string.Empty;
+                    break;
+                case NumericUpDown nud:
+                    nud.Value = Math.Max(nud.Minimum, 0);
+                    break;
+                case ComboBox comboBox:
+                    comboBox.SelectedIndex = -1;
+                    break;
+                case CheckBox checkBox:
+                    checkBox.Checked = false;
+                    break;
+                case RadioButton radioButton:
+                    radioButton.Checked = false;
+                    break;
+            }
         }
 
         private static void ExecuteRecursive(
@@ -85,31 +82,35 @@ namespace PochiPochiEditorGabu.Helpers
         {
             foreach (Control ctrl in container.Controls)
             {
-                bool isExcluded = (nameSet?.Contains(ctrl.Name) == true) ||
-                                  (typeSet?.Contains(ctrl.GetType()) == true);
-                bool isContainer = ShouldRecurse(ctrl);
-
-                if (!isExcluded && !isContainer)
-                {
-                    action(ctrl);
-                }
+                bool isContainer = ContainerTypes.Contains(ctrl.GetType());
 
                 if (isContainer)
                 {
                     ExecuteRecursive(ctrl, nameSet, typeSet, action);
+                    continue;
+                }
+
+                bool isExcluded = (nameSet != null && nameSet.Contains(ctrl.Name)) ||
+                                  (typeSet != null && typeSet.Contains(ctrl.GetType()));
+                if (!isExcluded)
+                {
+                    action(ctrl);
                 }
             }
         }
 
-        private static bool ShouldRecurse(Control ctrl)
-        {
-            return ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
+        private static HashSet<T> ToHashSet<T>(IEnumerable<T> source)
+        { 
+            return source != null 
+                ? new HashSet<T>(source) 
+                : null;
         }
 
         /// <summary>
         /// 16進数文字列を変換・真偽
-        /// falseの場合0が返るので注意　
-        /// ValidateAndFormatInputTextBoxの形式と矛盾
+        ///
+        /// false の場合 0 が返るので注意
+        /// ValidateAndFormatInputTextBox の形式と矛盾
         /// </summary>
         public static bool TryParseAddress(string addrStr, out uint addrValue)
         {
@@ -122,8 +123,9 @@ namespace PochiPochiEditorGabu.Helpers
 
         /// <summary>
         /// テキストボックス内のアドレスを判定・整形
+        ///
         /// showMessage: true でメッセージ表示
-        /// 空白・"null"・無効な文字列はnullに収束
+        /// 空白・"null"・無効な文字列は null に収束
         /// </summary>
         public static bool ValidateAndFormatInputTextBox(
             TextBox textbox,
@@ -140,18 +142,17 @@ namespace PochiPochiEditorGabu.Helpers
                 return true;
             }
 
-            // 2：文字列"null"の場合
-            if (addrStr.Equals("null", StringComparison.OrdinalIgnoreCase))
+            // 2：文字列 "null" の場合
+            if (string.Equals(addrStr, "null", StringComparison.OrdinalIgnoreCase))
             {
                 addrValue = null;
                 textbox.Text = "null";
                 return true;
             }
 
-            // 判定
+            // 3：無効な文字列の場合
             if (!TryParseAddress(addrStr, out uint resultValue))
             {
-                // 3：無効な文字列の場合
                 addrValue = null;
                 textbox.Clear();
 
@@ -231,36 +232,34 @@ namespace PochiPochiEditorGabu.Helpers
         /// </summary>
         public static void AttachExternalBorder(params Control[] targets)
         {
-            foreach (var target in targets)
+            foreach (Control target in targets)
             {
-                var parent = target.Parent;
-                if (parent != null)
+                Control parent = target.Parent;
+                if (parent == null) continue;
+
+                parent.Paint += (sender, e) =>
                 {
-                    parent.Paint += (sender, e) =>
+                    using (var pen = new Pen(Color.Gray, 1))
                     {
-                        using (var p = new Pen(Color.Gray, 1))
-                        {
-                            var rect = new Rectangle(
-                                target.Left - 1,
-                                target.Top - 1,
-                                target.Width + 1,
-                                target.Height + 1);
-                            e.Graphics.DrawRectangle(p, rect);
-                        }
-                    };
-                }
+                        var rect = new Rectangle(
+                            target.Left - 1,
+                            target.Top - 1,
+                            target.Width + 1,
+                            target.Height + 1);
+                        e.Graphics.DrawRectangle(pen, rect);
+                    }
+                };
             }
         }
 
         /// <summary>
-        /// nudに「<」「>」ボタンを連動させる
+        /// nud に「&lt;」「&gt;」ボタンを連動させる
         /// </summary>
         public static void AttachNumericUpDownNavigators(
             NumericUpDown nud,
             Button btnPrev,
             Button btnNext)
         {
-            // ボタン有効化・無効化
             void UpdateButtons()
             {
                 if (btnPrev != null)
@@ -344,25 +343,31 @@ namespace PochiPochiEditorGabu.Helpers
         /// </summary>
         public static void LoadComboBoxFromTextFile(ComboBox comboBox, string filePath)
         {
-            var entries = File.ReadLines(filePath)
-                .Where(line => !string.IsNullOrWhiteSpace(line))
-                .Select(line =>
+            bool TryParseLine(string line, out KeyValuePair<int, string> entry)
+            {
+                int closeBracket = line.IndexOf(']');
+                if (line.StartsWith("[") && closeBracket > 1)
                 {
-                    int closeBracketIndex = line.IndexOf(']');
-                    if (line.StartsWith("[") && closeBracketIndex > 1)
+                    string hex = line.Substring(1, closeBracket - 1);
+                    if (int.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int index))
                     {
-                        string hex = line.Substring(1, closeBracketIndex - 1);
-                        if (int.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int index))
-                        {
-                            return new KeyValuePair<int, string>(index, line.Trim());
-                        }
+                        entry = new KeyValuePair<int, string>(index, line.Trim());
+                        return true;
                     }
+                }
 
-                    return (KeyValuePair<int, string>?)null;
-                })
-                .Where(entry => entry.HasValue)
-                .Select(entry => entry.Value)
-                .ToList();
+                entry = default(KeyValuePair<int, string>);
+                return false;
+            }
+
+            var entries = new List<KeyValuePair<int, string>>();
+            foreach (string line in File.ReadLines(filePath))
+            {
+                if (!string.IsNullOrWhiteSpace(line) && TryParseLine(line, out var entry))
+                {
+                    entries.Add(entry);
+                }
+            }
 
             comboBox.DisplayMember = nameof(KeyValuePair<int, string>.Value);
             comboBox.ValueMember = nameof(KeyValuePair<int, string>.Key);
