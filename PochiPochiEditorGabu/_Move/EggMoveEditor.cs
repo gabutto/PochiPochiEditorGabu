@@ -364,7 +364,7 @@ namespace PochiPochiEditorGabu._Move
 
         private void SaveEggMoveTable()
         {
-            int tableAddr = (int)_config.GetAddr("EggMoveTableAddress");
+            uint? tableAddr = _config.GetAddr("EggMoveTableAddress");
             var saveList = new List<EggMoveEntry>(_eggMoveManager.Working)
             {
                 new EggMoveEntry { _MoveIdx = GbaConstants.EggMoveTableTerminator }

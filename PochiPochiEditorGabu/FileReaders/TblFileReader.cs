@@ -79,13 +79,13 @@ namespace PochiPochiEditorGabu.FileReaders
                 int currentIdx = offset + i;
                 byte currentByte = bytes[currentIdx];
 
-                // Terminator
+                // 終端
                 if (currentByte == TerminatorByte)
                 {
                     break;
                 }
 
-                // Newline
+                // 改行
                 if (currentByte == NewlineByte)
                 {
                     result.Append(Environment.NewLine);
@@ -122,7 +122,7 @@ namespace PochiPochiEditorGabu.FileReaders
                 }
                 else
                 {
-                    // Ignore
+                    // 無視
                     i++;
                 }
             }
@@ -145,7 +145,7 @@ namespace PochiPochiEditorGabu.FileReaders
             int i = 0;
             while (i < text.Length)
             {
-                // Newline
+                // 改行
                 if (text[i] == '\r' && text[i + 1] == '\n')
                 {
                     result.Add(NewlineByte);
@@ -182,18 +182,18 @@ namespace PochiPochiEditorGabu.FileReaders
                 }
                 else
                 {
-                    // Ignore
+                    // 無視
                     i++;
                 }
             }
 
-            // Terminator
+            // 終端
             if (appendTerminator)
             {
                 result.Add(TerminatorByte);
             }
 
-            // Padding
+            // パディング
             if (targetLength > 0)
             {
                 while (result.Count < targetLength)

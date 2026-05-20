@@ -23,7 +23,6 @@ namespace PochiPochiEditorGabu.FileReaders
                 {
                     return (T)(object)(uint)val;
                 }
-                // convert uint to int
                 else if (t == typeof(int))
                 {
                     return (T)(object)(int)(uint)val;
@@ -37,7 +36,7 @@ namespace PochiPochiEditorGabu.FileReaders
             return null;
         }
 
-        public uint? GetAddr(string key) => GetValue<uint>(key); // for null ptr
+        public uint? GetAddr(string key) => GetValue<uint>(key);
         public int GetInt(string key, int defaultValue = 0) => GetValue<int>(key) ?? defaultValue;
         public bool GetBool(string key, bool defaultValue = false) => GetValue<bool>(key) ?? defaultValue;
 
@@ -55,7 +54,6 @@ namespace PochiPochiEditorGabu.FileReaders
             string currentConfigName = string.Empty;
             List<string> currentBlock = new List<string>();
 
-            // Include empty lines
             foreach (string line in File.ReadLines(filePath, Encoding.UTF8))
             {
                 if (line.StartsWith(BeginPrefix) && line.EndsWith(Suffix))
@@ -63,7 +61,7 @@ namespace PochiPochiEditorGabu.FileReaders
                     int start = BeginPrefix.Length;
                     int length = line.Length - Suffix.Length - BeginPrefix.Length;
                     currentConfigName = line.Substring(start, length);
-                    currentBlock = new List<string>(); // new one
+                    currentBlock = new List<string>();
                 }
                 else if (line.StartsWith(EndPrefix) && line.EndsWith(Suffix))
                 {
@@ -76,7 +74,7 @@ namespace PochiPochiEditorGabu.FileReaders
                         targetCmb.Items.Add(currentConfigName);
                     }
                     currentConfigName = string.Empty;
-                    currentBlock = new List<string>(); // clear
+                    currentBlock = new List<string>();
                 }
                 else if (!string.IsNullOrEmpty(currentConfigName))
                 {
@@ -113,7 +111,6 @@ namespace PochiPochiEditorGabu.FileReaders
 
             if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";")) return false;
 
-            // include empty key and rawvalue
             string[] parts = line.Split('=');
             key = parts[0].Trim();
             rawValue = parts[1].Trim();
@@ -145,7 +142,6 @@ namespace PochiPochiEditorGabu.FileReaders
                     return true;
             }
 
-            // intentionally convert uint or null
             return TryParseNumber(rawValue, out parsedValue);
         }
 

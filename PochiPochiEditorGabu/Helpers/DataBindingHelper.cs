@@ -8,6 +8,9 @@ namespace PochiPochiEditorGabu.Helpers
 {
     public static class DataBindingHelper
     {
+        /// <summary>
+        /// 構造体をコントロールに自動反映
+        /// </summary>
         public static void BindObjectToControls(Control container, object obj)
         {
             Type type = obj.GetType();
@@ -15,21 +18,24 @@ namespace PochiPochiEditorGabu.Helpers
 
             foreach (var field in fields)
             {
+                // スキップ
                 if (field.Name.StartsWith("_")) continue;
 
                 object value = field.GetValue(obj);
                 if (value == null) continue;
 
+                // ポインタ（ベースアドレス減算）
                 if (field.Name.StartsWith("p"))
                 {
-                    // Pointer
                     uint ptrValue = (uint)value;
-                    uint? offset = (ptrValue == 0) ? (uint?)null : ptrValue - GbaConstants.BaseAddr;
+                    uint? offset = (ptrValue == 0) 
+                        ? (uint?)null 
+                        : ptrValue - GbaConstants.BaseAddr;
                     SetControlValueByName(container, field.Name.Substring(1), offset);
                 }
+                // 符号付き
                 else if (field.Name.StartsWith("s"))
                 {
-                    // Signed
                     decimal signedValue = 0;
                     TypeCode typeCode = Type.GetTypeCode(field.FieldType);
 
@@ -47,9 +53,9 @@ namespace PochiPochiEditorGabu.Helpers
                     }
                     SetControlValueByName(container, field.Name.Substring(1), signedValue);
                 }
+                // ニブル
                 else if (field.Name.StartsWith("n"))
                 {
-                    // Nibble
                     var attr = field.GetCustomAttribute<NibbleControlNamesAttribute>();
                     if (attr != null && value is byte byteVal)
                     {
@@ -60,9 +66,9 @@ namespace PochiPochiEditorGabu.Helpers
                         SetControlValueByName(container, attr.LowNibbleName, lowValue);
                     }
                 }
+                // ビットフラグ
                 else if (field.Name.StartsWith("b"))
                 {
-                    // bit
                     var attr = field.GetCustomAttribute<BitControlNamesAttribute>();
                     if (attr != null)
                     {
@@ -92,16 +98,19 @@ namespace PochiPochiEditorGabu.Helpers
 
             foreach (var field in fields)
             {
+                // スキップ
                 if (field.Name.StartsWith("_")) continue;
 
+                // ポインタ（ベースアドレス加算）
                 if (field.Name.StartsWith("p"))
                 {
-                    // Pointer
-                    object value = GetControlValueByName(container, field.Name.Substring(1), typeof(int));
+                    object value = GetControlValueByName(container, field.Name.Substring(1), typeof(uint));
                     if (value != null)
                     {
                         uint? offsetValue = Convert.ToUInt32(value);
-                        uint? finalValue = (offsetValue == null) ? 0u : offsetValue + GbaConstants.BaseAddr;
+                        uint? finalValue = (offsetValue == null) 
+                            ? 0u 
+                            : offsetValue + GbaConstants.BaseAddr;
                         field.SetValue(obj, finalValue);
                     }
                     else
@@ -109,9 +118,9 @@ namespace PochiPochiEditorGabu.Helpers
                         field.SetValue(obj, 0u);
                     }
                 }
+                // 符号付き
                 else if (field.Name.StartsWith("s"))
                 {
-                    // Signed
                     object val = GetControlValueByName(container, field.Name.Substring(1), typeof(decimal));
                     if (val != null)
                     {
@@ -133,9 +142,9 @@ namespace PochiPochiEditorGabu.Helpers
                         }
                     }
                 }
+                // ニブル
                 else if (field.Name.StartsWith("n"))
                 {
-                    // Nibble
                     var attr = field.GetCustomAttribute<NibbleControlNamesAttribute>();
                     if (attr != null && Type.GetTypeCode(field.FieldType) == TypeCode.Byte)
                     {
@@ -154,9 +163,9 @@ namespace PochiPochiEditorGabu.Helpers
                         field.SetValue(obj, byteVal);
                     }
                 }
+                // ビットフラグ
                 else if (field.Name.StartsWith("b"))
                 {
-                    // bit
                     var attr = field.GetCustomAttribute<BitControlNamesAttribute>();
                     if (attr != null)
                     {
@@ -326,8 +335,7 @@ namespace PochiPochiEditorGabu.Helpers
                 case TextBox txt:
                     {
                         string text = txt.Text.Trim();
-
-                        if (text == "null") return null;
+                        if (string.IsNullOrEmpty(text) || text == "null") return null;
 
                         if (ControlHelper.TryParseAddress(text, out uint addr))
                         {
@@ -374,12 +382,10 @@ namespace PochiPochiEditorGabu.Helpers
             switch (Type.GetTypeCode(obj.GetType()))
             {
                 case TypeCode.Byte:
-                case TypeCode.SByte:
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:
                 case TypeCode.Int16:
                 case TypeCode.Int32:
-                case TypeCode.Decimal:
                     return true;
                 default:
                     return false;

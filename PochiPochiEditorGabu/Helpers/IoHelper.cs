@@ -11,6 +11,9 @@ namespace PochiPochiEditorGabu.Helpers
 {
     public static class IoHelper
     {
+        /// <summary>
+        /// リトルエンディアン読み取り（nullポインタ考慮）
+        /// </summary>
         public static bool TryReadGbaPointer(uint ptrAddr, byte[] data, out uint? actualAddr)
         {
             uint rawPtr = (uint)data[ptrAddr] |
@@ -34,6 +37,9 @@ namespace PochiPochiEditorGabu.Helpers
             return true;
         }
 
+        /// <summary>
+        /// 構造体読み取り（可変長文字列を考慮）
+        /// </summary>
         public static List<T> ReadStructures<T>(
             byte[] data,
             uint? addr,
@@ -93,9 +99,14 @@ namespace PochiPochiEditorGabu.Helpers
             return list;
         }
 
+        /// <summary>
+        /// 構造体の書き込み
+        /// paddingByte1は最大文字数まで埋める
+        /// paddingByte2はデータ長まで埋める
+        /// </summary>
         public static void WriteStructures<T>(
             byte[] data,
-            int address,
+            uint? address,
             IEnumerable<T> items,
             TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null,
@@ -108,7 +119,7 @@ namespace PochiPochiEditorGabu.Helpers
             try
             {
                 IntPtr basePtr = handle.AddrOfPinnedObject();
-                int currentOffset = address;
+                int currentOffset = (int)address;
 
                 var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
                                       .OrderBy(f => f.MetadataToken)
@@ -145,7 +156,7 @@ namespace PochiPochiEditorGabu.Helpers
                                     byte[] rawBytes = tblReader.StringToBytes(strVal, false, -1);
                                     List<byte> finalBytes = new List<byte>(rawBytes);
 
-                                    // FreeSpaceByte
+                                    // paddingByte1
                                     if (appendTerminator)
                                     {
                                         finalBytes.Add(GbaConstants.FreeSpaceByte);
@@ -156,7 +167,7 @@ namespace PochiPochiEditorGabu.Helpers
                                         }
                                     }
 
-                                    // PaddingByte
+                                    // paddingByte2
                                     while (finalBytes.Count < entryLength)
                                     {
                                         finalBytes.Add(paddingByte2);

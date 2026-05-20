@@ -823,7 +823,7 @@ namespace PochiPochiEditorGabu._Trainer
                 uint? partyAddrOffset = _trainerListManager.Working[idx].pPartyAddr;
                 if (partyAddrOffset.HasValue && partyAddrOffset.Value != 0)
                 {
-                    int actualPartyAddr = (int)(partyAddrOffset.Value - GbaConstants.BaseAddr);
+                    uint? actualPartyAddr = partyAddrOffset - GbaConstants.BaseAddr;
                     byte dataType = _trainerListManager.Working[idx].DataType;
 
                     if (dataType == 0)

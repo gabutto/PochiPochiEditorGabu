@@ -2953,8 +2953,8 @@ namespace PochiPochiEditorGabu._Pokemon
             int entrySize = _config.GetInt("PokemonEvolutionSlotLength");
             int slotCount = _config.GetInt("PokemonEvolutionSlotCount");
             uint? baseAddress = _config.GetAddr("PokemonEvolutionTableAddress");
-            uint address = (uint)(baseAddress + idx * slotCount * entrySize);
-            IoHelper.WriteStructures(_romData, (int)address, _workingEvoSlots[idx], _tblReader);
+            uint? address = baseAddress + (uint?)(idx * slotCount * entrySize);
+            IoHelper.WriteStructures(_romData, address, _workingEvoSlots[idx], _tblReader);
             _originalEvoSlots[idx] = _workingEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
         }
 

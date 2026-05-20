@@ -197,7 +197,7 @@ namespace PochiPochiEditorGabu._Move
             {
                 ControlHelper.HandleUnsavedChanges(
                     saveAction: () => SaveChanges(),
-                    proceedAction: () => { },
+                    discardAction: () => { },
                     cancelAction: () => e.Cancel = true
                 );
             }

@@ -55,7 +55,7 @@ namespace PochiPochiEditorGabu.Helpers
                     break;
                 }
 
-                // exclude entry0
+                // エントリー0を除外
                 if (count > 0 && referencePointers != null && referencePointers.Contains((uint)cursor))
                 {
                     break;
@@ -214,7 +214,7 @@ namespace PochiPochiEditorGabu.Helpers
             targetOffset = 0;
             paramX = 0; paramY = 0; paramZ = 0;
 
-            // fixed byte
+            // 固定値
             for (int i = 0; i < pattern.Length; i++)
             {
                 PatternByte pByte = pattern.Bytes[i];
@@ -227,7 +227,7 @@ namespace PochiPochiEditorGabu.Helpers
                 }
             }
 
-            // pp
+            // ポインタ
             if (pattern.HasPointer)
             {
                 uint rawAddr = ReadUInt32LE(cursor + pattern.PointerOffset);

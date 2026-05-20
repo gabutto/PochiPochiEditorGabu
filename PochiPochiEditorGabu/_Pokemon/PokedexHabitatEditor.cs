@@ -231,7 +231,7 @@ namespace PochiPochiEditorGabu._Pokemon
                         SaveCurrentArea(_currentAreaIdx);
                         LoadAreaToUI(cmbArea.SelectedIndex);
                     },
-                    proceedAction: () =>
+                    discardAction: () =>
                     {
                         LoadAreaToUI(cmbArea.SelectedIndex);
                     },
@@ -544,7 +544,7 @@ namespace PochiPochiEditorGabu._Pokemon
             {
                 IoHelper.WriteStructures(
                     _romData,
-                    (int)actualAreaAddr.Value,
+                    actualAreaAddr,
                     _currentAreaPages.Take(areaEntry.PageCount),
                     _tblReader);
             }

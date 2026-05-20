@@ -20,13 +20,19 @@ namespace PochiPochiEditorGabu.Managers
         public uint? Address { get; set; }
         public int Count { get; set; }
 
-        public EntryManager(byte[] romData, TblFileReader tblReader, Dictionary<string, int> dynamicLengths = null)
+        public EntryManager(
+            byte[] romData,
+            TblFileReader tblReader,
+            Dictionary<string, int> dynamicLengths = null)
         {
             _romData = romData;
             _tblReader = tblReader;
             _dynamicLengths = dynamicLengths;
         }
 
+        /// <summary>
+        /// エントリーリストを作成
+        /// </summary>
         public void Load(uint? address, int count)
         {
             Address = address;
@@ -36,28 +42,36 @@ namespace PochiPochiEditorGabu.Managers
             Working = Original.Select(x => CloneHelper.Clone(x)).ToList();
         }
 
+        /// <summary>
+        /// 特定のエントリーを更新
+        /// </summary>
         public void Save(
             int idx,
             bool appendTerminator = true,
-            byte paddingByte1 = GbaConstants.FreeSpaceByte, 
+            byte paddingByte1 = GbaConstants.FreeSpaceByte,
             byte paddingByte2 = GbaConstants.PaddingByte)
         {
+            // 書き込み位置計算
             int entrySize = GetEntrySize();
             int offset = (int)Address.Value + (idx * entrySize);
 
+            // 1要素だけの配列
             var singleItemList = new List<T> { Working[idx] };
             IoHelper.WriteStructures(
-                _romData, offset, 
-                singleItemList, 
-                _tblReader, 
-                _dynamicLengths, 
+                _romData, (uint?)offset,
+                singleItemList,
+                _tblReader,
+                _dynamicLengths,
                 appendTerminator,
-                paddingByte1, 
+                paddingByte1,
                 paddingByte2);
 
             Original[idx] = CloneHelper.Clone(Working[idx]);
         }
 
+        /// <summary>
+        /// エントリーサイズ計算
+        /// </summary>
         public int GetEntrySize()
         {
             var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
@@ -70,8 +84,13 @@ namespace PochiPochiEditorGabu.Managers
                 if (field.FieldType == typeof(string))
                 {
                     var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                    int length = (attr != null && _dynamicLengths != null && _dynamicLengths.ContainsKey(attr.EntryLength))
-                        ? _dynamicLengths[attr.EntryLength] : 0;
+                    int length = (
+                        attr != null &&
+                        _dynamicLengths != null &&
+                        _dynamicLengths.ContainsKey(attr.EntryLength))
+                            ? _dynamicLengths[attr.EntryLength]
+                            : 0;
+
                     size += length;
                 }
                 else if (field.FieldType.IsValueType)
@@ -82,6 +101,9 @@ namespace PochiPochiEditorGabu.Managers
             return size;
         }
 
+        /// <summary>
+        /// エントリー作成（簡易）
+        /// </summary>
         public static EntryManager<T> Create(
             byte[] romData,
             TblFileReader tblReader,
@@ -98,29 +120,29 @@ namespace PochiPochiEditorGabu.Managers
                 if (attr != null)
                 {
                     if (!dynamicLengths.ContainsKey(attr.EntryLength))
+                    {
                         dynamicLengths[attr.EntryLength] = config.GetInt(attr.EntryLength);
+                    }
 
                     if (!string.IsNullOrEmpty(attr.AllowedLength) && !dynamicLengths.ContainsKey(attr.AllowedLength))
+                    {
                         dynamicLengths[attr.AllowedLength] = config.GetInt(attr.AllowedLength);
+                    }
                 }
             }
 
             var manager = new EntryManager<T>(
                 romData,
                 tblReader,
-                dynamicLengths.Count > 0 ? dynamicLengths : null
-            );
+                dynamicLengths.Count > 0
+                    ? dynamicLengths
+                    : null);
 
             uint? tableAddr = config.GetAddr(addressKey);
             int count = config.GetInt(countKey);
             manager.Load(tableAddr, count);
 
             return manager;
-        }
-
-        public void Discard(int idx)
-        {
-            Working[idx] = CloneHelper.Clone(Original[idx]);
         }
     }
 
@@ -138,7 +160,7 @@ namespace PochiPochiEditorGabu.Managers
     public class PokemonNameEntry
     {
         [DynamicString("PokemonNameEntryLength")]
-        public string _PokemonName = string.Empty;
+        public string _PokemonName;
     }
 
     public class PokemonSpriteFrontImageEntry
@@ -297,23 +319,23 @@ namespace PochiPochiEditorGabu.Managers
     public class AbilityNameEntry
     {
         [DynamicString("AbilityNameEntryLength")]
-        public string _AbilityName = string.Empty;
+        public string _AbilityName;
     }
 
     public class TypeNameEntry
     {
         [DynamicString("TypeNameEntryLength")]
-        public string _TypeName = string.Empty;
+        public string _TypeName;
     }
 
     public class PokemonEvolutionEntry
     {
-        public byte EvoCondMethod; 
+        public byte EvoCondMethod;
         public byte _padding1;
         public byte EvoCondParam1A;
-        public byte EvoCondParam1B; 
-        public ushort EvoToPokemon; 
-        public byte EvoCondParam2A; 
+        public byte EvoCondParam1B;
+        public ushort EvoToPokemon;
+        public byte EvoCondParam2A;
         public byte EvoCondParam2B;
     }
 
@@ -335,7 +357,7 @@ namespace PochiPochiEditorGabu.Managers
     public class PokedexEntry
     {
         [DynamicString(
-            "PokedexCategoryEntryLength", 
+            "PokedexCategoryEntryLength",
             "PokedexCategoryMaxLength")]
         public string _DexCategory;
         public ushort DexHeight;
@@ -417,7 +439,7 @@ namespace PochiPochiEditorGabu.Managers
     public class MoveNameEntry
     {
         [DynamicString("MoveNameEntryLength")]
-        public string _MoveName = string.Empty;
+        public string _MoveName;
     }
 
     public class EggMoveEntry
@@ -434,7 +456,7 @@ namespace PochiPochiEditorGabu.Managers
     public class ItemDataEntry
     {
         [DynamicString("ItemNameEntryLength", "ItemNameMaxLength")]
-        public string _ItemName = string.Empty;
+        public string _ItemName;
         public ushort Idx;
         public ushort Price;
         public byte HoldEffectIdx;
@@ -464,7 +486,7 @@ namespace PochiPochiEditorGabu.Managers
     public class TrainerClassNameEntry
     {
         [DynamicString("TrainerClassNameEntryLength")]
-        public string _ClassName = string.Empty;
+        public string _ClassName;
     }
 
     public class TrainerClassPrizeMultiplierEntry
@@ -532,7 +554,7 @@ namespace PochiPochiEditorGabu.Managers
         public byte EncounterMusicIdx;
         public byte SpriteIdx;
         [DynamicString("TrainerNameEntryLength")]
-        public string _Name = string.Empty;
+        public string _Name;
         public ushort HoldItem1;
         public ushort HoldItem2;
         public ushort HoldItem3;
@@ -604,7 +626,7 @@ namespace PochiPochiEditorGabu.Managers
         [DynamicString(
             "IngameTradePokemonNameEntryLength",
             "IngameTradePokemonNameMaxLength")]
-        public string _DataName = string.Empty;
+        public string _DataName;
         public ushort Pokemon2;
         public byte DataIvHp;
         public byte DataIvAtk;
@@ -632,7 +654,7 @@ namespace PochiPochiEditorGabu.Managers
         [DynamicString(
             "IngameTradeTrainerNameEntryLength",
             "IngameTradeTrainerNameMaxLength")]
-        public string _TrainerName = string.Empty;
+        public string _TrainerName;
         public byte _Padding7;
         public byte _Padding8;
         public byte _Padding9;
