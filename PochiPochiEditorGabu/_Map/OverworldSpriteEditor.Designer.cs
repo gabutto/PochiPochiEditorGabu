@@ -782,13 +782,23 @@ namespace PochiPochiEditorGabu._Map
             // 
             this.nudCreateNewImgTableCount.Location = new System.Drawing.Point(124, 50);
             this.nudCreateNewImgTableCount.Maximum = new decimal(new int[] {
-            255,
+            256,
+            0,
+            0,
+            0});
+            this.nudCreateNewImgTableCount.Minimum = new decimal(new int[] {
+            1,
             0,
             0,
             0});
             this.nudCreateNewImgTableCount.Name = "nudCreateNewImgTableCount";
             this.nudCreateNewImgTableCount.Size = new System.Drawing.Size(80, 19);
             this.nudCreateNewImgTableCount.TabIndex = 19;
+            this.nudCreateNewImgTableCount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // txtCreateNewImgTableAddr
             // 

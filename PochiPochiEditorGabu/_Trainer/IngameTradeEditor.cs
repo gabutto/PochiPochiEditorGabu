@@ -252,16 +252,16 @@ namespace PochiPochiEditorGabu._Trainer
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentTradeIdx);
                         LoadTradeDataToUI(newIndex);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         LoadTradeDataToUI(newIndex);
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         lstTradeData.SelectedIndex = _currentTradeIdx;
                     }
@@ -582,15 +582,15 @@ namespace PochiPochiEditorGabu._Trainer
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentTradeIdx);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         // unnecessary
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         e.Cancel = true;
                     }

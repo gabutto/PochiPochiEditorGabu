@@ -139,7 +139,7 @@ namespace PochiPochiEditorGabu.Helpers
             {
                 addrValue = null;
                 textbox.Text = string.Empty;
-                return true;
+                return false;
             }
 
             // 2：文字列 "null" の場合

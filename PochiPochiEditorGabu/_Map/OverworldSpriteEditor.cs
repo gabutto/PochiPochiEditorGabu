@@ -34,6 +34,7 @@ namespace PochiPochiEditorGabu._Map
         private PaletteComboItem _temporaryPalette = new PaletteComboItem();
         private List<Bitmap> _loadedSpriteFrames = new List<Bitmap>();
         private List<uint> _loadedSpriteAddresses = new List<uint>();
+        private Dictionary<uint, byte[]> _temporarySpriteFrames = new Dictionary<uint, byte[]>();
 
         private bool _isUpdatingUI = false;
         private bool _isMultipleTable = false;
@@ -193,6 +194,11 @@ namespace PochiPochiEditorGabu._Map
             btnImportDataEntry.Click += btnImportDataEntry_Click;
             btnExportDataEntry.Click += btnExportDataEntry_Click;
             btnCreateNewDataEntry.Click += btnCreateNewDataEntry_Click;
+
+            btnCreateNewImgTable.Click += btnCreateNewImgTable_Click;
+
+            btnImportSpriteFrames.Click += btnImportSpriteFrames_Click;
+            btnExportSpriteFrames.Click += btnExportSpriteFrames_Click;
         }
 
         private void InitializeControls()
@@ -239,7 +245,8 @@ namespace PochiPochiEditorGabu._Map
                 grpDataEntry);
             _uiStateManager.AddBinaries(
                 (_temporaryPalette, null),
-                ("NewDataEntry", null));
+                ("NewDataEntry", null),
+                ("ImportedSprites", null));
         }
 
         private void InitializePaletteComboBox()
@@ -345,6 +352,9 @@ namespace PochiPochiEditorGabu._Map
         {
             _isUpdatingUI = true;
             _reservationManager.ClearAllReservations();
+
+            _temporarySpriteFrames.Clear();
+            _uiStateManager.UpdateBinary("ImportedSprites", null);
 
             _currentDataEntryIdx = idx;
             uint entryAddr = _dataPointers[_currentDataTableIdx][idx].TargetOffset;
@@ -489,44 +499,93 @@ namespace PochiPochiEditorGabu._Map
 
             if (!ControlHelper.TryParseAddress(txtDataImgTableAddr.Text, out uint imgTableOffset)) return;
             var selectedSize = cmbDataSize.SelectedItem as DataSizeComboItem;
+            if (selectedSize == null) return;
 
             int expectedVramSize = selectedSize.VramSize;
             int expectedWidth = selectedSize.Width;
             int expectedHeight = selectedSize.Height;
             Color[] currentPalette = GetCurrentPalette(cmbDataPalIdx1);
 
-            // to distinguish entries
-            var pointerTargets = new HashSet<uint>();
-            foreach (var entry in _workingDataEntries)
-            {
-                pointerTargets.Add(entry.pDataImgTableAddr - GbaConstants.BaseAddr);
-            }
+            // is reserved?
+            var reservedImgTable = _reservationManager.GetReservation(txtDataImgTableAddr);
 
-            var tableEntries = _tableParsingHelper.ParsePointerEntries(
-                (int)imgTableOffset,
-                "PP PP PP PP sX sX 00 00",
-                null,
-                pointerTargets);
-
-            foreach (var entry in tableEntries)
+            if (reservedImgTable != null && reservedImgTable.Address == imgTableOffset)
             {
-                if (entry.ParamX != expectedVramSize)
+                byte[] tempTableData = reservedImgTable.Data;
+                int calculatedFrameCount = tempTableData.Length / (8 + expectedVramSize);
+
+                for (int i = 0; i < calculatedFrameCount; i++)
                 {
-                    break;
+                    uint ptr = BitConverter.ToUInt32(tempTableData, i * 8);
+                    ushort size = BitConverter.ToUInt16(tempTableData, i * 8 + 4);
+
+                    if (size != expectedVramSize) break;
+
+                    uint imgOffset = ptr - GbaConstants.BaseAddr;
+                    int relativeOffset = (int)(imgOffset - reservedImgTable.Address);
+
+                    byte[] imageData = new byte[expectedVramSize];
+                    Array.Copy(tempTableData, relativeOffset, imageData, 0, expectedVramSize);
+
+                    Bitmap bmp = ImageManager.CreateSprite(
+                        imageData,
+                        currentPalette,
+                        expectedWidth,
+                        expectedHeight,
+                        true);
+                    Bitmap scaledBmp = ImageManager.ScalePixelArt(bmp, 2);
+
+                    _loadedSpriteFrames.Add(scaledBmp);
+                    _loadedSpriteAddresses.Add(imgOffset);
+                }
+            }
+            else
+            {
+                var pointerTargets = new HashSet<uint>();
+                foreach (var entry in _workingDataEntries)
+                {
+                    if (entry.pDataImgTableAddr >= GbaConstants.BaseAddr)
+                    {
+                        pointerTargets.Add(entry.pDataImgTableAddr - GbaConstants.BaseAddr);
+                    }
                 }
 
-                byte[] imageData = new byte[expectedVramSize];
-                Array.Copy(_romData, entry.TargetOffset, imageData, 0, expectedVramSize);
-                Bitmap bmp = ImageManager.CreateSprite(
-                    imageData,
-                    currentPalette,
-                    expectedWidth,
-                    expectedHeight,
-                    true);
-                Bitmap scaledBmp = ImageManager.ScalePixelArt(bmp, 2);
+                var tableEntries = _tableParsingHelper.ParsePointerEntries(
+                    (int)imgTableOffset,
+                    "PP PP PP PP sX sX 00 00",
+                    null,
+                    pointerTargets);
 
-                _loadedSpriteFrames.Add(scaledBmp);
-                _loadedSpriteAddresses.Add(entry.TargetOffset);
+                foreach (var entry in tableEntries)
+                {
+                    if (entry.ParamX != expectedVramSize)
+                    {
+                        break;
+                    }
+
+                    byte[] imageData = new byte[expectedVramSize];
+
+                    // temporary image data
+                    if (_temporarySpriteFrames.TryGetValue(entry.TargetOffset, out byte[] tempData))
+                    {
+                        Array.Copy(tempData, imageData, expectedVramSize);
+                    }
+                    else
+                    {
+                        Array.Copy(_romData, entry.TargetOffset, imageData, 0, expectedVramSize);
+                    }
+
+                    Bitmap bmp = ImageManager.CreateSprite(
+                        imageData,
+                        currentPalette,
+                        expectedWidth,
+                        expectedHeight,
+                        true);
+                    Bitmap scaledBmp = ImageManager.ScalePixelArt(bmp, 2);
+
+                    _loadedSpriteFrames.Add(scaledBmp);
+                    _loadedSpriteAddresses.Add(entry.TargetOffset);
+                }
             }
 
             _isUpdatingUI = true;
@@ -847,6 +906,239 @@ namespace PochiPochiEditorGabu._Map
             LoadSpriteFrames();
         }
 
+        private void btnCreateNewImgTable_Click(object sender, EventArgs e)
+        {
+            if (!ControlHelper.ValidateAndFormatInputTextBox(txtCreateNewImgTableAddr, out uint? addr)) return;
+
+            var sizeItem = cmbCreateNewImgTableSize.SelectedItem as DataSizeComboItem;
+            int frameCount = (int)nudCreateNewImgTableCount.Value;
+            var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _tblReader);
+            int entrySize = imgEntryManager.GetEntrySize();
+
+            // calc size
+            int vramSize = sizeItem.VramSize;
+            int pointerTableSize = frameCount * entrySize; 
+            int totalSize = pointerTableSize + (frameCount * vramSize);
+
+            byte[] combinedData = new byte[totalSize];
+            uint currentImageOffset = addr.Value + (uint)pointerTableSize;
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                uint gbaPointer = currentImageOffset + GbaConstants.BaseAddr;
+                int currentEntryOffset = i * entrySize;
+
+                Array.Copy(BitConverter.GetBytes(gbaPointer), 0, combinedData, currentEntryOffset, GbaConstants.PtrSize);
+                Array.Copy(BitConverter.GetBytes((ushort)vramSize), 0, combinedData, currentEntryOffset + GbaConstants.PtrSize, sizeof(ushort));
+
+                currentImageOffset += (uint)vramSize;
+            }
+
+            _reservationManager.SetReservation(txtDataImgTableAddr, addr.Value, combinedData);
+
+            for (int i = 0; i < cmbDataSize.Items.Count; i++)
+            {
+                var item = cmbDataSize.Items[i] as DataSizeComboItem;
+                if (item != null && item.Key == sizeItem.Key)
+                {
+                    cmbDataSize.SelectedIndex = i;
+                    break;
+                }
+            }
+
+            _temporarySpriteFrames.Clear();
+            _uiStateManager.UpdateBinary("ImportedSprites", null);
+
+            LoadSpriteFrames();
+        }
+
+        private void btnImportSpriteFrames_Click(object sender, EventArgs e)
+        {
+            if (!(cmbDataSize.SelectedItem is DataSizeComboItem sizeItem)) return;
+
+            int expectedWidth = sizeItem.Width;
+            int expectedHeight = sizeItem.Height;
+            int frameCount = (int)nudSpriteFrameMaxCount.Value;
+            if (frameCount <= 0) return;
+
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = GbaConstants.ImageImportFilter;
+
+                if (ofd.ShowDialog() != DialogResult.OK) return;
+
+                using (Bitmap fullBmp = new Bitmap(ofd.FileName))
+                {
+                    List<byte[]> framesData = new List<byte[]>();
+
+                    try
+                    {
+                        for (int i = 0; i < frameCount; i++)
+                        {
+                            Rectangle rect = new Rectangle(i * expectedWidth, 0, expectedWidth, expectedHeight);
+                            using (Bitmap frameBmp = fullBmp.Clone(rect, fullBmp.PixelFormat))
+                            {
+                                if (ImageManager.ExtractImageAndPalette(frameBmp, expectedWidth, expectedHeight, out byte[] frameData, out _))
+                                {
+                                    framesData.Add(frameData);
+                                }
+                                else
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        return;
+                    }
+
+                    int vramSize = sizeItem.VramSize;
+                    var reservedImgTable = _reservationManager.GetReservation(txtDataImgTableAddr);
+
+                    if (reservedImgTable != null)
+                    {
+                        var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _tblReader);
+                        int headerSize = frameCount * imgEntryManager.GetEntrySize();
+
+                        for (int i = 0; i < frameCount; i++)
+                        {
+                            int offset = headerSize + (i * vramSize);
+                            Array.Copy(framesData[i], 0, reservedImgTable.Data, offset, vramSize);
+                        }
+
+                        _reservationManager.SetReservation(txtDataImgTableAddr, reservedImgTable.Address, reservedImgTable.Data);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < frameCount; i++)
+                        {
+                            if (i < _loadedSpriteAddresses.Count)
+                            {
+                                _temporarySpriteFrames[_loadedSpriteAddresses[i]] = framesData[i];
+                            }
+                        }
+
+                        _uiStateManager.UpdateBinary("ImportedSprites", new byte[] { 1 });
+                    }
+
+                    LoadSpriteFrames();
+                }
+            }
+        }
+
+        private void btnExportSpriteFrames_Click(object sender, EventArgs e)
+        {
+            if (!(cmbDataSize.SelectedItem is DataSizeComboItem sizeItem)) return;
+
+            int expectedWidth = sizeItem.Width;
+            int expectedHeight = sizeItem.Height;
+            int frameCount = (int)nudSpriteFrameMaxCount.Value;
+            if (frameCount <= 0) return;
+
+            int vramSize = sizeItem.VramSize;
+            List<byte[]> framesData = new List<byte[]>();
+            var reservedImgTable = _reservationManager.GetReservation(txtDataImgTableAddr);
+
+            if (reservedImgTable != null)
+            {
+                var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _tblReader);
+                int headerSize = frameCount * imgEntryManager.GetEntrySize();
+
+                for (int i = 0; i < frameCount; i++)
+                {
+                    byte[] frameData = new byte[vramSize];
+                    Array.Copy(reservedImgTable.Data, headerSize + (i * vramSize), frameData, 0, vramSize);
+                    framesData.Add(frameData);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < frameCount; i++)
+                {
+                    if (i >= _loadedSpriteAddresses.Count) continue;
+
+                    uint addr = _loadedSpriteAddresses[i];
+                    byte[] frameData = new byte[vramSize];
+
+                    if (_temporarySpriteFrames.TryGetValue(addr, out byte[] tempData))
+                    {
+                        Array.Copy(tempData, frameData, vramSize);
+                    }
+                    else
+                    {
+                        Array.Copy(_romData, addr, frameData, 0, vramSize);
+                    }
+                    framesData.Add(frameData);
+                }
+            }
+
+            if (framesData.Count != frameCount) return;
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = GbaConstants.ImageExportFilter;
+                sfd.FileName = $"overworld_sprite_{_currentDataEntryIdx:D4}.png";
+
+                if (sfd.ShowDialog() != DialogResult.OK) return;
+
+                int totalWidth = expectedWidth * frameCount;
+                Color[] currentPalette = GetCurrentPalette(cmbDataPalIdx1);
+
+                using (Bitmap exportBmp = new Bitmap(totalWidth, expectedHeight, PixelFormat.Format4bppIndexed))
+                {
+                    ColorPalette pal = exportBmp.Palette;
+                    int palCount = Math.Min(currentPalette.Length, GbaConstants.PalColorCount);
+                    for (int i = 0; i < palCount; i++)
+                    {
+                        pal.Entries[i] = currentPalette[i];
+                    }
+                    exportBmp.Palette = pal;
+
+                    BitmapData bmpData = exportBmp.LockBits(
+                        new Rectangle(0, 0, totalWidth, expectedHeight),
+                        ImageLockMode.WriteOnly,
+                        PixelFormat.Format4bppIndexed);
+
+                    byte[] pixels = new byte[bmpData.Stride * expectedHeight];
+
+                    for (int f = 0; f < frameCount; f++)
+                    {
+                        byte[] frameData = framesData[f];
+                        int frameOffsetX = f * expectedWidth;
+                        int dataIndex = 0;
+
+                        for (int yTile = 0; yTile < expectedHeight; yTile += GbaConstants.TileSize)
+                        {
+                            for (int xTile = 0; xTile < expectedWidth; xTile += GbaConstants.TileSize)
+                            {
+                                for (int yPixel = 0; yPixel < GbaConstants.TileSize; yPixel++)
+                                {
+                                    for (int xPixel = 0; xPixel < GbaConstants.TileSize; xPixel += GbaConstants.PixelsPerByte4Bpp)
+                                    {
+                                        if (dataIndex >= frameData.Length) break;
+
+                                        byte temp = frameData[dataIndex++];
+                                        int leftIndex = temp & GbaConstants.NibbleMask;
+                                        int rightIndex = (temp >> GbaConstants.NibbleShift) & GbaConstants.NibbleMask;
+
+                                        int byteIndex = (yTile + yPixel) * bmpData.Stride + ((frameOffsetX + xTile + xPixel) / GbaConstants.PixelsPerByte4Bpp);
+                                        pixels[byteIndex] = (byte)((leftIndex << GbaConstants.Bpp4) | rightIndex);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    System.Runtime.InteropServices.Marshal.Copy(pixels, 0, bmpData.Scan0, pixels.Length);
+                    exportBmp.UnlockBits(bmpData);
+
+                    ImageManager.ExportIndexedImage(exportBmp, sfd.FileName);
+                }
+            }
+        }
+
         private void nudDataTableIdx_ValueChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI) return;
@@ -929,10 +1221,18 @@ namespace PochiPochiEditorGabu._Map
         private void ResetControls()
         {
             txtCreateNewDataEntryAddr.Text = string.Empty;
-            txtCreateNewImgTableAddr.Text = string.Empty;
+
+            nudSpriteFrameCount.Value = nudSpriteFrameCount.Minimum;
+
             txtCreateNewPalIdx.Text = string.Empty;
             txtCreateNewPalAddr.Text = string.Empty;
-            nudSpriteFrameCount.Value = nudSpriteFrameCount.Minimum;
+
+            txtCreateNewImgTableAddr.Text = string.Empty;
+            nudCreateNewImgTableCount.Value = nudCreateNewImgTableCount.Minimum;
+            if (cmbCreateNewImgTableSize.SelectedIndex > 0)
+            {
+                cmbCreateNewImgTableSize.SelectedIndex = 0;
+            }
         }
 
         private void SaveCurrentData(int idx)
@@ -951,6 +1251,22 @@ namespace PochiPochiEditorGabu._Map
                 _dataPointers[_currentDataTableIdx][idx].TargetOffset = entryAddr;
                 _reservationManager.ClearReservation(txtDataEntryAddr);
             }
+
+            // new image table
+            var reservedImgTable = _reservationManager.GetReservation(txtDataImgTableAddr);
+            if (reservedImgTable != null)
+            {
+                Array.Copy(reservedImgTable.Data, 0, _romData, reservedImgTable.Address, reservedImgTable.Data.Length);
+                _reservationManager.ClearReservation(txtDataImgTableAddr);
+            }
+
+            // new imported image
+            foreach (var kvp in _temporarySpriteFrames)
+            {
+                Array.Copy(kvp.Value, 0, _romData, kvp.Key, kvp.Value.Length);
+            }
+            _temporarySpriteFrames.Clear();
+            _uiStateManager.UpdateBinary("ImportedSprites", null);
 
             if (entryAddr == 0) return;
 

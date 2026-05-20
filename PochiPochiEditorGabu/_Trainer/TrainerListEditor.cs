@@ -240,17 +240,17 @@ namespace PochiPochiEditorGabu._Trainer
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentTrainerIdx);
                         LoadTrainerDataToUI(newIndex);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         RestoreData(_currentTrainerIdx);
                         LoadTrainerDataToUI(newIndex);
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         lstTrainerData.SelectedIndex = _currentTrainerIdx;
                     }
@@ -867,15 +867,15 @@ namespace PochiPochiEditorGabu._Trainer
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentTrainerIdx);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         // unnecessary
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         e.Cancel = true;
                     }
