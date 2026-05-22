@@ -17,7 +17,7 @@ namespace PochiPochiEditorGabu._Trainer
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -37,20 +37,20 @@ namespace PochiPochiEditorGabu._Trainer
 
         private bool _isUpdatingUI = false;
         private int _currentTrainerIdx = 0;
+        private bool isEvMode = false;
 
         private IList _currentPartyEntries;
-        private const string PartyBinaryKey = "PartyBinary";
 
         public TrainerListEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -64,43 +64,43 @@ namespace PochiPochiEditorGabu._Trainer
         {
             // list
             _trainerListManager = EntryManager<TrainerListEntry>.Create(
-                _romData, _tblReader, _config, "TrainerListTableAddress", "TrainerListEntryCount");
+                _romData, _charmap, _config, "TrainerListTableAddress", "TrainerListEntryCount");
 
             // class
             _classNameManager = EntryManager<TrainerClassNameEntry>.Create(
-                _romData, _tblReader, _config, "TrainerClassNameTableAddress", "TrainerClassNameCount");
+                _romData, _charmap, _config, "TrainerClassNameTableAddress", "TrainerClassNameCount");
 
             // item sprite
             _itemSpriteManager = EntryManager<ItemSpriteEntry>.Create(
-                _romData, _tblReader, _config, "ItemSpriteTableAddress", "ItemDataCount");
+                _romData, _charmap, _config, "ItemSpriteTableAddress", "ItemDataCount");
 
             // item name
             _itemDataManager = EntryManager<ItemDataEntry>.Create(
-                _romData, _tblReader, _config, "ItemDataTableAddress", "ItemDataCount");
+                _romData, _charmap, _config, "ItemDataTableAddress", "ItemDataCount");
 
             // pokemon name
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
+                _romData, _charmap, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
             // move name
             _moveNameManager = EntryManager<MoveNameEntry>.Create(
-                _romData, _tblReader, _config, "MoveNameTableAddress", "MoveNameCount");
+                _romData, _charmap, _config, "MoveNameTableAddress", "MoveNameCount");
 
             // trainer img
             _trainerImgManager = EntryManager<TrainerSpriteImageEntry>.Create(
-                _romData, _tblReader, _config, "TrainerSpriteImageTableAddress", "TrainerSpriteCount");
+                _romData, _charmap, _config, "TrainerSpriteImageTableAddress", "TrainerSpriteCount");
 
-            //trainer pal
+            // trainer pal
             _trainerPalManager = EntryManager<TrainerSpritePaletteEntry>.Create(
-                _romData, _tblReader, _config, "TrainerSpritePaletteTableAddress", "TrainerSpriteCount");
+                _romData, _charmap, _config, "TrainerSpritePaletteTableAddress", "TrainerSpriteCount");
 
-            // icon
+            // pokemon icon
             _iconImgManager = EntryManager<PokemonIconImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
             _iconPalIdxManager = EntryManager<PokemonIconPaletteIndexEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
             _iconPalAddrManager = EntryManager<PokemonIconPaletteAddressEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
+                _romData, _charmap, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
         }
 
         private void InitializeEventHandlers()
@@ -111,6 +111,7 @@ namespace PochiPochiEditorGabu._Trainer
             lstTrainerData.SelectedIndexChanged += lstTrainerData_SelectedIndexChanged;
             txtName.TextChanged += txtName_TextChanged;
             nudSpriteIdx.ValueChanged += nudTrainerSpriteIdx_ValueChanged;
+            cmbPartyData.SelectedIndexChanged += cmbPartyData_SelectedIndexChanged;
             cmbPartyPokemon.SelectedIndexChanged += cmbPartyPokemon_SelectedIndexChanged;
             foreach (var cmb in new[] {
                 cmbHoldItem1,
@@ -121,8 +122,6 @@ namespace PochiPochiEditorGabu._Trainer
             {
                 cmb.SelectedIndexChanged += ItemComboBox_SelectedIndexChanged;
             }
-
-            cmbPartyData.SelectedIndexChanged += cmbPartyData_SelectedIndexChanged;
 
             EventHandler partyDataChangedHandler = (sender, e) =>
             {
@@ -147,6 +146,8 @@ namespace PochiPochiEditorGabu._Trainer
             int spriteCount = _config.GetInt("TrainerSpriteCount");
             nudSpriteIdx.Maximum = spriteCount - 1;
 
+            isEvMode = _config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableTrainerEV");
+
             // lstTrainerData
             lstTrainerData.Items.Clear();
             for (int i = 0; i < _trainerListManager.Count; i++)
@@ -154,7 +155,6 @@ namespace PochiPochiEditorGabu._Trainer
                 string name = _trainerListManager.Working[i]._Name;
                 lstTrainerData.Items.Add($"{i:X4} - {name}");
             }
-
             if (lstTrainerData.Items.Count > 0)
             {
                 lstTrainerData.SelectedIndex = 0;
@@ -204,6 +204,7 @@ namespace PochiPochiEditorGabu._Trainer
         {
             btnSave.Enabled = false;
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
+
             _uiStateManager.AddControlsRecursive(grpTrainerData);
         }
 
@@ -270,7 +271,7 @@ namespace PochiPochiEditorGabu._Trainer
             int nameEntryLength = _config.GetInt("TrainerNameEntryLength");
             int maxAllowedBytes = nameEntryLength - 1;
             string currentText = txtName.Text;
-            byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
+            byte[] currentBytes = _charmap.StringToBytes(currentText, false);
 
             if (currentBytes.Length > maxAllowedBytes)
             {
@@ -278,7 +279,7 @@ namespace PochiPochiEditorGabu._Trainer
 
                 while (currentText.Length > 0)
                 {
-                    currentBytes = _tblReader.StringToBytes(currentText, false);
+                    currentBytes = _charmap.StringToBytes(currentText, false);
                     if (currentBytes.Length <= maxAllowedBytes) break;
 
                     currentText = currentText.Substring(0, currentText.Length - 1);
@@ -291,7 +292,7 @@ namespace PochiPochiEditorGabu._Trainer
                 _isUpdatingUI = false;
             }
 
-            string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
+            string validName = _charmap.BytesToString(currentBytes, 0, currentBytes.Length);
 
             _isUpdatingUI = true;
             // direct
@@ -311,10 +312,6 @@ namespace PochiPochiEditorGabu._Trainer
             byte dataType = _trainerListManager.Original[idx].DataType;
 
             // iv or ev?
-            bool isCFRU = _config.GetBool("IsAppliedCFRU");
-            bool enableTrainerEV = _config.GetBool("EnableTrainerEV");
-            bool isEvMode = isCFRU && enableTrainerEV;
-
             rbPartyEv.Checked = isEvMode;
             rbPartyIv.Checked = !isEvMode;
             rbPartyEv.Enabled = isEvMode;
@@ -333,28 +330,28 @@ namespace PochiPochiEditorGabu._Trainer
                             _romData, 
                             actualPartyAddr, 
                             partyCount, 
-                            _tblReader).Cast<object>().ToList();
+                            _charmap).Cast<object>().ToList();
                         break;
                     case 1:
                         _currentPartyEntries = IoHelper.ReadStructures<TrainerPartyEntry01>(
                             _romData, 
                             actualPartyAddr, 
-                            partyCount, 
-                            _tblReader).Cast<object>().ToList();
+                            partyCount,
+                            _charmap).Cast<object>().ToList();
                         break;
                     case 2:
                         _currentPartyEntries = IoHelper.ReadStructures<TrainerPartyEntry02>(
                             _romData, 
                             actualPartyAddr, 
-                            partyCount, 
-                            _tblReader).Cast<object>().ToList();
+                            partyCount,
+                            _charmap).Cast<object>().ToList();
                         break;
                     case 3:
                         _currentPartyEntries = IoHelper.ReadStructures<TrainerPartyEntry03>(
                             _romData, 
                             actualPartyAddr, 
                             partyCount,
-                            _tblReader).Cast<object>().ToList();
+                            _charmap).Cast<object>().ToList();
                         break;
                 }
             }
@@ -369,6 +366,7 @@ namespace PochiPochiEditorGabu._Trainer
                 {
                     cmbPartyData.Items.Add($"{i + 1}体目");
                 }
+
                 cmbPartyData.SelectedIndex = 0;
                 UpdatePartyUIForIndex(0);
             }
@@ -388,19 +386,34 @@ namespace PochiPochiEditorGabu._Trainer
 
             // _PartyIvOrEv
             ushort ivOrEv = 0;
-            if (entry is TrainerPartyEntry00 p00) ivOrEv = p00._PartyIvOrEv;
-            else if (entry is TrainerPartyEntry01 p01) ivOrEv = p01._PartyIvOrEv;
-            else if (entry is TrainerPartyEntry02 p02) ivOrEv = p02._PartyIvOrEv;
-            else if (entry is TrainerPartyEntry03 p03) ivOrEv = p03._PartyIvOrEv;
+            if (entry is TrainerPartyEntry00 p00)
+            {
+                ivOrEv = p00._PartyIvOrEv;
+            }
+            else if (entry is TrainerPartyEntry01 p01)
+            {
+                ivOrEv = p01._PartyIvOrEv;
+            }
+            else if (entry is TrainerPartyEntry02 p02)
+            {
+                ivOrEv = p02._PartyIvOrEv;
+            }
+            else if (entry is TrainerPartyEntry03 p03)
+            {
+                ivOrEv = p03._PartyIvOrEv;
+            }
 
             if (rbPartyEv.Checked)
             {
-                cmbPartyEv.SelectedIndex = ivOrEv < cmbPartyEv.Items.Count ? ivOrEv : -1;
-                nudPartyIv.Value = Math.Max(nudPartyIv.Minimum, 0);
+                cmbPartyEv.SelectedIndex =
+                    ivOrEv < cmbPartyEv.Items.Count 
+                    ? ivOrEv 
+                    : -1;
+                nudPartyIv.Value = nudPartyIv.Minimum;
             }
             else
             {
-                nudPartyIv.Value = Math.Min(ivOrEv, nudPartyIv.Maximum);
+                nudPartyIv.Value = ivOrEv;
                 cmbPartyEv.SelectedIndex = -1;
             }
 
@@ -410,33 +423,11 @@ namespace PochiPochiEditorGabu._Trainer
             UpdateItemImages();
         }
 
-        private void ClearPartyUI()
-        {
-            DisableAndResetControl(grpPartyData);
-            cmbPartyData.Enabled = false;
-        }
-
-        private void DisableAndResetControl(Control target)
-        {
-            target.Enabled = false;
-
-            if (target is ComboBox cmb) cmb.SelectedIndex = -1;
-            else if (target is NumericUpDown nud) nud.Value = Math.Max(nud.Minimum, 0);
-            else if (target is TextBox txt) txt.Text = string.Empty;
-            else if (target is CheckBox chk) chk.Checked = false;
-            else if (target is RadioButton rb) rb.Checked = false;
-
-            target.ResetControls();
-        }
-
         private void UpdatePartyUIByDataType(byte dataType)
         {
             grpPartyData.Enabled = true;
             grpPartyData.SetControlsEnabled(true);
 
-            cmbPartyData.Enabled = true;
-
-            bool isEvMode = _config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableTrainerEV");
             rbPartyEv.Enabled = isEvMode;
             cmbPartyEv.Enabled = isEvMode;
             rbPartyIv.Enabled = !isEvMode;
@@ -461,16 +452,31 @@ namespace PochiPochiEditorGabu._Trainer
             }
         }
 
+        private void ClearPartyUI()
+        {
+            DisableAndResetControl(grpPartyData);
+            cmbPartyData.Enabled = false;
+        }
+
+        private void DisableAndResetControl(Control target)
+        {
+            target.Enabled = false;
+            target.ResetSingleControl();
+
+            // 再帰
+            target.ResetControls();
+        }
+
         private void UpdatePartyBinaryState(bool isInitial)
         {
             byte[] partyBinary = GetPartyBinary();
 
             if (isInitial)
             {
-                _uiStateManager.AddBinaries((PartyBinaryKey, partyBinary));
+                _uiStateManager.AddBinaries(("PartyDataKey", partyBinary));
             }
 
-            _uiStateManager.UpdateBinary(PartyBinaryKey, partyBinary);
+            _uiStateManager.UpdateBinary("PartyDataKey", partyBinary);
 
             var reservedInfo = _reservationManager.GetReservation(txtPartyAddr);
             if (reservedInfo != null && partyBinary != null)
@@ -484,46 +490,50 @@ namespace PochiPochiEditorGabu._Trainer
             if (_currentPartyEntries == null || _currentPartyEntries.Count == 0) return null;
 
             Type entryType = _currentPartyEntries[0].GetType();
-            int entrySize = GetPartyEntrySize(entryType);
+            int entrySize = 0;
+
+            if (entryType == typeof(TrainerPartyEntry00))
+            {
+                entrySize = new EntryManager<TrainerPartyEntry00>(_romData, _charmap).GetEntrySize();
+            }
+            else if (entryType == typeof(TrainerPartyEntry01))
+            {
+                entrySize = new EntryManager<TrainerPartyEntry01>(_romData, _charmap).GetEntrySize();
+            }
+            else if (entryType == typeof(TrainerPartyEntry02))
+            {
+                entrySize = new EntryManager<TrainerPartyEntry02>(_romData, _charmap).GetEntrySize();
+            }
+            else if (entryType == typeof(TrainerPartyEntry03))
+            {
+                entrySize = new EntryManager<TrainerPartyEntry03>(_romData, _charmap).GetEntrySize();
+            }
+
             int totalSize = entrySize * _currentPartyEntries.Count;
             byte[] partyBinary = new byte[totalSize];
 
             if (entryType == typeof(TrainerPartyEntry00))
             {
                 IoHelper.WriteStructures(
-                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry00>(), _tblReader, null, false);
+                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry00>(), _charmap, null, false);
             }
             else if (entryType == typeof(TrainerPartyEntry01))
             {
                 IoHelper.WriteStructures(
-                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry01>(), _tblReader, null, false);
+                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry01>(), _charmap, null, false);
             }
             else if (entryType == typeof(TrainerPartyEntry02))
             {
                 IoHelper.WriteStructures(
-                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry02>(), _tblReader, null, false);
+                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry02>(), _charmap, null, false);
             }
             else if (entryType == typeof(TrainerPartyEntry03))
             {
                 IoHelper.WriteStructures(
-                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry03>(), _tblReader, null, false);
+                    partyBinary, 0, _currentPartyEntries.Cast<TrainerPartyEntry03>(), _charmap, null, false);
             }
 
             return partyBinary;
-        }
-
-        private int GetPartyEntrySize(Type type)
-        {
-            int size = 0;
-            var fields = type.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            foreach (var field in fields)
-            {
-                if (field.FieldType.IsValueType)
-                {
-                    size += Marshal.SizeOf(field.FieldType);
-                }
-            }
-            return size;
         }
 
         private void UpdateCurrentPartyEntryFromUI()
@@ -584,8 +594,10 @@ namespace PochiPochiEditorGabu._Trainer
                     nudMax: 6,
                     defaultNudValue: 1,
                     comboItems: comboItems,
-                    defaultComboIndex: cmbDataType.SelectedIndex >= 0 ? cmbDataType.SelectedIndex : 0
-                );
+                    defaultComboIndex:
+                        cmbDataType.SelectedIndex >= 0 
+                        ? cmbDataType.SelectedIndex 
+                        : 0);
 
                 if (popup.ShowDialog() == DialogResult.OK)
                 {
@@ -606,10 +618,18 @@ namespace PochiPochiEditorGabu._Trainer
             {
                 switch (dataType)
                 {
-                    case 0: _currentPartyEntries.Add(new TrainerPartyEntry00()); break;
-                    case 1: _currentPartyEntries.Add(new TrainerPartyEntry01()); break;
-                    case 2: _currentPartyEntries.Add(new TrainerPartyEntry02()); break;
-                    case 3: _currentPartyEntries.Add(new TrainerPartyEntry03()); break;
+                    case 0: 
+                        _currentPartyEntries.Add(new TrainerPartyEntry00()); 
+                        break;
+                    case 1: 
+                        _currentPartyEntries.Add(new TrainerPartyEntry01()); 
+                        break;
+                    case 2: 
+                        _currentPartyEntries.Add(new TrainerPartyEntry02()); 
+                        break;
+                    case 3:
+                        _currentPartyEntries.Add(new TrainerPartyEntry03());
+                        break;
                 }
             }
 
@@ -807,7 +827,7 @@ namespace PochiPochiEditorGabu._Trainer
         {
             // reserve
             var reservedInfo = _reservationManager.GetReservation(txtPartyAddr);
-            if (reservedInfo != null)
+            if (reservedInfo != null && reservedInfo.Data != null)
             {
                 _trainerListManager.Working[idx].pPartyAddr = reservedInfo.Address + GbaConstants.BaseAddr;
                 _trainerListManager.Working[idx].DataType = (byte)cmbDataType.SelectedIndex;
@@ -831,25 +851,25 @@ namespace PochiPochiEditorGabu._Trainer
                             _romData,
                             actualPartyAddr,
                             _currentPartyEntries.Cast<TrainerPartyEntry00>(),
-                            _tblReader, null, false);
+                            _charmap, null, false);
                     else if (dataType == 1)
                         IoHelper.WriteStructures(
                             _romData,
                             actualPartyAddr,
                             _currentPartyEntries.Cast<TrainerPartyEntry01>(),
-                            _tblReader, null, false);
+                            _charmap, null, false);
                     else if (dataType == 2)
                         IoHelper.WriteStructures(
                             _romData,
                             actualPartyAddr,
                             _currentPartyEntries.Cast<TrainerPartyEntry02>(),
-                            _tblReader, null, false);
+                            _charmap, null, false);
                     else if (dataType == 3)
                         IoHelper.WriteStructures(
                             _romData,
                             actualPartyAddr,
                             _currentPartyEntries.Cast<TrainerPartyEntry03>(),
-                            _tblReader, null, false);
+                            _charmap, null, false);
                 }
             }
 
@@ -873,7 +893,7 @@ namespace PochiPochiEditorGabu._Trainer
                     },
                     discardAction: () =>
                     {
-                        // unnecessary
+                        //
                     },
                     cancelAction: () =>
                     {

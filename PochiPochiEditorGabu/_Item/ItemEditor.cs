@@ -152,7 +152,7 @@ namespace PochiPochiEditorGabu._Item
             nudItemId.Value = idx;
             txtItemIdHex.Text = idx.ToString("X4");
 
-            // Load pokemon name
+            // load item name
             txtItemRename.Text = _itemDataManager.Working[idx]._ItemName;
         }
 

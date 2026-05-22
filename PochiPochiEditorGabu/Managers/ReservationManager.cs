@@ -14,7 +14,8 @@ namespace PochiPochiEditorGabu.Managers
             public byte[] Data { get; set; }
         }
 
-        private readonly Dictionary<TextBox, ReservedAreaInfo> _reservations = new Dictionary<TextBox, ReservedAreaInfo>();
+        private readonly Dictionary<TextBox, ReservedAreaInfo> _reservations
+            = new Dictionary<TextBox, ReservedAreaInfo>();
 
         public void SetReservation(TextBox textBox, uint address, byte[] data)
         {
@@ -23,45 +24,50 @@ namespace PochiPochiEditorGabu.Managers
             _reservations[textBox] = new ReservedAreaInfo
             {
                 Address = address,
-                Data = data.ToArray()
+                Data = (byte[])data.Clone()
             };
 
             textBox.Text = address.ToString("X8");
             textBox.BackColor = Color.LightPink;
 
-            textBox.TextChanged -= TextBox_TextChanged;
-            textBox.TextChanged += TextBox_TextChanged;
+            textBox.TextChanged -= OnTextChanged;
+            textBox.TextChanged += OnTextChanged;
         }
 
         public void ClearReservation(TextBox textBox, bool redraw = true)
         {
             if (textBox == null) return;
+            if (!_reservations.Remove(textBox)) return;
 
-            if (_reservations.Remove(textBox))
-            {
-                if (redraw)
-                {
-                    textBox.BackColor = textBox.ReadOnly ? SystemColors.Control : SystemColors.Window;
-                }
-                textBox.TextChanged -= TextBox_TextChanged;
-            }
+            textBox.TextChanged -= OnTextChanged;
+
+            if (redraw)
+                textBox.BackColor = textBox.ReadOnly
+                    ? SystemColors.Control
+                    : SystemColors.Window;
         }
 
         public void ClearAllReservations()
         {
-            foreach (var textBox in _reservations.Keys.ToList())
+            foreach (TextBox textBox in _reservations.Keys.ToArray())
             {
                 ClearReservation(textBox, redraw: true);
             }
         }
 
-        public ReservedAreaInfo GetReservation(TextBox textBox) =>
-            _reservations.TryGetValue(textBox, out var info) ? info : null;
+        public ReservedAreaInfo GetReservation(TextBox textBox)
+        {
+            return _reservations.TryGetValue(textBox, out ReservedAreaInfo info) 
+                ? info 
+                : null;
+        }
 
-        public IEnumerable<ReservedAreaInfo> GetAllReservations() =>
-            _reservations.Values.ToList();
+        public IReadOnlyList<ReservedAreaInfo> GetAllReservations()
+        {
+            return _reservations.Values.ToList();
+        }
 
-        private void TextBox_TextChanged(object sender, EventArgs e)
+        private void OnTextChanged(object sender, EventArgs e)
         {
             if (sender is TextBox txt && _reservations.TryGetValue(txt, out var info))
             {

@@ -53,7 +53,6 @@ namespace PochiPochiEditorGabu.Managers
                         for (int j = 0; j < length; j++)
                         {
                             if (dstPos >= decompressedSize) break;
-
                             result[dstPos++] = result[copySrc++];
                         }
                     }
@@ -203,7 +202,9 @@ namespace PochiPochiEditorGabu.Managers
                 paletteData[i * GbaConstants.BytesPerColor + 1] = (byte)((gbaColor >> GbaConstants.BitsPerByte) & GbaConstants.Mask8Bits);
             }
 
-            return isCompressed ? CompressLZ77(paletteData) : paletteData;
+            return isCompressed 
+                ? CompressLZ77(paletteData) 
+                : paletteData;
         }
 
         public static Bitmap CreateSprite(byte[] imageData, Color[] palette, int width, int height, bool showBackColor)
@@ -452,7 +453,9 @@ namespace PochiPochiEditorGabu.Managers
 
                     for (int x = 0; x < GbaConstants.FootprintTileSize; x++)
                     {
-                        Color pixelColor = (currentByte & (1 << x)) != 0 ? color1 : color0;
+                        Color pixelColor = (currentByte & (1 << x)) != 0 
+                            ? color1 
+                            : color0;
                         int index = ((startY + y) * bmpData.Stride) + ((startX + x) * GbaConstants.ArgbByteCount);
 
                         rgbValues[index + 0] = pixelColor.B;

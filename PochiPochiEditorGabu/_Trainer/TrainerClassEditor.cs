@@ -12,7 +12,7 @@ namespace PochiPochiEditorGabu._Trainer
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -30,13 +30,13 @@ namespace PochiPochiEditorGabu._Trainer
         public TrainerClassEditor(
             byte[] romData, 
             IniFileReader config,
-            TblFileReader tblReader, 
+            TblFileReader charmap, 
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -50,41 +50,42 @@ namespace PochiPochiEditorGabu._Trainer
         private void InitializeManagers()
         {
             _nameManager = EntryManager<TrainerClassNameEntry>.Create(
-               _romData, _tblReader, _config, "TrainerClassNameTableAddress", "TrainerClassNameCount");
+               _romData, _charmap, _config, "TrainerClassNameTableAddress", "TrainerClassNameCount");
             _prizeMultiManager = EntryManager<TrainerClassPrizeMultiplierEntry>.Create(
-                _romData, _tblReader, _config, "TrainerClassPrizeMultiplierTableAddress", "TrainerClassPrizeMultiplierCount");
+                _romData, _charmap, _config, "TrainerClassPrizeMultiplierTableAddress", "TrainerClassPrizeMultiplierCount");
 
             if (_config.GetBool("EnableTrainerClassEncounterMusic"))
             {
                 _encounterMusicManager = EntryManager<TrainerClassEncounterMusicEntry>.Create(
-                    _romData, _tblReader, _config, "TrainerClassEncounterMusicTableAddress", "TrainerClassNameCount");
+                    _romData, _charmap, _config, "TrainerClassEncounterMusicTableAddress", "TrainerClassNameCount");
             }
 
             if (_config.GetBool("EnableTrainerClassBattleMusic"))
             {
                 _battleMusicManager = EntryManager<TrainerClassBattleMusicEntry>.Create(
-                    _romData, _tblReader, _config, "TrainerClassBattleMusicTableAddress", "TrainerClassNameCount");
+                    _romData, _charmap, _config, "TrainerClassBattleMusicTableAddress", "TrainerClassNameCount");
             }
 
             if (_config.GetBool("EnableTrainerClassPokeBall"))
             {
                 _pokeBallManager = EntryManager<TrainerClassPokeBallEntry>.Create(
-                    _romData, _tblReader, _config, "TrainerClassPokeBallTableAddress", "TrainerClassNameCount");
+                    _romData, _charmap, _config, "TrainerClassPokeBallTableAddress", "TrainerClassNameCount");
             }
 
             if (_config.GetBool("EnableTrainerClassBaseIV"))
             {
                 _baseIvManager = EntryManager<TrainerClassBaseIVEntry>.Create(
-                    _romData, _tblReader, _config, "TrainerClassBaseIVTableAddress", "TrainerClassNameCount");
+                    _romData, _charmap, _config, "TrainerClassBaseIVTableAddress", "TrainerClassNameCount");
             }
         }
 
         private void InitializeEventHandlers()
         {
-            cmbClassName.SelectedIndexChanged += cmbClassName_SelectedIndexChanged;
-            txtClassName.TextChanged += txtClassName_TextChanged;
             btnSave.Click += btnSave_Click;
             this.FormClosing += TrainerClassEditor_FormClosing;
+
+            cmbClassName.SelectedIndexChanged += cmbClassName_SelectedIndexChanged;
+            txtClassName.TextChanged += txtClassName_TextChanged;
         }
 
         private void InitializeControls()
@@ -94,6 +95,16 @@ namespace PochiPochiEditorGabu._Trainer
                              .Select(entry => entry._ClassName)
                              .ToArray();
             cmbClassName.Items.AddRange(classNames);
+        }
+
+        private void InitializeUIStates()
+        {
+            btnSave.Enabled = false;
+            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
+
+            _uiStateManager.AddControlsRecursive(
+                grpClassData, 
+                grpClassDataExtra);
 
             if (_config.GetBool("IsAppliedCFRU"))
             {
@@ -127,15 +138,6 @@ namespace PochiPochiEditorGabu._Trainer
             }
         }
 
-        private void InitializeUIStates()
-        {
-            btnSave.Enabled = false;
-            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
-            _uiStateManager.AddControlsRecursive(
-                grpClassData, 
-                grpClassDataExtra);
-        }
-
         private void LoadDataToUI(int idx)
         {
             _isUpdatingUI = true;
@@ -145,13 +147,13 @@ namespace PochiPochiEditorGabu._Trainer
             nudClassName.Value = idx;
 
             // 肩書き名
-            txtClassName.Text = _nameManager.Working[idx]._ClassName;
+            txtClassName.Text = _nameManager.Original[idx]._ClassName;
 
             // 賞金倍率
-            var prizeEntry = _prizeMultiManager.Working.FirstOrDefault(e => e._ClassNameIndex == idx);
+            var prizeEntry = _prizeMultiManager.Original.FirstOrDefault(e => e._ClassNameIndex == idx);
             if (prizeEntry == null)
             {
-                prizeEntry = _prizeMultiManager.Working.FirstOrDefault(e => e._ClassNameIndex == 0xFF);
+                prizeEntry = _prizeMultiManager.Original.FirstOrDefault(e => e._ClassNameIndex == 0xFF);
             }
             nudPrizeMulti.Value = prizeEntry?._PrizeMultiplier ?? nudPrizeMulti.Minimum;
 
@@ -160,22 +162,22 @@ namespace PochiPochiEditorGabu._Trainer
             {
                 if (_config.GetBool("EnableTrainerClassEncounterMusic"))
                 {
-                    DataBindingHelper.BindObjectToControls(this, _encounterMusicManager.Working[idx]);
+                    DataBindingHelper.BindObjectToControls(this, _encounterMusicManager.Original[idx]);
                 }
 
                 if (_config.GetBool("EnableTrainerClassBattleMusic"))
                 {
-                    DataBindingHelper.BindObjectToControls(this, _battleMusicManager.Working[idx]);
+                    DataBindingHelper.BindObjectToControls(this, _battleMusicManager.Original[idx]);
                 }
 
                 if (_config.GetBool("EnableTrainerClassPokeBall"))
                 {
-                    DataBindingHelper.BindObjectToControls(this, _pokeBallManager.Working[idx]);
+                    DataBindingHelper.BindObjectToControls(this, _pokeBallManager.Original[idx]);
                 }
 
                 if (_config.GetBool("EnableTrainerClassBaseIV"))
                 {
-                    DataBindingHelper.BindObjectToControls(this, _baseIvManager.Working[idx]);
+                    DataBindingHelper.BindObjectToControls(this, _baseIvManager.Original[idx]);
                 }
             }
 
@@ -223,7 +225,7 @@ namespace PochiPochiEditorGabu._Trainer
             int classNameEntryLength = _config.GetInt("TrainerClassNameEntryLength");
             int maxAllowedBytes = classNameEntryLength - 1;
             string currentText = txtClassName.Text;
-            byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
+            byte[] currentBytes = _charmap.StringToBytes(currentText, false);
 
             if (currentBytes.Length > maxAllowedBytes)
             {
@@ -231,7 +233,7 @@ namespace PochiPochiEditorGabu._Trainer
 
                 while (currentText.Length > 0)
                 {
-                    currentBytes = _tblReader.StringToBytes(currentText, false);
+                    currentBytes = _charmap.StringToBytes(currentText, false);
                     if (currentBytes.Length <= maxAllowedBytes) break;
 
                     currentText = currentText.Substring(0, currentText.Length - 1);
@@ -244,7 +246,7 @@ namespace PochiPochiEditorGabu._Trainer
                 _isUpdatingUI = false;
             }
 
-            string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
+            string validName = _charmap.BytesToString(currentBytes, 0, currentBytes.Length);
 
             _isUpdatingUI = true;
             cmbClassName.Items[_currentClassNameIdx] = validName;

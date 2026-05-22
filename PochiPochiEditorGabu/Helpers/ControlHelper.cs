@@ -10,49 +10,46 @@ namespace PochiPochiEditorGabu.Helpers
 {
     public static class ControlHelper
     {
-        private static readonly HashSet<Type> ContainerTypes = new HashSet<Type>
-        {
-            typeof(Panel),
-            typeof(GroupBox),
-            typeof(TabControl),
-            typeof(TabPage),
-        };
-
-        /// <summary>
-        /// 再帰的コントロールの有効化・無効化（コンテナ系対象外）
-        ///
-        /// var excludeNames = new[] { "btnTest1", "btnTest2" };
-        /// var excludeTypes = new[] { typeof(TextBox), typeof(ComboBox) };
-        /// </summary>
+        // 再帰的コントロールの有効化・無効化
+        // var excludeNames = new[] { "btnTest1", "btnTest2" };
+        // var excludeTypes = new[] { typeof(TextBox), typeof(ComboBox) };
         public static void SetControlsEnabled(
             this Control container,
             bool enabled,
             IEnumerable<string> excludeNames = null,
             IEnumerable<Type> excludeTypes = null)
         {
-            ExecuteRecursive(
-                container,
-                ToHashSet(excludeNames),
-                ToHashSet(excludeTypes),
-                ctrl => ctrl.Enabled = enabled);
+            var nameSet = 
+                excludeNames != null 
+                ? new HashSet<string>(excludeNames) 
+                : null;
+            var typeSet = 
+                excludeTypes != null 
+                ? new HashSet<Type>(excludeTypes) 
+                : null;
+
+            ExecuteRecursive(container, nameSet, typeSet, ctrl => ctrl.Enabled = enabled);
         }
 
-        /// <summary>
-        /// 再帰的コントロールの初期化（コンテナ系対象外）
-        /// </summary>
+        // 再帰的コントロールの初期化
         public static void ResetControls(
-            this Control container,
-            IEnumerable<string> excludeNames = null,
-            IEnumerable<Type> excludeTypes = null)
+                this Control container,
+                IEnumerable<string> excludeNames = null,
+                IEnumerable<Type> excludeTypes = null)
         {
-            ExecuteRecursive(
-                container,
-                ToHashSet(excludeNames),
-                ToHashSet(excludeTypes),
-                ResetControl);
+            var nameSet = 
+                excludeNames != null 
+                ? new HashSet<string>(excludeNames) 
+                : null;
+            var typeSet = 
+                excludeTypes != null 
+                ? new HashSet<Type>(excludeTypes) 
+                : null;
+
+            ExecuteRecursive(container, nameSet, typeSet, ResetSingleControl);
         }
 
-        private static void ResetControl(Control ctrl)
+        public static void ResetSingleControl(this Control ctrl)
         {
             switch (ctrl)
             {
@@ -75,87 +72,45 @@ namespace PochiPochiEditorGabu.Helpers
         }
 
         private static void ExecuteRecursive(
-            Control container,
-            HashSet<string> nameSet,
-            HashSet<Type> typeSet,
-            Action<Control> action)
+                    Control ctrl,
+                    HashSet<string> nameSet,
+                    HashSet<Type> typeSet,
+                    Action<Control> action)
         {
-            foreach (Control ctrl in container.Controls)
+            if (ctrl == null) return;
+
+            if ((nameSet?.Contains(ctrl.Name) != true) && (typeSet?.Contains(ctrl.GetType()) != true))
             {
-                bool isContainer = ContainerTypes.Contains(ctrl.GetType());
+                action(ctrl);
+            }
 
-                if (isContainer)
+            if (ShouldRecurse(ctrl))
+            {
+                foreach (Control child in ctrl.Controls)
                 {
-                    ExecuteRecursive(ctrl, nameSet, typeSet, action);
-                    continue;
-                }
-
-                bool isExcluded = (nameSet != null && nameSet.Contains(ctrl.Name)) ||
-                                  (typeSet != null && typeSet.Contains(ctrl.GetType()));
-                if (!isExcluded)
-                {
-                    action(ctrl);
+                    ExecuteRecursive(child, nameSet, typeSet, action);
                 }
             }
         }
 
-        private static HashSet<T> ToHashSet<T>(IEnumerable<T> source)
-        { 
-            return source != null 
-                ? new HashSet<T>(source) 
-                : null;
+        private static bool ShouldRecurse(Control ctrl)
+        {
+            return ctrl is Panel || ctrl is GroupBox || ctrl is TabControl || ctrl is TabPage;
         }
 
-        /// <summary>
-        /// 16進数文字列を変換・真偽
-        ///
-        /// false の場合 0 が返るので注意
-        /// ValidateAndFormatInputTextBox の形式と矛盾
-        /// </summary>
+        // シンプルなアドレス変換
         public static bool TryParseAddress(string addrStr, out uint addrValue)
         {
-            return uint.TryParse(
-                addrStr,
-                NumberStyles.HexNumber,
-                CultureInfo.InvariantCulture,
-                out addrValue);
+            return uint.TryParse(addrStr, NumberStyles.HexNumber, null, out addrValue);
         }
 
-        /// <summary>
-        /// テキストボックス内のアドレスを判定・整形
-        ///
-        /// showMessage: true でメッセージ表示
-        /// 空白・"null"・無効な文字列は null に収束
-        /// </summary>
-        public static bool ValidateAndFormatInputTextBox(
-            TextBox textbox,
-            out uint? addrValue,
-            bool showMessage = true)
+        // テキストボックスを判定・整形
+        public static bool ValidateAndFormatInputTextBox(TextBox txt, out uint? addrValue, bool showMessage = true)
         {
-            string addrStr = textbox.Text.Trim();
+            string addrStr = txt.Text.Trim();
 
-            // 1：空白の場合
-            if (string.IsNullOrWhiteSpace(addrStr))
-            {
-                addrValue = null;
-                textbox.Text = string.Empty;
-                return false;
-            }
-
-            // 2：文字列 "null" の場合
-            if (string.Equals(addrStr, "null", StringComparison.OrdinalIgnoreCase))
-            {
-                addrValue = null;
-                textbox.Text = "null";
-                return true;
-            }
-
-            // 3：無効な文字列の場合
             if (!TryParseAddress(addrStr, out uint resultValue))
             {
-                addrValue = null;
-                textbox.Clear();
-
                 if (showMessage)
                 {
                     MessageBox.Show(
@@ -165,18 +120,16 @@ namespace PochiPochiEditorGabu.Helpers
                         MessageBoxIcon.Warning);
                 }
 
+                addrValue = null;
                 return false;
             }
 
-            // 4：有効な文字列の場合
             addrValue = resultValue;
-            textbox.Text = resultValue.ToString("X8");
+            txt.Text = resultValue.ToString("X8");
             return true;
         }
 
-        /// <summary>
-        /// 入力された16進数文字列の整形のみをイベントに紐付け
-        /// </summary>
+        // 入力された16進数文字列の整形のみを紐付け
         public static void AttachAddressAutoFormat(params TextBox[] textboxes)
         {
             foreach (TextBox textbox in textboxes)
@@ -186,20 +139,16 @@ namespace PochiPochiEditorGabu.Helpers
             }
         }
 
-        /// <summary>
-        /// フォーカスが外れた時の自動整形
-        /// </summary>
+        // フォーカスが外れた時の自動整形
         private static void AddressTextBox_Leave(object sender, EventArgs e)
         {
-            if (sender is TextBox txt)
-            {
-                ValidateAndFormatInputTextBox(txt, out _, showMessage: false);
-            }
+            if (!(sender is TextBox txt)) return;
+            if (string.IsNullOrWhiteSpace(txt.Text)) return;
+
+            ValidateAndFormatInputTextBox(txt, out _, showMessage: false);
         }
 
-        /// <summary>
-        /// 保存確認処理
-        /// </summary>
+        // 保存確認処理
         public static DialogResult HandleUnsavedChanges(
             Action saveAction,
             Action discardAction,
@@ -227,9 +176,7 @@ namespace PochiPochiEditorGabu.Helpers
             return result;
         }
 
-        /// <summary>
-        /// コントロールの外側に枠描画
-        /// </summary>
+        // コントロールの外側に枠描画
         public static void AttachExternalBorder(params Control[] targets)
         {
             foreach (Control target in targets)
@@ -252,9 +199,39 @@ namespace PochiPochiEditorGabu.Helpers
             }
         }
 
-        /// <summary>
-        /// nud の「<」「>」ボタンの有効・無効を強制更新
-        /// </summary>
+        // NumericUpDownにButtonを連動させる
+        public static void AttachNumericUpDownNavigators(
+            NumericUpDown nud,
+            Button btnPrev,
+            Button btnNext)
+        {
+            if (btnPrev != null)
+            {
+                btnPrev.Click += (sender, e) =>
+                {
+                    if (nud.Value > nud.Minimum)
+                    {
+                        nud.Value--;
+                    }
+                };
+            }
+
+            if (btnNext != null)
+            {
+                btnNext.Click += (sender, e) =>
+                {
+                    if (nud.Value < nud.Maximum)
+                    {
+                        nud.Value++;
+                    }
+                };
+            }
+
+            nud.ValueChanged += (sender, e) => UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
+            UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
+        }
+
+        // NumericUpDownのButtonの状態を更新
         public static void UpdateNumericUpDownNavigators(
             NumericUpDown nud,
             Button btnPrev,
@@ -281,45 +258,13 @@ namespace PochiPochiEditorGabu.Helpers
             }
         }
 
-        /// <summary>
-        /// nud に「<」「>」ボタンを連動させる
-        /// </summary>
-        public static void AttachNumericUpDownNavigators(
-            NumericUpDown nud,
-            Button btnPrev,
-            Button btnNext)
-        {
-            if (btnPrev != null)
-            {
-                btnPrev.Click += (sender, e) =>
-                {
-                    if (nud.Value > nud.Minimum) nud.Value--;
-                };
-            }
-
-            if (btnNext != null)
-            {
-                btnNext.Click += (sender, e) =>
-                {
-                    if (nud.Value < nud.Maximum) nud.Value++;
-                };
-            }
-
-            nud.ValueChanged += (sender, e) => UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
-            UpdateNumericUpDownNavigators(nud, btnPrev, btnNext);
-        }
-
-        /// <summary>
-        /// 特定のコントロールをラジオボタンと連動させる
-        /// </summary>
+        // RadioButtonを特定のコントロールと連動させる
         public static void AttachEnterEvent(RadioButton rb, Control ctrl)
         {
             ctrl.Enter += (sender, e) => rb.Checked = true;
         }
 
-        /// <summary>
-        /// コンボボックスに特定のアイテム名を追加する
-        /// </summary>
+        // ComboBoxにアイテム名を追加する
         public static void SetupComboBoxItems(
             ComboBox cmb,
             int defaultIndex,
@@ -338,28 +283,9 @@ namespace PochiPochiEditorGabu.Helpers
             }
         }
 
-        /// <summary>
-        /// テキストファイルから「[00]XXXX」を読み取る
-        /// </summary>
+        // ファイルから「[00]XXXX」を読み取ってComboBoxに格納
         public static void LoadComboBoxFromTextFile(ComboBox comboBox, string filePath)
         {
-            bool TryParseLine(string line, out KeyValuePair<int, string> entry)
-            {
-                int closeBracket = line.IndexOf(']');
-                if (line.StartsWith("[") && closeBracket > 1)
-                {
-                    string hex = line.Substring(1, closeBracket - 1);
-                    if (int.TryParse(hex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out int index))
-                    {
-                        entry = new KeyValuePair<int, string>(index, line.Trim());
-                        return true;
-                    }
-                }
-
-                entry = default(KeyValuePair<int, string>);
-                return false;
-            }
-
             var entries = new List<KeyValuePair<int, string>>();
             foreach (string line in File.ReadLines(filePath))
             {
@@ -372,6 +298,23 @@ namespace PochiPochiEditorGabu.Helpers
             comboBox.DisplayMember = nameof(KeyValuePair<int, string>.Value);
             comboBox.ValueMember = nameof(KeyValuePair<int, string>.Key);
             comboBox.DataSource = entries;
+
+            bool TryParseLine(string line, out KeyValuePair<int, string> entry)
+            {
+                int closeBracket = line.IndexOf(']');
+                if (line.StartsWith("[") && closeBracket > 1)
+                {
+                    string hex = line.Substring(1, closeBracket - 1);
+                    if (int.TryParse(hex, NumberStyles.HexNumber, null, out int index))
+                    {
+                        entry = new KeyValuePair<int, string>(index, line.Trim());
+                        return true;
+                    }
+                }
+
+                entry = default(KeyValuePair<int, string>);
+                return false;
+            }
         }
     }
 }

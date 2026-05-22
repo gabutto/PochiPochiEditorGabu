@@ -36,11 +36,9 @@ namespace PochiPochiEditorGabu.Helpers
             _ptrSize = GbaConstants.PtrSize;
         }
         
-        /// <summary>
-        /// ポインタエントリー判定
-        /// </summary>
+        // ポインタエントリー判定
         public IReadOnlyList<PointerEntry> ParsePointerEntries(
-            int startOffset,
+            uint startAddress,
             string patternString,
             int? maxEntries = null,
             HashSet<uint> referencePointers = null,
@@ -48,7 +46,7 @@ namespace PochiPochiEditorGabu.Helpers
         {
             var result = new List<PointerEntry>();
             var pattern = ParsePattern(patternString);
-            int cursor = startOffset;
+            int cursor = (int)startAddress;
             int count = 0;
 
             while (cursor <= _data.Length - pattern.Length)
@@ -58,8 +56,12 @@ namespace PochiPochiEditorGabu.Helpers
                 // エントリー0を除く位置が参照ポインタと一致したら終端と判断する
                 if (count > 0 && referencePointers != null && referencePointers.Contains((uint)cursor)) break;
 
-                if (!TryMatchPattern(cursor, pattern, out uint targetOffset,
-                                     out uint px, out uint py, out uint pz,
+                if (!TryMatchPattern(cursor,
+                                     pattern, 
+                                     out uint targetOffset,
+                                     out uint px, 
+                                     out uint py, 
+                                     out uint pz,
                                      allowNullPointer))
                 {
                     break;
@@ -82,26 +84,28 @@ namespace PochiPochiEditorGabu.Helpers
             return result;
         }
 
-        /// <summary>
-        /// データエントリー判定
-        /// </summary>
+        // データエントリー判定
         public IReadOnlyList<DataEntry> ParseDataEntries(
-            int startOffset,
+            uint startAddress,
             string patternString,
             int? maxEntries = null,
             bool allowNullPointer = false)
         {
             var result = new List<DataEntry>();
             var pattern = ParsePattern(patternString);
-            int cursor = startOffset;
+            int cursor = (int)startAddress;
             int count = 0;
 
             while (cursor <= _data.Length - pattern.Length)
             {
                 if (maxEntries.HasValue && count >= maxEntries.Value) break;
 
-                if (!TryMatchPattern(cursor, pattern, out _,
-                                     out uint px, out uint py, out uint pz,
+                if (!TryMatchPattern(cursor, 
+                                     pattern,
+                                     out _,
+                                     out uint px, 
+                                     out uint py, 
+                                     out uint pz,
                                      allowNullPointer))
                 {
                     break;
@@ -124,7 +128,7 @@ namespace PochiPochiEditorGabu.Helpers
 
         private PatternDefinition ParsePattern(string patternStr)
         {
-            string[] parts = patternStr.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = patternStr.Split(new char[] { ' ' });
             var patternBytes = new PatternByte[parts.Length];
             var def = new PatternDefinition
             {
@@ -146,13 +150,31 @@ namespace PochiPochiEditorGabu.Helpers
                 else if (token == "PP")
                 {
                     patternBytes[i] = new PatternByte { MatchType = ByteMatchType.Pointer };
-                    if (def.PointerOffset == -1) def.PointerOffset = i;
+                    if (def.PointerOffset == -1)
+                    {
+                        def.PointerOffset = i;
+                    }
                     ppCount++;
                 }
-                else if (token.Length == 2 && IsParamToken(token, out char type, out int paramIdx))
+                else if (token.Length == GbaConstants.charPerByte
+                    && IsParamToken(token, out char type, out int paramIdx))
                 {
-                    // b=1, s=2, i=4 バイト
-                    int size = type == 'b' ? 1 : (type == 's' ? 2 : 4);
+                    int size;
+                    switch (type)
+                    {
+                        case 'b':
+                            size = 1;
+                            break;
+                        case 's':
+                            size = 2;
+                            break;
+                        case 'i':
+                            size = 4;
+                            break;
+                        default:
+                            size = 0;
+                            break;
+                    }
 
                     ref ParamDefinition p = ref def.Params[paramIdx];
                     if (!p.IsUsed)
@@ -169,12 +191,12 @@ namespace PochiPochiEditorGabu.Helpers
                     patternBytes[i] = new PatternByte
                     {
                         MatchType = ByteMatchType.Exact,
-                        Value = Convert.ToByte(token, 16)
+                        Value = Convert.ToByte(token, GbaConstants.HexBase)
                     };
                 }
             }
 
-            def.HasPointer = ppCount == _ptrSize;
+            def.HasPointer = (ppCount == _ptrSize);
             return def;
         }
 
@@ -289,13 +311,18 @@ namespace PochiPochiEditorGabu.Helpers
         }
 
         private uint ReadUInt16LE(int offset)
-            => (uint)(_data[offset] | (_data[offset + 1] << 8));
+        {
+            return (uint)(_data[offset] | (_data[offset + 1] << 8));
+        }
+
 
         private uint ReadUInt32LE(int offset)
-            => (uint)(_data[offset] |
-                     (_data[offset + 1] << 8) |
-                     (_data[offset + 2] << 16) |
-                     (_data[offset + 3] << 24));
+        {
+            return (uint)(_data[offset] 
+                        |(_data[offset + 1] << 8) 
+                        |(_data[offset + 2] << 16)
+                        |(_data[offset + 3] << 24));
+        }
 
         private enum ByteMatchType
         {

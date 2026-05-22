@@ -8,8 +8,7 @@ namespace PochiPochiEditorGabu.Managers
     public class UIStateManager
     {
         private readonly Action<bool> _stateChangedCallback;
-
-        private readonly Dictionary<Control, object> _initialValues = new Dictionary<Control, object>();
+        private readonly Dictionary<Control, object> _initialControlValues = new Dictionary<Control, object>();
         private readonly Dictionary<object, byte[]> _initialBinaryValues = new Dictionary<object, byte[]>();
         private readonly Dictionary<object, byte[]> _currentBinaryValues = new Dictionary<object, byte[]>();
         private readonly List<RadioButtonGroup> _radioGroups = new List<RadioButtonGroup>();
@@ -25,17 +24,19 @@ namespace PochiPochiEditorGabu.Managers
             _stateChangedCallback = stateChangedCallback;
         }
 
+        // 指定したコントロールを登録
         public void AddControls(params Control[] controls)
         {
             foreach (var control in controls)
             {
-                if (_initialValues.ContainsKey(control)) continue;
+                if (_initialControlValues.ContainsKey(control)) continue;
 
-                _initialValues.Add(control, GetControlValue(control));
+                _initialControlValues.Add(control, GetControlValue(control));
                 AttachEventHandler(control);
             }
         }
 
+        // 再帰的に対象コンテナ内を一括登録
         public void AddControlsRecursive(params Control[] containers)
         {
             var targetControls = new List<Control>();
@@ -60,7 +61,7 @@ namespace PochiPochiEditorGabu.Managers
 
             foreach (Control child in parent.Controls)
             {
-                if (child is NumericUpDown || child is TextBox || child is ComboBox || child is CheckBox)
+                if (IsTrackedControl(child))
                 {
                     targetControls.Add(child);
                 }
@@ -71,14 +72,17 @@ namespace PochiPochiEditorGabu.Managers
             }
         }
 
-        private bool IsAllowedContainer(Control control)
+        private static bool IsTrackedControl(Control c)
         {
-            return control is Panel ||
-                   control is GroupBox ||
-                   control is TabControl ||
-                   control is TabPage;
+            return c is NumericUpDown || c is TextBox || c is ComboBox || c is CheckBox;
         }
 
+        private static bool IsAllowedContainer(Control c)
+        {
+            return c is Panel || c is GroupBox || c is TabControl || c is TabPage;
+        }
+
+        // バイナリデータを初期値として登録
         public void AddBinaries(params (object Key, byte[] Data)[] items)
         {
             foreach (var (key, data) in items)
@@ -91,6 +95,7 @@ namespace PochiPochiEditorGabu.Managers
             }
         }
 
+        // 登録済みのバイナリデータを更新
         public void UpdateBinary(object key, byte[] newData)
         {
             if (!_initialBinaryValues.ContainsKey(key)) return;
@@ -99,6 +104,7 @@ namespace PochiPochiEditorGabu.Managers
             EvaluateState();
         }
 
+        // バイナリデータが初期値から変化しているか
         public bool HasBinaryChanges(object key)
         {
             if (!_initialBinaryValues.TryGetValue(key, out var init) ||
@@ -114,20 +120,44 @@ namespace PochiPochiEditorGabu.Managers
             return !init.SequenceEqual(curr);
         }
 
+        // ラジオボタンをグループ単位で登録
+        public void AddRadioButtons(params RadioButton[][] groups)
+        {
+            foreach (var group in groups)
+            {
+                var radioGroup = new RadioButtonGroup
+                {
+                    Buttons = group,
+                    InitialChecked = group.FirstOrDefault(rb => rb.Checked)
+                };
+
+                _radioGroups.Add(radioGroup);
+
+                foreach (var rb in group)
+                {
+                    rb.CheckedChanged += OnRadioButtonCheckedChanged;
+                }
+            }
+        }
+
+        private void OnRadioButtonCheckedChanged(object sender, EventArgs e)
+        {
+            EvaluateState();
+        }
+
+        // 現在の値を新しい初期値として確定
         public void UpdateInitialValues()
         {
-            foreach (var ctrl in _initialValues.Keys.ToList())
+            foreach (var ctrl in _initialControlValues.Keys.ToList())
             {
-                _initialValues[ctrl] = GetControlValue(ctrl);
+                _initialControlValues[ctrl] = GetControlValue(ctrl);
             }
 
-            // binary
             foreach (var key in _initialBinaryValues.Keys.ToList())
             {
                 _initialBinaryValues[key] = _currentBinaryValues[key]?.ToArray();
             }
 
-            // radio button
             foreach (var group in _radioGroups)
             {
                 group.InitialChecked = group.Buttons.FirstOrDefault(rb => rb.Checked);
@@ -138,39 +168,42 @@ namespace PochiPochiEditorGabu.Managers
 
         private void EvaluateState()
         {
-            bool hasChanges = false;
+            bool hasChanges = DetectControlChanges()
+                           || DetectBinaryChanges()
+                           || DetectRadioChanges();
 
-            foreach (var kvp in _initialValues)
+            _stateChangedCallback.Invoke(hasChanges);
+        }
+
+        private bool DetectControlChanges()
+        {
+            foreach (KeyValuePair<Control, object> kvp in _initialControlValues)
             {
-                object currentValue = GetControlValue(kvp.Key);
-                if (!Equals(currentValue, kvp.Value))
+                if (!Equals(GetControlValue(kvp.Key), kvp.Value))
                 {
-                    hasChanges = true;
-                    break;
+                    return true;
                 }
             }
+            return false;
+        }
 
-            // binary
-            if (!hasChanges)
-            {
-                hasChanges = _initialBinaryValues.Keys.Any(HasBinaryChanges);
-            }
+        private bool DetectBinaryChanges()
+        {
+            return _initialBinaryValues.Keys.Any(HasBinaryChanges);
+        }
 
-            // radio button
-            if (!hasChanges)
+
+        private bool DetectRadioChanges()
+        {
+            foreach (RadioButtonGroup group in _radioGroups)
             {
-                foreach (var group in _radioGroups)
+                RadioButton current = group.Buttons.FirstOrDefault(rb => rb.Checked);
+                if (!ReferenceEquals(current, group.InitialChecked))
                 {
-                    var currentChecked = group.Buttons.FirstOrDefault(rb => rb.Checked);
-                    if (currentChecked != group.InitialChecked)
-                    {
-                        hasChanges = true;
-                        break;
-                    }
+                    return true;
                 }
             }
-
-            _stateChangedCallback?.Invoke(hasChanges);
+            return false;
         }
 
         private static object GetControlValue(Control control)
@@ -209,30 +242,6 @@ namespace PochiPochiEditorGabu.Managers
                     chk.CheckedChanged += (s, e) => EvaluateState();
                     break;
             }
-        }
-
-        public void AddRadioButtons(params RadioButton[][] groups)
-        {
-            foreach (var group in groups)
-            {
-                var radioGroup = new RadioButtonGroup
-                {
-                    Buttons = group,
-                    InitialChecked = group.FirstOrDefault(rb => rb.Checked)
-                };
-
-                _radioGroups.Add(radioGroup);
-
-                foreach (var rb in group)
-                {
-                    rb.CheckedChanged += OnRadioButtonCheckedChanged;
-                }
-            }
-        }
-
-        private void OnRadioButtonCheckedChanged(object sender, EventArgs e)
-        {
-            EvaluateState();
         }
     }
 }

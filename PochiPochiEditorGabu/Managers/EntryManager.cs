@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 using PochiPochiEditorGabu.Constants;
 using PochiPochiEditorGabu.FileReaders;
@@ -30,9 +31,7 @@ namespace PochiPochiEditorGabu.Managers
             _dynamicLengths = dynamicLengths;
         }
 
-        /// <summary>
-        /// エントリーリストを作成
-        /// </summary>
+        // エントリーリストを作成
         public void Load(uint? address, int count)
         {
             Address = address;
@@ -42,9 +41,7 @@ namespace PochiPochiEditorGabu.Managers
             Working = Original.Select(x => CloneHelper.Clone(x)).ToList();
         }
 
-        /// <summary>
-        /// 特定のエントリーを更新
-        /// </summary>
+        // 特定のエントリーを更新
         public void Save(
             int idx,
             bool appendTerminator = true,
@@ -56,93 +53,90 @@ namespace PochiPochiEditorGabu.Managers
             int offset = (int)Address.Value + (idx * entrySize);
 
             // 1要素だけの配列
-            var singleItemList = new List<T> { Working[idx] };
             IoHelper.WriteStructures(
-                _romData, (uint?)offset,
-                singleItemList,
+                _romData, 
+                (uint?)offset,
+                new List<T> { Working[idx] },
                 _tblReader,
                 _dynamicLengths,
                 appendTerminator,
                 paddingByte1,
                 paddingByte2);
 
+            // バックアップの更新
             Original[idx] = CloneHelper.Clone(Working[idx]);
         }
 
-        /// <summary>
-        /// エントリーサイズ計算
-        /// </summary>
+        // エントリーサイズ計算
         public int GetEntrySize()
         {
-            var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance)
-                                  .OrderBy(f => f.MetadataToken)
-                                  .ToArray();
-
             int size = 0;
-            foreach (var field in fields)
+
+            foreach (var field in GetOrderedFields())
             {
                 if (field.FieldType == typeof(string))
                 {
-                    var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                    int length = (
-                        attr != null &&
+                    if (field.GetCustomAttribute<DynamicStringAttribute>() is DynamicStringAttribute attr &&
                         _dynamicLengths != null &&
-                        _dynamicLengths.ContainsKey(attr.EntryLength))
-                            ? _dynamicLengths[attr.EntryLength]
-                            : 0;
-
-                    size += length;
+                        _dynamicLengths.TryGetValue(attr.EntryLength, out int len))
+                    {
+                        size += len;
+                    }
                 }
                 else if (field.FieldType.IsValueType)
                 {
-                    size += System.Runtime.InteropServices.Marshal.SizeOf(field.FieldType);
+                    size += Marshal.SizeOf(field.FieldType);
                 }
             }
+
             return size;
         }
 
-        /// <summary>
-        /// エントリー作成（簡易）
-        /// </summary>
-        public static EntryManager<T> Create(
-            byte[] romData,
-            TblFileReader tblReader,
-            IniFileReader config,
-            string addressKey,
-            string countKey)
+        private static FieldInfo[] GetOrderedFields()
         {
-            var dynamicLengths = new Dictionary<string, int>();
+            return typeof(T)
+                .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .OrderBy(f => f.MetadataToken)
+                .ToArray();
+        }
 
-            var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var field in fields)
-            {
-                var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                if (attr != null)
-                {
-                    if (!dynamicLengths.ContainsKey(attr.EntryLength))
-                    {
-                        dynamicLengths[attr.EntryLength] = config.GetInt(attr.EntryLength);
-                    }
-
-                    if (!string.IsNullOrEmpty(attr.AllowedLength) && !dynamicLengths.ContainsKey(attr.AllowedLength))
-                    {
-                        dynamicLengths[attr.AllowedLength] = config.GetInt(attr.AllowedLength);
-                    }
-                }
-            }
-
+        // エントリー作成（簡易）
+        public static EntryManager<T> Create(
+             byte[] romData,
+             TblFileReader tblReader,
+             IniFileReader config,
+             string addressKey,
+             string countKey)
+        {
+            var dynamicLengths = BuildDynamicLengths(config);
             var manager = new EntryManager<T>(
                 romData,
                 tblReader,
-                dynamicLengths.Count > 0
-                    ? dynamicLengths
-                    : null);
+                dynamicLengths.Count > 0 ? dynamicLengths : default);
 
-            uint? tableAddr = config.GetAddr(addressKey);
-            int count = config.GetInt(countKey);
-            manager.Load(tableAddr, count);
-
+            manager.Load(config.GetAddr(addressKey), config.GetInt(countKey));
             return manager;
+
+            Dictionary<string, int> BuildDynamicLengths(IniFileReader cfg)
+            {
+                var lengths = new Dictionary<string, int>();
+
+                foreach (var field in GetOrderedFields())
+                {
+                    if (!(field.GetCustomAttribute<DynamicStringAttribute>() is DynamicStringAttribute attr)) continue;
+
+                    if (!lengths.ContainsKey(attr.EntryLength))
+                        lengths[attr.EntryLength] = cfg.GetInt(attr.EntryLength);
+
+                    if (!string.IsNullOrEmpty(attr.AllowedLength) &&
+                        !lengths.ContainsKey(attr.AllowedLength))
+                    {
+                        lengths[attr.AllowedLength] = cfg.GetInt(attr.AllowedLength);
+                    }
+                }
+
+                return lengths;
+            }
         }
     }
 
@@ -155,7 +149,7 @@ namespace PochiPochiEditorGabu.Managers
         }
     }
 
-    // entry
+    /* ---------------------------------------------------------------- */
 
     public class PokemonNameEntry
     {
@@ -167,7 +161,7 @@ namespace PochiPochiEditorGabu.Managers
     {
         public uint pSpriteFrontImgAddr;
         public ushort _DecompressedSize;
-        public byte _Index;
+        public byte _Idx;
         public byte _Padding1;
     }
 
@@ -175,14 +169,14 @@ namespace PochiPochiEditorGabu.Managers
     {
         public uint pSpriteBackImgAddr;
         public ushort _DecompressedSize;
-        public byte _Index;
+        public byte _Idx;
         public byte _Padding1;
     }
 
     public class PokemonSpriteNormalPaletteEntry
     {
         public uint pSpriteNormalPalAddr;
-        public byte _Index;
+        public byte _Idx;
         public byte _Padding1;
         public byte _Padding2;
         public byte _Padding3;
@@ -191,7 +185,7 @@ namespace PochiPochiEditorGabu.Managers
     public class PokemonSpriteShinyPaletteEntry
     {
         public uint pSpriteShinyPalAddr;
-        public byte _Index;
+        public byte _Idx;
         public byte _Padding1;
         public byte _Padding2;
         public byte _Padding3;
@@ -331,7 +325,7 @@ namespace PochiPochiEditorGabu.Managers
     public class PokemonEvolutionEntry
     {
         public byte EvoCondMethod;
-        public byte _padding1;
+        public byte _Padding1;
         public byte EvoCondParam1A;
         public byte EvoCondParam1B;
         public ushort EvoToPokemon;
@@ -577,7 +571,7 @@ namespace PochiPochiEditorGabu.Managers
         public byte bAiFlags4;
         public byte PartyCount;
         public byte _Padding2;
-        public ushort _Unknown1;
+        public ushort Unknown1;
         public uint pPartyAddr;
     }
 

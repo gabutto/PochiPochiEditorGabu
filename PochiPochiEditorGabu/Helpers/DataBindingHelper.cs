@@ -10,9 +10,7 @@ namespace PochiPochiEditorGabu.Helpers
     {
         private static readonly string[] ControlPrefixes = { "txt", "nud", "cmb", "chk" };
 
-        /// <summary>
-        /// 構造体をコントロールに自動反映
-        /// </summary>
+        // 構造体→コントロール
         public static void BindObjectToControls(Control container, object obj)
         {
             foreach (var field in obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance))
@@ -22,36 +20,43 @@ namespace PochiPochiEditorGabu.Helpers
 
                 object value = field.GetValue(obj);
                 if (value == null) continue;
-                string baseName = field.Name.Substring(1);
 
                 // ポインタ（ベースアドレス減算）
                 if (field.Name.StartsWith("p"))
                 {
                     uint ptrValue = (uint)value;
-                    uint? offset = ptrValue == 0 ? (uint?)null : ptrValue - GbaConstants.BaseAddr;
-                    SetControlValueByName(container, baseName, offset);
+                    uint? offset = ptrValue == 0 
+                        ? (uint?)null 
+                        : ptrValue - GbaConstants.BaseAddr;
+                    SetControlValueByName(container, field.Name.Substring(1), offset);
                 }
                 // 符号付き
                 else if (field.Name.StartsWith("s"))
                 {
                     decimal signedValue;
-                    switch (Type.GetTypeCode(field.FieldType))
+
+                    unchecked
                     {
-                        case TypeCode.Byte:
-                            signedValue = unchecked((sbyte)(byte)value);
-                            break;
-                        case TypeCode.UInt16:
-                            signedValue = unchecked((short)(ushort)value);
-                            break;
-                        case TypeCode.UInt32:
-                            signedValue = unchecked((int)(uint)value);
-                            break;
-                        default: 
-                            signedValue = 0m;
-                            break;
+                        switch (Type.GetTypeCode(field.FieldType))
+                        {
+                            case TypeCode.Byte:
+                                signedValue = (sbyte)(byte)value;
+                                break;
+                            case TypeCode.UInt16:
+                                signedValue = (short)(ushort)value;
+                                break;
+                            case TypeCode.UInt32:
+                                signedValue = (int)(uint)value;
+                                break;
+                            default:
+                                signedValue = 0m;
+                                break;
+                        }
                     }
-                    SetControlValueByName(container, baseName, signedValue);
+
+                    SetControlValueByName(container, field.Name.Substring(1), signedValue);
                 }
+                // ニブル
                 else if (field.Name.StartsWith("n"))
                 {
                     var attr = field.GetCustomAttribute<NibbleControlNamesAttribute>();
@@ -73,13 +78,13 @@ namespace PochiPochiEditorGabu.Helpers
                     var attr = field.GetCustomAttribute<BitControlNamesAttribute>();
                     if (attr != null)
                     {
-                        long intValue = Convert.ToInt64(value);
+                        uint uintValue = Convert.ToUInt32(value);
                         for (int i = 0; i < attr.BitNames.Length; i++)
                         {
                             string bitName = attr.BitNames[i];
                             if (!string.IsNullOrEmpty(bitName))
                             {
-                                SetControlValueByName(container, bitName, ((intValue >> i) & 1) == 1);
+                                SetControlValueByName(container, bitName, ((uintValue >> i) & 1) == 1);
                             }
                         }
                     }
@@ -91,6 +96,7 @@ namespace PochiPochiEditorGabu.Helpers
             }
         }
 
+        // コントロール→構造体
         public static void BindControlsToObject(Control container, object obj)
         {
             Type type = obj.GetType();
@@ -101,12 +107,10 @@ namespace PochiPochiEditorGabu.Helpers
                 // スキップ
                 if (field.Name.StartsWith("_")) continue;
 
-                string baseName = field.Name.Substring(1);
-
                 // ポインタ（ベースアドレス加算）
                 if (field.Name.StartsWith("p"))
                 {
-                    object value = GetControlValueByName(container, baseName, typeof(uint));
+                    object value = GetControlValueByName(container, field.Name.Substring(1), typeof(uint));
 
                     if (value != null)
                     {
@@ -123,22 +127,25 @@ namespace PochiPochiEditorGabu.Helpers
                 // 符号付き
                 else if (field.Name.StartsWith("s"))
                 {
-                    object val = GetControlValueByName(container, baseName, typeof(decimal));
+                    object val = GetControlValueByName(container, field.Name.Substring(1), typeof(decimal));
                     if (val == null) continue;
 
                     int intVal = (int)Math.Truncate(Convert.ToDecimal(val));
 
-                    switch (Type.GetTypeCode(field.FieldType))
+                    unchecked
                     {
-                        case TypeCode.Byte:
-                            field.SetValue(obj, (byte)(intVal & GbaConstants.Mask8Bits)); 
-                            break;
-                        case TypeCode.UInt16:
-                            field.SetValue(obj, (ushort)(intVal & GbaConstants.Mask16Bits));
-                            break;
-                        case TypeCode.UInt32:
-                            field.SetValue(obj, unchecked((uint)intVal)); 
-                            break;
+                        switch (Type.GetTypeCode(field.FieldType))
+                        {
+                            case TypeCode.Byte:
+                                field.SetValue(obj, (byte)intVal);
+                                break;
+                            case TypeCode.UInt16:
+                                field.SetValue(obj, (ushort)intVal);
+                                break;
+                            case TypeCode.UInt32:
+                                field.SetValue(obj, (uint)intVal);
+                                break;
+                        }
                     }
                 }
                 // ニブル
@@ -189,17 +196,20 @@ namespace PochiPochiEditorGabu.Helpers
                         }
                     }
 
-                    switch (Type.GetTypeCode(field.FieldType))
+                    unchecked
                     {
-                        case TypeCode.Byte: 
-                            field.SetValue(obj, unchecked((byte)intValue));
-                            break;
-                        case TypeCode.UInt16:
-                            field.SetValue(obj, unchecked((ushort)intValue));
-                            break;
-                        case TypeCode.UInt32:
-                            field.SetValue(obj, unchecked((uint)intValue)); 
-                            break;
+                        switch (Type.GetTypeCode(field.FieldType))
+                        {
+                            case TypeCode.Byte:
+                                field.SetValue(obj, (byte)intValue);
+                                break;
+                            case TypeCode.UInt16:
+                                field.SetValue(obj, (ushort)intValue);
+                                break;
+                            case TypeCode.UInt32:
+                                field.SetValue(obj, (uint)intValue);
+                                break;
+                        }
                     }
                 }
                 else
@@ -297,13 +307,18 @@ namespace PochiPochiEditorGabu.Helpers
                     return nud.Value;
                 case TextBox txt:
                     string text = txt.Text.Trim();
+
                     if (string.IsNullOrEmpty(text) || text == "null")
                     {
                         return null;
                     }
-                    return ControlHelper.TryParseAddress(text, out uint addr) 
-                        ? (object)addr 
-                        : null;
+
+                    if (ControlHelper.TryParseAddress(text, out uint addr))
+                    {
+                        return addr;
+                    }
+
+                    return null;
                 case ComboBox cmb:
                     object val = !string.IsNullOrEmpty(cmb.ValueMember)
                         ? cmb.SelectedValue

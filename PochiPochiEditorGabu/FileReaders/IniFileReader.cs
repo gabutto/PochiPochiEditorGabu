@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
+using PochiPochiEditorGabu.Constants;
 using PochiPochiEditorGabu.Helpers;
 
 namespace PochiPochiEditorGabu.FileReaders
 {
     public class IniFileReader
     {
-        private readonly Dictionary<string, object> _inicache = new Dictionary<string, object>();
         private readonly Dictionary<string, List<string>> _configBlocks = new Dictionary<string, List<string>>();
+        private readonly Dictionary<string, object> _iniCache = new Dictionary<string, object>();
 
         public T? GetValue<T>(string key) where T : struct
         {
-            if (_inicache.TryGetValue(key, out object val) && val != null)
+            if (_iniCache.TryGetValue(key, out object val) && val != null)
             {
                 Type t = typeof(T);
 
@@ -45,14 +47,15 @@ namespace PochiPochiEditorGabu.FileReaders
         private const string Suffix = "]";
         private const string HexPrefix = "0x";
 
+        // 空行含む
         public IniFileReader(ComboBox targetCmb, string filePath)
         {
             if (!File.Exists(filePath)) return;
 
-            _inicache.Clear();
+            _iniCache.Clear();
             targetCmb.Items.Clear();
             string currentConfigName = string.Empty;
-            List<string> currentBlock = new List<string>();
+            List<string> currentBlockLines = new List<string>();
 
             foreach (string line in File.ReadLines(filePath, Encoding.UTF8))
             {
@@ -61,7 +64,7 @@ namespace PochiPochiEditorGabu.FileReaders
                     int start = BeginPrefix.Length;
                     int length = line.Length - Suffix.Length - BeginPrefix.Length;
                     currentConfigName = line.Substring(start, length);
-                    currentBlock = new List<string>();
+                    currentBlockLines = new List<string>(); // new
                 }
                 else if (line.StartsWith(EndPrefix) && line.EndsWith(Suffix))
                 {
@@ -70,15 +73,15 @@ namespace PochiPochiEditorGabu.FileReaders
                     string endConfigName = line.Substring(start, length);
                     if (currentConfigName == endConfigName)
                     {
-                        _configBlocks[currentConfigName] = currentBlock;
+                        _configBlocks[currentConfigName] = currentBlockLines;
                         targetCmb.Items.Add(currentConfigName);
                     }
                     currentConfigName = string.Empty;
-                    currentBlock = new List<string>();
+                    currentBlockLines = new List<string>(); // clear
                 }
                 else if (!string.IsNullOrEmpty(currentConfigName))
                 {
-                    currentBlock.Add(line);
+                    currentBlockLines.Add(line);
                 }
             }
 
@@ -88,6 +91,7 @@ namespace PochiPochiEditorGabu.FileReaders
             }
         }
 
+        // null含む
         public void LoadConfig(string selectedConfig, byte[] data)
         {
             if (!_configBlocks.ContainsKey(selectedConfig)) return;
@@ -98,7 +102,7 @@ namespace PochiPochiEditorGabu.FileReaders
                 {
                     if (TryParseValue(rawValue, data, out object parsedValue))
                     {
-                        _inicache[key] = parsedValue;
+                        _iniCache[key] = parsedValue;
                     }
                 }
             }
@@ -108,7 +112,6 @@ namespace PochiPochiEditorGabu.FileReaders
         {
             key = string.Empty;
             rawValue = string.Empty;
-
             if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";")) return false;
 
             string[] parts = line.Split('=');
@@ -119,12 +122,6 @@ namespace PochiPochiEditorGabu.FileReaders
 
         private bool TryParseValue(string rawValue, byte[] data, out object parsedValue)
         {
-            if (string.IsNullOrEmpty(rawValue))
-            {
-                parsedValue = null;
-                return false;
-            }
-
             if (bool.TryParse(rawValue, out bool boolValue))
             {
                 parsedValue = boolValue;
@@ -147,13 +144,10 @@ namespace PochiPochiEditorGabu.FileReaders
 
         private bool TryParseNumber(string rawValue, out object parsedValue)
         {
-            parsedValue = null;
-            if (string.IsNullOrWhiteSpace(rawValue)) return false;
-
             if (rawValue.StartsWith(HexPrefix))
             {
                 string hexPart = rawValue.Substring(HexPrefix.Length);
-                if (uint.TryParse(hexPart, System.Globalization.NumberStyles.HexNumber, null, out uint hexResult))
+                if (uint.TryParse(hexPart, NumberStyles.HexNumber, null, out uint hexResult))
                 {
                     parsedValue = hexResult;
                     return true;
@@ -165,6 +159,7 @@ namespace PochiPochiEditorGabu.FileReaders
                 return true;
             }
 
+            parsedValue = null;
             return false;
         }
 
@@ -197,15 +192,14 @@ namespace PochiPochiEditorGabu.FileReaders
                 additionalOffset = (int)(uint)parsedValue;
             }
 
-            byte[] patternBytes = new byte[hexString.Length / 2];
+            byte[] patternBytes = new byte[hexString.Length / GbaConstants.charPerByte];
             for (int i = 0; i < patternBytes.Length; i++)
             {
-                patternBytes[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
+                patternBytes[i] = Convert.ToByte(hexString.Substring(i * GbaConstants.charPerByte, GbaConstants.charPerByte), GbaConstants.HexBase);
             }
 
             bool isPatternFound = false;
             uint startAddr = 0;
-
             for (uint i = 0; i <= data.Length - patternBytes.Length; i++)
             {
                 bool isMatch = true;
@@ -229,7 +223,6 @@ namespace PochiPochiEditorGabu.FileReaders
             if (!isPatternFound) return null;
 
             uint ptrAddr = startAddr + (uint)patternBytes.Length + (uint)additionalOffset;
-
             if (IoHelper.TryReadGbaPointer(ptrAddr, data, out uint? actualAddr))
             {
                 return actualAddr;

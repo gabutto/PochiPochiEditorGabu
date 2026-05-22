@@ -106,7 +106,7 @@ namespace PochiPochiEditorGabu._Map
 
                 // calc data groups count
                 IReadOnlyList<PointerEntry> dataGroupPointer = _tableParsingHelper.ParsePointerEntries(
-                    (int)dataGroupsAddr,
+                    (uint)dataGroupsAddr,
                     "PP PP PP PP",
                     _config.GetInt("MultipleOverworldSpriteDataTableCount"));
 
@@ -114,7 +114,7 @@ namespace PochiPochiEditorGabu._Map
                 foreach (var dataGroupAddr in dataGroupPointer)
                 {
                     IReadOnlyList<PointerEntry> dataPointer = _tableParsingHelper.ParsePointerEntries(
-                        (int)dataGroupAddr.TargetOffset,
+                        (uint)dataGroupAddr.TargetOffset,
                         "PP PP PP PP",
                         null,
                         null,
@@ -130,7 +130,7 @@ namespace PochiPochiEditorGabu._Map
                         {
                             var validationResult =
                                 _tableParsingHelper.ParseDataEntries(
-                                    (int)ptr.TargetOffset,
+                                    (uint)ptr.TargetOffset,
                                     validationPattern,
                                     1);
 
@@ -152,7 +152,7 @@ namespace PochiPochiEditorGabu._Map
                 uint? entryCountAddr = _config.GetAddr("OverworldSpriteDataLastIndex");
                 int entryCount = _romData[(int)entryCountAddr] + 1; // plus 1
                 IReadOnlyList<PointerEntry> dataPointer = _tableParsingHelper.ParsePointerEntries(
-                    (int)dataPointersAddr,
+                    (uint)dataPointersAddr,
                     "PP PP PP PP",
                     entryCount,
                     null,
@@ -165,7 +165,7 @@ namespace PochiPochiEditorGabu._Map
             // pal
             uint? palTableAddr = _config.GetAddr("OverworldSpritePaletteTableAddress");
             IReadOnlyList<DataEntry> palEntries = _tableParsingHelper.ParseDataEntries(
-                (int)palTableAddr,
+                (uint)palTableAddr,
                 "?? ?? ?? ?? ?? 11 00 00"); // 1100 - 11FF
             int palentryCount = palEntries.Count;
             _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _tblReader);
@@ -552,7 +552,7 @@ namespace PochiPochiEditorGabu._Map
                 }
 
                 var tableEntries = _tableParsingHelper.ParsePointerEntries(
-                    (int)imgTableOffset,
+                    imgTableOffset,
                     "PP PP PP PP sX sX 00 00",
                     null,
                     pointerTargets);
@@ -972,6 +972,18 @@ namespace PochiPochiEditorGabu._Map
 
                 using (Bitmap fullBmp = new Bitmap(ofd.FileName))
                 {
+                    // check size
+                    int expectedTotalWidth = expectedWidth * frameCount;
+                    if (fullBmp.Width != expectedTotalWidth || fullBmp.Height != expectedHeight)
+                    {
+                        MessageBox.Show(
+                            $"画像サイズは {expectedTotalWidth}x{expectedHeight} である必要があります。",
+                            "",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning);
+                        return;
+                    }
+
                     List<byte[]> framesData = new List<byte[]>();
 
                     try
@@ -1024,7 +1036,7 @@ namespace PochiPochiEditorGabu._Map
                         }
                     }
 
-LoadSpriteFrames();
+                    LoadSpriteFrames();
                     _uiStateManager.UpdateBinary("ImportedSprites", GetCurrentSpritesBinaryData());
                 }
             }

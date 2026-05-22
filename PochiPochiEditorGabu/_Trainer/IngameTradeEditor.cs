@@ -14,7 +14,7 @@ namespace PochiPochiEditorGabu._Trainer
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -39,13 +39,13 @@ namespace PochiPochiEditorGabu._Trainer
         public IngameTradeEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -60,47 +60,47 @@ namespace PochiPochiEditorGabu._Trainer
         {
             // trainde data
             _tradeDataManager = EntryManager<TradeDataEntry>.Create(
-                _romData, _tblReader, _config, "IngameTradeTableAddress", "IngameTradeCount");
+                _romData, _charmap, _config, "IngameTradeTableAddress", "IngameTradeCount");
 
             // pokemon name
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
+                _romData, _charmap, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
             // pokemon icon
             _iconImgManager = EntryManager<PokemonIconImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
             _iconPalIdxManager = EntryManager<PokemonIconPaletteIndexEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
             _iconPalAddrManager = EntryManager<PokemonIconPaletteAddressEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
+                _romData, _charmap, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
 
             // item sprite
             _itemSpriteManager = EntryManager<ItemSpriteEntry>.Create(
-                _romData, _tblReader, _config, "ItemSpriteTableAddress", "ItemDataCount");
+                _romData, _charmap, _config, "ItemSpriteTableAddress", "ItemDataCount");
 
             // item name
             _itemDataManager = EntryManager<ItemDataEntry>.Create(
-                _romData, _tblReader, _config, "ItemDataTableAddress", "ItemDataCount");
+                _romData, _charmap, _config, "ItemDataTableAddress", "ItemDataCount");
 
             // ability name
             _abilityNameManager = EntryManager<AbilityNameEntry>.Create(
-                _romData, _tblReader, _config, "AbilityNameTableAddress", "AbilityNameCount");
+                _romData, _charmap, _config, "AbilityNameTableAddress", "AbilityNameCount");
 
             // nature
             _natureManager = EntryManager<PokemonNatureEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNatureTableAddress", "PokemonNatureCount");
+                _romData, _charmap, _config, "PokemonNatureTableAddress", "PokemonNatureCount");
 
             // stats
             _isStatsExpanded = _config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion");
             if (_isStatsExpanded)
             {
                 _statsExpansionManager = EntryManager<PokemonStatsExpansionEntry>.Create(
-                    _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
+                    _romData, _charmap, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
             else
             {
                 _statsNormalManager = EntryManager<PokemonStatsNormalEntry>.Create(
-                    _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
+                    _romData, _charmap, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
         }
 
@@ -111,12 +111,13 @@ namespace PochiPochiEditorGabu._Trainer
 
             lstTradeData.SelectedIndexChanged += lstTradeData_SelectedIndexChanged;
             txtDataName.TextChanged += txtDataName_TextChanged;
-            txtTrainerName.TextChanged += txtTrainerName_TextChanged;
-            rbTrainerGenderMale.CheckedChanged += TrainerGender_CheckedChanged;
-            rbTrainerGenderFemale.CheckedChanged += TrainerGender_CheckedChanged;
             txtDataPid.TextChanged += txtDataPid_TextChanged;
             rbDataAbility1.CheckedChanged += DataAbility_CheckChanged;
             rbDataAbility2.CheckedChanged += DataAbility_CheckChanged;
+
+            txtTrainerName.TextChanged += txtTrainerName_TextChanged;
+            rbTrainerGenderMale.CheckedChanged += TrainerGender_CheckedChanged;
+            rbTrainerGenderFemale.CheckedChanged += TrainerGender_CheckedChanged;
 
             cmbPokemon1.SelectedIndexChanged += cmbPokemon1_SelectedIndexChanged;
             cmbPokemon2.SelectedIndexChanged += cmbPokemon2_SelectedIndexChanged;
@@ -131,7 +132,7 @@ namespace PochiPochiEditorGabu._Trainer
             for (int i = 0; i < _natureManager.Count; i++)
             {
                 uint textAddr = _natureManager.Original[i].pTextAddr - GbaConstants.BaseAddr;
-                string text = _tblReader.BytesToString(_romData, (int)textAddr, 8);
+                string text = _charmap.BytesToString(_romData, (int)textAddr);
                 cmbDataNature.Items.Add(text);
             }
             cmbDataNature.EndUpdate();
@@ -196,6 +197,7 @@ namespace PochiPochiEditorGabu._Trainer
         private void LoadTradeDataToUI(int idx)
         {
             _isUpdatingUI = true;
+
             _currentTradeIdx = idx;
 
             DataBindingHelper.BindObjectToControls(this, _tradeDataManager.Original[idx]);
@@ -221,10 +223,9 @@ namespace PochiPochiEditorGabu._Trainer
             UpdatePokemonIcon(cmbPokemon2, picPokemon2);
             UpdateItemSprite(cmbDataItem, picDataItem);
 
-            //pid
-            int decValue = Convert.ToInt32(txtDataPidHex.Text, 16);
+            // pid
+            int decValue = Convert.ToInt32(txtDataPidHex.Text, GbaConstants.HexBase);
             txtDataPid.Text = decValue.ToString();
-
             // ability fix
             switch (_tradeDataManager.Original[idx]._DataAbilityValue)
             {
@@ -235,7 +236,6 @@ namespace PochiPochiEditorGabu._Trainer
                     rbDataAbility2.Checked = true;
                     break;
             }
-
             UpdataCalcPID();
 
             _isUpdatingUI = false;
@@ -281,7 +281,7 @@ namespace PochiPochiEditorGabu._Trainer
             int dataNameMaxLength = _config.GetInt("IngameTradePokemonNameMaxLength");
             int maxAllowedBytes = dataNameMaxLength - 1;
             string currentText = txtDataName.Text;
-            byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
+            byte[] currentBytes = _charmap.StringToBytes(currentText, false);
 
             if (currentBytes.Length > maxAllowedBytes)
             {
@@ -289,7 +289,7 @@ namespace PochiPochiEditorGabu._Trainer
 
                 while (currentText.Length > 0)
                 {
-                    currentBytes = _tblReader.StringToBytes(currentText, false);
+                    currentBytes = _charmap.StringToBytes(currentText, false);
                     if (currentBytes.Length <= maxAllowedBytes) break;
 
                     currentText = currentText.Substring(0, currentText.Length - 1);
@@ -302,7 +302,7 @@ namespace PochiPochiEditorGabu._Trainer
                 _isUpdatingUI = false;
             }
 
-            string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
+            string validName = _charmap.BytesToString(currentBytes, 0, currentBytes.Length);
 
             // direct
             _tradeDataManager.Working[_currentTradeIdx]._DataName = validName;
@@ -315,7 +315,7 @@ namespace PochiPochiEditorGabu._Trainer
             int trainerNameMaxLength = _config.GetInt("IngameTradeTrainerNameMaxLength");
             int maxAllowedBytes = trainerNameMaxLength - 1;
             string currentText = txtTrainerName.Text;
-            byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
+            byte[] currentBytes = _charmap.StringToBytes(currentText, false);
 
             if (currentBytes.Length > maxAllowedBytes)
             {
@@ -323,7 +323,7 @@ namespace PochiPochiEditorGabu._Trainer
 
                 while (currentText.Length > 0)
                 {
-                    currentBytes = _tblReader.StringToBytes(currentText, false);
+                    currentBytes = _charmap.StringToBytes(currentText, false);
                     if (currentBytes.Length <= maxAllowedBytes) break;
 
                     currentText = currentText.Substring(0, currentText.Length - 1);
@@ -336,7 +336,7 @@ namespace PochiPochiEditorGabu._Trainer
                 _isUpdatingUI = false;
             }
 
-            string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
+            string validName = _charmap.BytesToString(currentBytes, 0, currentBytes.Length);
 
             // direct
             _tradeDataManager.Working[_currentTradeIdx]._TrainerName = validName;
@@ -414,6 +414,7 @@ namespace PochiPochiEditorGabu._Trainer
         {
             if (_isUpdatingUI) return;
 
+            // direct
             if (rbDataAbility1.Checked)
             {
                 _tradeDataManager.Working[_currentTradeIdx]._DataAbilityValue = 0x00;
@@ -511,7 +512,7 @@ namespace PochiPochiEditorGabu._Trainer
 
             int abilityIndex = ability1Id; // default
 
-            if ((ability2Id != -1) && ((newValue & 1) == 1))
+            if ((ability2Id != 0) && ((newValue & 1) == 1))
             {
                 abilityIndex = ability2Id;
             }
@@ -519,10 +520,10 @@ namespace PochiPochiEditorGabu._Trainer
             cmbDataAbility.SelectedIndex = abilityIndex;
 
             // ?
-            OverrideAbility();
+            OverwriteAbility();
         }
 
-        private void OverrideAbility()
+        private void OverwriteAbility()
         {
             int abilityValue = _tradeDataManager.Working[_currentTradeIdx]._DataAbilityValue;
 
@@ -588,7 +589,7 @@ namespace PochiPochiEditorGabu._Trainer
                     },
                     discardAction: () =>
                     {
-                        // unnecessary
+                        //
                     },
                     cancelAction: () =>
                     {

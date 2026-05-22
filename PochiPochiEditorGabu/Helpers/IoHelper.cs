@@ -11,9 +11,7 @@ namespace PochiPochiEditorGabu.Helpers
 {
     public static class IoHelper
     {
-        /// <summary>
-        /// リトルエンディアン読み取り（nullポインタ考慮）
-        /// </summary>
+        // リトルエンディアン読み取り（nullポインタ考慮）
         public static bool TryReadGbaPointer(uint ptrAddr, byte[] data, out uint? actualAddr)
         {
             uint rawPtr = (uint)data[ptrAddr]
@@ -37,9 +35,7 @@ namespace PochiPochiEditorGabu.Helpers
             return true;
         }
 
-        /// <summary>
-        /// 構造体読み取り（可変長文字列を考慮）
-        /// </summary>
+        // 構造体読み取り（可変長文字列を考慮）
         public static List<T> ReadStructures<T>(
             byte[] data,
             uint? addr,
@@ -49,12 +45,6 @@ namespace PochiPochiEditorGabu.Helpers
         {
             var list = new List<T>(count);
             if (addr == null) return list;
-
-            bool TryGetLength(string key, out int length)
-            {
-                length = 0;
-                return key != null && dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
-            }
 
             int currentOffset = (int)addr.Value;
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
@@ -77,7 +67,7 @@ namespace PochiPochiEditorGabu.Helpers
                         if (field.FieldType == typeof(string))
                         {
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
-                            if (TryGetLength(attr?.EntryLength, out int length) && length > 0)
+                            if (TryGetLength(attr?.EntryLength, dynamicLengths, out int length) && length > 0)
                             {
                                 string strVal = tblReader.BytesToString(data, currentOffset, length);
                                 field.SetValue(item, strVal);
@@ -104,15 +94,12 @@ namespace PochiPochiEditorGabu.Helpers
             return list;
         }
 
-        /// <summary>
-        /// 構造体の書き込み
-        ///
-        /// paddingByte1は最大文字数まで埋める
-        /// paddingByte2はデータ長まで埋める
-        /// </summary>
+        // 単一構造体の書き込み
+        // paddingByte1は最大文字数まで埋める
+        // paddingByte2はデータ長まで埋める
         public static void WriteStructures<T>(
             byte[] data,
-            uint? address,
+            uint? addr,
             IEnumerable<T> items,
             TblFileReader tblReader,
             Dictionary<string, int> dynamicLengths = null,
@@ -120,20 +107,13 @@ namespace PochiPochiEditorGabu.Helpers
             byte paddingByte1 = GbaConstants.FreeSpaceByte,
             byte paddingByte2 = GbaConstants.PaddingByte)
         {
-            if (address == null) return;
-
-            bool TryGetLength(string key, out int length)
-            {
-                length = 0;
-                return key != null && dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
-            }
-
+            if (addr == null) return;
             var handle = GCHandle.Alloc(data, GCHandleType.Pinned);
 
             try
             {
                 IntPtr basePtr = handle.AddrOfPinnedObject();
-                int currentOffset = (int)address.Value;
+                int currentOffset = (int)addr.Value;
 
                 FieldInfo[] fields = typeof(T)
                     .GetFields(BindingFlags.Public | BindingFlags.Instance)
@@ -150,14 +130,16 @@ namespace PochiPochiEditorGabu.Helpers
                         {
                             var attr = field.GetCustomAttribute<DynamicStringAttribute>();
 
-                            if (!TryGetLength(attr?.EntryLength, out int entryLength) || entryLength <= 0)
+                            if (!TryGetLength(attr?.EntryLength, dynamicLengths, out int entryLength) || entryLength <= 0)
                             {
                                 continue;
                             }
 
-                            string strVal = field.GetValue(item) is string s ? s : string.Empty;
+                            string strVal = field.GetValue(item) is string s 
+                                ? s 
+                                : string.Empty;
 
-                            if (TryGetLength(attr?.AllowedLength, out int allowedLength) && allowedLength > 0)
+                            if (TryGetLength(attr?.AllowedLength, dynamicLengths, out int allowedLength) && allowedLength > 0)
                             {
                                 byte[] rawBytes = tblReader.StringToBytes(strVal, false, -1);
                                 var finalBytes = new List<byte>(rawBytes);
@@ -205,6 +187,13 @@ namespace PochiPochiEditorGabu.Helpers
             {
                 handle.Free();
             }
+        }
+
+        // 可変長の長さを取得
+        private static bool TryGetLength(string key, Dictionary<string, int> dynamicLengths, out int length)
+        {
+            length = 0;
+            return key != null && dynamicLengths != null && dynamicLengths.TryGetValue(key, out length);
         }
     }
 

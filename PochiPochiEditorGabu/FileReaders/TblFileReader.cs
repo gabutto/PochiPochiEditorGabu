@@ -9,17 +9,14 @@ namespace PochiPochiEditorGabu.FileReaders
 {
     public class TblFileReader
     {
-        private readonly ByteTrieNode _byteTrieRoot;
-        private readonly StringTrieNode _stringTrieRoot;
+        private readonly ByteTrieNode _byteTrieRoot = new ByteTrieNode();
+        private readonly StringTrieNode _stringTrieRoot = new StringTrieNode();
 
         private const byte NewlineByte = 0xFE;
         private const byte TerminatorByte = 0xFF;
 
         public TblFileReader(string filePath)
         {
-            _byteTrieRoot = new ByteTrieNode();
-            _stringTrieRoot = new StringTrieNode();
-
             foreach (string line in File.ReadLines(filePath, Encoding.UTF8))
             {
                 if (string.IsNullOrEmpty(line) || line.StartsWith(";")) continue;
@@ -28,11 +25,11 @@ namespace PochiPochiEditorGabu.FileReaders
                 string hexKey = parts[0].Replace(" ", "");
                 string value = parts[1];
 
-                int byteLen = hexKey.Length / 2;
+                int byteLen = hexKey.Length / GbaConstants.charPerByte;
                 byte[] bytes = new byte[byteLen];
                 for (int i = 0; i < byteLen; i++)
                 {
-                    bytes[i] = Convert.ToByte(hexKey.Substring(i * 2, 2), 16);
+                    bytes[i] = Convert.ToByte(hexKey.Substring(i * GbaConstants.charPerByte, GbaConstants.charPerByte), GbaConstants.HexBase);
                 }
 
                 ByteTrieNode currentByteNode = _byteTrieRoot;
@@ -66,14 +63,17 @@ namespace PochiPochiEditorGabu.FileReaders
             }
         }
 
-        public string BytesToString(byte[] bytes, int offset, int maxLength)
+        public string BytesToString(byte[] bytes, int offset = 0, int? maxLength = null)
         {
             if (bytes == null) return string.Empty;
 
             StringBuilder result = new StringBuilder();
-            int length = Math.Min(bytes.Length - offset, maxLength);
-            int i = 0;
+            int calcLength = bytes.Length - offset;
+            int length = maxLength.HasValue 
+                ? Math.Min(calcLength, maxLength.Value) 
+                : calcLength;
 
+            int i = 0;
             while (i < length)
             {
                 int currentIdx = offset + i;
@@ -122,7 +122,7 @@ namespace PochiPochiEditorGabu.FileReaders
                 }
                 else
                 {
-                    // 無視
+                    // 存在しない
                     i++;
                 }
             }
@@ -149,7 +149,7 @@ namespace PochiPochiEditorGabu.FileReaders
                 if (text[i] == '\r' && text[i + 1] == '\n')
                 {
                     result.Add(NewlineByte);
-                    i += 2;
+                    i += GbaConstants.charPerByte;
                     continue;
                 }
 
@@ -182,7 +182,7 @@ namespace PochiPochiEditorGabu.FileReaders
                 }
                 else
                 {
-                    // 無視
+                    // 存在しない
                     i++;
                 }
             }
@@ -197,14 +197,17 @@ namespace PochiPochiEditorGabu.FileReaders
             if (targetLength > 0)
             {
                 while (result.Count < targetLength)
+                {
                     result.Add(paddingByte);
+                }
             }
 
             return result.ToArray();
         }
 
-        public void WriteToRom
-            (byte[] romData,
+        // 可変長テキストの終端アライメント用
+        public void WriteToRom(
+            byte[] romData,
             uint address,
             byte[] binaryData,
             bool align = false,

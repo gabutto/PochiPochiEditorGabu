@@ -33,7 +33,7 @@ namespace PochiPochiEditorGabu.Managers
         private const ushort WavBitsPerSample = 8;
         private const int WavRiffSizeOffset = 4;
         private const int WavRiffHeaderSize = 8;
-        private const int NibblesPerByte = 2;
+        private const int NibblesPerByte = GbaConstants.BitsPerByte / GbaConstants.NibbleShift;
         private const int BlockSampleCount = CryBlockCompressedDataSize * NibblesPerByte;
         private const int BlockTotalSize = CryBlockCompressedDataSize + 1;
 
@@ -56,10 +56,9 @@ namespace PochiPochiEditorGabu.Managers
             };
         }
 
-        public sbyte[] DecompressCryData(byte[] romData, int startOffset, int expectedSize)
+        public sbyte[] DecompressCryData(byte[] romData, int offset, int expectedSize)
         {
             var data = new List<sbyte>(expectedSize);
-            int offset = startOffset;
             int alignment = 0;
             sbyte pcmLevel = 0;
 
@@ -78,11 +77,6 @@ namespace PochiPochiEditorGabu.Managers
                     {
                         break;
                     }
-                }
-
-                if (offset >= romData.Length || data.Count >= expectedSize)
-                {
-                    break;
                 }
 
                 byte input = romData[offset++];
@@ -114,7 +108,9 @@ namespace PochiPochiEditorGabu.Managers
             int result = a + b;
             return (sbyte)(result > sbyte.MaxValue 
                 ? sbyte.MaxValue 
-                : result < sbyte.MinValue ? sbyte.MinValue : result);
+                : result < sbyte.MinValue 
+                    ? sbyte.MinValue 
+                    : result);
         }
 
         public byte[] CompressCryData(sbyte[] data)
@@ -327,8 +323,12 @@ namespace PochiPochiEditorGabu.Managers
         {
             byte[] compressedData = CompressCryData(cry.Data);
 
-            ushort compressedFlag = (ushort)(cry.Compressed ? CryCompressedFlag : 0);
-            ushort loopedFlag = (ushort)(cry.Looped ? CryLoopedFlag : 0);
+            ushort compressedFlag = (ushort)(cry.Compressed 
+                ? CryCompressedFlag 
+                : 0);
+            ushort loopedFlag = (ushort)(cry.Looped 
+                ? CryLoopedFlag 
+                : 0);
             uint sampleRateValue = (uint)cry.SampleRate << CrySampleRateShift;
             uint sizeValue = (uint)(cry.Data.Length - CrySizeAdjustment);
 
