@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 using PochiPochiEditorGabu.Constants;
@@ -664,6 +663,27 @@ namespace PochiPochiEditorGabu._Trainer
             _isUpdatingUI = false;
         }
 
+        private void cmbPartyPokemon_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isUpdatingUI) return;
+            UpdatePokemonIcon();
+        }
+
+        private void UpdatePokemonIcon()
+        {
+            Bitmap sprite = null;
+
+            if (cmbPartyPokemon.SelectedIndex >= 0 && cmbPartyPokemon.SelectedIndex <= cmbPartyPokemon.Items.Count)
+            {
+                int idx = cmbPartyPokemon.SelectedIndex;
+                sprite = GetPokemonIcon(idx, true);
+            }
+
+            picPartyPokemon.Image?.Dispose();
+            picPartyPokemon.Image = null;
+            picPartyPokemon.Image = sprite;
+        }
+
         private void ItemComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI) return;
@@ -697,28 +717,10 @@ namespace PochiPochiEditorGabu._Trainer
             }
         }
 
-        private Bitmap GetItemSprite(int idx, bool showBackColor)
+        private void nudTrainerSpriteIdx_ValueChanged(object sender, EventArgs e)
         {
-            uint? imgAddr = _itemSpriteManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
-            uint? palAddr = _itemSpriteManager.Original[idx].pSpritePalAddr - GbaConstants.BaseAddr;
-
-            if (!imgAddr.HasValue || !palAddr.HasValue) return null;
-
-            try
-            {
-                byte[] image = ImageManager.DecompressLZ77(_romData, imgAddr.Value);
-                Color[] palette = ImageManager.DecompressPalette(_romData, palAddr.Value, true);
-                return ImageManager.CreateSprite(
-                    image,
-                    palette,
-                    GbaConstants.ItemSpriteSize,
-                    GbaConstants.ItemSpriteSize,
-                    showBackColor);
-            }
-            catch
-            {
-                return null;
-            }
+            if (_isUpdatingUI) return;
+            UpdateTrainerSprite();
         }
 
         private void UpdateTrainerSprite()
@@ -734,86 +736,6 @@ namespace PochiPochiEditorGabu._Trainer
             picTrainerSprite.Image?.Dispose();
             picTrainerSprite.Image = null;
             picTrainerSprite.Image = sprite;
-        }
-
-        private Bitmap GetTrainerSprite(int idx, bool showBackColor)
-        {
-            uint? imgAddr = _trainerImgManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
-            uint? palAddr = _trainerPalManager.Original[idx].pSpritePalAddr - GbaConstants.BaseAddr;
-
-            if (!imgAddr.HasValue || !palAddr.HasValue) return null;
-
-            try
-            {
-                byte[] image = ImageManager.DecompressLZ77(_romData, imgAddr.Value);
-                Color[] palette = ImageManager.DecompressPalette(_romData, palAddr.Value, true);
-                return ImageManager.CreateSprite(
-                    image,
-                    palette,
-                    GbaConstants.SpriteSize,
-                    GbaConstants.SpriteSize,
-                    showBackColor);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private void nudTrainerSpriteIdx_ValueChanged(object sender, EventArgs e)
-        {
-            if (_isUpdatingUI) return;
-            UpdateTrainerSprite();
-        }
-
-        private Bitmap GetPokemonIcon(int idx, bool showBackColor)
-        {
-            uint? imageAddress = _iconImgManager.Original[idx].pIconImgAddr - GbaConstants.BaseAddr;
-            if (!imageAddress.HasValue) return null;
-
-            int palIndex = _iconPalIdxManager.Original[idx].IconPalIdx;
-            var entry = _iconPalAddrManager.Working[palIndex];
-            uint palettePtr = entry._IconPaletteAddr;
-            if (palettePtr == 0) return null;
-            uint paletteAddress = palettePtr - GbaConstants.BaseAddr;
-
-            try
-            {
-                byte[] image = new byte[GbaConstants.IconBytesPerFrame];
-                Array.Copy(_romData, (int)imageAddress.Value, image, 0, GbaConstants.IconBytesPerFrame);
-                Color[] palette = ImageManager.DecompressPalette(_romData, paletteAddress, false);
-                return ImageManager.CreateSprite(
-                    image,
-                    palette,
-                    GbaConstants.IconFrameSize,
-                    GbaConstants.IconFrameSize,
-                    showBackColor);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private void UpdatePokemonIcon()
-        {
-            Bitmap sprite = null;
-
-            if (cmbPartyPokemon.SelectedIndex >= 0 && cmbPartyPokemon.SelectedIndex <= cmbPartyPokemon.Items.Count)
-            {
-                int idx = cmbPartyPokemon.SelectedIndex;
-                sprite = GetPokemonIcon(idx, true);
-            }
-
-            picPartyPokemon.Image?.Dispose();
-            picPartyPokemon.Image = null;
-            picPartyPokemon.Image = sprite;
-        }
-
-        private void cmbPartyPokemon_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_isUpdatingUI) return;
-            UpdatePokemonIcon();
         }
 
         private void RestoreData(int idx)
@@ -900,6 +822,83 @@ namespace PochiPochiEditorGabu._Trainer
                         e.Cancel = true;
                     }
                 );
+            }
+        }
+
+        private Bitmap GetPokemonIcon(int idx, bool showBackColor)
+        {
+            uint? imageAddress = _iconImgManager.Original[idx].pIconImgAddr - GbaConstants.BaseAddr;
+            if (!imageAddress.HasValue) return null;
+
+            int palIndex = _iconPalIdxManager.Original[idx].IconPalIdx;
+            var entry = _iconPalAddrManager.Working[palIndex];
+            uint palettePtr = entry._IconPaletteAddr;
+            if (palettePtr == 0) return null;
+            uint paletteAddress = palettePtr - GbaConstants.BaseAddr;
+
+            try
+            {
+                byte[] image = new byte[GbaConstants.IconBytesPerFrame];
+                Array.Copy(_romData, (int)imageAddress.Value, image, 0, GbaConstants.IconBytesPerFrame);
+                Color[] palette = ImageManager.DecompressPalette(_romData, paletteAddress, false);
+                return ImageManager.CreateSprite(
+                    image,
+                    palette,
+                    GbaConstants.IconFrameSize,
+                    GbaConstants.IconFrameSize,
+                    showBackColor);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private Bitmap GetItemSprite(int idx, bool showBackColor)
+        {
+            uint? imgAddr = _itemSpriteManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
+            uint? palAddr = _itemSpriteManager.Original[idx].pSpritePalAddr - GbaConstants.BaseAddr;
+
+            if (!imgAddr.HasValue || !palAddr.HasValue) return null;
+
+            try
+            {
+                byte[] image = ImageManager.DecompressLZ77(_romData, imgAddr.Value);
+                Color[] palette = ImageManager.DecompressPalette(_romData, palAddr.Value, true);
+                return ImageManager.CreateSprite(
+                    image,
+                    palette,
+                    GbaConstants.ItemSpriteSize,
+                    GbaConstants.ItemSpriteSize,
+                    showBackColor);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private Bitmap GetTrainerSprite(int idx, bool showBackColor)
+        {
+            uint? imgAddr = _trainerImgManager.Original[idx].pSpriteImgAddr - GbaConstants.BaseAddr;
+            uint? palAddr = _trainerPalManager.Original[idx].pSpritePalAddr - GbaConstants.BaseAddr;
+
+            if (!imgAddr.HasValue || !palAddr.HasValue) return null;
+
+            try
+            {
+                byte[] image = ImageManager.DecompressLZ77(_romData, imgAddr.Value);
+                Color[] palette = ImageManager.DecompressPalette(_romData, palAddr.Value, true);
+                return ImageManager.CreateSprite(
+                    image,
+                    palette,
+                    GbaConstants.SpriteSize,
+                    GbaConstants.SpriteSize,
+                    showBackColor);
+            }
+            catch
+            {
+                return null;
             }
         }
     }

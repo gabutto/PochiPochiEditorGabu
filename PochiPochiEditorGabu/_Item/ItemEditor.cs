@@ -15,10 +15,10 @@ namespace PochiPochiEditorGabu._Item
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
-        private UIStateManager _uiStateManager = null;
+        private UIStateManager _uiStateManager;
 
         private EntryManager<ItemSpriteEntry> _itemSpriteManager;
         private EntryManager<ItemDataEntry> _itemDataManager;
@@ -35,13 +35,13 @@ namespace PochiPochiEditorGabu._Item
         public ItemEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -55,14 +55,14 @@ namespace PochiPochiEditorGabu._Item
         private void InitializeManagers()
         {
             _itemSpriteManager = EntryManager<ItemSpriteEntry>.Create(
-                _romData, _tblReader, _config, "ItemSpriteTableAddress", "ItemDataCount");
+                _romData, _charmap, _config, "ItemSpriteTableAddress", "ItemDataCount");
 
             _itemDataManager = EntryManager<ItemDataEntry>.Create(
-                _romData, _tblReader, _config, "ItemDataTableAddress", "ItemDataCount");
+                _romData, _charmap, _config, "ItemDataTableAddress", "ItemDataCount");
 
             uint? itemEffectTableAddr = _config.GetAddr("ItemEffectTableAddress");
             int itemEffectCount = _config.GetInt("ItemEffectLastIndex") - _config.GetInt("ItemEffectFirstIndex") + 1;
-            _itemEffectManager = new EntryManager<ItemEffectEntry>(_romData, _tblReader);
+            _itemEffectManager = new EntryManager<ItemEffectEntry>(_romData, _charmap);
             _itemEffectManager.Load(itemEffectTableAddr, itemEffectCount);
         }
 
@@ -124,11 +124,12 @@ namespace PochiPochiEditorGabu._Item
 
         private void InitializeUIStates()
         {
-            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
             btnSave.Enabled = false;
+            _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
+
             _uiStateManager.AddControls(txtItemRename,txtDescAddr, txtItemEffectAddr);
             _uiStateManager.AddControlsRecursive(grpSprite, grpData);
-            _uiStateManager.AddBinaries((txtDescString, null));
+            _uiStateManager.AddBinaries(("ItemDescKey", null));
         }
 
         private void LoadAllDataToUI(int idx)
@@ -153,17 +154,17 @@ namespace PochiPochiEditorGabu._Item
             txtItemIdHex.Text = idx.ToString("X4");
 
             // load item name
-            txtItemRename.Text = _itemDataManager.Working[idx]._ItemName;
+            txtItemRename.Text = _itemDataManager.Original[idx]._ItemName;
         }
 
         private void txtItemRename_TextChanged(object sender, EventArgs e)
         {
             if (_isUpdatingUI) return;
 
-            int pokemonNameMaxLength = _config.GetInt("ItemNameMaxLength");
-            int maxAllowedBytes = pokemonNameMaxLength - 1;
+            int itemNameMaxLength = _config.GetInt("ItemNameMaxLength");
+            int maxAllowedBytes = itemNameMaxLength - 1;
             string currentText = txtItemRename.Text;
-            byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
+            byte[] currentBytes = _charmap.StringToBytes(currentText, false);
 
             if (currentBytes.Length > maxAllowedBytes)
             {
@@ -171,7 +172,7 @@ namespace PochiPochiEditorGabu._Item
 
                 while (currentText.Length > 0)
                 {
-                    currentBytes = _tblReader.StringToBytes(currentText, false);
+                    currentBytes = _charmap.StringToBytes(currentText, false);
                     if (currentBytes.Length <= maxAllowedBytes) break;
 
                     currentText = currentText.Substring(0, currentText.Length - 1);
@@ -184,7 +185,7 @@ namespace PochiPochiEditorGabu._Item
                 _isUpdatingUI = false;
             }
 
-            string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
+            string validName = _charmap.BytesToString(currentBytes, 0, currentBytes.Length);
 
             _isUpdatingUI = true;
             cmbItemName.Items[_currentItemIdx] = validName;
@@ -201,19 +202,19 @@ namespace PochiPochiEditorGabu._Item
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentAllData(_currentItemIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         RestoreData(_currentItemIdx);
                         ResetControls();
                         LoadAllDataToUI(newIndex);
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         cmbItemName.SelectedIndex = _currentItemIdx;
                     }
@@ -229,7 +230,7 @@ namespace PochiPochiEditorGabu._Item
 
         private void LoadSpriteToUI(int idx)
         {
-            DataBindingHelper.BindObjectToControls(this, _itemSpriteManager.Working[idx]);
+            DataBindingHelper.BindObjectToControls(this, _itemSpriteManager.Original[idx]);
             DisplaySprite();
         }
 
@@ -270,7 +271,7 @@ namespace PochiPochiEditorGabu._Item
 
                 // palette
                 var paletteRes = _reservationManager.GetReservation(txtSpritePalAddr);
-                if (paletteRes?.Data != null)
+                if (paletteRes != null && paletteRes.Data != null)
                 {
                     palette = ImageManager.DecompressPalette(paletteRes.Data, 0, true);
                 }
@@ -281,7 +282,7 @@ namespace PochiPochiEditorGabu._Item
 
                 // image
                 var imageRes = _reservationManager.GetReservation(txtSpriteImgAddr);
-                if (imageRes?.Data != null)
+                if (imageRes != null && imageRes.Data != null)
                 {
                     imageData = ImageManager.DecompressLZ77(imageRes.Data, 0);
                 }
@@ -314,15 +315,12 @@ namespace PochiPochiEditorGabu._Item
                 {
                     using (var bmp = new Bitmap(ofd.FileName))
                     {
-                        byte[] imageData;
-                        Color[] palette;
-
                         if (!ImageManager.ExtractImageAndPalette(
                             bmp,
                             GbaConstants.ItemSpriteSize,
                             GbaConstants.ItemSpriteSize,
-                            out imageData,
-                            out palette))
+                            out byte[]  imageData,
+                            out Color[]  palette))
                         {
                             return;
                         }
@@ -374,7 +372,7 @@ namespace PochiPochiEditorGabu._Item
 
         private void LoadItemDataToUI(int idx)
         {
-            DataBindingHelper.BindObjectToControls(this, _itemDataManager.Working[idx]);
+            DataBindingHelper.BindObjectToControls(this, _itemDataManager.Original[idx]);
             DisplayItemDesc();
             UpdateFieldUseControlsState();
         }
@@ -389,9 +387,9 @@ namespace PochiPochiEditorGabu._Item
         {
             if (_isUpdatingUI) return;
 
-            byte[] bytes = _tblReader.StringToBytes(txtDescString.Text, true);
+            byte[] bytes = _charmap.StringToBytes(txtDescString.Text, true);
             _currentDescData = bytes;
-            _uiStateManager.UpdateBinary(txtDescString, bytes);
+            _uiStateManager.UpdateBinary("ItemDescKey", bytes);
         }
 
         private void DisplayItemDesc()
@@ -415,14 +413,14 @@ namespace PochiPochiEditorGabu._Item
 
                 byte[] byteArr = descriptionBytes.ToArray();
                 _currentDescData = byteArr;
-                txtDescString.Text = _tblReader.BytesToString(byteArr, 0, 256);
-                _uiStateManager.UpdateBinary(txtDescString, byteArr);
+                txtDescString.Text = _charmap.BytesToString(byteArr);
+                _uiStateManager.UpdateBinary("ItemDescKey", byteArr);
             }
             else
             {
                 _currentDescData = null;
                 txtDescString.Text = string.Empty;
-                _uiStateManager.UpdateBinary(txtDescString, null);
+                _uiStateManager.UpdateBinary("ItemDescKey", null);
             }
         }
 
@@ -511,7 +509,7 @@ namespace PochiPochiEditorGabu._Item
             if (isValid)
             {
                 ControlHelper.SetControlsEnabled(grpItemEffect, true);
-                DataBindingHelper.BindObjectToControls(this, _itemEffectManager.Working[actualIndex]);
+                DataBindingHelper.BindObjectToControls(this, _itemEffectManager.Original[actualIndex]);
             }
             else
             {
@@ -522,7 +520,7 @@ namespace PochiPochiEditorGabu._Item
 
         private void ResetControls()
         {
-            txtSpriteImportAddr.Text = String.Empty;
+            txtSpriteImportAddr.Text = string.Empty;
         }
 
         private void RestoreData(int idx)
@@ -555,7 +553,7 @@ namespace PochiPochiEditorGabu._Item
                     },
                     () =>
                     {
-                        // unnecessary
+                        //
                     },
                     () =>
                     {
@@ -591,9 +589,9 @@ namespace PochiPochiEditorGabu._Item
         {
             if (!ControlHelper.TryParseAddress(txtDescAddr.Text, out uint address)) return;
 
-            if (_uiStateManager.HasBinaryChanges(txtDescString) && _currentDescData != null)
+            if (_uiStateManager.HasBinaryChanges("ItemDescKey") && _currentDescData != null)
             {
-                _tblReader.WriteToRom(_romData, address, _currentDescData);
+                _charmap.WriteToRom(_romData, address, _currentDescData);
             }
         }
 

@@ -5,9 +5,6 @@
         public const int HexBase = 16;
         public const int BitsPerByte = 8;
         public const int charPerByte = 2;
-
-
-
         public const int NibbleShift = 4;
         public const int NibbleMask = 0xF;
         public const int Mask2Bits = 0x3;

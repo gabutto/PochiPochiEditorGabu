@@ -14,7 +14,7 @@ namespace PochiPochiEditorGabu._Item
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -69,13 +69,13 @@ namespace PochiPochiEditorGabu._Item
         public MailDataEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -89,18 +89,18 @@ namespace PochiPochiEditorGabu._Item
         private void InitializeManagers()
         {
             _mailDataManager = EntryManager<MailDataWordEntry>.Create(
-                _romData, _tblReader, _config, "MailDataTableAddress", "MailDataCount");
+                _romData, _charmap, _config, "MailDataTableAddress", "MailDataCount");
 
             _wordGroupManager = EntryManager<WordGroupEntry>.Create(
-                _romData, _tblReader, _config, "WordGroupTableAddress", "WordGroupCount");
+                _romData, _charmap, _config, "WordGroupTableAddress", "WordGroupCount");
 
             // pokemon name
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
+                _romData, _charmap, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
             // move name
             _moveNameManager = EntryManager<MoveNameEntry>.Create(
-                _romData, _tblReader, _config, "MoveNameTableAddress", "MoveNameCount");
+                _romData, _charmap, _config, "MoveNameTableAddress", "MoveNameCount");
 
             // mail slot mapping
             _mailSlots = new Dictionary<int, (RadioButton, TextBox)>
@@ -250,7 +250,7 @@ namespace PochiPochiEditorGabu._Item
                 {
                     case WordGroupType.PokemonName:
                         {
-                            EntryManager<WordNameEntry> manager = new EntryManager<WordNameEntry>(_romData, _tblReader);
+                            EntryManager<WordNameEntry> manager = new EntryManager<WordNameEntry>(_romData, _charmap);
                             manager.Load(tableAddr, entryCount);
                             for (int i = 0; i < entryCount; i++)
                             {
@@ -266,7 +266,7 @@ namespace PochiPochiEditorGabu._Item
 
                     case WordGroupType.MoveName:
                         {
-                            EntryManager<WordNameEntry> manager = new EntryManager<WordNameEntry>(_romData, _tblReader);
+                            EntryManager<WordNameEntry> manager = new EntryManager<WordNameEntry>(_romData, _charmap);
                             manager.Load(tableAddr, entryCount);
                             for (int i = 0; i < entryCount; i++)
                             {
@@ -282,12 +282,12 @@ namespace PochiPochiEditorGabu._Item
 
                     case WordGroupType.Normal:
                         {
-                            EntryManager<WordTextEntry> manager = new EntryManager<WordTextEntry>(_romData, _tblReader);
+                            EntryManager<WordTextEntry> manager = new EntryManager<WordTextEntry>(_romData, _charmap);
                             manager.Load(tableAddr, entryCount);
                             for (int i = 0; i < entryCount; i++)
                             {
                                 uint textAddr = manager.Original[i].pTextAddr - GbaConstants.BaseAddr;
-                                string text = _tblReader.BytesToString(_romData, (int)textAddr, 16);
+                                string text = _charmap.BytesToString(_romData, (int)textAddr);
                                 int wordIdx = manager.Original[i]._Idx;
 
                                 // trainer, event
@@ -429,9 +429,16 @@ namespace PochiPochiEditorGabu._Item
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () => SaveCurrentMailData(_currentMailIdx),
-                    () => LoadMailData(nextIdx),
-                    () =>
+                    saveAction: () => 
+                    {
+                        SaveCurrentMailData(_currentMailIdx);
+                        LoadMailData(nextIdx);
+                    },
+                    discardAction: () => 
+                    {
+                        LoadMailData(nextIdx);
+                    },
+                    cancelAction: () =>
                     {
                         _isUpdatingUI = true;
                         nudDataIdx.Value = _currentMailIdx;
