@@ -19,7 +19,7 @@ namespace PochiPochiEditorGabu._Map
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -29,13 +29,13 @@ namespace PochiPochiEditorGabu._Map
         public TilesetEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
         }

@@ -15,7 +15,7 @@ namespace PochiPochiEditorGabu._Pokemon
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -50,13 +50,13 @@ namespace PochiPochiEditorGabu._Pokemon
         public PokedexSearchEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -74,29 +74,29 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             // sort
             _sortAiueoManager = EntryManager<PokedexSearchSortEntry>.Create(
-                _romData, _tblReader, _config, "PokedexSearchSortAiueoTableAddress", "PokedexSearchSortAiueoCount");
+                _romData, _charmap, _config, "PokedexSearchSortAiueoTableAddress", "PokedexSearchSortAiueoCount");
             _sortTypeManager = EntryManager<PokedexSearchSortEntry>.Create(
-                _romData, _tblReader, _config, "PokedexSearchSortTypeTableAddress", "PokedexSearchSortTypeCount");
+                _romData, _charmap, _config, "PokedexSearchSortTypeTableAddress", "PokedexSearchSortTypeCount");
             _sortWeightManager = EntryManager<PokedexSearchSortEntry>.Create(
-                _romData, _tblReader, _config, "PokedexSearchSortWeightTableAddress", "PokedexSearchSortWeightCount");
+                _romData, _charmap, _config, "PokedexSearchSortWeightTableAddress", "PokedexSearchSortWeightCount");
             _sortHeightManager = EntryManager<PokedexSearchSortEntry>.Create(
-                _romData, _tblReader, _config, "PokedexSearchSortHeightTableAddress", "PokedexSearchSortHeightCount");
+                _romData, _charmap, _config, "PokedexSearchSortHeightTableAddress", "PokedexSearchSortHeightCount");
 
             // name
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
+                _romData, _charmap, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
             // order
             _orderManager = EntryManager<PokedexOrderEntry>.Create(
-                _romData, _tblReader, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
+                _romData, _charmap, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
 
             // icon
             _iconImgManager = EntryManager<PokemonIconImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
             _iconPalIdxManager = EntryManager<PokemonIconPaletteIndexEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
             _iconPalAddrManager = EntryManager<PokemonIconPaletteAddressEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
+                _romData, _charmap, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
 
             // order to species map
             for (int speciesIdx = 0; speciesIdx < _config.GetInt("PokemonNameCount"); speciesIdx++)
@@ -370,43 +370,14 @@ namespace PochiPochiEditorGabu._Pokemon
 
         private byte[] SerializeSortManager(EntryManager<PokedexSearchSortEntry> manager)
         {
-            byte[] result = new byte[manager.Working.Count * 2];
+            byte[] result = new byte[manager.Working.Count * sizeof(ushort)];
             for (int i = 0; i < manager.Working.Count; i++)
             {
                 byte[] bytes = BitConverter.GetBytes(manager.Working[i]._Idx);
-                result[i * 2] = bytes[0];
-                result[i * 2 + 1] = bytes[1];
+                result[i * sizeof(ushort)] = bytes[0];
+                result[i * sizeof(ushort) + 1] = bytes[1];
             }
             return result;
-        }
-
-        private Bitmap GetPokemonIcon(int idx, bool showBackColor)
-        {
-            uint? imageAddress = _iconImgManager.Original[idx].pIconImgAddr - GbaConstants.BaseAddr;
-            if (!imageAddress.HasValue) return null;
-
-            int palIndex = _iconPalIdxManager.Original[idx].IconPalIdx;
-            var entry = _iconPalAddrManager.Working[palIndex];
-            uint palettePtr = entry._IconPaletteAddr;
-            if (palettePtr == 0) return null;
-            uint paletteAddress = palettePtr - GbaConstants.BaseAddr;
-
-            try
-            {
-                byte[] image = new byte[GbaConstants.IconBytesPerFrame];
-                Array.Copy(_romData, (int)imageAddress.Value, image, 0, GbaConstants.IconBytesPerFrame);
-                Color[] palette = ImageManager.DecompressPalette(_romData, paletteAddress, false);
-                return ImageManager.CreateSprite(
-                    image,
-                    palette,
-                    GbaConstants.IconFrameSize,
-                    GbaConstants.IconFrameSize,
-                    showBackColor);
-            }
-            catch
-            {
-                return null;
-            }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -455,6 +426,35 @@ namespace PochiPochiEditorGabu._Pokemon
                         manager.Save(i);
                     }
                 }
+            }
+        }
+
+        private Bitmap GetPokemonIcon(int idx, bool showBackColor)
+        {
+            uint? imageAddress = _iconImgManager.Original[idx].pIconImgAddr - GbaConstants.BaseAddr;
+            if (!imageAddress.HasValue) return null;
+
+            int palIndex = _iconPalIdxManager.Original[idx].IconPalIdx;
+            var entry = _iconPalAddrManager.Working[palIndex];
+            uint palettePtr = entry._IconPaletteAddr;
+            if (palettePtr == 0) return null;
+            uint paletteAddress = palettePtr - GbaConstants.BaseAddr;
+
+            try
+            {
+                byte[] image = new byte[GbaConstants.IconBytesPerFrame];
+                Array.Copy(_romData, (int)imageAddress.Value, image, 0, GbaConstants.IconBytesPerFrame);
+                Color[] palette = ImageManager.DecompressPalette(_romData, paletteAddress, false);
+                return ImageManager.CreateSprite(
+                    image,
+                    palette,
+                    GbaConstants.IconFrameSize,
+                    GbaConstants.IconFrameSize,
+                    showBackColor);
+            }
+            catch
+            {
+                return null;
             }
         }
     }

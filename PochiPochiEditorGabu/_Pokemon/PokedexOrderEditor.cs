@@ -15,7 +15,7 @@ namespace PochiPochiEditorGabu._Pokemon
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -53,35 +53,36 @@ namespace PochiPochiEditorGabu._Pokemon
         public PokedexOrderEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             // order
             _orderManager = EntryManager<PokedexOrderEntry>.Create(
-                _romData, _tblReader, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
+                _romData, _charmap, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
 
             // name
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
+                _romData, _charmap, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
             // icon
             _iconImgManager = EntryManager<PokemonIconImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
             _iconPalIdxManager = EntryManager<PokemonIconPaletteIndexEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
             _iconPalAddrManager = EntryManager<PokemonIconPaletteAddressEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
+                _romData, _charmap, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
 
             // control
             ControlHelper.AttachExternalBorder(picIcon);
             lstOrder.DrawMode = DrawMode.OwnerDrawFixed;
 
+            // ui state
             btnSave.Enabled = false;
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
 
@@ -102,16 +103,15 @@ namespace PochiPochiEditorGabu._Pokemon
 
             for (int i = 0; i < _orderManager.Count; i++)
             {
-                //  i=0 -> species=1
-                int pokemonIndex = i + 1;
+                int pokemonIndex = i + 1; // i = 0 -> species = 1
                 string name = string.Empty;
 
-                if (pokemonIndex < _pokemonNameManager.Working.Count)
+                if (pokemonIndex < _pokemonNameManager.Original.Count)
                 {
-                    name = _pokemonNameManager.Working[pokemonIndex]._PokemonName;
+                    name = _pokemonNameManager.Original[pokemonIndex]._PokemonName;
                 }
 
-                int order = _orderManager.Working[i]._OrderIdx;
+                int order = _orderManager.Original[i]._OrderIdx;
 
                 var entry = new PokemonPokedexEntry
                 {
@@ -124,7 +124,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 lstOrder.Items.Add(entry);
             }
 
-            _uiStateManager.AddBinaries((lstOrder, GetOrderBytes()));
+            _uiStateManager.AddBinaries(("Order", GetOrderBytes()));
 
             UpdateStatusesAndUnusedList();
 
@@ -272,7 +272,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 if (dataIndex >= 0 && dataIndex < _orderManager.Working.Count)
                 {
                     _orderManager.Working[dataIndex]._OrderIdx = checked((ushort)newOrder);
-                    _uiStateManager.UpdateBinary(lstOrder, GetOrderBytes());
+                    _uiStateManager.UpdateBinary("Order", GetOrderBytes());
                 }
 
                 UpdateStatusesAndUnusedList();
@@ -286,7 +286,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 _orderManager.Save(i, appendTerminator: false);
             }
 
-            _uiStateManager.UpdateBinary(lstOrder, GetOrderBytes());
+            _uiStateManager.UpdateBinary("Order", GetOrderBytes());
             _uiStateManager.UpdateInitialValues();
         }
 
@@ -300,15 +300,15 @@ namespace PochiPochiEditorGabu._Pokemon
             if (btnSave.Enabled)
             {
                 DialogResult result = ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SavePokedexOrderData();
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         //
                      },
-                    () =>
+                    cancelAction: () =>
                     {
                         e.Cancel = true;
                     }

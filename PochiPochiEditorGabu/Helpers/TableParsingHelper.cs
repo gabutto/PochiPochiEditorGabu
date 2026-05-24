@@ -37,7 +37,7 @@ namespace PochiPochiEditorGabu.Helpers
         }
         
         // ポインタエントリー判定
-        public IReadOnlyList<PointerEntry> ParsePointerEntries(
+        public List<PointerEntry> ParsePointerEntries(
             uint startAddress,
             string patternString,
             int? maxEntries = null,
@@ -85,7 +85,7 @@ namespace PochiPochiEditorGabu.Helpers
         }
 
         // データエントリー判定
-        public IReadOnlyList<DataEntry> ParseDataEntries(
+        public List<DataEntry> ParseDataEntries(
             uint startAddress,
             string patternString,
             int? maxEntries = null,

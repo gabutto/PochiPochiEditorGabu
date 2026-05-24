@@ -12,7 +12,7 @@ namespace PochiPochiEditorGabu.Managers
     public class EntryManager<T> where T : class, new()
     {
         private readonly byte[] _romData;
-        private readonly TblFileReader _tblReader;
+        private readonly TblFileReader _charmap;
         private readonly Dictionary<string, int> _dynamicLengths;
 
         public List<T> Original { get; private set; } = new List<T>();
@@ -23,11 +23,11 @@ namespace PochiPochiEditorGabu.Managers
 
         public EntryManager(
             byte[] romData,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             Dictionary<string, int> dynamicLengths = null)
         {
             _romData = romData;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _dynamicLengths = dynamicLengths;
         }
 
@@ -37,7 +37,7 @@ namespace PochiPochiEditorGabu.Managers
             Address = address;
             Count = count;
 
-            Original = IoHelper.ReadStructures<T>(_romData, address, count, _tblReader, _dynamicLengths);
+            Original = IoHelper.ReadStructures<T>(_romData, address, count, _charmap, _dynamicLengths);
             Working = Original.Select(x => CloneHelper.Clone(x)).ToList();
         }
 
@@ -57,7 +57,7 @@ namespace PochiPochiEditorGabu.Managers
                 _romData, 
                 (uint?)offset,
                 new List<T> { Working[idx] },
-                _tblReader,
+                _charmap,
                 _dynamicLengths,
                 appendTerminator,
                 paddingByte1,

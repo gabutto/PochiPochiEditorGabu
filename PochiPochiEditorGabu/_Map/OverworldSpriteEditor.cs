@@ -18,13 +18,13 @@ namespace PochiPochiEditorGabu._Map
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
         private TableParsingHelper _tableParsingHelper;
 
-        Dictionary<int, IReadOnlyList<PointerEntry>> _dataPointers;
+        Dictionary<int, List<PointerEntry>> _dataPointers;
         private List<OverworldDataEntry> _originalDataEntries;
         private List<OverworldDataEntry> _workingDataEntries;
         private EntryManager<OverworldPaletteEntry> _palManager;
@@ -60,7 +60,7 @@ namespace PochiPochiEditorGabu._Map
             public string DisplayText => $"{Key} (0x{VramSize:X})";
         }
 
-        private IReadOnlyList<DataSizeComboItem> _dataSizePresets = new List<DataSizeComboItem>
+        private List<DataSizeComboItem> _dataSizePresets = new List<DataSizeComboItem>
         {
             new DataSizeComboItem { Key = "16x32",  Width = 0x10, Height = 0x20, VramSize = 0x100 },
             new DataSizeComboItem { Key = "32x32",  Width = 0x20, Height = 0x20, VramSize = 0x200 },
@@ -73,19 +73,21 @@ namespace PochiPochiEditorGabu._Map
         public OverworldSpriteEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
             InitializeEventHandlers();
             InitializeControls();
             InitializeUIStates();
+
+            InitializePaletteComboBox();
 
             BackUpCurrentTableData();
             LoadDataEntryListBox();
@@ -97,15 +99,15 @@ namespace PochiPochiEditorGabu._Map
             _isMultipleTable = _config.GetBool("IsAppliedCFRU") &&
                 _config.GetBool("EnableMultipleOverworldSpriteDataTable");
             _tableParsingHelper = new TableParsingHelper(_romData);
-            _dataPointers = new Dictionary<int, IReadOnlyList<PointerEntry>>();
+            _dataPointers = new Dictionary<int, List<PointerEntry>>();
 
             // data
-            if (_isMultipleTable) // multiple
+            if (_isMultipleTable)
             {
                 uint? dataGroupsAddr = _config.GetAddr("MultipleOverworldSpriteDataTableAddress");
 
                 // calc data groups count
-                IReadOnlyList<PointerEntry> dataGroupPointer = _tableParsingHelper.ParsePointerEntries(
+                List<PointerEntry> dataGroupPointer = _tableParsingHelper.ParsePointerEntries(
                     (uint)dataGroupsAddr,
                     "PP PP PP PP",
                     _config.GetInt("MultipleOverworldSpriteDataTableCount"));
@@ -113,8 +115,8 @@ namespace PochiPochiEditorGabu._Map
                 // calc data pointer count
                 foreach (var dataGroupAddr in dataGroupPointer)
                 {
-                    IReadOnlyList<PointerEntry> dataPointer = _tableParsingHelper.ParsePointerEntries(
-                        (uint)dataGroupAddr.TargetOffset,
+                    List<PointerEntry> dataPointer = _tableParsingHelper.ParsePointerEntries(
+                        dataGroupAddr.TargetOffset,
                         "PP PP PP PP",
                         null,
                         null,
@@ -151,7 +153,7 @@ namespace PochiPochiEditorGabu._Map
                 uint? dataPointersAddr = _config.GetAddr("OverworldSpriteDataTableAddress");
                 uint? entryCountAddr = _config.GetAddr("OverworldSpriteDataLastIndex");
                 int entryCount = _romData[(int)entryCountAddr] + 1; // plus 1
-                IReadOnlyList<PointerEntry> dataPointer = _tableParsingHelper.ParsePointerEntries(
+                List<PointerEntry> dataPointer = _tableParsingHelper.ParsePointerEntries(
                     (uint)dataPointersAddr,
                     "PP PP PP PP",
                     entryCount,
@@ -164,16 +166,16 @@ namespace PochiPochiEditorGabu._Map
 
             // pal
             uint? palTableAddr = _config.GetAddr("OverworldSpritePaletteTableAddress");
-            IReadOnlyList<DataEntry> palEntries = _tableParsingHelper.ParseDataEntries(
+            List<DataEntry> palEntries = _tableParsingHelper.ParseDataEntries(
                 (uint)palTableAddr,
                 "?? ?? ?? ?? ?? 11 00 00"); // 1100 - 11FF
             int palentryCount = palEntries.Count;
-            _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _tblReader);
+            _palManager = new EntryManager<OverworldPaletteEntry>(_romData, _charmap);
             _palManager.Load(palTableAddr, palentryCount);
 
             uint? fontTableAddr = _config.GetAddr("OverworldSpriteFontTableAddress");
             int fontEntryCount = (_dataPointers[_currentDataTableIdx].Count + 1) / 2;
-            _fontManager = new EntryManager<OverworldFontEntry>(_romData, _tblReader);
+            _fontManager = new EntryManager<OverworldFontEntry>(_romData, _charmap);
             _fontManager.Load(fontTableAddr, fontEntryCount);
         }
 
@@ -230,8 +232,6 @@ namespace PochiPochiEditorGabu._Map
                 nudSpriteFrameCount, btnSpriteFrameCountPrev, btnSpriteFrameCountNext);
             ControlHelper.LoadComboBoxFromTextFile(cmbDataFootprint, "txt/OverworldSpriteFootprint.txt");
             ControlHelper.LoadComboBoxFromTextFile(cmbFontIdx, "txt/OverworldSpriteFont.txt");
-
-            InitializePaletteComboBox();
         }
 
         private void InitializeUIStates()
@@ -253,6 +253,7 @@ namespace PochiPochiEditorGabu._Map
         {
             var items = new List<PaletteComboItem>();
 
+            // exist
             for (int i = 0; i < _palManager.Original.Count; i++)
             {
                 var palEntry = _palManager.Original[i];
@@ -316,7 +317,7 @@ namespace PochiPochiEditorGabu._Map
                 }
                 else
                 {
-                    var manager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+                    var manager = new EntryManager<OverworldDataEntry>(_romData, _charmap);
                     manager.Load(entryAddr, 1);
 
                     _originalDataEntries.Add(manager.Original[0]);
@@ -359,25 +360,21 @@ namespace PochiPochiEditorGabu._Map
             _currentDataEntryIdx = idx;
             uint entryAddr = _dataPointers[_currentDataTableIdx][idx].TargetOffset;
 
-            var excludeControls = new[] { "cmbDataSize" };
-
+            var excludeControls = new[] { "cmbDataSize" }; // always disable
             if (entryAddr == 0)
             {
                 grpDataEntry.SetControlsEnabled(false, excludeControls);
-                grpDataEntry.ResetControls(excludeControls);
-
+                grpDataEntry.ResetControls();
                 grpSpritePreview.SetControlsEnabled(false);
                 grpSpritePreview.ResetControls();
-
                 grpCreateNewImgTable.SetControlsEnabled(false);
                 grpCreateNewImgTable.ResetControls();
 
-                // ui
+                // data entry addr
                 txtDataEntryAddr.Text = "null";
                 btnImportDataEntry.Enabled = false;
                 btnExportDataEntry.Enabled = false;
 
-                txtDataImgTableAddr.Text = string.Empty;
                 LoadSpriteFrames();
 
                 _isUpdatingUI = false;
@@ -385,13 +382,9 @@ namespace PochiPochiEditorGabu._Map
                 return;
             }
 
-            // valid
+            // valid entry
             grpDataEntry.SetControlsEnabled(true, excludeControls);
             grpCreateNewImgTable.SetControlsEnabled(true);
-
-            btnImportDataEntry.Enabled = true;
-            btnExportDataEntry.Enabled = true;
-
             var currentEntry = _originalDataEntries[idx];
             DataBindingHelper.BindObjectToControls(this, currentEntry);
 
@@ -418,15 +411,17 @@ namespace PochiPochiEditorGabu._Map
                 byte fontData = _fontManager.Working[fontByteIndex]._Idx;
                 int fontId = (idx % 2 == 0)
                     ? (fontData & GbaConstants.NibbleMask)
-                    : ((fontData & (GbaConstants.NibbleMask << 4)) >> GbaConstants.NibbleShift);
+                    : ((fontData >> GbaConstants.NibbleShift) & GbaConstants.NibbleMask);
                 cmbFontIdx.SelectedValue = fontId;
             }
 
-            // ui
+            // data entry addr
             txtDataEntryAddr.Text = entryAddr.ToString("X8");
+            btnImportDataEntry.Enabled = true;
+            btnExportDataEntry.Enabled = true;
 
             // frame sprite
-            LoadSpriteFrames();
+            LoadSpriteFrames(); // including control enable, disable
             _uiStateManager.UpdateBinary("ImportedSprites", GetCurrentSpritesBinaryData());
 
             _isUpdatingUI = false;
@@ -479,6 +474,11 @@ namespace PochiPochiEditorGabu._Map
 
         private void LoadSpriteFrames()
         {
+            // clear
+            foreach (var bmp in _loadedSpriteFrames)
+            {
+                bmp?.Dispose();
+            }
             _loadedSpriteFrames.Clear();
             _loadedSpriteAddresses.Clear();
             picSpritePreviewFrame.Image = null;
@@ -501,30 +501,25 @@ namespace PochiPochiEditorGabu._Map
             if (!ControlHelper.TryParseAddress(txtDataImgTableAddr.Text, out uint imgTableOffset)) return;
             var selectedSize = cmbDataSize.SelectedItem as DataSizeComboItem;
             if (selectedSize == null) return;
-
             int expectedVramSize = selectedSize.VramSize;
             int expectedWidth = selectedSize.Width;
             int expectedHeight = selectedSize.Height;
             Color[] currentPalette = GetCurrentPalette(cmbDataPalIdx1);
 
-            // is reserved?
+            // reserved?
             var reservedImgTable = _reservationManager.GetReservation(txtDataImgTableAddr);
 
             if (reservedImgTable != null && reservedImgTable.Address == imgTableOffset)
             {
                 byte[] tempTableData = reservedImgTable.Data;
-                int calculatedFrameCount = tempTableData.Length / (8 + expectedVramSize);
+                int entrySize = new EntryManager<TrainerPartyEntry00>(_romData, _charmap).GetEntrySize();
+                int calculatedFrameCount = tempTableData.Length / (entrySize + expectedVramSize);
 
                 for (int i = 0; i < calculatedFrameCount; i++)
                 {
-                    uint ptr = BitConverter.ToUInt32(tempTableData, i * 8);
-                    ushort size = BitConverter.ToUInt16(tempTableData, i * 8 + 4);
-
-                    if (size != expectedVramSize) break;
-
+                    uint ptr = BitConverter.ToUInt32(tempTableData, i * entrySize);
                     uint imgOffset = ptr - GbaConstants.BaseAddr;
                     int relativeOffset = (int)(imgOffset - reservedImgTable.Address);
-
                     byte[] imageData = new byte[expectedVramSize];
                     Array.Copy(tempTableData, relativeOffset, imageData, 0, expectedVramSize);
 
@@ -534,7 +529,7 @@ namespace PochiPochiEditorGabu._Map
                         expectedWidth,
                         expectedHeight,
                         true);
-                    Bitmap scaledBmp = ImageManager.ScalePixelArt(bmp, 2);
+                    Bitmap scaledBmp = ImageManager.ScalePixelArt(bmp);
 
                     _loadedSpriteFrames.Add(scaledBmp);
                     _loadedSpriteAddresses.Add(imgOffset);
@@ -542,13 +537,11 @@ namespace PochiPochiEditorGabu._Map
             }
             else
             {
+                // for validating
                 var pointerTargets = new HashSet<uint>();
                 foreach (var entry in _workingDataEntries)
                 {
-                    if (entry.pDataImgTableAddr >= GbaConstants.BaseAddr)
-                    {
-                        pointerTargets.Add(entry.pDataImgTableAddr - GbaConstants.BaseAddr);
-                    }
+                    pointerTargets.Add(entry.pDataImgTableAddr - GbaConstants.BaseAddr);
                 }
 
                 var tableEntries = _tableParsingHelper.ParsePointerEntries(
@@ -582,7 +575,7 @@ namespace PochiPochiEditorGabu._Map
                         expectedWidth,
                         expectedHeight,
                         true);
-                    Bitmap scaledBmp = ImageManager.ScalePixelArt(bmp, 2);
+                    Bitmap scaledBmp = ImageManager.ScalePixelArt(bmp);
 
                     _loadedSpriteFrames.Add(scaledBmp);
                     _loadedSpriteAddresses.Add(entry.TargetOffset);
@@ -590,11 +583,13 @@ namespace PochiPochiEditorGabu._Map
             }
 
             _isUpdatingUI = true;
-            nudSpriteFrameCount.Maximum = _loadedSpriteFrames.Count > 0 ? _loadedSpriteFrames.Count - 1 : 0;
+            nudSpriteFrameCount.Maximum = 
+                _loadedSpriteFrames.Count > 0 
+                ? _loadedSpriteFrames.Count - 1 
+                : 0;
             nudSpriteFrameMaxCount.Value = _loadedSpriteFrames.Count;
-            _isUpdatingUI = false;
-
             ControlHelper.UpdateNumericUpDownNavigators(nudSpriteFrameCount, btnSpriteFrameCountPrev, btnSpriteFrameCountNext);
+            _isUpdatingUI = false;
 
             UpdateSpritePreview();
         }
@@ -644,6 +639,7 @@ namespace PochiPochiEditorGabu._Map
 
             if (item == null)
             {
+                picPalPreview.Image?.Dispose();
                 picPalPreview.Image = null;
                 txtPalAddr.Text = string.Empty;
                 return;
@@ -674,6 +670,7 @@ namespace PochiPochiEditorGabu._Map
 
             if (colors == null)
             {
+                picPalPreview.Image?.Dispose();
                 picPalPreview.Image = null;
                 return;
             }
@@ -787,10 +784,7 @@ namespace PochiPochiEditorGabu._Map
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     byte[] buffer = File.ReadAllBytes(ofd.FileName);
-                    var entryManager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
-                    int expectedSize = entryManager.GetEntrySize();
-
-                    var importedEntries = IoHelper.ReadStructures<OverworldDataEntry>(buffer, 0, 1, _tblReader);
+                    var importedEntries = IoHelper.ReadStructures<OverworldDataEntry>(buffer, 0, 1, _charmap);
                     if (importedEntries.Count > 0)
                     {
                         var importedEntry = importedEntries[0];
@@ -798,12 +792,9 @@ namespace PochiPochiEditorGabu._Map
                         _isUpdatingUI = true;
 
                         DataBindingHelper.BindObjectToControls(this, importedEntry);
-
                         LoadToPalComboBox(cmbDataPalIdx1, importedEntry._PalIdx1);
                         LoadToPalComboBox(cmbDataPalIdx2, importedEntry._PalIdx2);
-
                         LoadToSizeComboBox(importedEntry._ImgWidth, importedEntry._ImgHeight);
-
                         byte paletteSlotAndUnknown = importedEntry._PalSlotAndUnknownFlags;
                         nudDataPalSlot.Value = paletteSlotAndUnknown & GbaConstants.NibbleMask;
                         chkUnknownFlag1.Checked = (paletteSlotAndUnknown & GbaConstants.OverworldSpriteUnknownFlag1Mask) != 0;
@@ -852,7 +843,7 @@ namespace PochiPochiEditorGabu._Map
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    var entryManager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+                    var entryManager = new EntryManager<OverworldDataEntry>(_romData, _charmap);
                     int size = entryManager.GetEntrySize();
                     byte[] buffer = new byte[size];
 
@@ -860,7 +851,7 @@ namespace PochiPochiEditorGabu._Map
                         buffer,
                         0,
                         new List<OverworldDataEntry> { currentEntry },
-                        _tblReader,
+                        _charmap,
                         null,
                         false);
 
@@ -874,7 +865,7 @@ namespace PochiPochiEditorGabu._Map
             if (!ControlHelper.ValidateAndFormatInputTextBox(txtCreateNewDataEntryAddr, out uint? addr)) return;
 
             // get size
-            var entryManager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+            var entryManager = new EntryManager<OverworldDataEntry>(_romData, _charmap);
             byte[] entryData = new byte[entryManager.GetEntrySize()];
 
             _uiStateManager.UpdateBinary(txtDataEntryAddr, entryData);
@@ -885,7 +876,6 @@ namespace PochiPochiEditorGabu._Map
             var excludeControls = new[] { "cmbDataSize" };
             grpDataEntry.SetControlsEnabled(true, excludeControls);
             grpDataEntry.ResetControls(excludeControls);
-
             grpCreateNewImgTable.SetControlsEnabled(true);
             grpCreateNewImgTable.ResetControls();
 
@@ -915,7 +905,7 @@ namespace PochiPochiEditorGabu._Map
 
             var sizeItem = cmbCreateNewImgTableSize.SelectedItem as DataSizeComboItem;
             int frameCount = (int)nudCreateNewImgTableCount.Value;
-            var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _tblReader);
+            var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _charmap);
             int entrySize = imgEntryManager.GetEntrySize();
 
             // calc size
@@ -1014,7 +1004,7 @@ namespace PochiPochiEditorGabu._Map
 
                     if (reservedImgTable != null)
                     {
-                        var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _tblReader);
+                        var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _charmap);
                         int headerSize = frameCount * imgEntryManager.GetEntrySize();
 
                         for (int i = 0; i < frameCount; i++)
@@ -1057,7 +1047,7 @@ namespace PochiPochiEditorGabu._Map
 
             if (reservedImgTable != null)
             {
-                var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _tblReader);
+                var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _charmap);
                 int headerSize = frameCount * imgEntryManager.GetEntrySize();
 
                 for (int i = 0; i < frameCount; i++)
@@ -1166,7 +1156,7 @@ namespace PochiPochiEditorGabu._Map
 
             if (reservedImgTable != null)
             {
-                var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _tblReader);
+                var imgEntryManager = new EntryManager<OverworldSpriteImageEntry>(_romData, _charmap);
                 int headerSize = frameCount * imgEntryManager.GetEntrySize();
                 if (reservedImgTable.Data.Length >= headerSize + (frameCount * vramSize))
                 {
@@ -1201,17 +1191,17 @@ namespace PochiPochiEditorGabu._Map
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentDataEntryIdx);
                         ChangeDataTable();
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         DiscardTemporaryPalette();
                         ChangeDataTable();
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         _isUpdatingUI = true;
                         nudDataTableIdx.Value = _currentDataTableIdx;
@@ -1246,19 +1236,19 @@ namespace PochiPochiEditorGabu._Map
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentDataEntryIdx);
                         ResetControls();
                         LoadDataEntryToUI(newentryIndex);
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         DiscardTemporaryPalette();
                         ResetControls();
                         LoadDataEntryToUI(newentryIndex);
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         _isUpdatingUI = true;
                         lstDataEntry.SelectedIndex = _currentDataEntryIdx;
@@ -1284,7 +1274,7 @@ namespace PochiPochiEditorGabu._Map
 
             txtCreateNewImgTableAddr.Text = string.Empty;
             nudCreateNewImgTableCount.Value = nudCreateNewImgTableCount.Minimum;
-            if (cmbCreateNewImgTableSize.SelectedIndex > 0)
+            if (cmbCreateNewImgTableSize.Items.Count > 0)
             {
                 cmbCreateNewImgTableSize.SelectedIndex = 0;
             }
@@ -1355,7 +1345,7 @@ namespace PochiPochiEditorGabu._Map
             currentEntry._PalSlotAndUnknownFlags = (byte)(palSlot | unknownFlags);
 
             // wirte data entry
-            var entryManager = new EntryManager<OverworldDataEntry>(_romData, _tblReader);
+            var entryManager = new EntryManager<OverworldDataEntry>(_romData, _charmap);
             entryManager.Load(entryAddr, 1);
             entryManager.Working[0] = currentEntry;
             entryManager.Save(0, false);
@@ -1370,11 +1360,11 @@ namespace PochiPochiEditorGabu._Map
 
                 if (idx % 2 == 0)
                 {
-                    fontData = (byte)((fontData & (GbaConstants.NibbleMask << 4)) | (selectedFontId & GbaConstants.NibbleMask));
+                    fontData = (byte)((fontData & ~GbaConstants.NibbleMask) | (selectedFontId & GbaConstants.NibbleMask));
                 }
                 else
                 {
-                    fontData = (byte)((fontData & GbaConstants.NibbleMask) | ((selectedFontId & GbaConstants.NibbleMask) << 4));
+                    fontData = (byte)((fontData & GbaConstants.NibbleMask) | ((selectedFontId & GbaConstants.NibbleMask) << GbaConstants.NibbleShift));
                 }
 
                 _fontManager.Working[fontByteIndex]._Idx = fontData;
@@ -1446,15 +1436,15 @@ namespace PochiPochiEditorGabu._Map
             if (btnSave.Enabled)
             {
                 ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveCurrentData(_currentDataEntryIdx);
                     },
-                    () =>
+                    discardAction: () =>
                     {
-                        // unnecessary
+                        //
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         e.Cancel = true;
                     }

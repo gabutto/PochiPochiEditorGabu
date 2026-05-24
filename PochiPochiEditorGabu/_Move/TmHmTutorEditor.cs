@@ -12,7 +12,7 @@ namespace PochiPochiEditorGabu._Move
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -26,13 +26,13 @@ namespace PochiPochiEditorGabu._Move
         public TmHmTutorEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -46,15 +46,15 @@ namespace PochiPochiEditorGabu._Move
         {
             // move name
             _moveNameManager = EntryManager<MoveNameEntry>.Create(
-                _romData, _tblReader, _config, "MoveNameTableAddress", "MoveNameCount");
+                _romData, _charmap, _config, "MoveNameTableAddress", "MoveNameCount");
 
             // tm hm
             _tmHmListManager = EntryManager<TmHmMoveEntry>.Create(
-                _romData, _tblReader, _config, "TmHmListTableAddress", "TmHmCount");
+                _romData, _charmap, _config, "TmHmListTableAddress", "TmHmCount");
 
             // tutor
             _tutorListManager = EntryManager<TutorMoveEntry>.Create(
-                _romData, _tblReader, _config, "TutorListTableAddress", "TutorCount");
+                _romData, _charmap, _config, "TutorListTableAddress", "TutorCount");
         }
 
         private void InitializeControls()
@@ -88,31 +88,31 @@ namespace PochiPochiEditorGabu._Move
             // tm hm
             lstTmHm.BeginUpdate();
             lstTmHm.Items.Clear();
-            for (int i = 0; i < _tmHmListManager.Working.Count; i++)
+            for (int i = 0; i < _tmHmListManager.Original.Count; i++)
             {
-                lstTmHm.Items.Add(GetTmHmDisplayString(i, _tmHmListManager.Working[i]._MoveIdx, tmCount));
+                lstTmHm.Items.Add(GetTmHmDisplayString(i, _tmHmListManager.Original[i]._MoveIdx, tmCount));
             }
             lstTmHm.EndUpdate();
 
             // tutor
             lstTutor.BeginUpdate();
             lstTutor.Items.Clear();
-            for (int i = 0; i < _tutorListManager.Working.Count; i++)
+            for (int i = 0; i < _tutorListManager.Original.Count; i++)
             {
-                lstTutor.Items.Add(GetTutorDisplayString(i, _tutorListManager.Working[i]._MoveIdx));
+                lstTutor.Items.Add(GetTutorDisplayString(i, _tutorListManager.Original[i]._MoveIdx));
             }
             lstTutor.EndUpdate();
 
             if (lstTmHm.Items.Count > 0)
             {
                 lstTmHm.SelectedIndex = 0;
-                cmbMove1.SelectedIndex = _tmHmListManager.Working[0]._MoveIdx;
+                cmbMove1.SelectedIndex = _tmHmListManager.Original[0]._MoveIdx;
             }
 
             if (lstTutor.Items.Count > 0)
             {
                 lstTutor.SelectedIndex = 0;
-                cmbMove2.SelectedIndex = _tutorListManager.Working[0]._MoveIdx;
+                cmbMove2.SelectedIndex = _tutorListManager.Original[0]._MoveIdx;
             }
 
             _isUpdatingUI = false;

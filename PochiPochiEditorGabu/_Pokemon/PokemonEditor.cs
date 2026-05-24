@@ -19,7 +19,7 @@ namespace PochiPochiEditorGabu._Pokemon
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -106,13 +106,13 @@ namespace PochiPochiEditorGabu._Pokemon
         public PokemonEditor(
             byte[] romData, 
             IniFileReader config, 
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -130,57 +130,57 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             // ポケモン名
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
+                _romData, _charmap, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
             // ポケモン画像
             _spriteFrontImgManager = EntryManager<PokemonSpriteFrontImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
+                _romData, _charmap, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
             _spriteBackImgManager = EntryManager<PokemonSpriteBackImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonSpriteBackImageTableAddress", "PokemonSpriteCount");
+                _romData, _charmap, _config, "PokemonSpriteBackImageTableAddress", "PokemonSpriteCount");
             _spriteNormalPalManager = EntryManager<PokemonSpriteNormalPaletteEntry>.Create(
-                _romData, _tblReader, _config, "PokemonSpriteNormalPaletteTableAddress", "PokemonSpriteCount");
+                _romData, _charmap, _config, "PokemonSpriteNormalPaletteTableAddress", "PokemonSpriteCount");
             _spriteShinyPalManager = EntryManager<PokemonSpriteShinyPaletteEntry>.Create(
-                _romData, _tblReader, _config, "PokemonSpriteShinyPaletteTableAddress", "PokemonSpriteCount");
+                _romData, _charmap, _config, "PokemonSpriteShinyPaletteTableAddress", "PokemonSpriteCount");
 
             // アイコン
             _iconImgManager = EntryManager<PokemonIconImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconImageTableAddress", "PokemonIconCount");
             _iconPalIdxManager = EntryManager<PokemonIconPaletteIndexEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
+                _romData, _charmap, _config, "PokemonIconPaletteIndexTableAddress", "PokemonIconCount");
             _iconPalAddrManager = EntryManager<PokemonIconPaletteAddressEntry>.Create(
-                _romData, _tblReader, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
+                _romData, _charmap, _config, "PokemonIconPaletteAddressTableAddress", "PokemonIconPaletteAddressCount");
 
             // 足跡
             _footprintImgManager = EntryManager<PokemonFootPrintImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonFootprintTableAddress", "PokemonFootprintCount");
+                _romData, _charmap, _config, "PokemonFootprintTableAddress", "PokemonFootprintCount");
 
             // 表示位置
             _coordBattleAllyManager = EntryManager<PokemonCoordBattleAllyEntry>.Create(
-                _romData, _tblReader, _config, "PokemonCoordinateBattleAllyTableAddress", "PokemonCoordinateBattleCount");
+                _romData, _charmap, _config, "PokemonCoordinateBattleAllyTableAddress", "PokemonCoordinateBattleCount");
             _coordBattleEnemyManager = EntryManager<PokemonCoordBattleEnemyEntry>.Create(
-                _romData, _tblReader, _config, "PokemonCoordinateBattleEnemyTableAddress", "PokemonCoordinateBattleCount");
+                _romData, _charmap, _config, "PokemonCoordinateBattleEnemyTableAddress", "PokemonCoordinateBattleCount");
             _coordBattleEnemyShadowManager = EntryManager<PokemonCoordBattleEnemyShaowEntry>.Create(
-                _romData, _tblReader, _config, "PokemonCoordinateBattleEnemyShadowTableAddress", "PokemonCoordinateBattleEnemyShadowCount");
+                _romData, _charmap, _config, "PokemonCoordinateBattleEnemyShadowTableAddress", "PokemonCoordinateBattleEnemyShadowCount");
             _coordItemUseManager = EntryManager<PokemonCoordItemUseEntry>.Create(
-                _romData, _tblReader, _config, "PokemonCoordinateItemUseTableAddress", "PokemonCoordinateItemUseCount");
+                _romData, _charmap, _config, "PokemonCoordinateItemUseTableAddress", "PokemonCoordinateItemUseCount");
 
             // 基本情報
             if (_config.GetBool("IsAppliedCFRU") && _config.GetBool("EnableStatsExpansion"))
             {
                 _statsExpansionManager = EntryManager<PokemonStatsExpansionEntry>.Create(
-                    _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
+                    _romData, _charmap, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
             else
             {
                 _statsNormalManager = EntryManager<PokemonStatsNormalEntry>.Create(
-                    _romData, _tblReader, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
+                    _romData, _charmap, _config, "PokemonStatsTableAddress", "PokemonStatsCount");
             }
 
             // 進化
             uint? evoTableAddr = _config.GetAddr("PokemonEvolutionTableAddress");
             int evoSlotCount = _config.GetInt("PokemonEvolutionSlotCount");
             int evoEntryCount = _config.GetInt("PokemonEvolutionEntryCount");
-            _evoManager = new EntryManager<PokemonEvolutionEntry>(_romData, _tblReader);
+            _evoManager = new EntryManager<PokemonEvolutionEntry>(_romData, _charmap);
             _evoManager.Load(evoTableAddr, evoSlotCount * evoEntryCount);
             for (int i = 0; i < evoEntryCount; i++)
             {
@@ -199,66 +199,66 @@ namespace PochiPochiEditorGabu._Pokemon
 
             // レベル技
             _learnsetManager = EntryManager<PokemonLearnsetEntry>.Create(
-                _romData, _tblReader, _config, "PokemonLearnsetTableAddress", "PokemonLearnsetEntryCount");
+                _romData, _charmap, _config, "PokemonLearnsetTableAddress", "PokemonLearnsetEntryCount");
 
             // 技マシン
             _tmHmListManager = EntryManager<TmHmMoveEntry>.Create(
-                _romData, _tblReader, _config, "TmHmListTableAddress", "TmHmCount");
+                _romData, _charmap, _config, "TmHmListTableAddress", "TmHmCount");
 
             // 教え技
             _tutorListManager = EntryManager<TutorMoveEntry>.Create( 
-                _romData, _tblReader, _config, "TutorListTableAddress", "TutorCount");
+                _romData, _charmap, _config, "TutorListTableAddress", "TutorCount");
 
             // 図鑑番号
             _orderManager = EntryManager<PokedexOrderEntry>.Create(
-                _romData, _tblReader, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
+                _romData, _charmap, _config, "PokedexOrderTableAddress", "PokedexOrderCount");
 
             // 図鑑情報
             _dexManager = EntryManager<PokedexEntry>.Create(
-                _romData, _tblReader, _config, "PokedexTableAddress", "PokedexCount");
+                _romData, _charmap, _config, "PokedexTableAddress", "PokedexCount");
 
             // 鳴き声
             _cryData1Manager = EntryManager<PokemonCryData1Entry>.Create(
-                _romData, _tblReader, _config, "CryData1TableAddress", "CryDataCount");
+                _romData, _charmap, _config, "CryData1TableAddress", "CryDataCount");
             _cryData2Manager = EntryManager<PokemonCryData2Entry>.Create(
-                _romData, _tblReader, _config, "CryData1TableAddress", "CryDataCount");
+                _romData, _charmap, _config, "CryData1TableAddress", "CryDataCount");
             _cryDataExtendManager = EntryManager<PokemonCryExtendEntry>.Create(
-                _romData, _tblReader, _config, "ExtendCryTableAddress", "ExtendCryCount");
+                _romData, _charmap, _config, "ExtendCryTableAddress", "ExtendCryCount");
 
             // 戦闘BGM
             if (_config.GetBool("EnablePokemonBattleMusic"))
             {
                 _battleMusicManager = EntryManager<PokemonBattleMusicEntry>.Create(
-                _romData, _tblReader, _config, "PokemonBattleMusicTableAddress", "PokemonBattleMusicCount");
+                _romData, _charmap, _config, "PokemonBattleMusicTableAddress", "PokemonBattleMusicCount");
             }
 
             // 特性名
             _abilityNameManager = EntryManager<AbilityNameEntry>.Create(
-                _romData, _tblReader, _config, "AbilityNameTableAddress", "AbilityNameCount");
+                _romData, _charmap, _config, "AbilityNameTableAddress", "AbilityNameCount");
 
             // アイテム画像
             _itemSpriteManager = EntryManager<ItemSpriteEntry>.Create(
-                _romData, _tblReader, _config, "ItemSpriteTableAddress", "ItemDataCount");
+                _romData, _charmap, _config, "ItemSpriteTableAddress", "ItemDataCount");
 
             // アイテム名
             _itemDataManager = EntryManager<ItemDataEntry>.Create(
-                _romData, _tblReader, _config, "ItemDataTableAddress", "ItemDataCount");
+                _romData, _charmap, _config, "ItemDataTableAddress", "ItemDataCount");
 
             // タイプ名
             _typeNameManager = EntryManager<TypeNameEntry>.Create(
-                _romData, _tblReader, _config, "TypeNameTableAddress", "TypeNameCount");
+                _romData, _charmap, _config, "TypeNameTableAddress", "TypeNameCount");
 
             // 技名
             _moveNameManager = EntryManager<MoveNameEntry>.Create(
-                _romData, _tblReader, _config, "MoveNameTableAddress", "MoveNameCount");
+                _romData, _charmap, _config, "MoveNameTableAddress", "MoveNameCount");
 
             // トレーナー画像
             _trainerImgManager = EntryManager<TrainerSpriteImageEntry>.Create(
-                _romData, _tblReader, _config, "TrainerSpriteImageTableAddress", "TrainerSpriteCount");
+                _romData, _charmap, _config, "TrainerSpriteImageTableAddress", "TrainerSpriteCount");
 
             // トレーナーパレット
             _trainerPalManager = EntryManager<TrainerSpritePaletteEntry>.Create(
-                _romData, _tblReader, _config, "TrainerSpritePaletteTableAddress", "TrainerSpriteCount");
+                _romData, _charmap, _config, "TrainerSpritePaletteTableAddress", "TrainerSpriteCount");
         }
 
         private void InitializeEventHandlers()
@@ -553,10 +553,10 @@ namespace PochiPochiEditorGabu._Pokemon
                 grpCoordBattleAlly, grpCoordBattleEnemy, grpCoordItemUse,
                 tabPageStats);
             _uiStateManager.AddBinaries(
-                (pnlFootprintCanvas, null),
-                (lstEvoSlots, null),
-                (lstLearnset, null),
-                (txtDexDescString, null));
+                ("FootprintData", null),
+                ("EvoSlots", null),
+                ("Learnset", null),
+                ("DexDescString", null));
         }
 
         private void LoadAllDataToUI(int idx)
@@ -601,7 +601,7 @@ namespace PochiPochiEditorGabu._Pokemon
             int pokemonNameEntryLength = _config.GetInt("PokemonNameEntryLength");
             int maxAllowedBytes = pokemonNameEntryLength - 1;
             string currentText = txtPokemonRename.Text;
-            byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
+            byte[] currentBytes = _charmap.StringToBytes(currentText, false);
 
             if (currentBytes.Length > maxAllowedBytes)
             {
@@ -609,7 +609,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
                 while (currentText.Length > 0)
                 {
-                    currentBytes = _tblReader.StringToBytes(currentText, false);
+                    currentBytes = _charmap.StringToBytes(currentText, false);
                     if (currentBytes.Length <= maxAllowedBytes) break;
 
                     currentText = currentText.Substring(0, currentText.Length - 1);
@@ -622,7 +622,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 _isUpdatingUI = false;
             }
 
-            string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
+            string validName = _charmap.BytesToString(currentBytes, 0, currentBytes.Length);
 
             _isUpdatingUI = true;
             int idx = _currentPokemonIdx;
@@ -1135,7 +1135,7 @@ namespace PochiPochiEditorGabu._Pokemon
             }
 
             pnlFootprintCanvas.Invalidate();
-            _uiStateManager.UpdateBinary(pnlFootprintCanvas, _currentFootprintData);
+            _uiStateManager.UpdateBinary("FootprintData", _currentFootprintData);
         }
 
         private void pnlFootprintCanvas_Paint(object sender, PaintEventArgs e)
@@ -1219,7 +1219,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 oldImage?.Dispose();
             }
 
-            _uiStateManager.UpdateBinary(pnlFootprintCanvas, _currentFootprintData);
+            _uiStateManager.UpdateBinary("FootprintData", _currentFootprintData);
         }
 
         private void UpdateFootprintPixel(int x, int y, bool isBlack)
@@ -1763,7 +1763,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
             var slots = _originalEvoSlots[idx];
             byte[] binary = EvolutionSlotsToBytes(slots);
-            _uiStateManager.UpdateBinary(lstEvoSlots, binary);
+            _uiStateManager.UpdateBinary("EvoSlots", binary);
 
             DataBindingHelper.BindObjectToControls(this, slots[_currentEvoSlotIndex]);
             UpdateEvoToIcon();
@@ -1773,7 +1773,7 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             int totalSize = _config.GetInt("PokemonEvolutionSlotLength") * entries.Length;
             byte[] data = new byte[totalSize];
-            IoHelper.WriteStructures(data, 0, entries, _tblReader);
+            IoHelper.WriteStructures(data, 0, entries, _charmap);
             return data;
         }
 
@@ -1800,7 +1800,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
             DataBindingHelper.BindControlsToObject(this, _workingEvoSlots[_currentPokemonIdx][_currentEvoSlotIndex]);
             byte[] currentBytes = EvolutionSlotsToBytes(_workingEvoSlots[_currentPokemonIdx]);
-            _uiStateManager.UpdateBinary(lstEvoSlots, currentBytes);
+            _uiStateManager.UpdateBinary("EvoSlots", currentBytes);
         }
 
         private int GetSelectedEvolutionInputAssistValue()
@@ -1868,7 +1868,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 _currentLearnsetList = new List<LearnsetList>();
             }
 
-            _uiStateManager.UpdateBinary(lstLearnset, currentBinary);
+            _uiStateManager.UpdateBinary("Learnset", currentBinary);
 
             _isUpdatingUI = true;
 
@@ -2007,7 +2007,7 @@ namespace PochiPochiEditorGabu._Pokemon
             _isUpdatingUI = false;
 
             byte[] newBinary = EncodeLearnsetData(_currentLearnsetList);
-            _uiStateManager.UpdateBinary(lstLearnset, newBinary);
+            _uiStateManager.UpdateBinary("Learnset", newBinary);
 
             var reservation = _reservationManager.GetReservation(txtLearnsetAddr);
             if (reservation != null)
@@ -2094,7 +2094,7 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
-        private void LoadLearnFlagData(int pokemonIndex, string addressKey, string countKey, CheckedListBox clb, string uiStateKey)
+        private void LoadLearnFlagData(int pokemonIndex, string addressKey, string countKey, CheckedListBox clb, string TmhmUiStateKey)
         {
             uint baseAddress = (uint)_config.GetAddr(addressKey);
             int count = _config.GetInt(countKey);
@@ -2112,8 +2112,8 @@ namespace PochiPochiEditorGabu._Pokemon
                 clb.SetItemChecked(i, isLearned);
             }
             
-            _uiStateManager.AddBinaries((uiStateKey, data));
-            _uiStateManager.UpdateBinary(uiStateKey, data);
+            _uiStateManager.AddBinaries((TmhmUiStateKey, data));
+            _uiStateManager.UpdateBinary(TmhmUiStateKey, data);
         }
 
         private byte[] GetCurrentLearnFlagData(CheckedListBox clb, int count)
@@ -2133,7 +2133,7 @@ namespace PochiPochiEditorGabu._Pokemon
             return data;
         }
 
-        private void HandleLearnFlagItemCheck(CheckedListBox clb, string countKey, string uiStateKey)
+        private void HandleLearnFlagItemCheck(CheckedListBox clb, string countKey, string TmhmUiStateKey)
         {
             if (_isUpdatingUI) return;
 
@@ -2141,7 +2141,7 @@ namespace PochiPochiEditorGabu._Pokemon
             {
                 int count = _config.GetInt(countKey);
                 byte[] data = GetCurrentLearnFlagData(clb, count);
-                _uiStateManager?.UpdateBinary(uiStateKey, data);
+                _uiStateManager?.UpdateBinary(TmhmUiStateKey, data);
             });
         }
 
@@ -2176,7 +2176,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 ControlHelper.SetControlsEnabled(tabPagePokedex, false);
                 ControlHelper.ResetControls(tabPagePokedex, new[] { "nudDexSizeCompTrainerSpriteIdx" });
                 txtDexDescString.Text = string.Empty;
-                _uiStateManager.UpdateBinary(txtDexDescString, null);
+                _uiStateManager.UpdateBinary("DexDescString", null);
             }
 
             UpdateSizeCompDisplay();
@@ -2186,13 +2186,13 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             int maxAllowedBytes = _config.GetInt("PokedexCategoryMaxLength");
             string currentText = txtDexCategory.Text;
-            byte[] currentBytes = _tblReader.StringToBytes(currentText, false);
+            byte[] currentBytes = _charmap.StringToBytes(currentText, false);
 
             if (currentBytes.Length > maxAllowedBytes)
             {
                 while (currentText.Length > 0)
                 {
-                    currentBytes = _tblReader.StringToBytes(currentText, false);
+                    currentBytes = _charmap.StringToBytes(currentText, false);
                     if (currentBytes.Length <= maxAllowedBytes) break;
 
                     currentText = currentText.Substring(0, currentText.Length - 1);
@@ -2210,7 +2210,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 currentBytes = paddedBytes;
             }
 
-            string validName = _tblReader.BytesToString(currentBytes, 0, currentBytes.Length);
+            string validName = _charmap.BytesToString(currentBytes, 0, currentBytes.Length);
 
             if (_currentdexOrder >= 0 && _currentdexOrder < _dexManager.Working.Count)
             {
@@ -2269,14 +2269,14 @@ namespace PochiPochiEditorGabu._Pokemon
 
                 byte[] byteArr = descriptionBytes.ToArray();
                 _currentDexDescData = byteArr;
-                txtDexDescString.Text = _tblReader.BytesToString(byteArr, 0, 256);
-                _uiStateManager.UpdateBinary(txtDexDescString, byteArr);
+                txtDexDescString.Text = _charmap.BytesToString(byteArr);
+                _uiStateManager.UpdateBinary("DexDescString", byteArr);
             }
             else
             {
                 _currentDexDescData = null;
                 txtDexDescString.Text = string.Empty;
-                _uiStateManager.UpdateBinary(txtDexDescString, null);
+                _uiStateManager.UpdateBinary("DexDescString", null);
             }
 
             _isUpdatingUI = false;
@@ -2292,9 +2292,9 @@ namespace PochiPochiEditorGabu._Pokemon
         {
             if (_isUpdatingUI) return;
 
-            byte[] bytes = _tblReader.StringToBytes(txtDexDescString.Text, true);
+            byte[] bytes = _charmap.StringToBytes(txtDexDescString.Text, true);
             _currentDexDescData = bytes;
-            _uiStateManager.UpdateBinary(txtDexDescString, bytes);
+            _uiStateManager.UpdateBinary("DexDescString", bytes);
         }
 
         private void SizeCompParam_ValueChanged(object sender, EventArgs e)
@@ -2456,7 +2456,7 @@ namespace PochiPochiEditorGabu._Pokemon
                             buffer,
                             0,
                             new[] { entry },
-                            _tblReader,
+                            _charmap,
                             dynamicLengths,
                             false,
                             GbaConstants.PaddingByte,
@@ -2495,7 +2495,7 @@ namespace PochiPochiEditorGabu._Pokemon
                         };
 
                         // load bin file
-                        var list = IoHelper.ReadStructures<PokedexEntry>(buffer, 0, 1, _tblReader, dynamicLengths);
+                        var list = IoHelper.ReadStructures<PokedexEntry>(buffer, 0, 1, _charmap, dynamicLengths);
 
                         if (list.Count > 0)
                         {
@@ -2899,7 +2899,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 _reservationManager.ClearReservation(txtFootprintImgAddr);
             }
 
-            if (_uiStateManager.HasBinaryChanges(pnlFootprintCanvas) && _currentFootprintData != null)
+            if (_uiStateManager.HasBinaryChanges("FootprintData") && _currentFootprintData != null)
             {
                 Array.Copy(_currentFootprintData, 0, _romData, (int)imageAddress, GbaConstants.FootprintDataSize);
             }
@@ -2958,7 +2958,7 @@ namespace PochiPochiEditorGabu._Pokemon
             int slotCount = _config.GetInt("PokemonEvolutionSlotCount");
             uint? baseAddress = _config.GetAddr("PokemonEvolutionTableAddress");
             uint? address = baseAddress + (uint?)(idx * slotCount * entrySize);
-            IoHelper.WriteStructures(_romData, address, _workingEvoSlots[idx], _tblReader);
+            IoHelper.WriteStructures(_romData, address, _workingEvoSlots[idx], _charmap);
             _originalEvoSlots[idx] = _workingEvoSlots[idx].Select(e => CloneHelper.Clone(e)).ToArray();
         }
 
@@ -2970,7 +2970,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 Array.Copy(res.Data, 0, _romData, (int)res.Address, res.Data.Length);
                 _reservationManager.ClearReservation(txtLearnsetAddr);
             }
-            else if (_uiStateManager.HasBinaryChanges(lstLearnset) && _currentLearnsetList != null)
+            else if (_uiStateManager.HasBinaryChanges("Learnset") && _currentLearnsetList != null)
             {
                 if (ControlHelper.TryParseAddress(txtLearnsetAddr.Text, out uint address))
                 {
@@ -2986,9 +2986,9 @@ namespace PochiPochiEditorGabu._Pokemon
             SaveLearnFlagData(idx, "TutorLearnTableAddress", "TutorCount", clbTutor, "TutorData");
         }
 
-        private void SaveLearnFlagData(int pokemonIndex, string addressKey, string countKey, CheckedListBox clb, string uiStateKey)
+        private void SaveLearnFlagData(int pokemonIndex, string addressKey, string countKey, CheckedListBox clb, string TmhmUiStateKey)
         {
-            if (!_uiStateManager.HasBinaryChanges(uiStateKey)) return;
+            if (!_uiStateManager.HasBinaryChanges(TmhmUiStateKey)) return;
 
             int count = _config.GetInt(countKey);
             byte[] data = GetCurrentLearnFlagData(clb, count); 
@@ -3007,9 +3007,9 @@ namespace PochiPochiEditorGabu._Pokemon
 
                 // 説明文
                 if (!ControlHelper.TryParseAddress(txtDexDescAddr.Text, out uint address)) return;
-                if (_uiStateManager.HasBinaryChanges(txtDexDescString) && _currentDexDescData != null)
+                if (_uiStateManager.HasBinaryChanges("DexDescString") && _currentDexDescData != null)
                 {
-                    _tblReader.WriteToRom(_romData, address, _currentDexDescData);
+                    _charmap.WriteToRom(_romData, address, _currentDexDescData);
                 }
             }
         }

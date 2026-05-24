@@ -16,7 +16,7 @@ namespace PochiPochiEditorGabu._Pokemon
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -39,13 +39,13 @@ namespace PochiPochiEditorGabu._Pokemon
         public PokedexHabitatEditor(
                         byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeAll();
@@ -60,7 +60,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
             // cmbPokemonName
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
+                _romData, _charmap, _config, "PokemonNameTableAddress", "PokemonNameCount");
             var pokemonNames = _pokemonNameManager.Original
                  .Select(entry => entry._PokemonName)
                  .ToArray();
@@ -68,14 +68,14 @@ namespace PochiPochiEditorGabu._Pokemon
 
             // sprite
             _spriteFrontImgManager = EntryManager<PokemonSpriteFrontImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
+                _romData, _charmap, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
             _spriteNormalPalManager = EntryManager<PokemonSpriteNormalPaletteEntry>.Create(
-                _romData, _tblReader, _config, "PokemonSpriteNormalPaletteTableAddress", "PokemonSpriteCount");
+                _romData, _charmap, _config, "PokemonSpriteNormalPaletteTableAddress", "PokemonSpriteCount");
 
             // all area
             uint? habitatTableAddr = _config.GetAddr("PokedexHabitatTableAddress");
             int habitatCount = cmbArea.Items.Count;
-            _areaManager = new EntryManager<PokedexHabitatAreaEntry>(_romData, _tblReader);
+            _areaManager = new EntryManager<PokedexHabitatAreaEntry>(_romData, _charmap);
             _areaManager.Load(habitatTableAddr, habitatCount);
 
             // pic
@@ -90,7 +90,7 @@ namespace PochiPochiEditorGabu._Pokemon
             // ui state
             btnSave.Enabled = false;
             _uiStateManager = new UIStateManager(hasChanges => btnSave.Enabled = hasChanges);
-            _uiStateManager.AddBinaries((lstPage, null));
+            _uiStateManager.AddBinaries(("PageList", null));
 
             // event handler
             btnSave.Click += btnSave_Click;
@@ -113,7 +113,7 @@ namespace PochiPochiEditorGabu._Pokemon
                 _romData,
                 actualAddr,
                 pageCount,
-                _tblReader);
+                _charmap);
             _currentAreaPages = pages.Select(p => CloneHelper.Clone(p)).ToList();
 
             // laod pokemons
@@ -126,7 +126,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     uint pageActualAddr = page.pPageAddr - GbaConstants.BaseAddr;
                     for (int p = 0; p < page.PokemonCount; p++)
                     {
-                        pokemonData[p] = BitConverter.ToUInt16(_romData, (int)(pageActualAddr + p * 2));
+                        pokemonData[p] = BitConverter.ToUInt16(_romData, (int)(pageActualAddr + p * sizeof(ushort)));
                     }
                 }
                 _currentAreaPokemonData.Add(pokemonData);
@@ -138,7 +138,7 @@ namespace PochiPochiEditorGabu._Pokemon
             DataBindingHelper.BindObjectToControls(grpSelectArea, _areaManager.Original[areaIdx]);
 
             // uistate
-            _uiStateManager.UpdateBinary(lstPage, ConvertAreaAndPageDataToBytes());
+            _uiStateManager.UpdateBinary("PageList", ConvertAreaAndPageDataToBytes());
             _uiStateManager.UpdateInitialValues();
 
             // lstPage
@@ -295,7 +295,7 @@ namespace PochiPochiEditorGabu._Pokemon
 
                 // uistate
                 byte[] areaDataBytes = ConvertAreaAndPageDataToBytes();
-                _uiStateManager.UpdateBinary(lstPage, areaDataBytes);
+                _uiStateManager.UpdateBinary("PageList", areaDataBytes);
             }
         }
 
@@ -341,30 +341,6 @@ namespace PochiPochiEditorGabu._Pokemon
             }
         }
 
-        private Bitmap GetPokemonSprite(int idx, bool showBackColor)
-        {
-            uint? imgAddr = _spriteFrontImgManager.Original[idx].pSpriteFrontImgAddr - GbaConstants.BaseAddr;
-            uint? palAddr = _spriteNormalPalManager.Original[idx].pSpriteNormalPalAddr - GbaConstants.BaseAddr;
-
-            if (!imgAddr.HasValue || !palAddr.HasValue) return null;
-
-            try
-            {
-                byte[] image = ImageManager.DecompressLZ77(_romData, imgAddr.Value);
-                Color[] palette = ImageManager.DecompressPalette(_romData, palAddr.Value, true);
-                return ImageManager.CreateSprite(
-                    image,
-                    palette,
-                    GbaConstants.SpriteSize,
-                    GbaConstants.SpriteSize,
-                    showBackColor);
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
         private void btnCreateNewPageData_Click(object sender, EventArgs e)
         {
             using (var popup = new QuickInputPopup())
@@ -387,13 +363,13 @@ namespace PochiPochiEditorGabu._Pokemon
                         _currentAreaPokemonData[_currentPageIdx] = newData;
 
                         // reserve
-                        byte[] data = new byte[entryCount * 2];
-                        Buffer.BlockCopy(newData, 0, data, 0, newData.Length * 2);
+                        byte[] data = new byte[entryCount * sizeof(ushort)];
+                        Buffer.BlockCopy(newData, 0, data, 0, newData.Length * sizeof(ushort));
                         _reservationManager.SetReservation(txtPageAddr, targetAddress, data);
 
                         // uistate
                         LoadPageToUI(_currentPageIdx);
-                        _uiStateManager.UpdateBinary(lstPage, ConvertAreaAndPageDataToBytes());
+                        _uiStateManager.UpdateBinary("PageList", ConvertAreaAndPageDataToBytes());
                     }
                     else if (targetAddressStr == "null")
                     {
@@ -406,7 +382,7 @@ namespace PochiPochiEditorGabu._Pokemon
                         _reservationManager.ClearReservation(txtPageAddr);
 
                         LoadPageToUI(_currentPageIdx);
-                        _uiStateManager.UpdateBinary(lstPage, ConvertAreaAndPageDataToBytes());
+                        _uiStateManager.UpdateBinary("PageList", ConvertAreaAndPageDataToBytes());
                     }
                 }
             }
@@ -439,7 +415,7 @@ namespace PochiPochiEditorGabu._Pokemon
                         }
 
                         // reserve
-                        var tempManager = new EntryManager<PokedexHabitatPageEntry>(_romData, _tblReader, null);
+                        var tempManager = new EntryManager<PokedexHabitatPageEntry>(_romData, _charmap, null);
                         int entrySize = tempManager.GetEntrySize();
                         byte[] data = new byte[entryCount * entrySize];
                         _reservationManager.SetReservation(txtAreaAddr, targetAddress, data);
@@ -462,7 +438,7 @@ namespace PochiPochiEditorGabu._Pokemon
                         _isUpdatingUI = false;
 
                         LoadPageToUI(lstPage.SelectedIndex);
-                        _uiStateManager.UpdateBinary(lstPage, ConvertAreaAndPageDataToBytes());
+                        _uiStateManager.UpdateBinary("PageList", ConvertAreaAndPageDataToBytes());
                     }
                 }
             }
@@ -532,7 +508,7 @@ namespace PochiPochiEditorGabu._Pokemon
                     var pokemonData = _currentAreaPokemonData[i];
                     for (int p = 0; p < pokemonData.Length; p++)
                     {
-                        int offset = (int)(actualPageAddr.Value + p * 2);
+                        int offset = (int)(actualPageAddr.Value + p * sizeof(ushort));
                         byte[] bytes = BitConverter.GetBytes(pokemonData[p]);
                         _romData[offset] = bytes[0];
                         _romData[offset + 1] = bytes[1];
@@ -546,10 +522,34 @@ namespace PochiPochiEditorGabu._Pokemon
                     _romData,
                     actualAreaAddr,
                     _currentAreaPages.Take(areaEntry.PageCount),
-                    _tblReader);
+                    _charmap);
             }
 
             _areaManager.Save(idx);
+        }
+
+        private Bitmap GetPokemonSprite(int idx, bool showBackColor)
+        {
+            uint? imgAddr = _spriteFrontImgManager.Original[idx].pSpriteFrontImgAddr - GbaConstants.BaseAddr;
+            uint? palAddr = _spriteNormalPalManager.Original[idx].pSpriteNormalPalAddr - GbaConstants.BaseAddr;
+
+            if (!imgAddr.HasValue || !palAddr.HasValue) return null;
+
+            try
+            {
+                byte[] image = ImageManager.DecompressLZ77(_romData, imgAddr.Value);
+                Color[] palette = ImageManager.DecompressPalette(_romData, palAddr.Value, true);
+                return ImageManager.CreateSprite(
+                    image,
+                    palette,
+                    GbaConstants.SpriteSize,
+                    GbaConstants.SpriteSize,
+                    showBackColor);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ namespace PochiPochiEditorGabu._Move
     {
         protected byte[] _romData;
         protected IniFileReader _config;
-        protected TblFileReader _tblReader;
+        protected TblFileReader _charmap;
         protected ReservationManager _reservationManager;
 
         private UIStateManager _uiStateManager;
@@ -46,13 +46,13 @@ namespace PochiPochiEditorGabu._Move
         public EggMoveEditor(
             byte[] romData,
             IniFileReader config,
-            TblFileReader tblReader,
+            TblFileReader charmap,
             ReservationManager reservationManager)
         {
             InitializeComponent();
             _romData = romData;
             _config = config;
-            _tblReader = tblReader;
+            _charmap = charmap;
             _reservationManager = reservationManager;
 
             InitializeManagers();
@@ -71,21 +71,21 @@ namespace PochiPochiEditorGabu._Move
         private void InitializeManagers()
         {
             // egg move
-            _eggMoveManager = new EntryManager<EggMoveEntry>(_romData, _tblReader);
+            _eggMoveManager = new EntryManager<EggMoveEntry>(_romData, _charmap);
 
             // name
             _pokemonNameManager = EntryManager<PokemonNameEntry>.Create(
-                _romData, _tblReader, _config, "PokemonNameTableAddress", "PokemonNameCount");
+                _romData, _charmap, _config, "PokemonNameTableAddress", "PokemonNameCount");
 
             // sprite
             _spriteFrontImgManager = EntryManager<PokemonSpriteFrontImageEntry>.Create(
-                _romData, _tblReader, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
+                _romData, _charmap, _config, "PokemonSpriteFrontImageTableAddress", "PokemonSpriteCount");
             _spriteNormalPalManager = EntryManager<PokemonSpriteNormalPaletteEntry>.Create(
-                _romData, _tblReader, _config, "PokemonSpriteNormalPaletteTableAddress", "PokemonSpriteCount");
+                _romData, _charmap, _config, "PokemonSpriteNormalPaletteTableAddress", "PokemonSpriteCount");
 
             // move name
             _moveNameManager = EntryManager<MoveNameEntry>.Create(
-                _romData, _tblReader, _config, "MoveNameTableAddress", "MoveNameCount");
+                _romData, _charmap, _config, "MoveNameTableAddress", "MoveNameCount");
         }
 
         private void InitializeControls()
@@ -148,13 +148,13 @@ namespace PochiPochiEditorGabu._Move
             _eggMoveManager.Load(tableAddr, count);
 
             var tableBytes = new List<byte>();
-            foreach (var entry in _eggMoveManager.Working)
+            foreach (var entry in _eggMoveManager.Original)
             {
                 tableBytes.AddRange(BitConverter.GetBytes(entry._MoveIdx));
             }
             tableBytes.AddRange(BitConverter.GetBytes(GbaConstants.EggMoveTableTerminator));
             byte[] data = tableBytes.ToArray();
-            _uiStateManager.AddBinaries((lstEggMoves, data));
+            _uiStateManager.AddBinaries(("EggMoves", data));
 
             RefreshEggMoveTableDisplay();
         }
@@ -218,7 +218,7 @@ namespace PochiPochiEditorGabu._Move
             tableBytes.AddRange(BitConverter.GetBytes(GbaConstants.EggMoveTableTerminator));
 
             byte[] data = tableBytes.ToArray();
-            _uiStateManager.UpdateBinary(lstEggMoves, data);
+            _uiStateManager.UpdateBinary("EggMoves", data);
         }
 
         private void LstEggMoves_SelectedIndexChanged(object sender, EventArgs e)
@@ -303,7 +303,10 @@ namespace PochiPochiEditorGabu._Move
 
         private void InsertIntoTable(ushort value)
         {
-            int insertIndex = lstEggMoves.SelectedIndex == -1 ? _eggMoveManager.Working.Count : lstEggMoves.SelectedIndex;
+            int insertIndex = 
+                lstEggMoves.SelectedIndex == -1 
+                ? _eggMoveManager.Working.Count 
+                : lstEggMoves.SelectedIndex;
             _eggMoveManager.Working.Insert(insertIndex, new EggMoveEntry { _MoveIdx = value });
 
             UpdateBinaryState();
@@ -374,7 +377,7 @@ namespace PochiPochiEditorGabu._Move
                 _romData,
                 tableAddr,
                 saveList,
-                _tblReader,
+                _charmap,
                 null,
                 false
             );
@@ -406,15 +409,15 @@ namespace PochiPochiEditorGabu._Move
             if (btnSave.Enabled)
             {
                 DialogResult result = ControlHelper.HandleUnsavedChanges(
-                    () =>
+                    saveAction: () =>
                     {
                         SaveEggMoveTable();
                     },
-                    () =>
+                    discardAction: () =>
                     {
                         //
                     },
-                    () =>
+                    cancelAction: () =>
                     {
                         e.Cancel = true;
                     }
